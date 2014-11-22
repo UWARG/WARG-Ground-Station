@@ -1,0 +1,14 @@
+{
+    "name": "WARG-Ground-Station-V2",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.html",
+    "window": {
+        "toolbar": false
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC"
+}

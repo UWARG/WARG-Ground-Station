@@ -1,0 +1,10 @@
+*.pak
+credits.html
+*.dll
+*.dat
+node_modules/net/index.js
+node_modules/net/LICENSE
+node_modules/net/package.json
+node_modules/net/README.md
+node_modules/net/test.js
+*.exe

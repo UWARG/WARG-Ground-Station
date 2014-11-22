@@ -1,0 +1,33 @@
+#plane {
+    margin: 0 auto;
+    left: 0;
+    top: 5em;
+    right: 0;
+    color: #ffffff;
+    border-style: none;
+    width: 80%;
+    position: fixed;
+    height: 1.85em;
+    border-radius: 1em;
+    background-color: #414141;
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
+}
+#log {
+    margin: 0 auto;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    color: #000;
+    border-style: none;
+    width: 100%;
+    position: fixed;
+    height: 15%;
+    background-color: #c4c4c4;
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
+}
+.logText {
+    text-align: center;
+    font-family: "Helvetica Neue";
+    font-size: 1em;
+    line-height: 1.5em;
+}
