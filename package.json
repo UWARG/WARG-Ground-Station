@@ -4,7 +4,11 @@
     "description": "",
     "main": "index.html",
     "window": {
-        "toolbar": false
+        "toolbar": false,
+        "width": 800,
+        "height": 600,
+        "min_width": 800,
+        "min_height": 600
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
