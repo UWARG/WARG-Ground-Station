@@ -9,7 +9,7 @@ var map;
 var mapMarker;
 
 $(document).ready(function(){
-    map = L.map('map').setView([43.5, -80.5], 13);
+    map = L.map('map').setView([43.5, -80.5], 17);
         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18
         }).addTo(map);
@@ -26,7 +26,6 @@ function WriteToLog(text) {
 function ConnectHandler(err) {
     if (!err) {
         console.log('Connected: ' + Host + ':' + Port);
-
     }
 }
 
@@ -64,10 +63,21 @@ function UpdateUI() {
     yaw = FlightData["yaw"] * (Math.PI / 180);
     lat = FlightData["lat"];
     lon = FlightData["lon"];
+    altitude = FlightData["altitude"];
 
+    var altimeter = $('#altimeter')
+    altimeter.empty()
+    var newItem = $('<div class="logText">' + altitude + '</div>');
+    altimeter.append(newItem);
+
+    //Map
     map.removeLayer(mapMarker);
     mapMarker = L.marker([lat, lon]).addTo(map);
+    map.panTo([lat, lon])
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //Canvas
     var canvas = document.getElementById("canvas");
     canvas.height = 400;
     canvas.width = 400;

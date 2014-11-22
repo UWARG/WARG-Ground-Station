@@ -9,3 +9,10 @@ node_modules/net/README.md
 node_modules/net/test.js
 *.exe
 jquery-2.1.1.min.js
+leaflet.css
+leaflet.js
+images/marker-shadow.png
+images/marker-icon.png
+images/marker-icon-2x.png
+images/layers.png
+images/layers-2x.png
