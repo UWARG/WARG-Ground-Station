@@ -5,6 +5,16 @@ var Port = 1234;
 
 var Header = [];
 var FlightData = {};
+var map;
+var mapMarker;
+
+$(document).ready(function(){
+    map = L.map('map').setView([43.5, -80.5], 13);
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(map);
+    mapMarker = L.marker([43.5, -80.5]).addTo(map);
+});
 
 function WriteToLog(text) {
     var logDiv = $('#log')
@@ -16,6 +26,7 @@ function WriteToLog(text) {
 function ConnectHandler(err) {
     if (!err) {
         console.log('Connected: ' + Host + ':' + Port);
+
     }
 }
 
@@ -35,7 +46,14 @@ function DataHander(data) {
         FlightData[Header[i]] = dataSplit[i];
     }
 
-    WriteToLog('<div>' + 'Pitch: ' + FlightData["pitch"] + ' Roll: ' + FlightData["roll"] + ' Yaw: ' + FlightData["yaw"] + '</div>');
+    WriteToLog('<div>' +
+        'Pitch: ' + FlightData["pitch"] +
+        ' Roll: ' + FlightData["roll"] +
+        ' Yaw: ' + FlightData["yaw"] +
+        ' Latitude: ' + FlightData["lat"] +
+        ' Longitude: ' + FlightData["lon"] +
+        ' Altitude: ' + FlightData["altitude"] +
+        '</div>');
 
     UpdateUI()
 }
@@ -44,6 +62,11 @@ function UpdateUI() {
     roll = FlightData["roll"] * (Math.PI / 180);
     pitch = FlightData["pitch"] * (Math.PI / 180);
     yaw = FlightData["yaw"] * (Math.PI / 180);
+    lat = FlightData["lat"];
+    lon = FlightData["lon"];
+
+    map.removeLayer(mapMarker);
+    mapMarker = L.marker([lat, lon]).addTo(map);
 
     var canvas = document.getElementById("canvas");
     canvas.height = 400;
@@ -51,11 +74,13 @@ function UpdateUI() {
     var context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+    //Sky
     context.fillStyle = "#03a9f4";
     context.beginPath();
     context.arc(200, 200, 200, Math.PI + roll - pitch, 2 * Math.PI + roll + pitch);
     context.fill();
 
+    //Ground
     context.fillStyle = "#4caf50";
     context.beginPath();
     context.arc(200, 200, 200, 0 + roll + pitch, Math.PI + roll - pitch);
