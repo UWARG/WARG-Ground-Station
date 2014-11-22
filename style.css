@@ -3,8 +3,7 @@
     left: 0;
     right: 0;
     position: fixed;
-    border-style: dashed;
-    border-width: thin;
+    border-style: none;
 }
 #log {
     margin: 0 auto;
@@ -15,8 +14,8 @@
     border-style: none;
     width: 100%;
     position: fixed;
-    height: 15%;
-    background-color: #c4c4c4;
+    height: 10%;
+    background-color: #f0f0f0;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
 }
 .logText {

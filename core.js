@@ -36,7 +36,7 @@ function DataHander(data) {
         FlightData[Header[i]] = dataSplit[i];
     }
 
-    WriteToLog('<div>' + 'Data: ' + FlightData["pitch"] + FlightData["roll"] + FlightData["yaw"] + '</div>');
+    WriteToLog('<div>' + 'Pitch: ' + FlightData["pitch"] + ' Roll: ' + FlightData["roll"] + ' Yaw: ' + FlightData["yaw"] + '</div>');
 
     UpdateUI()
 }
