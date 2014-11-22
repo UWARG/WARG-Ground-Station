@@ -54,12 +54,12 @@ function UpdateUI() {
 
     context.fillStyle = "blue";
     context.beginPath();
-    context.arc(200, 200, 200, Math.PI + roll, 2 * Math.PI + roll);
+    context.arc(200, 200, 200, Math.PI + roll - pitch, 2 * Math.PI + roll + pitch);
     context.fill();
 
     context.fillStyle = "green";
     context.beginPath();
-    context.arc(200, 200, 200, 0 + roll, Math.PI + roll);
+    context.arc(200, 200, 200, 0 + roll + pitch, Math.PI + roll - pitch);
     context.fill();
 }
 
