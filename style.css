@@ -1,3 +1,6 @@
+body {
+    background-color: #607d8b;
+}
 #canvas {
     margin: 0 auto;
     left: 0;
@@ -15,12 +18,13 @@
     width: 100%;
     position: fixed;
     height: 10%;
-    background-color: #f0f0f0;
+    background-color: #cfd8dc;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
 }
 .logText {
+    margin-top: 1em;
     text-align: center;
-    font-family: "Helvetica Neue";
+    font-family: "Calibri";
     font-size: 1em;
     line-height: 1.5em;
 }

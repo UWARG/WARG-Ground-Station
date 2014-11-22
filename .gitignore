@@ -8,3 +8,4 @@ node_modules/net/package.json
 node_modules/net/README.md
 node_modules/net/test.js
 *.exe
+jquery-2.1.1.min.js

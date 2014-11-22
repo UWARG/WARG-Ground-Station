@@ -15,18 +15,17 @@ function WriteToLog(text) {
 
 function ConnectHandler(err) {
     if (!err) {
-        WriteToLog('Connected: ' + Host + ':' + Port);
+        console.log('Connected: ' + Host + ':' + Port);
     }
 }
 
 function ErrorHandler(err) {
-    WriteToLog(err.code)
+    console.log(err.code)
 }
 
 function DataHander(data) {
     if (Header.length === 0) {
         Header = data.toString().split(",");
-        WriteToLog('Header: ' + data);
         return
     }
 
@@ -52,12 +51,12 @@ function UpdateUI() {
     var context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    context.fillStyle = "blue";
+    context.fillStyle = "#03a9f4";
     context.beginPath();
     context.arc(200, 200, 200, Math.PI + roll - pitch, 2 * Math.PI + roll + pitch);
     context.fill();
 
-    context.fillStyle = "green";
+    context.fillStyle = "#4caf50";
     context.beginPath();
     context.arc(200, 200, 200, 0 + roll + pitch, Math.PI + roll - pitch);
     context.fill();
@@ -71,8 +70,7 @@ client.on('data', DataHander);
 client.on('close', CloseHandler);
 
 function CloseHandler() {
-    WriteToLog('Connection closed');
-    WriteToLog('Retrying connection');
+    WriteToLog('Connection closed - Retrying connection');
     client = new Net.Socket();
     client.connect(Port, Host, ConnectHandler);
     client.on('error', ErrorHandler);
