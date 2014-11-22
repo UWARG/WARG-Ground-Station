@@ -8,12 +8,12 @@ var FlightData = {};
 var map;
 var mapMarker;
 
-$(document).ready(function(){
-    map = L.map('map').setView([43.5, -80.5], 17);
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18
-        }).addTo(map);
-    mapMarker = L.marker([43.5, -80.5]).addTo(map);
+$(document).ready(function () {
+    map = L.map('map').setView([43.53086, -80.5772], 17);
+    L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
+        maxZoom: 19
+    }).addTo(map);
+    mapMarker = L.marker([43.53086, -80.5772]).addTo(map);
 });
 
 function WriteToLog(text) {
@@ -75,7 +75,7 @@ function UpdateUI() {
     mapMarker = L.marker([lat, lon]).addTo(map);
     map.panTo([lat, lon])
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Canvas
     var canvas = document.getElementById("canvas");

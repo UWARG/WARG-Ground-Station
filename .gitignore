@@ -2,6 +2,7 @@
 credits.html
 *.dll
 *.dat
+sat_tiles/*
 node_modules/net/index.js
 node_modules/net/LICENSE
 node_modules/net/package.json
