@@ -1,9 +1,10 @@
-var net = require('net');
+var Net = require('net');
 
-var HOST = '127.0.0.1';
-var PORT = 1234;
+var Host = '127.0.0.1';
+var Port = 1234;
 
-header = "";
+var Header = [];
+var FlightData = {};
 
 function WriteToLog(text) {
     var logDiv = $('#log')
@@ -14,7 +15,7 @@ function WriteToLog(text) {
 
 function ConnectHandler(err) {
     if (!err) {
-        WriteToLog('CONNECTED TO: ' + HOST + ':' + PORT);
+        WriteToLog('Connected: ' + Host + ':' + Port);
     }
 }
 
@@ -23,32 +24,40 @@ function ErrorHandler(err) {
 }
 
 function DataHander(data) {
-    var plane = $('#plane');
-
-    if (header === "") {
-        header = data;
-        WriteToLog('HEADER: ' + data);
+    if (Header.length === 0) {
+        Header = data.toString().split(",");
+        WriteToLog('Header: ' + data);
         return
     }
 
     var dataSplit = data.toString().split(",");
 
-    plane.css({
-        WebkitTransform: 'rotateZ(' + dataSplit[3] + 'deg)'
-    });
-    plane.css({
-        WebkitTransform: 'rotateX(' + dataSplit[4] + 'deg)'
-    });
-    plane.css({
-        WebkitTransform: 'rotateY(' + dataSplit[5] + 'deg)'
-    });
+    for (var i = 0; i < dataSplit.length; i++) {
+        FlightData[Header[i]] = dataSplit[i];
+    }
 
-    WriteToLog('<div>' + 'DATA: ' + dataSplit[3] + dataSplit[4] + dataSplit[5] + '</div>');
+    WriteToLog('<div>' + 'Data: ' + FlightData["pitch"] + FlightData["roll"] + FlightData["yaw"] + '</div>');
+
+    UpdateUI()
 }
 
-var client = new net.Socket();
+function UpdateUI() {
+    var plane = $('#plane');
 
-client.connect(PORT, HOST, ConnectHandler);
+    plane.css({
+        WebkitTransform: 'rotateZ(' + FlightData["pitch"] + 'deg)'
+    });
+    plane.css({
+        WebkitTransform: 'rotateX(' + FlightData["roll"] + 'deg)'
+    });
+    plane.css({
+        WebkitTransform: 'rotateY(' + FlightData["yaw"] + 'deg)'
+    });
+}
+
+var client = new Net.Socket();
+
+client.connect(Port, Host, ConnectHandler);
 client.on('error', ErrorHandler);
 client.on('data', DataHander);
 client.on('close', CloseHandler);
@@ -56,8 +65,8 @@ client.on('close', CloseHandler);
 function CloseHandler() {
     WriteToLog('Connection closed');
     WriteToLog('Retrying connection');
-    client = new net.Socket();
-    client.connect(PORT, HOST, ConnectHandler);
+    client = new Net.Socket();
+    client.connect(Port, Host, ConnectHandler);
     client.on('error', ErrorHandler);
     client.on('data', DataHander);
     client.on('close', CloseHandler);
