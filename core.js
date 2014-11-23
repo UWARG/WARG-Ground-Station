@@ -75,9 +75,7 @@ function UpdateUI() {
     mapMarker = L.marker([lat, lon]).addTo(map);
     map.panTo([lat, lon])
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //Canvas
+    // ARTICIFIAL HORIZON //
     var canvas = document.getElementById("canvas");
     canvas.height = 400;
     canvas.width = 400;
@@ -95,6 +93,27 @@ function UpdateUI() {
     context.beginPath();
     context.arc(200, 200, 200, 0 + roll + pitch, Math.PI + roll - pitch);
     context.fill();
+
+    //Border
+    context.strokeStyle = "black";
+    context.lineWidth = 4;
+    context.beginPath();
+    context.arc(200, 200, 198, 0, 2 * Math.PI);
+    context.stroke();
+
+    //Center
+    context.fillStyle = "black";
+    context.beginPath();
+    context.arc(200, 200, 5, 0, 2 * Math.PI);
+    context.fill();
+    context.beginPath();
+    context.moveTo(240, 200);
+    context.lineTo(220, 200);
+    context.stroke();
+    context.arc(200, 200, 20, 0, Math.PI);
+    context.stroke();
+    context.lineTo(160, 200);
+    context.stroke();
 }
 
 var client = new Net.Socket();
