@@ -7,13 +7,23 @@ var Header = [];
 var FlightData = {};
 var map;
 var mapMarker;
+var planeIcon;
 
 $(document).ready(function () {
     map = L.map('map').setView([43.53086, -80.5772], 17);
+
+    planeIcon = L.icon({
+        iconUrl: 'plane.png',
+        iconSize: [30, 30], // size of the icon
+    });
+
     L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
         maxZoom: 19
     }).addTo(map);
-    mapMarker = L.marker([43.53086, -80.5772]).addTo(map);
+
+    mapMarker = L.marker([43.53086, -80.5772], {
+        icon: planeIcon
+    }).addTo(map);
 });
 
 function WriteToLog(text) {
@@ -52,6 +62,7 @@ function DataHander(data) {
         ' Latitude: ' + FlightData["lat"] +
         ' Longitude: ' + FlightData["lon"] +
         ' Altitude: ' + FlightData["altitude"] +
+        ' Heading: ' + FlightData["heading"] +
         '</div>');
 
     UpdateUI()
@@ -64,55 +75,62 @@ function UpdateUI() {
     lat = FlightData["lat"];
     lon = FlightData["lon"];
     altitude = FlightData["altitude"];
+    heading = FlightData["heading"];
 
+    // ALTIMETER //
     var altimeter = $('#altimeter')
     altimeter.empty()
     var newItem = $('<div class="logText">' + altitude + '</div>');
     altimeter.append(newItem);
 
-    //Map
+    // MAP //
     map.removeLayer(mapMarker);
-    mapMarker = L.marker([lat, lon]).addTo(map);
+    mapMarker = L.marker([lat, lon], {
+        icon: planeIcon
+    }).addTo(map);
     map.panTo([lat, lon])
+    var transform = $('.leaflet-marker-icon').css('transform')
+    $('.leaflet-marker-icon').css('transform', transform + 'rotate(' + heading + 'deg)')
 
     // ARTICIFIAL HORIZON //
-    var canvas = document.getElementById("canvas");
-    canvas.height = 400;
-    canvas.width = 400;
+    var canvas = document.getElementById("horizon");
+    canvas.height = 200;
+    canvas.width = 200;
     var context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     //Sky
     context.fillStyle = "#03a9f4";
     context.beginPath();
-    context.arc(200, 200, 200, Math.PI + roll - pitch, 2 * Math.PI + roll + pitch);
+    context.arc(100, 100, 100, Math.PI + roll - pitch, 2 * Math.PI + roll + pitch);
     context.fill();
 
     //Ground
-    context.fillStyle = "#4caf50";
+    context.fillStyle = "#795548";
     context.beginPath();
-    context.arc(200, 200, 200, 0 + roll + pitch, Math.PI + roll - pitch);
+    context.arc(100, 100, 100, 0 + roll + pitch, Math.PI + roll - pitch);
     context.fill();
 
     //Border
     context.strokeStyle = "black";
-    context.lineWidth = 4;
+    context.lineWidth = 2;
     context.beginPath();
-    context.arc(200, 200, 198, 0, 2 * Math.PI);
+    context.arc(100, 100, 99, 0, 2 * Math.PI);
     context.stroke();
 
     //Center
     context.fillStyle = "black";
     context.beginPath();
-    context.arc(200, 200, 5, 0, 2 * Math.PI);
+    context.lineWidth = 2;
+    context.arc(100, 100, 2, 0, 2 * Math.PI);
     context.fill();
     context.beginPath();
-    context.moveTo(240, 200);
-    context.lineTo(220, 200);
+    context.moveTo(120, 100);
+    context.lineTo(110, 100);
     context.stroke();
-    context.arc(200, 200, 20, 0, Math.PI);
+    context.arc(100, 100, 10, 0, Math.PI);
     context.stroke();
-    context.lineTo(160, 200);
+    context.lineTo(80, 100);
     context.stroke();
 }
 
