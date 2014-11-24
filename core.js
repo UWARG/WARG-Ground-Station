@@ -10,6 +10,9 @@ var mapMarker;
 var planeIcon;
 
 $(document).ready(function () {
+    DrawArtificalHorizon(0, 0);
+    SetAltimeter(0);
+
     map = L.map('map').setView([43.53086, -80.5772], 17);
 
     planeIcon = L.icon({
@@ -68,31 +71,8 @@ function DataHander(data) {
     UpdateUI()
 }
 
-function UpdateUI() {
-    roll = FlightData["roll"] * (Math.PI / 180);
-    pitch = FlightData["pitch"] * (Math.PI / 180);
-    yaw = FlightData["yaw"] * (Math.PI / 180);
-    lat = FlightData["lat"];
-    lon = FlightData["lon"];
-    altitude = FlightData["altitude"];
-    heading = FlightData["heading"];
-
-    // ALTIMETER //
-    var altimeter = $('#altimeter')
-    altimeter.empty()
-    var newItem = $('<div class="logText">' + altitude + '</div>');
-    altimeter.append(newItem);
-
-    // MAP //
-    map.removeLayer(mapMarker);
-    mapMarker = L.marker([lat, lon], {
-        icon: planeIcon
-    }).addTo(map);
-    map.panTo([lat, lon])
-    var transform = $('.leaflet-marker-icon').css('transform')
-    $('.leaflet-marker-icon').css('transform', transform + 'rotate(' + heading + 'deg)')
-
-    // ARTICIFIAL HORIZON //
+function DrawArtificalHorizon(roll, pitch) {
+    //Initialize canvas
     var canvas = document.getElementById("horizon");
     canvas.height = 200;
     canvas.width = 200;
@@ -132,6 +112,39 @@ function UpdateUI() {
     context.stroke();
     context.lineTo(80, 100);
     context.stroke();
+}
+
+function SetAltimeter(altitude) {
+    var altimeter = $('#altimeter')
+    altimeter.empty()
+    var newItem = $('<div class="logText">' + altitude + '</div>');
+    altimeter.append(newItem);
+}
+
+function UpdateMap(lat, lon, heading) {
+    map.removeLayer(mapMarker);
+    mapMarker = L.marker([lat, lon], {
+        icon: planeIcon
+    }).addTo(map);
+    var transform = $('.leaflet-marker-icon').css('transform')
+    $('.leaflet-marker-icon').css('transform', transform + 'rotate(' + heading + 'deg)')
+}
+
+function UpdateUI() {
+    roll = FlightData["roll"] * (Math.PI / 180);
+    pitch = FlightData["pitch"] * (Math.PI / 180);
+    yaw = FlightData["yaw"] * (Math.PI / 180);
+    lat = FlightData["lat"];
+    lon = FlightData["lon"];
+    altitude = FlightData["altitude"];
+    heading = FlightData["heading"];
+
+    DrawArtificalHorizon(roll, pitch);
+    SetAltimeter(altitude);
+
+    if (!isNaN(lat) || !isNaN(lon)) {
+        UpdateMap(lat, lon, heading);
+    }
 }
 
 var client = new Net.Socket();
