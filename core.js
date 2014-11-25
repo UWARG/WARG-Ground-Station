@@ -136,8 +136,13 @@ function UpdateMap(lat, lon, heading) {
 function MapClick(e) {
     popup
         .setLatLng(e.latlng)
-        .setContent(e.latlng.lat + " " + e.latlng.lng)
+        .setContent('<div class="addWaypoint">Add Waypoint</div>')
         .openOn(map);
+
+    $('.addWaypoint').on('click', function () {
+        map.closePopup();
+        marker = L.marker(e.latlng).addTo(map);
+    });
 }
 
 function UpdateUI() {

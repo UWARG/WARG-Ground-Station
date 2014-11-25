@@ -40,3 +40,15 @@ body {
     font-size: 1em;
     line-height: 1.5em;
 }
+.addWaypoint {
+    text-align: center;
+    color: #fff;
+    padding: 0.5em;
+    border-style: none;
+    background-color: #607d8b;
+    -webkit-transition: background-color .15s ease-in-out;
+}
+.addWaypoint:hover {
+    background-color: #3c677c;
+    cursor: pointer;
+}
