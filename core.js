@@ -6,8 +6,9 @@ var Port = 1234;
 var Header = [];
 var FlightData = {};
 var map;
-var mapMarker;
+var planeMarker;
 var planeIcon;
+var popup = L.popup();
 
 $(document).ready(function () {
     DrawArtificalHorizon(0, 0);
@@ -24,9 +25,11 @@ $(document).ready(function () {
         maxZoom: 19
     }).addTo(map);
 
-    mapMarker = L.marker([43.53086, -80.5772], {
+    planeMarker = L.marker([43.53086, -80.5772], {
         icon: planeIcon
     }).addTo(map);
+
+    map.on('click', MapClick);
 });
 
 function WriteToLog(text) {
@@ -122,12 +125,19 @@ function SetAltimeter(altitude) {
 }
 
 function UpdateMap(lat, lon, heading) {
-    map.removeLayer(mapMarker);
-    mapMarker = L.marker([lat, lon], {
+    map.removeLayer(planeMarker);
+    planeMarker = L.marker([lat, lon], {
         icon: planeIcon
     }).addTo(map);
     var transform = $('.leaflet-marker-icon').css('transform')
     $('.leaflet-marker-icon').css('transform', transform + 'rotate(' + heading + 'deg)')
+}
+
+function MapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent(e.latlng.lat + " " + e.latlng.lng)
+        .openOn(map);
 }
 
 function UpdateUI() {
@@ -156,6 +166,7 @@ client.on('close', CloseHandler);
 
 function CloseHandler() {
     WriteToLog('Connection closed - Retrying connection');
+    Header = [];
     client = new Net.Socket();
     client.connect(Port, Host, ConnectHandler);
     client.on('error', ErrorHandler);
