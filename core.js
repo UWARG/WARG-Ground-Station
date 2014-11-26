@@ -1,3 +1,17 @@
+L.RotatedMarker = L.Marker.extend({
+    options: {
+        angle: 0
+    },
+    _setPos: function (pos) {
+        L.Marker.prototype._setPos.call(this, pos);
+        this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
+    }
+});
+
+L.rotatedMarker = function (pos, options) {
+    return new L.RotatedMarker(pos, options);
+};
+
 var Net = require('net');
 
 var Host = '127.0.0.1';
@@ -25,7 +39,7 @@ $(document).ready(function () {
         maxZoom: 19
     }).addTo(map);
 
-    planeMarker = L.marker([43.53086, -80.5772], {
+    planeMarker = L.rotatedMarker([43.53086, -80.5772], {
         icon: planeIcon
     }).addTo(map);
 
@@ -126,11 +140,10 @@ function SetAltimeter(altitude) {
 
 function UpdateMap(lat, lon, heading) {
     map.removeLayer(planeMarker);
-    planeMarker = L.marker([lat, lon], {
-        icon: planeIcon
+    planeMarker = L.rotatedMarker([lat, lon], {
+        icon: planeIcon,
+        angle: heading
     }).addTo(map);
-    var transform = $('.leaflet-marker-icon').css('transform')
-    $('.leaflet-marker-icon').css('transform', transform + 'rotate(' + heading + 'deg)')
 }
 
 function MapClick(e) {
