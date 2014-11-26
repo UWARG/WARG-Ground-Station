@@ -1,3 +1,16 @@
+var Net = require('net');
+
+var Host = '127.0.0.1';
+var Port = 1234;
+
+var Header = [];
+var FlightData = {};
+var map;
+var planeMarker;
+var planeIcon;
+var popup = L.popup();
+var WaypointMarkers = [];
+
 L.RotatedMarker = L.Marker.extend({
     options: {
         angle: 0
@@ -11,18 +24,6 @@ L.RotatedMarker = L.Marker.extend({
 L.rotatedMarker = function (pos, options) {
     return new L.RotatedMarker(pos, options);
 };
-
-var Net = require('net');
-
-var Host = '127.0.0.1';
-var Port = 1234;
-
-var Header = [];
-var FlightData = {};
-var map;
-var planeMarker;
-var planeIcon;
-var popup = L.popup();
 
 $(document).ready(function () {
     DrawArtificalHorizon(0, 0);
@@ -42,6 +43,17 @@ $(document).ready(function () {
     planeMarker = L.rotatedMarker([43.53086, -80.5772], {
         icon: planeIcon
     }).addTo(map);
+
+    $('#lockOn').on('click', function () {
+        map.panTo(planeMarker.getLatLng());
+    });
+
+    $('#clearWaypoints').on('click', function () {
+        for (i = 0; i < WaypointMarkers.length; i++) {
+            map.removeLayer(WaypointMarkers[i]);
+        }
+        WaypointMarkers = [];
+    });
 
     map.on('click', MapClick);
 });
@@ -149,12 +161,12 @@ function UpdateMap(lat, lon, heading) {
 function MapClick(e) {
     popup
         .setLatLng(e.latlng)
-        .setContent('<div class="addWaypoint">Add Waypoint</div>')
+        .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
         .openOn(map);
 
-    $('.addWaypoint').on('click', function () {
+    $('#addWaypoint').on('click', function () {
         map.closePopup();
-        marker = L.marker(e.latlng).addTo(map);
+        WaypointMarkers.push(L.marker(e.latlng).addTo(map));
     });
 }
 
