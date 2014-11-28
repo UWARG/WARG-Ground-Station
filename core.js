@@ -10,6 +10,7 @@ var planeMarker;
 var planeIcon;
 var popup = L.popup();
 var WaypointMarkers = [];
+var WaypointPath;
 
 L.RotatedMarker = L.Marker.extend({
     options: {
@@ -20,10 +21,6 @@ L.RotatedMarker = L.Marker.extend({
         this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
     }
 });
-
-L.rotatedMarker = function (pos, options) {
-    return new L.RotatedMarker(pos, options);
-};
 
 $(document).ready(function () {
     DrawArtificalHorizon(0, 0);
@@ -40,12 +37,10 @@ $(document).ready(function () {
         maxZoom: 19
     }).addTo(map);
 
-    planeMarker = L.rotatedMarker([43.53086, -80.5772], {
-        icon: planeIcon
-    }).addTo(map);
-
     $('#lockOn').on('click', function () {
-        map.panTo(planeMarker.getLatLng());
+        if (planeMarker != null) {
+            map.panTo(planeMarker.getLatLng());
+        }
     });
 
     $('#clearWaypoints').on('click', function () {
@@ -53,6 +48,7 @@ $(document).ready(function () {
             map.removeLayer(WaypointMarkers[i]);
         }
         WaypointMarkers = [];
+        UpdateUI();
     });
 
     map.on('click', MapClick);
@@ -151,11 +147,29 @@ function SetAltimeter(altitude) {
 }
 
 function UpdateMap(lat, lon, heading) {
-    map.removeLayer(planeMarker);
-    planeMarker = L.rotatedMarker([lat, lon], {
+    if (planeMarker != null) {
+        map.removeLayer(planeMarker);
+    }
+    planeMarker = new L.RotatedMarker([lat, lon], {
         icon: planeIcon,
         angle: heading
     }).addTo(map);
+
+    if (WaypointPath != null) {
+        map.removeLayer(WaypointPath);
+    }
+    var line = [];
+    line.push(planeMarker.getLatLng());
+    for (var i = 0; i < WaypointMarkers.length; i++) {
+        line.push(WaypointMarkers[i].getLatLng());
+    }
+    WaypointPath = new L.Polyline(line, {
+        color: 'red',
+        weight: 3,
+        opacity: 0.5,
+        smoothFactor: 1
+    });
+    WaypointPath.addTo(map);
 }
 
 function MapClick(e) {
@@ -167,6 +181,7 @@ function MapClick(e) {
     $('#addWaypoint').on('click', function () {
         map.closePopup();
         WaypointMarkers.push(L.marker(e.latlng).addTo(map));
+        UpdateUI();
     });
 }
 
