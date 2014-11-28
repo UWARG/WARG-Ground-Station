@@ -51,6 +51,10 @@ body {
     -webkit-transition: background-color .15s ease-in-out;
 }
 .button:hover {
-    background-color: #3c677c;
+    background-color: #546e7a;
+    cursor: pointer;
+}
+.button:active {
+    background-color: #455a64;
     cursor: pointer;
 }
