@@ -46,6 +46,7 @@ $(document).ready(function () {
     $('#sendWaypoints').on('click', function () {
         for (i = 0; i < WaypointMarkers.length; i++) {
             client.write("new_Waypoint:" + WaypointMarkers[i].getLatLng().lat + "," + WaypointMarkers[i].getLatLng().lng + "\r\n");
+            WriteToLog("new_Waypoint:" + WaypointMarkers[i].getLatLng().lat + "," + WaypointMarkers[i].getLatLng().lng + "\r\n");
         }
     });
 
@@ -62,7 +63,9 @@ $(document).ready(function () {
 
 function WriteToLog(text) {
     var logDiv = $('#log')
-    logDiv.empty()
+    if (logDiv.children().length === 3) {
+        logDiv.children()[0].remove();
+    }
     var newItem = $('<div class="logText">' + text + '</div>');
     logDiv.append(newItem);
 }
@@ -88,16 +91,6 @@ function DataHander(data) {
     for (var i = 0; i < dataSplit.length; i++) {
         FlightData[Header[i]] = dataSplit[i];
     }
-
-    WriteToLog('<div>' +
-        'Pitch: ' + FlightData["pitch"] +
-        ' Roll: ' + FlightData["roll"] +
-        ' Yaw: ' + FlightData["yaw"] +
-        ' Latitude: ' + FlightData["lat"] +
-        ' Longitude: ' + FlightData["lon"] +
-        ' Altitude: ' + FlightData["altitude"] +
-        ' Heading: ' + FlightData["heading"] +
-        '</div>');
 
     UpdateUI()
 }
