@@ -43,6 +43,12 @@ $(document).ready(function () {
         }
     });
 
+    $('#sendWaypoints').on('click', function () {
+        for (i = 0; i < WaypointMarkers.length; i++) {
+            client.write("new_Waypoint:" + WaypointMarkers[i].getLatLng().lat + "," + WaypointMarkers[i].getLatLng().lng + "\r\n");
+        }
+    });
+
     $('#clearWaypoints').on('click', function () {
         for (i = 0; i < WaypointMarkers.length; i++) {
             map.removeLayer(WaypointMarkers[i]);
