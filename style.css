@@ -3,7 +3,13 @@ body {
     font-family: "Calibri";
 }
 #map {
-    height: 400px;
+    margin: 0 auto;
+    right: 0;
+    bottom: 0;
+    border-style: none;
+    width: 33%;
+    position: fixed;
+    height: 100%;
 }
 #horizon {
     margin: 0.5em auto;
@@ -25,10 +31,9 @@ body {
     margin: 0 auto;
     left: 0;
     bottom: 0;
-    right: 0;
     color: #000;
     border-style: none;
-    width: 100%;
+    width: 67%;
     position: fixed;
     height: 10%;
     background-color: #cfd8dc;
