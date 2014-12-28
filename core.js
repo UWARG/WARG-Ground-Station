@@ -120,11 +120,12 @@ function DrawYaw(yaw) {
     context.stroke();
 
     //Indicator
-    context.fillStyle = "black";
-    context.translate(10, 98);
-    context.translate(90, 5);
+    image = new Image();
+    image.src = "yaw.png";
+    context.translate(36, 36);
+    context.translate(64, 64);
     context.rotate(yaw);
-    context.fillRect(-90, -5, 180, 4);
+    context.drawImage(image, -64, -64);
 }
 
 function DrawRoll(roll) {
@@ -155,11 +156,12 @@ function DrawRoll(roll) {
     context.stroke();
 
     //Indicator
-    context.fillStyle = "black";
-    context.translate(10, 98);
-    context.translate(90, 5);
+    image = new Image();
+    image.src = "roll.png";
+    context.translate(36, 36);
+    context.translate(64, 64);
     context.rotate(roll);
-    context.fillRect(-90, -5, 180, 4);
+    context.drawImage(image, -64, -64);
 }
 
 function DrawPitch(pitch) {
@@ -190,11 +192,12 @@ function DrawPitch(pitch) {
     context.stroke();
 
     //Indicator
-    context.fillStyle = "black";
-    context.translate(10, 98);
-    context.translate(90, 5);
+    image = new Image();
+    image.src = "pitch.png";
+    context.translate(36, 36);
+    context.translate(64, 64);
     context.rotate(pitch);
-    context.fillRect(-90, -5, 180, 4);
+    context.drawImage(image, -64, -64);
 }
 
 function DrawArtificalHorizon(roll, pitch) {
