@@ -5,9 +5,9 @@
     "main": "index.html",
     "window": {
         "toolbar": false,
-        "width": 1200,
+        "width": 1300,
         "height": 800,
-        "min_width": 1200,
+        "min_width": 1300,
         "min_height": 800
     },
     "scripts": {

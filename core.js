@@ -24,6 +24,9 @@ L.RotatedMarker = L.Marker.extend({
 
 $(document).ready(function () {
     DrawArtificalHorizon(0, 0);
+    DrawPitch(0);
+    DrawRoll(0);
+    DrawYaw(0);
     SetAltimeter(0);
 
     map = L.map('map').setView([43.53086, -80.5772], 17);
@@ -93,6 +96,105 @@ function DataHander(data) {
     }
 
     UpdateUI()
+}
+
+function DrawYaw(yaw) {
+    //Initialize canvas
+    var canvas = document.getElementById("yaw");
+    canvas.height = 200;
+    canvas.width = 200;
+    var context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    //Ground
+    context.fillStyle = "#795548";
+    context.beginPath();
+    context.arc(100, 100, 100, 0, Math.PI * 2);
+    context.fill();
+
+    //Border
+    context.strokeStyle = "black";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.arc(100, 100, 99, 0, 2 * Math.PI);
+    context.stroke();
+
+    //Indicator
+    context.fillStyle = "black";
+    context.translate(10, 98);
+    context.translate(90, 5);
+    context.rotate(yaw);
+    context.fillRect(-90, -5, 180, 4);
+}
+
+function DrawRoll(roll) {
+    //Initialize canvas
+    var canvas = document.getElementById("roll");
+    canvas.height = 200;
+    canvas.width = 200;
+    var context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    //Sky
+    context.fillStyle = "#03a9f4";
+    context.beginPath();
+    context.arc(100, 100, 100, Math.PI, 2 * Math.PI);
+    context.fill();
+
+    //Ground
+    context.fillStyle = "#795548";
+    context.beginPath();
+    context.arc(100, 100, 100, 0, Math.PI);
+    context.fill();
+
+    //Border
+    context.strokeStyle = "black";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.arc(100, 100, 99, 0, 2 * Math.PI);
+    context.stroke();
+
+    //Indicator
+    context.fillStyle = "black";
+    context.translate(10, 98);
+    context.translate(90, 5);
+    context.rotate(roll);
+    context.fillRect(-90, -5, 180, 4);
+}
+
+function DrawPitch(pitch) {
+    //Initialize canvas
+    var canvas = document.getElementById("pitch");
+    canvas.height = 200;
+    canvas.width = 200;
+    var context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    //Sky
+    context.fillStyle = "#03a9f4";
+    context.beginPath();
+    context.arc(100, 100, 100, Math.PI, 2 * Math.PI);
+    context.fill();
+
+    //Ground
+    context.fillStyle = "#795548";
+    context.beginPath();
+    context.arc(100, 100, 100, 0, Math.PI);
+    context.fill();
+
+    //Border
+    context.strokeStyle = "black";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.arc(100, 100, 99, 0, 2 * Math.PI);
+    context.stroke();
+
+    //Indicator
+    context.fillStyle = "black";
+    context.translate(10, 98);
+    context.translate(90, 5);
+    context.rotate(pitch);
+    context.fillRect(-90, -5, 180, 4);
 }
 
 function DrawArtificalHorizon(roll, pitch) {
@@ -194,6 +296,9 @@ function UpdateUI() {
     heading = FlightData["heading"];
 
     DrawArtificalHorizon(roll, pitch);
+    DrawPitch(pitch);
+    DrawRoll(roll);
+    DrawYaw(yaw);
     SetAltimeter(altitude);
 
     if (!isNaN(lat) || !isNaN(lon)) {
