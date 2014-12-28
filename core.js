@@ -107,7 +107,7 @@ function DrawYaw(yaw) {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     //Ground
-    context.fillStyle = "#795548";
+    context.fillStyle = "#8bc34a";
     context.beginPath();
     context.arc(100, 100, 100, 0, Math.PI * 2);
     context.fill();
@@ -143,7 +143,7 @@ function DrawRoll(roll) {
     context.fill();
 
     //Ground
-    context.fillStyle = "#795548";
+    context.fillStyle = "#8bc34a";
     context.beginPath();
     context.arc(100, 100, 100, 0, Math.PI);
     context.fill();
@@ -179,7 +179,7 @@ function DrawPitch(pitch) {
     context.fill();
 
     //Ground
-    context.fillStyle = "#795548";
+    context.fillStyle = "#8bc34a";
     context.beginPath();
     context.arc(100, 100, 100, 0, Math.PI);
     context.fill();
