@@ -23,11 +23,13 @@ L.RotatedMarker = L.Marker.extend({
 });
 
 $(document).ready(function () {
+    //Initialize instruments
     DrawArtificalHorizon(0, 0);
     DrawPitch(0);
     DrawRoll(0);
     DrawYaw(0);
     SetAltimeter(0);
+    SetSpeed(0);
 
     map = L.map('map').setView([43.53086, -80.5772], 17);
 
@@ -40,6 +42,12 @@ $(document).ready(function () {
         maxZoom: 19
     }).addTo(map);
 
+    $('#goHome').on('click', function () {
+            command = "return_home\r\n";
+            client.write(command);
+            WriteToLog(command);
+    });
+
     $('#lockOn').on('click', function () {
         if (planeMarker != null) {
             map.panTo(planeMarker.getLatLng());
@@ -48,8 +56,9 @@ $(document).ready(function () {
 
     $('#sendWaypoints').on('click', function () {
         for (i = 0; i < WaypointMarkers.length; i++) {
-            client.write("new_Waypoint:" + WaypointMarkers[i].getLatLng().lat + "," + WaypointMarkers[i].getLatLng().lng + "\r\n");
-            WriteToLog("new_Waypoint:" + WaypointMarkers[i].getLatLng().lat + "," + WaypointMarkers[i].getLatLng().lng + "\r\n");
+            command = "new_Waypoint:" + WaypointMarkers[i].getLatLng().lat + "," + WaypointMarkers[i].getLatLng().lng + "\r\n";
+            client.write(command);
+            WriteToLog(command);
         }
     });
 
@@ -243,6 +252,13 @@ function DrawArtificalHorizon(roll, pitch) {
     context.stroke();
 }
 
+function SetSpeed(speed) {
+    var altimeter = $('#speed')
+    altimeter.empty()
+    var newItem = $('<div class="logText">' + speed + '</div>');
+    altimeter.append(newItem);
+}
+
 function SetAltimeter(altitude) {
     var altimeter = $('#altimeter')
     altimeter.empty()
@@ -297,12 +313,14 @@ function UpdateUI() {
     lon = FlightData["lon"];
     altitude = FlightData["altitude"];
     heading = FlightData["heading"];
+    speed = FlightData["ground_speed"];
 
     DrawArtificalHorizon(roll, pitch);
     DrawPitch(pitch);
     DrawRoll(roll);
     DrawYaw(yaw);
     SetAltimeter(altitude);
+    SetSpeed(speed);
 
     if (!isNaN(lat) || !isNaN(lon)) {
         UpdateMap(lat, lon, heading);
