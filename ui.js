@@ -1,10 +1,8 @@
-var Net = require('net');
+// FlightData object contains values read from data-relay
+// Accessed with FlightData["Value"]
+//
+// UpdateUI() is called whenever data is recieved
 
-var Host = '127.0.0.1';
-var Port = 1234;
-
-var Header = [];
-var FlightData = {};
 var map;
 var planeMarker;
 var planeIcon;
@@ -80,31 +78,6 @@ function WriteToLog(text) {
     }
     var newItem = $('<div class="logText">' + text + '</div>');
     logDiv.append(newItem);
-}
-
-function ConnectHandler(err) {
-    if (!err) {
-        console.log('Connected: ' + Host + ':' + Port);
-    }
-}
-
-function ErrorHandler(err) {
-    console.log(err.code)
-}
-
-function DataHander(data) {
-    if (Header.length === 0) {
-        Header = data.toString().split(",");
-        return
-    }
-
-    var dataSplit = data.toString().split(",");
-
-    for (var i = 0; i < dataSplit.length; i++) {
-        FlightData[Header[i]] = dataSplit[i];
-    }
-
-    UpdateUI()
 }
 
 function DrawYaw(yaw) {
@@ -325,21 +298,4 @@ function UpdateUI() {
     if (!isNaN(lat) || !isNaN(lon)) {
         UpdateMap(lat, lon, heading);
     }
-}
-
-var client = new Net.Socket();
-
-client.connect(Port, Host, ConnectHandler);
-client.on('error', ErrorHandler);
-client.on('data', DataHander);
-client.on('close', CloseHandler);
-
-function CloseHandler() {
-    WriteToLog('Connection closed - Retrying connection');
-    Header = [];
-    client = new Net.Socket();
-    client.connect(Port, Host, ConnectHandler);
-    client.on('error', ErrorHandler);
-    client.on('data', DataHander);
-    client.on('close', CloseHandler);
 }
