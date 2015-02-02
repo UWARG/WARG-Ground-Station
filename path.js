@@ -21,14 +21,6 @@ L.RotatedMarker = L.Marker.extend({
 });
 
 $(document).ready(function () {
-    //Initialize instruments
-    DrawArtificalHorizon(0, 0);
-    DrawPitch(0);
-    DrawRoll(0);
-    DrawYaw(0);
-    SetAltimeter(0);
-    SetSpeed(0);
-
     map = L.map('map').setView([43.53086, -80.5772], 17);
 
     planeIcon = L.icon({
