@@ -10,7 +10,7 @@ var Log = (function ($) {
 	}
 
 	return {
-		write: write,
+		write: write
 	};
 
 })($);

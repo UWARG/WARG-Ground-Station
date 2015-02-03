@@ -8,7 +8,7 @@ var Network = (function(Data, Log) {
 
     var client;
     var emitter = new events.EventEmitter();
-    
+
     connect();
     function connect() {
         client = new net.Socket();
@@ -16,6 +16,10 @@ var Network = (function(Data, Log) {
         client.on('error', errorHandler);
         client.on('data', dataHandler);
         client.on('close', closeHandler);
+    }
+
+    function write(data) {
+        client.write(data);
     }
 
     function connectHandler(err) {
@@ -59,6 +63,8 @@ var Network = (function(Data, Log) {
     }
 
     // Export only the event emitter
-    return emitter;
+    return {emitter: emitter,
+            write: write
+           };
 
 })(Data, Log);

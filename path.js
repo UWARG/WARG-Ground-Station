@@ -5,9 +5,9 @@ var Path = (function ($, Data, Log, Network) {
 
     var planeMarker;
     var planeIcon;
-    
+
     var popup = L.popup();
-    
+
     var waypointMarkers = [];
     var waypointPath;
 
@@ -45,7 +45,7 @@ var Path = (function ($, Data, Log, Network) {
         $('#sendWaypoints').on('click', function () {
             for (i = 0; i < waypointMarkers.length; i++) {
                 command = "new_Waypoint:" + waypointMarkers[i].getLatLng().lat + "," + waypointMarkers[i].getLatLng().lng + "\r\n";
-                client.write(command);
+                Network.write(command);
                 Log.write(command);
             }
         });

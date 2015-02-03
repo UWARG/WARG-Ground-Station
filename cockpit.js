@@ -4,7 +4,7 @@
 // updateCockpit() is called whenever data is recieved
 
 var Cockpit = (function ($, Data, Log, Network) {
-    
+
     $(document).ready(function () {
         //Initialize instruments
         drawArtificalHorizon(0, 0);
@@ -17,7 +17,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         //Buttons
         $('#goHome').on('click', function () {
             command = "return_home\r\n";
-            client.write(command);
+            Network.write(command);
             Log.write(command);
         });
     });
