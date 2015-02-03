@@ -1,98 +1,121 @@
-// FlightData object contains values read from data-relay
-// Accessed with FlightData["Value"]
-//
-// UpdateMap() is called whenever data is recieved
 
-var map;
-var planeMarker;
-var planeIcon;
-var popup = L.popup();
-var WaypointMarkers = [];
-var WaypointPath;
+var Path = (function ($, Data, Log, Network) {
 
-L.RotatedMarker = L.Marker.extend({
-    options: {
-        angle: 0
-    },
-    _setPos: function (pos) {
-        L.Marker.prototype._setPos.call(this, pos);
-        this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
-    }
-});
+    var map;
 
-$(document).ready(function () {
-    map = L.map('map').setView([43.53086, -80.5772], 17);
+    var planeMarker;
+    var planeIcon;
+    
+    var popup = L.popup();
+    
+    var waypointMarkers = [];
+    var waypointPath;
 
-    planeIcon = L.icon({
-        iconUrl: 'plane.png',
-        iconSize: [30, 30], // size of the icon
-    });
+    var historyPath;
 
-    L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
-        maxZoom: 19
-    }).addTo(map);
-
-    //Buttons
-    $('#lockOn').on('click', function () {
-        if (planeMarker != null) {
-            map.panTo(planeMarker.getLatLng());
+    L.RotatedMarker = L.Marker.extend({
+        options: {
+            angle: 0
+        },
+        _setPos: function (pos) {
+            L.Marker.prototype._setPos.call(this, pos);
+            this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
         }
     });
 
-    $('#sendWaypoints').on('click', function () {
-        for (i = 0; i < WaypointMarkers.length; i++) {
-            command = "new_Waypoint:" + WaypointMarkers[i].getLatLng().lat + "," + WaypointMarkers[i].getLatLng().lng + "\r\n";
-            client.write(command);
-            WriteToLog(command);
+    $(document).ready(function () {
+        map = L.map('map').setView([43.53086, -80.5772], 17);
+
+        planeIcon = L.icon({
+            iconUrl: 'plane.png',
+            iconSize: [30, 30], // size of the icon
+        });
+
+        L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        //Buttons
+        $('#lockOn').on('click', function () {
+            if (planeMarker != null) {
+                map.panTo(planeMarker.getLatLng());
+            }
+        });
+
+        $('#sendWaypoints').on('click', function () {
+            for (i = 0; i < waypointMarkers.length; i++) {
+                command = "new_Waypoint:" + waypointMarkers[i].getLatLng().lat + "," + waypointMarkers[i].getLatLng().lng + "\r\n";
+                client.write(command);
+                Log.write(command);
+            }
+        });
+
+        $('#clearWaypoints').on('click', function () {
+            for (i = 0; i < waypointMarkers.length; i++) {
+                map.removeLayer(waypointMarkers[i]);
+            }
+            waypointMarkers = [];
+            updateMap();
+        });
+
+        map.on('click', function (e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
+                .openOn(map);
+
+            $('#addWaypoint').on('click', function () {
+                map.closePopup();
+                waypointMarkers.push(L.marker(e.latlng).addTo(map));
+                updateMap();
+            });
+        });
+    });
+
+    Network.on('data', updateMap);
+
+    function updateMap() {
+
+        lat = Data.state.lat;
+        lon = Data.state.lon;
+        heading = Data.state.heading;
+
+        if (Math.abs(lat) < 1 || Math.abs(lon) < 1 || Math.abs(lat) > 360 || Math.abs(lon) > 360) return;
+
+        if (planeMarker) map.removeLayer(planeMarker);
+        planeMarker = new L.RotatedMarker([lat, lon], {
+            icon: planeIcon,
+            angle: heading,
+            title: lat + "°, " + lon + "°, " + heading + "°",
+        }).addTo(map);
+
+        if (waypointPath) map.removeLayer(waypointPath);
+        var line = [];
+        line.push(planeMarker.getLatLng());
+        for (var i = 0; i < waypointMarkers.length; i++) {
+            line.push(waypointMarkers[i].getLatLng());
         }
-    });
+        waypointPath = new L.Polyline(line, {
+            color: 'red',
+            weight: 3,
+            opacity: 0.5,
+            smoothFactor: 1
+        });
+        waypointPath.addTo(map);
 
-    $('#clearWaypoints').on('click', function () {
-        for (i = 0; i < WaypointMarkers.length; i++) {
-            map.removeLayer(WaypointMarkers[i]);
+        if (!historyPath) {
+            historyPath = new L.Polyline([], {
+                smoothFactor: 1.0,
+                color: '#000',
+                fillColor: '#fff',
+                weight: 2,
+                clickable: false,
+            });
+            historyPath.addTo(map);
         }
-        WaypointMarkers = [];
-        UpdateUI();
-    });
-
-    map.on('click', MapClick);
-});
-
-function MapClick(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
-        .openOn(map);
-
-    $('#addWaypoint').on('click', function () {
-        map.closePopup();
-        WaypointMarkers.push(L.marker(e.latlng).addTo(map));
-        UpdateUI();
-    });
-}
-
-function UpdateMap(lat, lon, heading) {
-    if (planeMarker != null) {
-        map.removeLayer(planeMarker);
+        historyPath.addLatLng(L.latLng(lat, lon));
     }
-    planeMarker = new L.RotatedMarker([lat, lon], {
-        icon: planeIcon,
-        angle: heading
-    }).addTo(map);
 
-    if (WaypointPath != null) {
-        map.removeLayer(WaypointPath);
-    }
-    var line = [];
-    line.push(planeMarker.getLatLng());
-    for (var i = 0; i < WaypointMarkers.length; i++) {
-        line.push(WaypointMarkers[i].getLatLng());
-    }
-    WaypointPath = new L.Polyline(line, {
-        color: 'red',
-        weight: 3,
-        opacity: 0.5,
-        smoothFactor: 1
-    });
-    WaypointPath.addTo(map);
-}
+    return {};
+
+})($, Data, Log, Network);

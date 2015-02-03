@@ -11,25 +11,31 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <script src="jquery-2.1.1.min.js"></script>
+    <script src="data.js"></script>
+    <script src="log.js"></script>
     <script src="network.js"></script>
-    <script src="ui.js"></script>
+    <script src="cockpit.js"></script>
     <script src="path.js"></script>
 </head>
 
 <body>
-    <canvas id="horizon">
-    </canvas>
-    <canvas id="pitch">
-    </canvas>
-    <canvas id="roll">
-    </canvas>
-    <canvas id="yaw">
-    </canvas>
-    <div id="altimeter">
+    <div id="cockpit">
+        <canvas id="horizon" class="instrument">
+        </canvas>
+        <canvas id="pitch" class="instrument">
+        </canvas>
+        <canvas id="roll" class="instrument">
+        </canvas>
+        <canvas id="yaw" class="instrument">
+        </canvas>
+        <div id="altimeter">
+        </div>
+        <div id="speed">
+        </div>
     </div>
-    <div id="speed">
+    <div id="path">
+        <div id="map"></div>
     </div>
-    <div id="map"></div>
     <div id="buttonContainer">
         <div class="button" id="lockOn">
             Lock on
