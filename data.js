@@ -2,8 +2,6 @@ var Data = {
 	headers: [],	// Title of each column of data received
 	state: {},		// Current flight state
 	history: [],	// All past flight states
-	localWaypoints: [],	// List of waypoints we're working on
-	remoteWaypoints: [],// List of waypoints we've uploaded
 };
 
 /*
