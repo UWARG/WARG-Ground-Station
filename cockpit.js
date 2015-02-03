@@ -16,9 +16,9 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         //Buttons
         $('#goHome').on('click', function () {
-                command = "return_home\r\n";
-                client.write(command);
-                Log.write(command);
+            command = "return_home\r\n";
+            client.write(command);
+            Log.write(command);
         });
     });
 
@@ -203,13 +203,9 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawYaw(yaw);
         setAltimeter(altitude);
         setSpeed(speed);
-
-        //In path.js
-        // if (!isNaN(lat) || !isNaN(lon)) {
-        //     UpdateMap(lat, lon, heading);
-        // }
     }
 
+    // Don't export anything
     return {};
 
 })($, Data, Log, Network);

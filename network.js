@@ -58,6 +58,7 @@ var Network = (function(Data, Log) {
         setTimeout(connect, Math.random()*500 + 500);
     }
 
+    // Export only the event emitter
     return emitter;
 
 })(Data, Log);

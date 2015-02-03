@@ -116,6 +116,7 @@ var Path = (function ($, Data, Log, Network) {
         historyPath.addLatLng(L.latLng(lat, lon));
     }
 
+    // Don't export anything
     return {};
 
 })($, Data, Log, Network);
