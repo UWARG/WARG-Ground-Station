@@ -80,6 +80,8 @@ var Path = (function ($, Data, Log, Network) {
         lon = Data.state.lon;
         heading = Data.state.heading;
 
+        // Assuming we'll never fly off the coast of West Africa:
+        // Return if GPS coordinates are close to (0; 0) or impossibly big.
         if (Math.abs(lat) < 1 || Math.abs(lon) < 1 || Math.abs(lat) > 360 || Math.abs(lon) > 360) return;
 
         if (planeMarker) map.removeLayer(planeMarker);
