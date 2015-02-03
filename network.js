@@ -53,6 +53,7 @@ var Network = (function(Data, Log) {
         Data.history.push(cloneState);
 
         emitter.emit('data', Data.state);
+        emitter.write = write;
         // UpdateUI();
     }
 
@@ -63,8 +64,6 @@ var Network = (function(Data, Log) {
     }
 
     // Export only the event emitter
-    return {emitter: emitter,
-            write: write
-           };
+    return emitter;
 
 })(Data, Log);
