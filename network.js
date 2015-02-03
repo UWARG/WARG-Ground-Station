@@ -1,49 +1,64 @@
-var Net = require('net');
+var Network = (function(Data, Log) {
 
-var Host = '127.0.0.1';
-var Port = 1234;
+    var net = require('net');
+    var events = require('events');
 
-var Header = [];
-var FlightData = {};
+    var host = '127.0.0.1';
+    var port = 1234;
 
-function ConnectHandler(err) {
-    if (!err) {
-        WriteToLog('Connected: ' + Host + ':' + Port);
-    }
-}
-
-function ErrorHandler(err) {
-    console.log(err.code)
-}
-
-function DataHander(data) {
-    if (Header.length === 0) {
-        Header = data.toString().split(",");
-        return
+    var client;
+    var emitter = new events.EventEmitter();
+    
+    connect();
+    function connect() {
+        client = new net.Socket();
+        client.connect(port, host, connectHandler);
+        client.on('error', errorHandler);
+        client.on('data', dataHandler);
+        client.on('close', closeHandler);
     }
 
-    var dataSplit = data.toString().split(",");
-
-    for (var i = 0; i < dataSplit.length; i++) {
-        FlightData[Header[i]] = dataSplit[i];
+    function connectHandler(err) {
+        if (!err) {
+            Log.write('Connected: ' + host + ':' + port);
+        }
     }
 
-    UpdateUI()
-}
+    function errorHandler(err) {
+        console.log(err.code)
+    }
 
-var client = new Net.Socket();
+    function dataHandler(data) {
+        data = data.toString();
 
-client.connect(Port, Host, ConnectHandler);
-client.on('error', ErrorHandler);
-client.on('data', DataHander);
-client.on('close', CloseHandler);
+        // First transmission is header columns
+        if (Data.headers.length === 0) {
+            Data.headers = data.split(",").map(function (str) {
+                return str.trim();
+            });
+            return;
+        }
 
-function CloseHandler() {
-    WriteToLog('Connection closed - Retrying connection');
-    Header = [];
-    client = new Net.Socket();
-    client.connect(Port, Host, ConnectHandler);
-    client.on('error', ErrorHandler);
-    client.on('data', DataHander);
-    client.on('close', CloseHandler);
-}
+        var dataSplit = data.split(",");
+        var cloneState = {};
+        for (var i = 0; i < dataSplit.length; i++) {
+            Data.state[Data.headers[i]] = parseFloat(dataSplit[i].trim());
+            cloneState[Data.headers[i]] = parseFloat(dataSplit[i].trim());
+        }
+
+        Data.history.push(cloneState);
+
+        emitter.emit('data', Data.state);
+        // UpdateUI();
+    }
+
+    function closeHandler() {
+        Log.write('Connection closed - Retrying connection');
+        Data.headers = [];
+        setTimeout(connect, Math.random()*500 + 500);
+    }
+
+    // Export only the event emitter
+    return emitter;
+
+})(Data, Log);

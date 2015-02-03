@@ -11,19 +11,7 @@ body {
     position: fixed;
     height: 100%;
 }
-#pitch {
-    margin: 0.5em auto;
-    border-style: none;
-}
-#roll {
-    margin: 0.5em auto;
-    border-style: none;
-}
-#yaw {
-    margin: 0.5em auto;
-    border-style: none;
-}
-#horizon {
+.instrument {
     margin: 0.5em auto;
     border-style: none;
 }
