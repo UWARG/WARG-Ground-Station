@@ -3,35 +3,29 @@
 
 <head>
     <title>WARG-Ground-Station-V2</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
 
-    <link rel="stylesheet" href="leaflet.css" />
-    <script src="leaflet.js"></script>
+    <link rel="stylesheet" href="leaflet.css">
+    <link rel="stylesheet" href="style.css">
 
-    <link rel="stylesheet" type="text/css" href="style.css">
-
-    <script src="jquery-2.1.1.min.js"></script>
     <script src="data.js"></script>
+    <script src="jquery-2.1.1.min.js"></script>
     <script src="log.js"></script>
     <script src="network.js"></script>
     <script src="cockpit.js"></script>
+    <script src="leaflet.js"></script>
+    <script src="L.RotatedMarker.js"></script>
     <script src="path.js"></script>
 </head>
 
 <body>
     <div id="cockpit">
-        <canvas id="horizon" class="instrument">
-        </canvas>
-        <canvas id="pitch" class="instrument">
-        </canvas>
-        <canvas id="roll" class="instrument">
-        </canvas>
-        <canvas id="yaw" class="instrument">
-        </canvas>
-        <div id="altimeter">
-        </div>
-        <div id="speed">
-        </div>
+        <canvas id="horizon" class="instrument"></canvas>
+        <canvas id="pitch" class="instrument"></canvas>
+        <canvas id="roll" class="instrument"></canvas>
+        <canvas id="yaw" class="instrument"></canvas>
+        <div id="altimeter"></div>
+        <div id="speed"></div>
     </div>
     <div id="path">
         <div id="map"></div>
@@ -50,8 +44,7 @@
             Go Home
         </div>
     </div>
-    <div id="log">
-    </div>
+    <div id="log"></div>
 </body>
 
 </html>
