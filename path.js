@@ -1,61 +1,37 @@
 
 var Path = (function ($, Data, Log, Network) {
+    var exports = {};
 
+    // Data objects here
+    var waypoints = [];
+
+    // Interactive map objects here
     var map;
-
-    var planeMarker;
-    var planeIcon;
-
     var popup = L.popup();
 
-    var waypointMarkers = [];
-    var waypointPath;
-
-    var historyPath;
-
-    L.RotatedMarker = L.Marker.extend({
-        options: {
-            angle: 0
-        },
-        _setPos: function (pos) {
-            L.Marker.prototype._setPos.call(this, pos);
-            this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
-        }
-    });
-
+    // Handle button clicks
     $(document).ready(function () {
-        map = L.map('map').setView([43.53086, -80.5772], 17);
 
-        planeIcon = L.icon({
-            iconUrl: 'plane.png',
-            iconSize: [30, 30], // size of the icon
-        });
-
-        L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(map);
-
-        //Buttons
         $('#lockOn').on('click', function () {
-            if (planeMarker != null) {
+            // TODO Decouple this from plane marker & figure out somewhere to store last "sensible GPS coordinates"
+            // (to prevent bug with erroneous GPS coordinates crashing Leaflet)
+            if (planeMarker) {
                 map.panTo(planeMarker.getLatLng());
             }
         });
 
         $('#sendWaypoints').on('click', function () {
-            for (i = 0; i < waypointMarkers.length; i++) {
-                command = "new_Waypoint:" + waypointMarkers[i].getLatLng().lat + "," + waypointMarkers[i].getLatLng().lng + "\r\n";
+            for (i = 0; i < waypoints.length; i++) {
+                var latLng = waypoints[i];
+                command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "\r\n";
                 Network.write(command);
                 Log.write(command);
             }
         });
 
         $('#clearWaypoints').on('click', function () {
-            for (i = 0; i < waypointMarkers.length; i++) {
-                map.removeLayer(waypointMarkers[i]);
-            }
-            waypointMarkers = [];
-            updateMap();
+            waypoints = [];
+            redrawMap();
         });
 
         map.on('click', function (e) {
@@ -66,59 +42,95 @@ var Path = (function ($, Data, Log, Network) {
 
             $('#addWaypoint').on('click', function () {
                 map.closePopup();
-                waypointMarkers.push(L.marker(e.latlng).addTo(map));
-                updateMap();
+                waypoints.push(e.latlng);
+                redrawMap();
             });
         });
     });
 
-    Network.on('data', updateMap);
+    var planeMarker;
+    var waypointMarkerGroup;
+    var waypointPolyline;
+    var historyPolyline;
+    
+    Network.on('data', redrawMap);
 
-    function updateMap() {
+    function redrawMap() {
 
         lat = Data.state.lat;
         lon = Data.state.lon;
         heading = Data.state.heading;
 
-        // Assuming we'll never fly off the coast of West Africa:
-        // Return if GPS coordinates are close to (0; 0) or impossibly big.
-        if (Math.abs(lat) < 1 || Math.abs(lon) < 1 || Math.abs(lat) > 360 || Math.abs(lon) > 360) return;
-
-        if (planeMarker) map.removeLayer(planeMarker);
-        planeMarker = new L.RotatedMarker([lat, lon], {
-            icon: planeIcon,
-            angle: heading,
-            title: lat + "°, " + lon + "°, " + heading + "°",
-        }).addTo(map);
-
-        if (waypointPath) map.removeLayer(waypointPath);
-        var line = [];
-        line.push(planeMarker.getLatLng());
-        for (var i = 0; i < waypointMarkers.length; i++) {
-            line.push(waypointMarkers[i].getLatLng());
+        // Check for GPS fix, assuming we'll never fly off the coast of West Africa
+        // (No GPS fix if coordinates close to (0; 0) or impossibly big)
+        if (Math.abs(lat) < 1 || Math.abs(lon) < 1 || Math.abs(lat) > 360 || Math.abs(lon) > 360) {
+            return;
         }
-        waypointPath = new L.Polyline(line, {
-            color: 'red',
-            weight: 3,
-            opacity: 0.5,
-            smoothFactor: 1
-        });
-        waypointPath.addTo(map);
 
-        if (!historyPath) {
-            historyPath = new L.Polyline([], {
-                smoothFactor: 1.0,
-                color: '#000',
-                fillColor: '#fff',
-                weight: 2,
+
+        // Init map if necessary
+        if (!map) {
+            map = L.map('map').setView([43.53086, -80.5772], 17);
+            L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+        }
+
+        // Init planeMarker if necessary
+        if (!planeMarker) {
+            planeMarker = new L.RotatedMarker([lat, lon], {
+                icon: L.icon({
+                    iconUrl: 'plane.png',
+                    iconSize: [30, 30], // size of the icon
+                }),
+            }).addTo(map);
+        }
+
+        // Init waypoint marker layer-group if necessary
+        if (!waypointMarkerGroup) {
+            waypointMarkerGroup = L.layerGroup().addTo(map);
+        }
+
+        // Init waypointPolyline if necessary
+        if (!waypointPolyline) {
+            waypointPolyline = new L.Polyline(waypoints, {
+                color: 'red',
+                weight: 3,
+                opacity: 0.5,
                 clickable: false,
-            });
-            historyPath.addTo(map);
+            }).addTo(map);
         }
-        historyPath.addLatLng(L.latLng(lat, lon));
+
+        // Init historyPolyline if necessary
+        if (!historyPolyline) {
+            historyPolyline = new L.Polyline([], {
+                color: '#0000ff',
+                weight: 5,
+                clickable: false,
+            }).addTo(map);
+        }
+
+
+        // Update plane marker
+        planeMarker.setLatLng(new L.LatLng(lat, lon));
+        planeMarker.options.angle = heading;
+        planeMarker.options.title = lat + "°, " + lon + "°, " + heading + "°";
+        planeMarker.update();
+        
+        // Redraw waypoint markers
+        waypointMarkerGroup.clearLayers();
+        for (var i = 0; i < waypoints.length; ++i) {
+            waypointMarkerGroup.addLayer(new L.marker(waypoints[i]));
+        }
+
+        // Redraw waypoint polyline
+        waypointPolyline.setLatLngs(waypoints).spliceLatLngs(0, 0, new L.LatLng(lat, lon));
+        
+        // Draw points on historyPolyline
+        historyPolyline.addLatLng(L.latLng(lat, lon));
     }
 
-    // Don't export anything
-    return {};
+    // Export what needs to be
+    return exports;
 
 })($, Data, Log, Network);
