@@ -23,7 +23,8 @@ headers (in order):
 	cameraStatus,		// ?
 	waypointIndex,		// Index of current waypoint ?
 	editing_gain,		// ?
-	gpsStatus			// ?
+	gpsStatus,			// ?
+	batteryLevel,		// percent ?
 
 TODO: Could someone check and make sure the units are right?
 And explain some of the magic status numbers like lastCommandSent, errorCodes, cameraStatus, gpsStatus etc?
