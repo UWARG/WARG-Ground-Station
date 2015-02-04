@@ -1,4 +1,3 @@
-
 var Path = (function ($, Data, Log, Network) {
     var exports = {};
 
@@ -33,33 +32,29 @@ var Path = (function ($, Data, Log, Network) {
             waypoints = [];
             redrawMap();
         });
-
-        map.on('click', function (e) {
-            popup
-                .setLatLng(e.latlng)
-                .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
-                .openOn(map);
-
-            $('#addWaypoint').on('click', function () {
-                map.closePopup();
-                waypoints.push(e.latlng);
-                redrawMap();
-            });
-        });
     });
+
+    function mapClick(e) {
+        popup
+            .setLatLng(e.latlng)
+            .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
+            .openOn(map);
+
+        $('#addWaypoint').on('click', function () {
+            map.closePopup();
+            waypoints.push(e.latlng);
+            redrawMap();
+        });
+    }
 
     var planeMarker;
     var waypointMarkerGroup;
     var waypointPolyline;
     var historyPolyline;
-    
+
     Network.on('data', redrawMap);
 
     function redrawMap() {
-
-        lat = Data.state.lat;
-        lon = Data.state.lon;
-        heading = Data.state.heading;
 
         // Check for GPS fix, assuming we'll never fly off the coast of West Africa
         // (No GPS fix if coordinates close to (0; 0) or impossibly big)
@@ -67,13 +62,17 @@ var Path = (function ($, Data, Log, Network) {
             return;
         }
 
+        lat = Data.state.lat;
+        lon = Data.state.lon;
+        heading = Data.state.heading;
 
         // Init map if necessary
         if (!map) {
-            map = L.map('map').setView([43.53086, -80.5772], 17);
+            map = L.map('map').setView([lat, lon], 17);
             L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
                 maxZoom: 19
             }).addTo(map);
+            map.on('click', mapClick);
         }
 
         // Init planeMarker if necessary
@@ -116,7 +115,7 @@ var Path = (function ($, Data, Log, Network) {
         planeMarker.options.angle = heading;
         planeMarker.options.title = lat + "°, " + lon + "°, " + heading + "°";
         planeMarker.update();
-        
+
         // Redraw waypoint markers
         waypointMarkerGroup.clearLayers();
         for (var i = 0; i < waypoints.length; ++i) {
@@ -125,7 +124,7 @@ var Path = (function ($, Data, Log, Network) {
 
         // Redraw waypoint polyline
         waypointPolyline.setLatLngs(waypoints).spliceLatLngs(0, 0, new L.LatLng(lat, lon));
-        
+
         // Draw points on historyPolyline
         historyPolyline.addLatLng(L.latLng(lat, lon));
     }
