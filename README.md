@@ -1,10 +1,10 @@
-The ground station that is not written in Qt.
+The ground station that displays received from the ![data-relay](https://github.com/UWARG/data-relay-station)  
 
-Uses the following:
--jQuery: http://jquery.com/download/
--NW.js: http://nwjs.io/
--Leaflet: http://leafletjs.com/
--GMapCatcher: http://sepuweb.com/sample/GMapCatcher-0.8.0.6.exe
+Uses the following:  
+-jQuery: http://jquery.com/download/  
+-NW.js: http://nwjs.io/  
+-Leaflet: http://leafletjs.com/  
+-GMapCatcher: http://sepuweb.com/sample/GMapCatcher-0.8.0.6.exe  
 
 Map tiles are in OSM format. They can be downloaded and exported using GMapCatcher. Leaflet is the maps library used to display the tiles.
 
