@@ -1,4 +1,4 @@
-The ground station that displays received from the ![data-relay](https://github.com/UWARG/data-relay-station)  
+The ground station that displays received from the [data-relay](https://github.com/UWARG/data-relay-station)  
 
 Uses the following:  
 -jQuery: http://jquery.com/download/  
