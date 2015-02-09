@@ -1,12 +1,22 @@
 var Path = (function ($, Data, Log, Network) {
     var exports = {};
 
-    // Data objects here
+    // Data objects here: array of L.LatLng objects
     var waypoints = [];
 
     // Interactive map objects here
     var map;
     var popup = L.popup();
+
+    // Initialize map if necessary
+    $(document).ready(function () {
+        if (!map) {
+            map = L.map('map').setView([43.53086, -80.5772], 17);
+            L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+        }
+    });
 
     // Handle button clicks
     $(document).ready(function () {
@@ -65,15 +75,6 @@ var Path = (function ($, Data, Log, Network) {
         lat = Data.state.lat;
         lon = Data.state.lon;
         heading = Data.state.heading;
-
-        // Init map if necessary
-        if (!map) {
-            map = L.map('map').setView([lat, lon], 17);
-            L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
-                maxZoom: 19
-            }).addTo(map);
-            map.on('click', mapClick);
-        }
 
         // Init planeMarker if necessary
         if (!planeMarker) {
