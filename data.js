@@ -8,8 +8,8 @@ var Data = {
 Data Link Output Format Rev.4
 =============================
 
-This is only for reference and is not an authoritative source. Specifications may change.
-The columns are presented here in no particular order.
+This is only for reference and is not an authoritative source.
+Specifications may change. Headers are in no particular order.
 (Adapted from: WARG-Ground-Station-V2 pull-request #7)
 
 lat (long double (64bit floating point))
@@ -99,12 +99,12 @@ Error Code: Signals any problems that may be occurring or have occurred.This val
 0b0000001000000000: Trap Reset Occurred.
 0b1000000000000000: UHF Switch is ON (Can be used to indicate joystick controller connection)
 
-(?) cameraCounter (unsigned int)
+cameraStatus (unsigned int)
 Camera Counter: Every time the camera is triggered, this value increases by one. This allows one to keep track which picture corresponds to what data.
 
 waypointIndex (char)
 Waypoint Index: Indicates what waypoint the vehicle is attempting to get to.
-(?) -1: indicates that the vehicle is going "HOME"
+-1: indicates that the vehicle is going "HOME"
 Any other value indicates the waypoint in the order that it was added.
 
 editing_gain (char)
@@ -117,13 +117,14 @@ Controller Status Indicator: An indicator that depicts which gain values are cur
 0x05: Altitude
 0x06: Throttle
 
-gps_status (char)
+gpsStatus (char)
 GPS Status Indicator: An indicator that depicts the number of satellites connected, as well as the status of the gps fix. Format: 0x
 For example:
 0x00 = No GPS Fix, 0 Satellites
 0x1A = GPS Fix, 10 Satellites
 0x24 = DGPS Fix, 4 Satellites 
 
-batteryLevel (char) (?)
+batteryLevel (char)
 Battery Level Indicator [%]: This indicator provides the battery level as a percentage (%) of the original battery capacity specified in the voltageSensor.c/h files.
+Any closing parentheses should be ignored.
 */
