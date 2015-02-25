@@ -1,12 +1,26 @@
 var Path = (function ($, Data, Log, Network) {
     var exports = {};
 
-    // Data objects here
+    // Data objects here: array of L.LatLng objects
     var waypoints = [];
 
     // Interactive map objects here
     var map;
     var popup = L.popup();
+
+    // Initialize map if necessary
+    $(document).ready(function () {
+        if (!map) {
+            map = L.map('map').setView([43.53086, -80.5772], 17);
+            map.attributionControl.setPrefix(false);
+
+            L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+
+            map.on('click', mapClick);
+        }
+    });
 
     // Handle button clicks
     $(document).ready(function () {
@@ -47,7 +61,10 @@ var Path = (function ($, Data, Log, Network) {
         });
     }
 
+    var planeIcon;
+    var planeHollowIcon;
     var planeMarker;
+    var gpsFixMessagebox;
     var waypointMarkerGroup;
     var waypointPolyline;
     var historyPolyline;
@@ -58,30 +75,40 @@ var Path = (function ($, Data, Log, Network) {
 
         // Check for GPS fix, assuming we'll never fly off the coast of West Africa
         // (No GPS fix if coordinates close to (0; 0) or impossibly big)
-        if (Math.abs(lat) < 1 || Math.abs(lon) < 1 || Math.abs(lat) > 360 || Math.abs(lon) > 360) {
-            return;
-        }
-
+        var gpsFix = (Math.abs(lat) > 1) && (Math.abs(lon) > 1) && (Math.abs(lat) < 360) && (Math.abs(lon) < 360);
+        
         lat = Data.state.lat;
         lon = Data.state.lon;
         heading = Data.state.heading;
+        yaw = Data.state.yaw;
 
-        // Init map if necessary
-        if (!map) {
-            map = L.map('map').setView([lat, lon], 17);
-            L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
-                maxZoom: 19
-            }).addTo(map);
-            map.on('click', mapClick);
+        // Init icons for planeMarker if necessary
+        if (!planeIcon) {
+            planeIcon = L.icon({
+                iconUrl: 'plane.png',
+                iconSize: [30, 30],
+            });
+        }
+        if (!planeHollowIcon) {
+            planeHollowIcon = L.icon({
+                iconUrl: 'plane-hollow.png',
+                iconSize: [30, 30],
+                title: 'No GPS fix',
+            });
         }
 
         // Init planeMarker if necessary
         if (!planeMarker) {
             planeMarker = new L.RotatedMarker([lat, lon], {
-                icon: L.icon({
-                    iconUrl: 'plane.png',
-                    iconSize: [30, 30], // size of the icon
-                }),
+                icon: planeIcon,
+            }).addTo(map);
+        }
+
+        // Init messagebox about GPS fix
+        if (!gpsFixMessagebox) {
+            gpsFixMessagebox = L.control.messagebox({
+                timeout: null,
+                className: 'messagebox-gpsfix',
             }).addTo(map);
         }
 
@@ -111,10 +138,22 @@ var Path = (function ($, Data, Log, Network) {
 
 
         // Update plane marker
-        planeMarker.setLatLng(new L.LatLng(lat, lon));
-        planeMarker.options.angle = heading;
-        planeMarker.options.title = lat + "°, " + lon + "°, " + heading + "°";
-        planeMarker.update();
+        if (gpsFix) {
+            planeMarker.setIcon(planeIcon);
+            planeMarker.setLatLng(new L.LatLng(lat, lon));
+            planeMarker._icon.title = lat + "°, " + lon + "°\nyaw " + Math.round(yaw) + "°, hdg " + heading + "°";
+            planeMarker.options.angle = yaw;
+            planeMarker.update();
+        } else {
+            planeMarker.setIcon(planeHollowIcon);
+        }
+
+        // Update gpsFix message box
+        if (gpsFix) {
+            gpsFixMessagebox.hide();
+        } else {
+            gpsFixMessagebox.show('No GPS fix');
+        }
 
         // Redraw waypoint markers
         waypointMarkerGroup.clearLayers();
@@ -126,7 +165,9 @@ var Path = (function ($, Data, Log, Network) {
         waypointPolyline.setLatLngs(waypoints).spliceLatLngs(0, 0, new L.LatLng(lat, lon));
 
         // Draw points on historyPolyline
-        historyPolyline.addLatLng(L.latLng(lat, lon));
+        if (gpsFix) {
+            historyPolyline.addLatLng(L.latLng(lat, lon));
+        }
     }
 
     // Export what needs to be
