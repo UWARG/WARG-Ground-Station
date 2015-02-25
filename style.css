@@ -62,3 +62,11 @@ body {
     background-color: #455a64;
     cursor: pointer;
 }
+.messagebox-gpsfix {
+    border: none;
+    border-radius: 6px;
+    background-color: rgba(255, 0, 0, 0.6);
+    padding: 6px 13px;
+    color: #fff;
+    font-weight: bold;
+}
