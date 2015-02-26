@@ -66,17 +66,17 @@ L.Polyline.plotter = L.Polyline.extend({
         }
     },
     _bindMapClick: function(){
-        this._map.on('click', this._onMapClick, this);
+        this._map.on('contextmenu', this._onMapClick, this);
     },
     _unbindMapClick: function(){
-        this._map.off('click', this._onMapClick, this);
+        this._map.off('contextmenu', this._onMapClick, this);
     },
     _setExistingLatLngs: function(latlngs){
         this._existingLatLngs = latlngs;
     },
     _replot: function(){
         this._redraw();
-        this._redrawHalfwayPoints();
+        // this._redrawHalfwayPoints();
     },
     _getNewMarker: function(latlng, options){
         return new L.marker(latlng, options);
@@ -153,7 +153,7 @@ L.Polyline.plotter = L.Polyline.extend({
                 )
             });
         }
-	this._replot();
+		this._replot();
     },
     _redraw: function(){
         this.setLatLngs([]);
