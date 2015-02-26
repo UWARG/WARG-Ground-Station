@@ -48,10 +48,10 @@ var Path = (function ($, Data, Log, Network) {
     });
 
     function mapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
-            .openOn(map);
+        // popup
+        //     .setLatLng(e.latlng)
+        //     .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
+        //     .openOn(map);
 
         $('#addWaypoint').on('click', function () {
             map.closePopup();
@@ -118,11 +118,10 @@ var Path = (function ($, Data, Log, Network) {
 
         // Init waypointPolyline if necessary
         if (!waypointPolyline) {
-            waypointPolyline = new L.Polyline(waypoints, {
+            waypointPolyline = L.Polyline.Plotter(waypoints, {
                 color: 'red',
                 weight: 3,
                 opacity: 0.5,
-                clickable: false,
             }).addTo(map);
         }
 
@@ -161,7 +160,8 @@ var Path = (function ($, Data, Log, Network) {
         }
 
         // Redraw waypoint polyline
-        waypointPolyline.setLatLngs(waypoints).spliceLatLngs(0, 0, new L.LatLng(lat, lon));
+        // waypointPolyline.setLatLngs(waypoints);
+        // waypointPolyline.spliceLatLngs(0, 0, new L.LatLng(lat, lon));
 
         // Draw points on historyPolyline
         if (gpsFix) {
