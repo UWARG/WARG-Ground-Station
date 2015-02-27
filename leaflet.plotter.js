@@ -88,44 +88,59 @@ L.Polyline.plotter = L.Polyline.extend({
     	this._map.off('mousemove', this._checkPathHover, this);
     },
     _checkPathHover: function(e){
-    	var p = e.containerPoint, p1, p2, snap;
-    	for (var i = 0, l = this._lineMarkers.length; i < l - 1; ++i) {
+    	var p = e.containerPoint, p1, p2, distances = [];
+    	var i, l;
+    	for (i = 0, l = this._lineMarkers.length; i < l - 1; ++i) {
     		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
     		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
-    		snap = this._snapToSegment(p, p1, p2, 12, 16);
-    		if (snap) {
-    			this._doPathHover(this._map.containerPointToLatLng(snap));
-    			return;
-    		}
+    		distances.push(this._snapDistanceToSegment(p, p1, p2, 10, 14));
     	}
-    	this._endPathHover();
+
+    	var closestDistance = Math.min.apply(Math, distances);
+    	if (closestDistance !== Infinity) {
+    		i = distances.indexOf(closestDistance);
+    		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
+    		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
+    		this._doPathHover(this._map.containerPointToLatLng(this._projectPointOnSegment(p, p1, p2)));
+    	} else {
+			this._endPathHover();
+    	}
     },
-    _snapToSegment: function(p, p1, p2, r, re) {
-    	// Project p on segment p1-p2 if within r of segment & not within re of endpoints
+    _snapDistanceToSegment: function(p, p1, p2, r, re) {
+    	// If p within r of segment & not within re of endpoints, return distance of p to segment p1-p2 
+    	// Else, returns Infinity
     	var x  =  p.x, y  =  p.y,
     		x1 = p1.x, y1 = p1.y,
     		x2 = p2.x, y2 = p2.y;
 
-    	r = r || 12;
-    	re = re || 16;
+    	r = r || 10;
+    	re = re || 14;
 
     	// Check re < |p-p1| < |p1-p2| & re < |p-p2| < |p1-p2|
     	var l2 = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
     	var d1 = (x-x1)*(x-x1)+(y-y1)*(y-y1);
     	var d2 = (x-x2)*(x-x2)+(y-y2)*(y-y2);
     	if ( d1 >= l2 || d2 >= l2 || d1 <= re*re || d2 <= re*re ) {
-    		return false;
+    		return Infinity;
     	}
 
     	// Check within r of segment (http://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line)
     	var d = Math.abs((y2-y1)*x - (x2-x1)*y + x2*y1 - y2*x1) / Math.sqrt(l2);
     	if (d >= r) {
-    		return false;
+    		return Infinity;
     	}
 
+    	return d;
+    },
+    _projectPointOnSegment: function (p, p1, p2) {
     	// Project point onto segment
-    	var ax = x2-x1, ay = y2-y1,
+    	var x  =  p.x, y  =  p.y,
+    		x1 = p1.x, y1 = p1.y,
+    		x2 = p2.x, y2 = p2.y;
+		
+		var ax = x2-x1, ay = y2-y1,
     		bx =  x-x1, by =  y-y1;
+    	
     	var k = (ax*bx + ay*by) / (ax*ax + ay*ay);
     	x = k*ax + x1;
     	y = k*ay + y1;
@@ -164,15 +179,11 @@ L.Polyline.plotter = L.Polyline.extend({
     _unbindMarkerEvents: function(marker){
         marker.off('click', this._removePoint, this);
         marker.off('drag', this._replot, this);
-        marker.off('mouseover', this._onMarkerMouseOver, this);
-        marker.off('mouseout', this._onMarkerMouseOut, this);
         marker.dragging.disable();
     },
     _bindMarkerEvents: function(marker){
         marker.on('click', this._removePoint, this);
         marker.on('drag', this._replot, this);
-        marker.on('mouseover', this._onMarkerMouseOver, this);
-        marker.on('mouseout', this._onMarkerMouseOut, this);
         marker.dragging.enable();
     },
     _bindHalfwayMarker: function(marker){
