@@ -120,7 +120,7 @@ var Path = (function ($, Data, Log, Network) {
         if (!waypointPolyline) {
             waypointPolyline = L.Polyline.Plotter(waypoints, {
                 color: 'red',
-                weight: 3,
+                weight: 8,
                 opacity: 0.5,
             }).addTo(map);
         }

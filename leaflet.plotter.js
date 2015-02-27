@@ -13,6 +13,7 @@ L.Polyline.plotter = L.Polyline.extend({
     _lineMarkers: [],
     _editIcon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
     _halfwayPointMarkers: [],
+    _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
     _existingLatLngs: [],
     options: {
         weight: 2,
@@ -29,6 +30,7 @@ L.Polyline.plotter = L.Polyline.extend({
         this._plotExisting();
         if(!this.options.readOnly){
             this._bindMapClick();
+            this._bindPathHover();
         }
     },
     onRemove: function(){
@@ -40,6 +42,7 @@ L.Polyline.plotter = L.Polyline.extend({
         }
         this._halfwayPointMarkers = this._lineMarkers = [];
         this._unbindMapClick();
+        this._unbindPathHover();
         L.Polyline.prototype.onRemove.call(this, map);
     },
     setLatLngs: function(latlngs){
@@ -50,10 +53,12 @@ L.Polyline.plotter = L.Polyline.extend({
             var markerFunction = '_unbindMarkerEvents';
             var halfwayMarkerFunction = '_unbindHalfwayMarker';
             this._unbindMapClick();
+            this._unbindPathHover();
         }else if(!readOnly && this.options.readOnly){
             var markerFunction = '_bindMarkerEvents';
             var halfwayMarkerFunction = '_bindMarkerEvents';
             this._bindMapClick();
+            this._bindPathHover();
         }
         if(typeof markerFunction !== 'undefined'){
             this.options.readOnly = readOnly;
@@ -70,6 +75,20 @@ L.Polyline.plotter = L.Polyline.extend({
     },
     _unbindMapClick: function(){
         this._map.off('contextmenu', this._onMapClick, this);
+    },
+    _bindPathHover: function(){
+    	this.on('mouseover', this._onPathHoverStart);
+    	this._ghostMarker.on('mouseout', this._onPathHoverEnd);
+    },
+    _unbindPathHover: function(){
+    	this.off('mouseover', this._onPathHoverStart);
+    	this._ghostMarker.off('mouseout', this._onPathHoverEnd);
+    },
+    _onPathHoverStart: function(e){
+    	this._ghostMarker.setLatLng(e.latlng).addTo(this._map);
+    },
+    _onPathHoverEnd: function(e){
+    	this._map.removeLayer(this);
     },
     _setExistingLatLngs: function(latlngs){
         this._existingLatLngs = latlngs;
