@@ -14,6 +14,7 @@ L.Polyline.plotter = L.Polyline.extend({
     _editIcon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
     _halfwayPointMarkers: [],
     _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
+    _isHoveringPath: false,
     _existingLatLngs: [],
     options: {
         weight: 2,
@@ -31,6 +32,7 @@ L.Polyline.plotter = L.Polyline.extend({
         if(!this.options.readOnly){
             this._bindMapClick();
             this._bindPathHover();
+            this._bindGhostMarkerEvents();
         }
     },
     onRemove: function(){
@@ -43,6 +45,7 @@ L.Polyline.plotter = L.Polyline.extend({
         this._halfwayPointMarkers = this._lineMarkers = [];
         this._unbindMapClick();
         this._unbindPathHover();
+        this._unbindGhostMarkerEvents();
         L.Polyline.prototype.onRemove.call(this, map);
     },
     setLatLngs: function(latlngs){
@@ -54,11 +57,13 @@ L.Polyline.plotter = L.Polyline.extend({
             var halfwayMarkerFunction = '_unbindHalfwayMarker';
             this._unbindMapClick();
             this._unbindPathHover();
+            this._unbindGhostMarkerEvents();
         }else if(!readOnly && this.options.readOnly){
             var markerFunction = '_bindMarkerEvents';
             var halfwayMarkerFunction = '_bindMarkerEvents';
             this._bindMapClick();
             this._bindPathHover();
+            this._bindGhostMarkerEvents();
         }
         if(typeof markerFunction !== 'undefined'){
             this.options.readOnly = readOnly;
@@ -77,18 +82,74 @@ L.Polyline.plotter = L.Polyline.extend({
         this._map.off('contextmenu', this._onMapClick, this);
     },
     _bindPathHover: function(){
-    	this.on('mouseover', this._onPathHoverStart);
-    	this._ghostMarker.on('mouseout', this._onPathHoverEnd);
+    	this._map.on('mousemove', this._checkPathHover, this);
     },
     _unbindPathHover: function(){
-    	this.off('mouseover', this._onPathHoverStart);
-    	this._ghostMarker.off('mouseout', this._onPathHoverEnd);
+    	this._map.off('mousemove', this._checkPathHover, this);
     },
-    _onPathHoverStart: function(e){
-    	this._ghostMarker.setLatLng(e.latlng).addTo(this._map);
+    _checkPathHover: function(e){
+    	var p = e.containerPoint, p1, p2, snap;
+    	for (var i = 0, l = this._lineMarkers.length; i < l - 1; ++i) {
+    		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
+    		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
+    		snap = this._snapToSegment(p, p1, p2, 12, 16);
+    		if (snap) {
+    			this._doPathHover(this._map.containerPointToLatLng(snap));
+    			return;
+    		}
+    	}
+    	this._endPathHover();
     },
-    _onPathHoverEnd: function(e){
-    	this._map.removeLayer(this);
+    _snapToSegment: function(p, p1, p2, r, re) {
+    	// Project p on segment p1-p2 if within r of segment & not within re of endpoints
+    	var x  =  p.x, y  =  p.y,
+    		x1 = p1.x, y1 = p1.y,
+    		x2 = p2.x, y2 = p2.y;
+
+    	r = r || 12;
+    	re = re || 16;
+
+    	// Check re < |p-p1| < |p1-p2| & re < |p-p2| < |p1-p2|
+    	var l2 = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
+    	var d1 = (x-x1)*(x-x1)+(y-y1)*(y-y1);
+    	var d2 = (x-x2)*(x-x2)+(y-y2)*(y-y2);
+    	if ( d1 >= l2 || d2 >= l2 || d1 <= re*re || d2 <= re*re ) {
+    		return false;
+    	}
+
+    	// Check within r of segment (http://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line)
+    	var d = Math.abs((y2-y1)*x - (x2-x1)*y + x2*y1 - y2*x1) / Math.sqrt(l2);
+    	if (d >= r) {
+    		return false;
+    	}
+
+    	// Project point onto segment
+    	var ax = x2-x1, ay = y2-y1,
+    		bx =  x-x1, by =  y-y1;
+    	var k = (ax*bx + ay*by) / (ax*ax + ay*ay);
+    	x = k*ax + x1;
+    	y = k*ay + y1;
+
+    	return L.point(x, y);
+    },
+    _doPathHover: function(latlng){
+    	this._ghostMarker.setLatLng(latlng);
+    	if (!this._isHoveringPath) {
+    		this._ghostMarker.addTo(this._map);
+    	}
+    	this._isHoveringPath = true;
+    },
+    _endPathHover: function(){
+    	if (this._isHoveringPath) {
+    		this._map.removeLayer(this._ghostMarker);
+    	}
+    	this._isHoveringPath = false;
+    },
+    _bindGhostMarkerEvents: function(){
+    	;
+    },
+    _unbindGhostMarkerEvents: function(){
+    	;
     },
     _setExistingLatLngs: function(latlngs){
         this._existingLatLngs = latlngs;
@@ -103,12 +164,16 @@ L.Polyline.plotter = L.Polyline.extend({
     _unbindMarkerEvents: function(marker){
         marker.off('click', this._removePoint, this);
         marker.off('drag', this._replot, this);
-        marker.dragging.disable()
+        marker.off('mouseover', this._onMarkerMouseOver, this);
+        marker.off('mouseout', this._onMarkerMouseOut, this);
+        marker.dragging.disable();
     },
     _bindMarkerEvents: function(marker){
         marker.on('click', this._removePoint, this);
         marker.on('drag', this._replot, this);
-        marker.dragging.enable()
+        marker.on('mouseover', this._onMarkerMouseOver, this);
+        marker.on('mouseout', this._onMarkerMouseOut, this);
+        marker.dragging.enable();
     },
     _bindHalfwayMarker: function(marker){
         marker.on('click', this._addHalfwayPoint, this);
