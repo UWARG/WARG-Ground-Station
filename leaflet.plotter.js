@@ -110,14 +110,16 @@ L.Polyline.plotter = L.Polyline.extend({
     	}
 
     	var closestDistance = Math.min.apply(Math, distances);
-    	if (closestDistance !== Infinity) {
-    		return distances.indexOf(closestDistance);
+    	if (closestDistance === Infinity || closestDistance === -1) {
+    		return -1;
     	}
-    	return -1;
+    	
+    	return distances.indexOf(closestDistance);
     },
     _snapDistanceToSegment: function(p, p1, p2, r, re) {
-    	// If p within r of segment & not within re of endpoints, return distance of p to segment p1-p2 
-    	// Else, returns Infinity
+    	// If p within r of segment & not within re of endpoints, return distance of p to segment p1-p2
+    	// If snapDistanceToSegment is within re of endpoints, return -1
+    	// Else, return Infinity
     	var x  =  p.x, y  =  p.y,
     		x1 = p1.x, y1 = p1.y,
     		x2 = p2.x, y2 = p2.y;
@@ -129,7 +131,9 @@ L.Polyline.plotter = L.Polyline.extend({
     	var l2 = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
     	var d1 = (x-x1)*(x-x1)+(y-y1)*(y-y1);
     	var d2 = (x-x2)*(x-x2)+(y-y2)*(y-y2);
-    	if ( d1 >= l2 || d2 >= l2 || d1 <= re*re || d2 <= re*re ) {
+    	if ( d1 <= re*re || d2 <= re*re ) {
+    		return -1;
+    	} else if ( d1 >= l2 || d2 >= l2 ) {
     		return Infinity;
     	}
 
