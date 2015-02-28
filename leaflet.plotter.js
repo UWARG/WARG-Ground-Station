@@ -12,7 +12,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 L.Polyline.plotter = L.Polyline.extend({
     _lineMarkers: [],
     _editIcon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
-    _halfwayPointMarkers: [],
     _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
     _isHoveringPath: false,
     _indexOfDraggedPoint: -1,
@@ -37,13 +36,10 @@ L.Polyline.plotter = L.Polyline.extend({
         }
     },
     onRemove: function(){
-        for(index in this._halfwayPointMarkers){
-            this._map.removeLayer(this._halfwayPointMarkers[index]);
-        }
         for(index in this._lineMarkers){
             this._map.removeLayer(this._lineMarkers[index]);
         }
-        this._halfwayPointMarkers = this._lineMarkers = [];
+        this._lineMarkers = [];
         this._unbindMapClick();
         this._unbindPathHover();
         this._unbindGhostMarkerEvents();
@@ -55,22 +51,17 @@ L.Polyline.plotter = L.Polyline.extend({
     setReadOnly: function(readOnly){
         if(readOnly && !this.options.readOnly){
             var markerFunction = '_unbindMarkerEvents';
-            var halfwayMarkerFunction = '_unbindHalfwayMarker';
             this._unbindMapClick();
             this._unbindPathHover();
             this._unbindGhostMarkerEvents();
         }else if(!readOnly && this.options.readOnly){
             var markerFunction = '_bindMarkerEvents';
-            var halfwayMarkerFunction = '_bindMarkerEvents';
             this._bindMapClick();
             this._bindPathHover();
             this._bindGhostMarkerEvents();
         }
         if(typeof markerFunction !== 'undefined'){
             this.options.readOnly = readOnly;
-            for(index in this._halfwayPointMarkers){
-                this[halfwayMarkerFunction](this._halfwayPointMarkers[index]);
-            }
             for(index in this._lineMarkers){
                 this[markerFunction](this._lineMarkers[index]);
             }
@@ -216,7 +207,6 @@ L.Polyline.plotter = L.Polyline.extend({
     },
     _replot: function(){
         this._redraw();
-        // this._redrawHalfwayPoints();
     },
     _getNewMarker: function(latlng, options){
         return new L.marker(latlng, options);
@@ -230,12 +220,6 @@ L.Polyline.plotter = L.Polyline.extend({
         marker.on('click', this._removePoint, this);
         marker.on('drag', this._replot, this);
         marker.dragging.enable();
-    },
-    _bindHalfwayMarker: function(marker){
-        marker.on('click', this._addHalfwayPoint, this);
-    },
-    _unbindHalfwayMarker: function(marker){
-        marker.off('click', this._addHalfwayPoint, this);
     },
     _addToMapAndBindMarker: function(newMarker){
         newMarker.addTo(this._map);
@@ -256,33 +240,6 @@ L.Polyline.plotter = L.Polyline.extend({
         var newMarker = this._getNewMarker(e.latlng, { icon: this._editIcon });
         this._addToMapAndBindMarker(newMarker);
         this._lineMarkers.push(newMarker);
-    },
-    _redrawHalfwayPoints: function(){
-        for(index in this._halfwayPointMarkers){
-            this._map.removeLayer(this._halfwayPointMarkers[index]);
-        }
-        this._halfwayPointMarkers = [];
-        for(index in this._lineMarkers){
-            index = parseInt(index);
-            if(typeof this._lineMarkers[index + 1] === 'undefined'){
-                return;
-            }
-            var halfwayMarker = new L.Marker([
-                (this._lineMarkers[index].getLatLng().lat + this._lineMarkers[index + 1].getLatLng().lat) / 2,
-                (this._lineMarkers[index].getLatLng().lng + this._lineMarkers[index + 1].getLatLng().lng) / 2,
-            ], { icon: this._editIcon, opacity: 0.5 }).addTo(this._map);
-            halfwayMarker.index = index;
-            if(!this.options.readOnly){
-                this._bindHalfwayMarker(halfwayMarker);
-            }
-            this._halfwayPointMarkers.push(halfwayMarker);
-        }
-    },
-    _addHalfwayPoint: function(e){
-        var newMarker = this._getNewMarker(e.latlng, { icon: this._editIcon });
-        this._addToMapAndBindMarker(newMarker);
-        this._lineMarkers.splice(e.target.index + 1, 0, newMarker);
-        this._replot();
     },
     _plotExisting: function(){
         for(index in this._existingLatLngs){
