@@ -15,6 +15,7 @@ L.Polyline.plotter = L.Polyline.extend({
     _halfwayPointMarkers: [],
     _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
     _isHoveringPath: false,
+    _indexOfDraggedPoint: -1,
     _existingLatLngs: [],
     options: {
         weight: 2,
@@ -88,23 +89,31 @@ L.Polyline.plotter = L.Polyline.extend({
     	this._map.off('mousemove', this._checkPathHover, this);
     },
     _checkPathHover: function(e){
-    	var p = e.containerPoint, p1, p2, distances = [];
-    	var i, l;
-    	for (i = 0, l = this._lineMarkers.length; i < l - 1; ++i) {
-    		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
-    		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
-    		distances.push(this._snapDistanceToSegment(p, p1, p2, 10, 14));
-    	}
-
-    	var closestDistance = Math.min.apply(Math, distances);
-    	if (closestDistance !== Infinity) {
-    		i = distances.indexOf(closestDistance);
+    	var p = e.containerPoint;
+    	var i = this._indexOfHoveredSegment(p);
+    	if (i != -1) {
     		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
     		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
     		this._doPathHover(this._map.containerPointToLatLng(this._projectPointOnSegment(p, p1, p2)));
     	} else {
-			this._endPathHover();
+    		this._endPathHover();
     	}
+    },
+    _indexOfHoveredSegment: function(p) {
+    	// Return index i of 1st endpoint of line segment closest to p (2nd endpoint of segment is at i + 1)
+    	// or -1 if no segment hovered; operates in screen space
+    	var p1, p2, distances = [];
+    	for (var i = 0, l = this._lineMarkers.length; i < l - 1; ++i) {
+    		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
+    		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
+    		distances.push(this._snapDistanceToSegment(p, p1, p2, 7, 14));
+    	}
+
+    	var closestDistance = Math.min.apply(Math, distances);
+    	if (closestDistance !== Infinity) {
+    		return distances.indexOf(closestDistance);
+    	}
+    	return -1;
     },
     _snapDistanceToSegment: function(p, p1, p2, r, re) {
     	// If p within r of segment & not within re of endpoints, return distance of p to segment p1-p2 
@@ -113,7 +122,7 @@ L.Polyline.plotter = L.Polyline.extend({
     		x1 = p1.x, y1 = p1.y,
     		x2 = p2.x, y2 = p2.y;
 
-    	r = r || 10;
+    	r = r || 7;
     	re = re || 14;
 
     	// Check re < |p-p1| < |p1-p2| & re < |p-p2| < |p1-p2|
@@ -149,22 +158,62 @@ L.Polyline.plotter = L.Polyline.extend({
     },
     _doPathHover: function(latlng){
     	this._ghostMarker.setLatLng(latlng);
+
     	if (!this._isHoveringPath) {
     		this._ghostMarker.addTo(this._map);
+    		this._ghostMarker.dragging.enable();
     	}
     	this._isHoveringPath = true;
     },
     _endPathHover: function(){
     	if (this._isHoveringPath) {
+    		this._ghostMarker.dragging.disable();
     		this._map.removeLayer(this._ghostMarker);
     	}
     	this._isHoveringPath = false;
     },
     _bindGhostMarkerEvents: function(){
-    	;
+    	this._ghostMarker.on('mousedown', this._onGhostMouseDown, this);
+    	this._ghostMarker.on('click', this._onGhostMouseUp, this);
+    	this._ghostMarker.on('dragstart', this._onGhostDragStart, this);
+    	this._ghostMarker.on('drag', this._onGhostDrag, this);
+    	this._ghostMarker.on('dragend', this._onGhostDragEnd, this);
     },
     _unbindGhostMarkerEvents: function(){
-    	;
+    	this._ghostMarker.off('mousedown', this._onGhostMouseDown, this);
+    	this._ghostMarker.off('click', this._onGhostMouseUp, this);
+    	this._ghostMarker.off('dragstart', this._onGhostDragStart, this);
+    	this._ghostMarker.off('drag', this._onGhostDrag, this);
+    	this._ghostMarker.off('dragend', this._onGhostDragEnd, this);
+    },
+    _onGhostMouseDown: function(e){
+    	this._ghostMarker.setOpacity(1);
+    },
+    _onGhostMouseUp: function(e){
+    	this._ghostMarker.setOpacity(0.5);
+    },
+    _onGhostDragStart: function(e){
+    	var p = this._map.latLngToContainerPoint(this._ghostMarker.getLatLng());
+    	var i = this._indexOfHoveredSegment(p);
+    	if (i == -1) return;
+
+    	this._indexOfDraggedPoint = i+1;
+    	this._unbindPathHover();
+
+    	var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });
+    	this._addToMapAndBindMarker(newMarker);
+    	this._lineMarkers.splice(i + 1, 0, newMarker);
+    	this._replot();
+    },
+    _onGhostDrag: function(e){
+    	if (this._indexOfDraggedPoint == -1) return;
+    	
+    	this._lineMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
+    	this._replot();
+    },
+    _onGhostDragEnd: function(e){
+    	this._indexOfDraggedPoint = -1;
+    	this._bindPathHover();
     },
     _setExistingLatLngs: function(latlngs){
         this._existingLatLngs = latlngs;
