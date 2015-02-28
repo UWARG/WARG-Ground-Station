@@ -177,24 +177,14 @@ L.Polyline.plotter = L.Polyline.extend({
     	this._isHoveringPath = false;
     },
     _bindGhostMarkerEvents: function(){
-    	this._ghostMarker.on('mousedown', this._onGhostMouseDown, this);
-    	this._ghostMarker.on('click', this._onGhostMouseUp, this);
     	this._ghostMarker.on('dragstart', this._onGhostDragStart, this);
     	this._ghostMarker.on('drag', this._onGhostDrag, this);
     	this._ghostMarker.on('dragend', this._onGhostDragEnd, this);
     },
     _unbindGhostMarkerEvents: function(){
-    	this._ghostMarker.off('mousedown', this._onGhostMouseDown, this);
-    	this._ghostMarker.off('click', this._onGhostMouseUp, this);
     	this._ghostMarker.off('dragstart', this._onGhostDragStart, this);
     	this._ghostMarker.off('drag', this._onGhostDrag, this);
     	this._ghostMarker.off('dragend', this._onGhostDragEnd, this);
-    },
-    _onGhostMouseDown: function(e){
-    	this._ghostMarker.setOpacity(1);
-    },
-    _onGhostMouseUp: function(e){
-    	this._ghostMarker.setOpacity(0.5);
     },
     _onGhostDragStart: function(e){
     	var p = this._map.latLngToContainerPoint(this._ghostMarker.getLatLng());
@@ -203,6 +193,7 @@ L.Polyline.plotter = L.Polyline.extend({
 
     	this._indexOfDraggedPoint = i+1;
     	this._unbindPathHover();
+    	this._ghostMarker.setOpacity(1);
 
     	var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });
     	this._addToMapAndBindMarker(newMarker);
@@ -211,6 +202,7 @@ L.Polyline.plotter = L.Polyline.extend({
     },
     _onGhostDrag: function(e){
     	if (this._indexOfDraggedPoint == -1) return;
+    	this._ghostMarker.setOpacity(0.5);
     	
     	this._lineMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
     	this._replot();
