@@ -45,7 +45,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
 
         //Indicator
-        image = new Image();
+        image = document.createElement('img');
         image.src = "yaw.png";
         context.translate(36, 36);
         context.translate(64, 64);
@@ -82,7 +82,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
 
         //Indicator
-        image = new Image();
+        image = document.createElement('img');
         image.src = "roll.png";
         context.translate(36, 36);
         context.translate(64, 64);
@@ -119,7 +119,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
 
         //Indicator
-        image = new Image();
+        image = document.createElement('img');
         image.src = "pitch.png";
         context.translate(36, 36);
         context.translate(64, 64);
