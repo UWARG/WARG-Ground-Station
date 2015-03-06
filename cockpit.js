@@ -12,8 +12,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawRoll(0);
         drawYaw(0);
         drawBattery(0);
-        drawScale(0,"altimeter");
-        drawScale(0,"speed");
+        drawScale(0,300,"altimeter","Altitude");
+        drawScale(0,300,"speed","Speed");
 
         //Buttons
         $('#goHome').on('click', function () {
@@ -230,15 +230,18 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.fillText(batteryLevel + "%", 50, 35);
     }
 
-    function drawScale(value, canvasName){
+    function drawScale(value, height, canvasName, title) {
         value = value.toFixed(2);
         var canvas = document.getElementById(canvasName);
         var context = canvas.getContext("2d");
         canvas.width = 120;
-        canvas.height = 300;
-        height = canvas.height;
+        canvas.height = height;
         width = canvas.width;
         context.clearRect(0, 0, canvas.width, canvas.height);
+
+        //draw the values
+        context.font = '15pt Calibri';
+        context.fillText(title,50,20);
 
         //constants
         BOX_HEIGHT = 30;
@@ -276,8 +279,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         }
     }
 
-    function displayControlStatus(editing_gain)
-    {
+    function displayControlStatus(editing_gain) {
         var canvas = document.getElementById("control_status");
         canvas.height = 30;
         canvas.width = 100;
@@ -299,8 +301,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.fillText(text,50,20);
     }
 
-    function displayGPSStatus(gpsStatus)
-    {
+    function displayGPSStatus(gpsStatus) {
         var canvas = document.getElementById("gps_status");
         canvas.height = 30;
         canvas.width = 50;
@@ -355,8 +356,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawBattery(batteryLevel);
         displayControlStatus(editing_gain);
         displayGPSStatus(gpsStatus);
-        drawScale(altitude,"altimeter");
-        drawScale(ground_speed,"speed");
+        drawScale(altitude,300,"altimeter","Altitude");
+        drawScale(ground_speed,300,"speed","Speed");
     }
     // Don't export anything
     return {};
