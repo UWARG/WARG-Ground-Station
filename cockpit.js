@@ -11,8 +11,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawPitch(0);
         drawRoll(0);
         drawYaw(0);
-        setAltimeter(0);
-        setSpeed(0);
+        drawScale(0,"altimeter");
 
         //Buttons
         $('#goHome').on('click', function () {
@@ -170,18 +169,50 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
     }
 
-    function setSpeed(speed) {
-        var altimeter = $('#speed')
-        altimeter.empty()
-        var newItem = $('<div class="logText">' + speed + ' m/s</div>');
-        altimeter.append(newItem);
-    }
+    function drawScale(speed, canvasName){
+      var c = document.getElementById(canvasName);
+      var ctx = c.getContext("2d");
+      c.width = 90;
+      c.height = 300;
+      height = c.height;
+      width = c.width;
 
-    function setAltimeter(altitude) {
-        var altimeter = $('#altimeter')
-        altimeter.empty()
-        var newItem = $('<div class="logText">' + altitude + ' m</div>');
-        altimeter.append(newItem);
+      //if (speed < realSpeed) speed++;
+      //if (speed > realSpeed) speed--;
+
+      //constants
+      BOX_HEIGHT = 30;
+      BOX_WIDTH = 50;
+      OFFSET = 40;
+
+      //draw the meter
+      ctx.beginPath();
+      ctx.rect(OFFSET,height/2-BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT);
+      ctx.rect(0,0,OFFSET,height);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      console.log(speed);
+
+      //draw the values
+      ctx.font = '20pt Calibri';
+      mid = height/2+BOX_HEIGHT/2-5;
+
+      //draw the scaling
+      ctx.fillText(speed, OFFSET+2, mid);
+      ctx.textAlign="end";
+      ctx.font = '10pt Calibri';
+      A = 20;
+      B= 0.1;
+      for (i = mid; i<height; i+=B){
+        if ((speed-(i-mid)).toFixed(1) % 1 == 0)
+          ctx.fillText((speed-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
+      }
+      for (i = mid; i>0; i-=B){
+        if ((speed-(i-mid)).toFixed(1) % 1 == 0)
+          ctx.fillText((speed-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
+      }
+      console.log(speed);
     }
 
     Network.on('data', updateCockpit);
@@ -201,8 +232,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawPitch(pitch);
         drawRoll(roll);
         drawYaw(yaw);
-        setAltimeter(altitude);
-        setSpeed(speed);
+        drawScale(altitude,"altimeter");
+        drawScale(speed,"speed");
     }
 
     // Don't export anything
