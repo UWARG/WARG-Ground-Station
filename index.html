@@ -54,6 +54,33 @@
     </div>
     <div id="log"></div>
 
+    <select id="gainSelect" onchange="onSelectedOption(this.value)">
+      <option class='head'>GAIN-SELECT</option>
+      <option value="yaw">Yaw</option>
+      <option value="pitch">Pitch</option>
+      <option value="roll">Roll</option>
+      <option value="heading">Heading</option>
+      <option value="altitude">Altitude</option>
+      <option value="throttle">Throttle</option>
+    </select>
+
+    <canvas id="currentCanva" width="125" height="20" style="border:2px solid #c3c3c3;"></canvas>
+
+    <pre>     KD_GAIN           KP_GAIN          KI_GAIN</pre>
+
+    <div>
+      <canvas id="kdCanva" width="125" height="20" style="border:2px solid #c3c3c3;"></canvas>
+      <canvas id="kpCanva" width="125" height="20" style="border:2px solid #c3c3c3;"></canvas>
+      <canvas id="kiCanva" width="125" height="20" style="border:2px solid #c3c3c3;"></canvas>
+    </div>
+    <div>
+      <input type="number" id="kdInput" value="50">
+      <input type="number" id="kpInput" value="50">
+      <input type="number" id="kiInput" value="50">
+    </div>
+
+    <button onclick="onClickSend()">Send</button>
+
 </body>
 
 </html>

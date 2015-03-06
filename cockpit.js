@@ -198,6 +198,9 @@ var Cockpit = (function ($, Data, Log, Network) {
         speed = flightData.ground_speed;
         editing_gain = flightData.editing_gain;
         gpsStatus = flightData.gpsStatus;
+        kd_gain = flightData.kd_gain;
+        kp_gain = flightData.kp_gain;
+        ki_gain = flightData.ki_gain;
 
         drawArtificalHorizon(roll, pitch);
         drawPitch(pitch);
@@ -207,6 +210,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         setSpeed(speed);
         status(editing_gain);
         gps(gpsStatus);
+        currentGains(editing_gain, kd_gain, kp_gain, ki_gain);
     }
 
     function status(stat)
@@ -241,6 +245,126 @@ var Cockpit = (function ($, Data, Log, Network) {
       {
         gpsCanva.fillStyle ="red";
         gpsCanva.fillText("0",15,25,20);
+      }
+    }
+
+    function currentGains(editing_gain, kd_gain, kp_gain, ki_gain)
+    {
+      var xText = 50;
+      var yText = 15;
+      var widthText = 25;
+
+      var gainSelect = document.getElementById("gainSelect");
+      var kdInput = document.getElementById("kdInput").value;
+      var kpInput = document.getElementById("kpInput").value;
+      var kiInput = document.getElementById("kiInput").value;
+
+      var currentCanva = document.getElementById("currentCanva").getContext("2d");
+      var kdCanva = document.getElementById("kdCanva").getContext("2d");
+      var kpCanva = document.getElementById("kpCanva").getContext("2d");
+      var kiCanva = document.getElementById("kiCanva").getContext("2d");
+
+      currentCanva.font='15px Calibri';
+      currentCanva.fillStyle = "black";
+      kdCanva.font='15px Calibri';
+      kdCanva.fillStyle = "black";
+      kpCanva.font='15px Calibri';
+      kpCanva.fillStyle = "black";
+      kiCanva.font='15px Calibri';
+      kiCanva.fillStyle = "black";
+
+      if(editing_gain === "0x01")
+        editing_gain = "yaw";
+      else if(editing_gain === "0x02")
+      {
+        editing_gain = "pitch";
+        xText = 47;
+        widthText = 35;
+      }
+      else if(editing_gain === "0x03")
+      {
+        editing_gain = "roll";
+        xText = 52;
+        widthText = 27;
+      }
+      else if(editing_gain === "0x04")
+      {
+        editing_gain = "heading";
+        xText = 40;
+        widthText = 50;
+      }
+      else if(editing_gain === "0x05")
+      {
+        editing_gain = "altitude";
+        xText = 37;
+        widthText = 55;
+      }
+      else if(editing_gain === "0x06")
+      {
+        editing_gain = "throttle";
+        xText = 37;
+        widthText = 45;
+      }
+
+      currentCanva.fillText(editing_gain,xText,yText,widthText);
+      kdCanva.fillText(kd_gain,60,15,25);
+      kiCanva.fillText(ki_gain,60,15,25);
+      kpCanva.fillText(kp_gain,60,15,25);
+
+      function onSelectedOption(selectedOpt)
+      {
+        if(selectedOpt === "yaw")
+          Network.write("set_showGain"+"0x00"+"\r\n");
+        else if(selectedOpt === "pitch")
+          Network.write("set_showGain"+"0x01"+"\r\n");
+        else if(selectedOpt === "roll")
+          Network.write("set_showGain"+"0x02"+"\r\n");
+        else if(selectedOpt === "heading")
+          Network.write("set_showGain"+"0x03"+"\r\n");
+        else if(selectedOpt === "altitude")
+          Network.write("set_showGain"+"0x04"+"\r\n");
+        else if(selectedOpt === "throttle")
+          Network.write("set_showGain"+"0x05"+"\r\n");
+      }
+
+      function onClickSend()
+      {
+        if(editing_gain === "yaw")
+        {
+          Network.write("set_yawKDGain"+"kdInput"+"\r\n");
+          Network.write("set_yawKPGain"+"kpCanva"+"\r\n");
+          Network.write("set_yawKIGain"+"kiInput"+"\r\n");
+        }
+        else if(editing_gain === "pitch")
+        {
+          Network.write("set_pitchKDGain"+"kdInput"+"\r\n");
+          Network.write("set_pitchKPGain"+"kpCanva"+"\r\n");
+          Network.write("set_pitchKIGain"+"kiInput"+"\r\n");
+        }
+        else if(editing_gain === "roll")
+        {
+          Network.write("set_rollKDGain"+"kdInput"+"\r\n");
+          Network.write("set_rollKPGain"+"kpCanva"+"\r\n");
+          Network.write("set_rollKIGain"+"kiInput"+"\r\n");
+        }
+        else if(editing_gain === "heading")
+        {
+          Network.write("set_headingKDGain"+"kdInput"+"\r\n");
+          Network.write("set_headingKPGain"+"kpCanva"+"\r\n");
+          Network.write("set_headingKIGain"+"kiInput"+"\r\n");
+        }
+        else if(editing_gain === "altitude")
+        {
+          Network.write("set_altitudeKDGain"+"kdInput"+"\r\n");
+          Network.write("set_altitudeKPGain"+"kpCanva"+"\r\n");
+          Network.write("set_altitudeKIGain"+"kiInput"+"\r\n");
+        }
+        else if(editing_gain === "throttle")
+        {
+          Network.write("set_throttleKDGain"+"kdInput"+"\r\n");
+          Network.write("set_throttleKPGain"+"kpCanva"+"\r\n");
+          Network.write("set_throttleKIGain"+"kiInput"+"\r\n");
+        }
       }
     }
 
