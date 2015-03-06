@@ -258,6 +258,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         heading = flightData.heading;
         speed = flightData.ground_speed;
         batteryLevel = Math.round(flightData.batteryLevel);
+        editing_gain = flightData.editing_gain;
+        gpsStatus = flightData.gpsStatus;
 
         drawArtificalHorizon(roll, pitch);
         drawPitch(pitch);
@@ -266,6 +268,43 @@ var Cockpit = (function ($, Data, Log, Network) {
         setAltimeter(altitude);
         setSpeed(speed);
         drawBattery(batteryLevel);
+        status(editing_gain);
+        gps(gpsStatus);
+    }
+
+    function status(stat)
+    {
+      var statusCanva = document.getElementById("statusCanva").getContext("2d");
+      statusCanva.font='30px Calibri';
+      statusCanva.fillStyle = "black";
+
+      if (stat === "0x00")
+        statusCanva.fillText("MANUAL",13,50,75);
+      else
+        statusCanva.fillText("AUTOPILOT",15,50,75);
+    }
+
+    function gps(gpsStatus)
+    {
+      var gpsCanva = document.getElementById("gpsCanva").getContext("2d");
+      gpsCanva.font='35px Calibri';
+      gpsCanva.fillStyle = "black";
+
+      if(gpsStatus === "0x1A")
+      {
+        gpsCanva.fillStyle = "green";
+        gpsCanva.fillText("4",15,25,20);
+      }
+      else if (gpsStatus === "0x24")
+      {
+        gpsCanva.fillStyle ="green";
+        gpsCanva.fillText("10",15,25,20);
+      }
+      else
+      {
+        gpsCanva.fillStyle ="red";
+        gpsCanva.fillText("0",15,25,20);
+      }
     }
 
     // Don't export anything
