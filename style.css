@@ -15,18 +15,6 @@ body {
     margin: 0.5em auto;
     border-style: none;
 }
-#altimeter, #speed {
-    margin: 1em auto;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    color: #000;
-    border-style: none;
-    width: 10em;
-    height: 1.5em;
-    background-color: #cfd8dc;
-    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
-}
 #log {
     margin: 0 auto;
     left: 0;
