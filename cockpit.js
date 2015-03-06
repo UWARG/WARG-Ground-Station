@@ -12,7 +12,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawRoll(0);
         drawYaw(0);
         drawBattery(0);
-        drawScale(0,"altimeter","Altitude");
+        drawScale(0,300,"altimeter","Altitude");
 
         //Buttons
         $('#goHome').on('click', function () {
@@ -230,10 +230,10 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.fillText(batteryLevel + "%", 50, 35);
     }
 
-    function drawScale(speed, height, title){
-      var c = document.getElementById("myCanvas");
+    function drawScale(speed, height, canvasName, title){
+      var c = document.getElementById(canvasName);
       var ctx = c.getContext("2d");
-      c.width = 310;
+      c.width = 110;
       c.height = height;
 
       //draw the values
@@ -296,8 +296,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawBattery(batteryLevel);
         status(editing_gain);
         gps(gpsStatus);
-        drawScale(altitude,"altimeter","Altitude");
-        drawScale(speed,"speed","Altitude");
+        drawScale(altitude,300,"altimeter","Altitude");
+        drawScale(speed,300,"speed","Altitude");
     }
 
     function status(stat)
