@@ -12,7 +12,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawRoll(0);
         drawYaw(0);
         drawBattery(0);
-        drawScale(0,"altimeter");
+        drawScale(0,300,"altimeter","Altitude");
 
         //Buttons
         $('#goHome').on('click', function () {
@@ -230,50 +230,47 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.fillText(batteryLevel + "%", 50, 35);
     }
 
-        function drawScale(speed, canvasName){
+    function drawScale(speed, height, canvasName, title){
       var c = document.getElementById(canvasName);
       var ctx = c.getContext("2d");
-      c.width = 90;
-      c.height = 300;
-      height = c.height;
-      width = c.width;
+      c.width = 110;
+      c.height = height;
 
-      //if (speed < realSpeed) speed++;
-      //if (speed > realSpeed) speed--;
+      //draw the values
+      ctx.font = '15pt Calibri';
+      ctx.fillText(title,0,20);
 
       //constants
-      BOX_HEIGHT = 30;
-      BOX_WIDTH = 50;
-      OFFSET = 40;
+      var BOX_HEIGHT = 30;
+      var BOX_WIDTH = 70;
+      var OFFSET = 40;
 
       //draw the meter
       ctx.beginPath();
       ctx.rect(OFFSET,height/2-BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT);
-      ctx.rect(0,0,OFFSET,height);
+      ctx.rect(0,30,OFFSET,height-30);
       ctx.lineWidth = 2;
       ctx.strokeStyle = 'black';
       ctx.stroke();
-      console.log(speed);
 
       //draw the values
       ctx.font = '20pt Calibri';
-      mid = height/2+BOX_HEIGHT/2-5;
+      var mid = height/2+BOX_HEIGHT/2-5.0;
 
       //draw the scaling
-      ctx.fillText(speed, OFFSET+2, mid);
+      ctx.fillText(speed.toFixed(2), OFFSET+2, mid);
       ctx.textAlign="end";
       ctx.font = '10pt Calibri';
-      A = 20;
-      B= 0.1;
+      var A = 20;
+      var B= 0.1;
       for (i = mid; i<height; i+=B){
         if ((speed-(i-mid)).toFixed(1) % 1 == 0)
           ctx.fillText((speed-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
       }
-      for (i = mid; i>0; i-=B){
+      for (i = mid; i>154; i-=B){
         if ((speed-(i-mid)).toFixed(1) % 1 == 0)
           ctx.fillText((speed-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
       }
-      console.log(speed);
     }
 
     Network.on('data', updateCockpit);
@@ -299,8 +296,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawBattery(batteryLevel);
         status(editing_gain);
         gps(gpsStatus);
-        drawScale(altitude,"altimeter");
-        drawScale(speed,"speed");
+        drawScale(altitude,300,"altimeter","Altitude");
+        drawScale(speed,300,"speed","Speed");
     }
 
     function status(stat)
