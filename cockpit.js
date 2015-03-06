@@ -44,6 +44,14 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.arc(100, 100, 99, 0, 2 * Math.PI);
         context.stroke();
 
+        //Text
+        var yawText = (parseFloat(yaw) * (180/Math.PI)).toFixed(2);
+        yawText = yawText.toString() + "°";
+        context.fillStyle = "black";
+        context.font = "20px Calibri";
+        context.textAlign="center";
+        context.fillText(yawText, 100, 30);
+
         //Indicator
         image = document.createElement('img');
         image.src = "yaw.png";
@@ -81,6 +89,14 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.arc(100, 100, 99, 0, 2 * Math.PI);
         context.stroke();
 
+        //Text
+        var rollText = (parseFloat(roll) * (180/Math.PI)).toFixed(2);
+        rollText = rollText.toString() + "°";
+        context.fillStyle = "black";
+        context.font = "20px Calibri";
+        context.textAlign="center";
+        context.fillText(rollText, 100, 30);
+
         //Indicator
         image = document.createElement('img');
         image.src = "roll.png";
@@ -117,6 +133,14 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.beginPath();
         context.arc(100, 100, 99, 0, 2 * Math.PI);
         context.stroke();
+
+        //Text
+        var pitchText = (parseFloat(pitch) * (180/Math.PI)).toFixed(2);
+        pitchText = pitchText.toString() + "°";
+        context.fillStyle = "black";
+        context.font = "20px Calibri";
+        context.textAlign="center";
+        context.fillText(pitchText, 100, 30);
 
         //Indicator
         image = document.createElement('img');
