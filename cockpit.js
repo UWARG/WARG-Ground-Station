@@ -258,7 +258,7 @@ var Cockpit = (function ($, Data, Log, Network) {
       var mid = height/2+BOX_HEIGHT/2-5.0;
 
       //draw the scaling
-      ctx.fillText(speed, OFFSET+2, mid);
+      ctx.fillText(speed.toFixed(2), OFFSET+2, mid);
       ctx.textAlign="end";
       ctx.font = '10pt Calibri';
       var A = 20;
@@ -297,7 +297,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         status(editing_gain);
         gps(gpsStatus);
         drawScale(altitude,300,"altimeter","Altitude");
-        drawScale(speed,300,"speed","Altitude");
+        drawScale(speed,300,"speed","Speed");
     }
 
     function status(stat)
