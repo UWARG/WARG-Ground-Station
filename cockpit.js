@@ -174,16 +174,13 @@ var Cockpit = (function ($, Data, Log, Network) {
       var ctx = c.getContext("2d");
       c.width = 90;
       c.height = 300;
-      height = c.height;
-      width = c.width;
-
-      //if (speed < realSpeed) speed++;
-      //if (speed > realSpeed) speed--;
+      var height = c.height;
+      var width = c.width;
 
       //constants
-      BOX_HEIGHT = 30;
-      BOX_WIDTH = 50;
-      OFFSET = 40;
+      var BOX_HEIGHT = 30;
+      var BOX_WIDTH = 50;
+      var OFFSET = 40;
 
       //draw the meter
       ctx.beginPath();
@@ -196,14 +193,14 @@ var Cockpit = (function ($, Data, Log, Network) {
 
       //draw the values
       ctx.font = '20pt Calibri';
-      mid = height/2+BOX_HEIGHT/2-5;
+      var mid = height/2+BOX_HEIGHT/2-5;
 
       //draw the scaling
       ctx.fillText(speed, OFFSET+2, mid);
       ctx.textAlign="end";
       ctx.font = '10pt Calibri';
-      A = 20;
-      B= 0.1;
+      var A = 20;
+      var B= 0.1;
       for (i = mid; i<height; i+=B){
         if ((speed-(i-mid)).toFixed(1) % 1 == 0)
           ctx.fillText((speed-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
