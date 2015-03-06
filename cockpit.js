@@ -13,6 +13,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawYaw(0);
         setAltimeter(0);
         setSpeed(0);
+        drawBattery(0);
 
         //Buttons
         $('#goHome').on('click', function () {
@@ -208,6 +209,42 @@ var Cockpit = (function ($, Data, Log, Network) {
         altimeter.append(newItem);
     }
 
+    function drawBattery(batteryLevel) {
+        //Initialize canvas
+        var canvas = document.getElementById("battery");
+        canvas.height = 60;
+        canvas.width = 100;
+        var context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        //Outline
+        context.fillStyle = "black";
+        context.lineWidth = 5;
+        context.rect(10,5,80,50);
+        context.stroke();
+        context.fillRect(0,20,10,20);
+        context.stroke();
+
+        //Fill
+        if (batteryLevel <= 100 && batteryLevel >= 80) {
+            context.fillStyle = "green";
+        }
+        else if (batteryLevel >= 20 && batteryLevel < 80) {
+            context.fillStyle = "yellow";
+        }
+        else {
+            context.fillStyle = "red";
+        }
+        context.fillRect(13,8,batteryLevel*0.75,44);
+
+        //Text
+        context.fillStyle = "black";
+        context.font = "20px Calibri";
+        context.textAlign="center";
+        context.textAlign="center";
+        context.fillText(batteryLevel + "%", 50, 35);
+    }
+
     Network.on('data', updateCockpit);
 
     function updateCockpit() {
@@ -220,6 +257,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         altitude = flightData.altitude;
         heading = flightData.heading;
         speed = flightData.ground_speed;
+        batteryLevel = Math.round(flightData.batteryLevel);
 
         drawArtificalHorizon(roll, pitch);
         drawPitch(pitch);
@@ -227,6 +265,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawYaw(yaw);
         setAltimeter(altitude);
         setSpeed(speed);
+        drawBattery(batteryLevel);
     }
 
     // Don't export anything
