@@ -14,6 +14,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawBattery(0);
         drawScale(0,300,"altimeter","Altitude");
         drawScale(0,300,"speed","Speed");
+        displayControlStatus(0);
+        displayGPSStatus(0);
 
         //Buttons
         $('#goHome').on('click', function () {
