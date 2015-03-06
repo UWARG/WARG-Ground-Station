@@ -2,6 +2,9 @@ body {
     background-color: #607d8b;
     font-family: "Calibri";
 }
+#cockpit {
+    display: inline-block;
+}
 #map {
     margin: 0 auto;
     right: 0;
