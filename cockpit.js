@@ -12,7 +12,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawRoll(0);
         drawYaw(0);
         drawBattery(0);
-        drawScale(0,"altimeter");
+        drawScale(0,"altimeter","Altitude");
 
         //Buttons
         $('#goHome').on('click', function () {
