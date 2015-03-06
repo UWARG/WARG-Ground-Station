@@ -255,7 +255,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.rect(OFFSET,height/2-BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT);
         context.rect(0,0,OFFSET,height);
         context.lineWidth = 2;
-        context.strokeStyle = 'black';
+        context.strokeStyle = 'white';
         context.stroke();
 
         //draw the values

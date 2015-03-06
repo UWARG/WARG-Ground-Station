@@ -24,6 +24,7 @@
 
 <body>
     <div id="cockpit">
+        <canvas id="battery" class="instrument"></canvas>
         <canvas id="control_status" class="instrument"></canvas>
         <canvas id="gps_status" class="instrument"></canvas>
         <div>
@@ -32,26 +33,27 @@
             <canvas id="roll" class="instrument"></canvas>
             <canvas id="yaw" class="instrument"></canvas>
         </div>
-        <canvas id="altimeter" class="instrument"></canvas>
-        <canvas id="speed" class="instrument"></canvas>
-        <canvas id="battery" class="instrument"></canvas>
+        <div id="meters">
+            <canvas id="altimeter" class="instrument"></canvas>
+            <canvas id="speed" class="instrument"></canvas>
+        </div>
     </div>
     <div id="path">
+        <div id="buttonContainer">
+            <div class="button" id="lockOn">
+                Lock on
+            </div>
+            <div class="button" id="clearWaypoints">
+                Clear Waypoints
+            </div>
+            <div class="button" id="sendWaypoints">
+                Send Waypoints
+            </div>
+            <div class="button" id="goHome">
+                Go Home
+            </div>
+        </div>
         <div id="map"></div>
-    </div>
-    <div id="buttonContainer">
-        <div class="button" id="lockOn">
-            Lock on
-        </div>
-        <div class="button" id="clearWaypoints">
-            Clear Waypoints
-        </div>
-        <div class="button" id="sendWaypoints">
-            Send Waypoints
-        </div>
-        <div class="button" id="goHome">
-            Go Home
-        </div>
     </div>
     <div id="log"></div>
 
