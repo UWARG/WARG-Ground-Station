@@ -76,9 +76,9 @@ var Path = (function ($, Data, Log, Network) {
         // Check for GPS fix, assuming we'll never fly off the coast of West Africa
         // (No GPS fix if coordinates close to (0; 0) or impossibly big)
         var gpsFix = (Math.abs(lat) > 1) && (Math.abs(lon) > 1) && (Math.abs(lat) < 360) && (Math.abs(lon) < 360);
-        
-        lat = Data.state.lat;
-        lon = Data.state.lon;
+
+        lat = parseFloat(Data.state.lat);
+        lon = parseFloat(Data.state.lon);
         heading = Data.state.heading;
         yaw = Data.state.yaw;
 

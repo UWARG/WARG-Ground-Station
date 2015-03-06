@@ -13,6 +13,9 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawYaw(0);
         drawBattery(0);
         drawScale(0,300,"altimeter","Altitude");
+        drawScale(0,300,"speed","Speed");
+        displayControlStatus(0);
+        displayGPSStatus(0);
 
         //Buttons
         $('#goHome').on('click', function () {
@@ -226,115 +229,138 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.fillStyle = "black";
         context.font = "20px Calibri";
         context.textAlign="center";
-        context.textAlign="center";
         context.fillText(batteryLevel + "%", 50, 35);
     }
 
-    function drawScale(speed, height, canvasName, title){
-      var c = document.getElementById(canvasName);
-      var ctx = c.getContext("2d");
-      c.width = 110;
-      c.height = height;
+    function drawScale(value, height, canvasName, title) {
+        value = value.toFixed(2);
+        var canvas = document.getElementById(canvasName);
+        var context = canvas.getContext("2d");
+        canvas.width = 120;
+        canvas.height = height;
+        width = canvas.width;
+        context.clearRect(0, 0, canvas.width, canvas.height);
 
-      //draw the values
-      ctx.font = '15pt Calibri';
-      ctx.fillText(title,0,20);
+        //draw the values
+        context.font = '15pt Calibri';
+        context.fillText(title,50,20);
 
-      //constants
-      var BOX_HEIGHT = 30;
-      var BOX_WIDTH = 70;
-      var OFFSET = 40;
+        //constants
+        BOX_HEIGHT = 30;
+        BOX_WIDTH = 80;
+        OFFSET = 40;
 
-      //draw the meter
-      ctx.beginPath();
-      ctx.rect(OFFSET,height/2-BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT);
-      ctx.rect(0,30,OFFSET,height-30);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
+        //draw the meter
+        context.beginPath();
+        context.rect(OFFSET,height/2-BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT);
+        context.rect(0,0,OFFSET,height);
+        context.lineWidth = 2;
+        context.strokeStyle = 'white';
+        context.stroke();
 
-      //draw the values
-      ctx.font = '20pt Calibri';
-      var mid = height/2+BOX_HEIGHT/2-5.0;
+        //draw the values
+        context.font = '20pt Calibri';
+        mid = height/2+BOX_HEIGHT/2-5;
 
-      //draw the scaling
-      ctx.fillText(speed.toFixed(2), OFFSET+2, mid);
-      ctx.textAlign="end";
-      ctx.font = '10pt Calibri';
-      var A = 20;
-      var B= 0.1;
-      for (i = mid; i<height; i+=B){
-        if ((speed-(i-mid)).toFixed(1) % 1 == 0)
-          ctx.fillText((speed-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
-      }
-      for (i = mid; i>154; i-=B){
-        if ((speed-(i-mid)).toFixed(1) % 1 == 0)
-          ctx.fillText((speed-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
-      }
+        //draw the scaling
+        context.fillText(value, OFFSET+2, mid);
+        context.textAlign="end";
+        context.font = '10pt Calibri';
+        A = 20;
+        B= 0.1;
+
+        for (i = mid; i<height; i+=B){
+            if ((value-(i-mid)).toFixed(1) % 1 == 0) {
+                context.fillText((value-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
+            }
+        }
+        for (i = mid; i>0; i-=B){
+            if ((value-(i-mid)).toFixed(1) % 1 == 0) {
+                context.fillText((value-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
+            }
+        }
+    }
+
+    function displayControlStatus(editing_gain) {
+        var canvas = document.getElementById("control_status");
+        canvas.height = 30;
+        canvas.width = 100;
+        var context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        context.font='20px Calibri';
+        context.textAlign="center";
+        context.fillStyle = "white";
+
+        var text;
+        if (editing_gain === 0) {
+            text = "MANUAL";
+        }
+        else {
+            text = "AUTOPILOT";
+        }
+
+        context.fillText(text,50,20);
+    }
+
+    function displayGPSStatus(gpsStatus) {
+        var canvas = document.getElementById("gps_status");
+        canvas.height = 30;
+        canvas.width = 50;
+        var context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        gpsStatus = parseInt(gpsStatus);
+
+        if (checkBit(gpsStatus,1)) {
+            context.fillStyle ="green";
+        }
+        else {
+            context.fillStyle ="red";
+        }
+        context.fillRect(0,0,canvas.width,canvas.height);
+
+        context.font='20px Calibri';
+        context.textAlign="center";
+        context.fillStyle = "white";
+
+        gpsStatus = gpsStatus & 15;
+        context.fillText(gpsStatus,25,20);
     }
 
     Network.on('data', updateCockpit);
 
+    //Checks nth bit for x
+    function checkBit(x, n) {
+        return (x >> (n-1)) & 1;
+    }
+
     function updateCockpit() {
         var flightData = Data.state;
-        roll = flightData.roll * (Math.PI / 180);
-        pitch = flightData.pitch * (Math.PI / 180);
-        yaw = flightData.yaw * (Math.PI / 180);
+        var roll = flightData.roll * (Math.PI / 180);
+        var pitch = flightData.pitch * (Math.PI / 180);
+        var yaw = flightData.yaw * (Math.PI / 180);
+        var altitude = parseFloat(flightData.altitude);
+        var heading = flightData.heading;
+        var ground_speed = parseFloat(flightData.ground_speed);
+        var batteryLevel = Math.round(parseFloat(flightData.batteryLevel));
+        var editing_gain = parseInt(flightData.editing_gain);
+        var gpsStatus = flightData.gpsStatus;
+
+        //Used in path.js for some reason
         lat = flightData.lat;
         lon = flightData.lon;
-        altitude = flightData.altitude;
-        heading = flightData.heading;
-        speed = flightData.ground_speed;
-        batteryLevel = Math.round(flightData.batteryLevel);
-        editing_gain = flightData.editing_gain;
-        gpsStatus = flightData.gpsStatus;
 
         drawArtificalHorizon(roll, pitch);
         drawPitch(pitch);
         drawRoll(roll);
         drawYaw(yaw);
         drawBattery(batteryLevel);
-        status(editing_gain);
-        gps(gpsStatus);
+        displayControlStatus(editing_gain);
+        displayGPSStatus(gpsStatus);
         drawScale(altitude,300,"altimeter","Altitude");
-        drawScale(speed,300,"speed","Speed");
+        drawScale(ground_speed,300,"speed","Speed");
     }
-
-    function status(stat)
-    {
-      var statusCanva = document.getElementById("statusCanva").getContext("2d");
-      statusCanva.font='30px Calibri';
-      statusCanva.fillStyle = "black";
-
-      if (stat === "0x00")
-        statusCanva.fillText("MANUAL",13,50,75);
-      else
-        statusCanva.fillText("AUTOPILOT",15,50,75);
-    }
-
-    function gps(gpsStatus)
-    {
-      var gpsCanva = document.getElementById("gpsCanva").getContext("2d");
-      gpsCanva.font='35px Calibri';
-      gpsCanva.fillStyle = "black";
-
-      if(gpsStatus === "0x1A")
-      {
-        gpsCanva.fillStyle = "green";
-        gpsCanva.fillText("4",15,25,20);
-      }
-      else if (gpsStatus === "0x24")
-      {
-        gpsCanva.fillStyle ="green";
-        gpsCanva.fillText("10",15,25,20);
-      }
-      else
-      {
-        gpsCanva.fillStyle ="red";
-        gpsCanva.fillText("0",15,25,20);
-      }
-    }
-
     // Don't export anything
     return {};
 

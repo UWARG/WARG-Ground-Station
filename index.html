@@ -23,35 +23,37 @@
 </head>
 
 <body>
-
-  <canvas id="statusCanva" width="100" height="80" style="border:2px solid #c3c3c3;"></canvas>
-  <canvas id="gpsCanva" width="50" height="30" style="border:2px solid #c3c3c3;"></canvas>
-
     <div id="cockpit">
-        <canvas id="horizon" class="instrument"></canvas>
-        <canvas id="pitch" class="instrument"></canvas>
-        <canvas id="roll" class="instrument"></canvas>
-        <canvas id="yaw" class="instrument"></canvas>
-        <canvas id="altimeter" class="instrument"></canvas>
-        <canvas id="speed" class="instrument"></canvas>
         <canvas id="battery" class="instrument"></canvas>
+        <canvas id="control_status" class="instrument"></canvas>
+        <canvas id="gps_status" class="instrument"></canvas>
+        <div>
+            <canvas id="horizon" class="instrument"></canvas>
+            <canvas id="pitch" class="instrument"></canvas>
+            <canvas id="roll" class="instrument"></canvas>
+            <canvas id="yaw" class="instrument"></canvas>
+        </div>
+        <div id="meters">
+            <canvas id="altimeter" class="instrument"></canvas>
+            <canvas id="speed" class="instrument"></canvas>
+        </div>
     </div>
     <div id="path">
+        <div id="buttonContainer">
+            <div class="button" id="lockOn">
+                Lock on
+            </div>
+            <div class="button" id="clearWaypoints">
+                Clear Waypoints
+            </div>
+            <div class="button" id="sendWaypoints">
+                Send Waypoints
+            </div>
+            <div class="button" id="goHome">
+                Go Home
+            </div>
+        </div>
         <div id="map"></div>
-    </div>
-    <div id="buttonContainer">
-        <div class="button" id="lockOn">
-            Lock on
-        </div>
-        <div class="button" id="clearWaypoints">
-            Clear Waypoints
-        </div>
-        <div class="button" id="sendWaypoints">
-            Send Waypoints
-        </div>
-        <div class="button" id="goHome">
-            Go Home
-        </div>
     </div>
     <div id="log"></div>
 
