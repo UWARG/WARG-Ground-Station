@@ -123,6 +123,7 @@ var Cockpit = (function ($, Data, Log, Network) {
     }
 
     function drawRoll(roll) {
+        roll = -roll;
         //Initialize canvas
         var canvas = document.getElementById("roll");
         canvas.height = 200;
