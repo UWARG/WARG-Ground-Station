@@ -12,16 +12,74 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawRoll(0);
         drawYaw(0);
         drawBattery(0);
-        drawScale(0,300,"altimeter","Altitude");
-        drawScale(0,300,"speed","Speed");
+        drawScale(0, 300, "altimeter", "Altitude");
+        drawScale(0, 300, "speed", "Speed");
         displayControlStatus(0);
         displayGPSStatus(0);
 
         //Buttons
         $('#goHome').on('click', function () {
-            command = "return_home\r\n";
+            var command = "return_home\r\n";
             Network.write(command);
-            Log.write(command);
+        });
+
+        $('#sendGains').on('click', function () {
+            var flightData = Data.state;
+            var editing_gain = parseInt(flightData.editing_gain);
+            var kdInput = document.getElementById("kdInput").value;
+            var kpInput = document.getElementById("kpInput").value;
+            var kiInput = document.getElementById("kiInput").value;
+
+            if (editing_gain === 1) {
+                Network.write("set_yawKDGain:" + kdInput + "\r\n");
+                Network.write("set_yawKPGain:" + kpInput + "\r\n");
+                Network.write("set_yawKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 2) {
+                Network.write("set_pitchKDGain:" + kdInput + "\r\n");
+                Network.write("set_pitchKPGain:" + kpInput + "\r\n");
+                Network.write("set_pitchKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 3) {
+                Network.write("set_rollKDGain:" + kdInput + "\r\n");
+                Network.write("set_rollKPGain:" + kpInput + "\r\n");
+                Network.write("set_rollKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 4) {
+                Network.write("set_headingKDGain:" + kdInput + "\r\n");
+                Network.write("set_headingKPGain:" + kpInput + "\r\n");
+                Network.write("set_headingKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 5) {
+                Network.write("set_altitudeKDGain:" + kdInput + "\r\n");
+                Network.write("set_altitudeKPGain:" + kpInput + "\r\n");
+                Network.write("set_altitudeKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 6) {
+                Network.write("set_throttleKDGain:" + kdInput + "\r\n");
+                Network.write("set_throttleKPGain:" + kpInput + "\r\n");
+                Network.write("set_throttleKIGain:" + kiInput + "\r\n");
+            }
+            else {
+                Log.write("Error sending gains: Plane not in autonomous mode");
+            }
+        });
+
+        $('#gainSelect').on('click', function () {
+            var e = document.getElementById("gainSelect");
+            var selectedOpt = e.options[e.selectedIndex].text;
+            var command = "set_showGain:";
+
+            if (selectedOpt === "Yaw")
+                command += "0x00";
+            else if (selectedOpt === "Pitch")
+                command += "0x01";
+            else if (selectedOpt === "Roll")
+                command += "0x02";
+            else if (selectedOpt === "Heading")
+                command += "0x03";
+            else if (selectedOpt === "Altitude")
+                command += "0x04";
+            else if (selectedOpt === "Throttle")
+                command += "0x05";
+
+            command += "\r\n";
+            Network.write(command);
         });
     });
 
@@ -30,7 +88,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         var canvas = document.getElementById("yaw");
         canvas.height = 200;
         canvas.width = 200;
-        canvas.title = yaw*180/Math.PI + "°";
+        canvas.title = yaw * 180 / Math.PI + "°";
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -48,11 +106,11 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
 
         //Text
-        var yawText = (parseFloat(yaw) * (180/Math.PI)).toFixed(2);
+        var yawText = (parseFloat(yaw) * (180 / Math.PI)).toFixed(2);
         yawText = yawText.toString() + "°";
         context.fillStyle = "black";
         context.font = "20px Calibri";
-        context.textAlign="center";
+        context.textAlign = "center";
         context.fillText(yawText, 100, 30);
 
         //Indicator
@@ -69,7 +127,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         var canvas = document.getElementById("roll");
         canvas.height = 200;
         canvas.width = 200;
-        canvas.title = roll*180/Math.PI + "°";
+        canvas.title = roll * 180 / Math.PI + "°";
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -93,11 +151,11 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
 
         //Text
-        var rollText = (parseFloat(roll) * (180/Math.PI)).toFixed(2);
+        var rollText = (parseFloat(roll) * (180 / Math.PI)).toFixed(2);
         rollText = rollText.toString() + "°";
         context.fillStyle = "black";
         context.font = "20px Calibri";
-        context.textAlign="center";
+        context.textAlign = "center";
         context.fillText(rollText, 100, 30);
 
         //Indicator
@@ -114,7 +172,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         var canvas = document.getElementById("pitch");
         canvas.height = 200;
         canvas.width = 200;
-        canvas.title = pitch*180/Math.PI + "°";
+        canvas.title = pitch * 180 / Math.PI + "°";
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -138,11 +196,11 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
 
         //Text
-        var pitchText = (parseFloat(pitch) * (180/Math.PI)).toFixed(2);
+        var pitchText = (parseFloat(pitch) * (180 / Math.PI)).toFixed(2);
         pitchText = pitchText.toString() + "°";
         context.fillStyle = "black";
         context.font = "20px Calibri";
-        context.textAlign="center";
+        context.textAlign = "center";
         context.fillText(pitchText, 100, 30);
 
         //Indicator
@@ -208,27 +266,25 @@ var Cockpit = (function ($, Data, Log, Network) {
         //Outline
         context.fillStyle = "black";
         context.lineWidth = 5;
-        context.rect(10,5,80,50);
+        context.rect(10, 5, 80, 50);
         context.stroke();
-        context.fillRect(0,20,10,20);
+        context.fillRect(0, 20, 10, 20);
         context.stroke();
 
         //Fill
         if (batteryLevel <= 100 && batteryLevel >= 80) {
             context.fillStyle = "green";
-        }
-        else if (batteryLevel >= 20 && batteryLevel < 80) {
+        } else if (batteryLevel >= 20 && batteryLevel < 80) {
             context.fillStyle = "yellow";
-        }
-        else {
+        } else {
             context.fillStyle = "red";
         }
-        context.fillRect(13,8,batteryLevel*0.75,44);
+        context.fillRect(13, 8, batteryLevel * 0.75, 44);
 
         //Text
         context.fillStyle = "black";
         context.font = "20px Calibri";
-        context.textAlign="center";
+        context.textAlign = "center";
         context.fillText(batteryLevel + "%", 50, 35);
     }
 
@@ -243,7 +299,7 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         //draw the values
         context.font = '15pt Calibri';
-        context.fillText(title,50,20);
+        context.fillText(title, 50, 20);
 
         //constants
         BOX_HEIGHT = 30;
@@ -252,31 +308,31 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         //draw the meter
         context.beginPath();
-        context.rect(OFFSET,height/2-BOX_HEIGHT/2, BOX_WIDTH, BOX_HEIGHT);
-        context.rect(0,0,OFFSET,height);
+        context.rect(OFFSET, height / 2 - BOX_HEIGHT / 2, BOX_WIDTH, BOX_HEIGHT);
+        context.rect(0, 0, OFFSET, height);
         context.lineWidth = 2;
         context.strokeStyle = 'white';
         context.stroke();
 
         //draw the values
         context.font = '20pt Calibri';
-        mid = height/2+BOX_HEIGHT/2-5;
+        mid = height / 2 + BOX_HEIGHT / 2 - 5;
 
         //draw the scaling
-        context.fillText(value, OFFSET+2, mid);
-        context.textAlign="end";
+        context.fillText(value, OFFSET + 2, mid);
+        context.textAlign = "end";
         context.font = '10pt Calibri';
         A = 20;
-        B= 0.1;
+        B = 0.1;
 
-        for (i = mid; i<height; i+=B){
-            if ((value-(i-mid)).toFixed(1) % 1 == 0) {
-                context.fillText((value-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
+        for (i = mid; i < height; i += B) {
+            if ((value - (i - mid)).toFixed(1) % 1 == 0) {
+                context.fillText((value - (i - mid)).toFixed(1), OFFSET - 2, i * A - (A - 1) * mid - 2);
             }
         }
-        for (i = mid; i>0; i-=B){
-            if ((value-(i-mid)).toFixed(1) % 1 == 0) {
-                context.fillText((value-(i-mid)).toFixed(1),OFFSET-2,i*A-(A-1)*mid-2);
+        for (i = mid; i > 0; i -= B) {
+            if ((value - (i - mid)).toFixed(1) % 1 == 0) {
+                context.fillText((value - (i - mid)).toFixed(1), OFFSET - 2, i * A - (A - 1) * mid - 2);
             }
         }
     }
@@ -288,19 +344,18 @@ var Cockpit = (function ($, Data, Log, Network) {
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        context.font='20px Calibri';
-        context.textAlign="center";
+        context.font = '20px Calibri';
+        context.textAlign = "center";
         context.fillStyle = "white";
 
         var text;
-        if (editing_gain === 0) {
+        if (editing_gain === 0 || editing_gain === 18) {
             text = "MANUAL";
-        }
-        else {
+        } else {
             text = "AUTOPILOT";
         }
 
-        context.fillText(text,50,20);
+        context.fillText(text, 50, 20);
     }
 
     function displayGPSStatus(gpsStatus) {
@@ -312,27 +367,26 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         gpsStatus = parseInt(gpsStatus);
 
-        if (checkBit(gpsStatus,1)) {
-            context.fillStyle ="green";
+        if (checkBit(gpsStatus, 1)) {
+            context.fillStyle = "green";
+        } else {
+            context.fillStyle = "red";
         }
-        else {
-            context.fillStyle ="red";
-        }
-        context.fillRect(0,0,canvas.width,canvas.height);
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-        context.font='20px Calibri';
-        context.textAlign="center";
+        context.font = '20px Calibri';
+        context.textAlign = "center";
         context.fillStyle = "white";
 
         gpsStatus = gpsStatus & 15;
-        context.fillText(gpsStatus,25,20);
+        context.fillText(gpsStatus, 25, 20);
     }
 
     Network.on('data', updateCockpit);
 
     //Checks nth bit for x
     function checkBit(x, n) {
-        return (x >> (n-1)) & 1;
+        return (x >> (n - 1)) & 1;
     }
 
     function updateCockpit() {
@@ -346,6 +400,9 @@ var Cockpit = (function ($, Data, Log, Network) {
         var batteryLevel = Math.round(parseFloat(flightData.batteryLevel));
         var editing_gain = parseInt(flightData.editing_gain);
         var gpsStatus = flightData.gpsStatus;
+        var kd_gain = flightData.kd_gain;
+        var kp_gain = flightData.kp_gain;
+        var ki_gain = flightData.ki_gain;
 
         //Used in path.js for some reason
         lat = flightData.lat;
@@ -358,9 +415,67 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawBattery(batteryLevel);
         displayControlStatus(editing_gain);
         displayGPSStatus(gpsStatus);
-        drawScale(altitude,300,"altimeter","Altitude");
-        drawScale(ground_speed,300,"speed","Speed");
+        drawScale(altitude, 300, "altimeter", "Altitude");
+        drawScale(ground_speed, 300, "speed", "Speed");
+        displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
     }
+
+    function displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain) {
+        var xText = 50;
+        var yText = 20;
+        var widthText = 25;
+
+        var currentCanva = document.getElementById("currentCanva").getContext("2d");
+        var kdCanva = document.getElementById("kdCanva").getContext("2d");
+        var kpCanva = document.getElementById("kpCanva").getContext("2d");
+        var kiCanva = document.getElementById("kiCanva").getContext("2d");
+        currentCanva.clearRect(0, 0, 130, 20);
+        kdCanva.clearRect(0, 0, 130, 20);
+        kpCanva.clearRect(0, 0, 130, 20);
+        kiCanva.clearRect(0, 0, 130, 20);
+
+        currentCanva.font = '15px Calibri';
+        currentCanva.fillStyle = "black";
+        kdCanva.font = '15px Calibri';
+        kdCanva.fillStyle = "black";
+        kpCanva.font = '15px Calibri';
+        kpCanva.fillStyle = "black";
+        kiCanva.font = '15px Calibri';
+        kiCanva.fillStyle = "black";
+
+        if (editing_gain === 1)
+            editing_gain = "Yaw";
+        else if (editing_gain === 2) {
+            editing_gain = "Pitch";
+            xText = 47;
+            widthText = 35;
+        } else if (editing_gain === 3) {
+            editing_gain = "Roll";
+            xText = 52;
+            widthText = 27;
+        } else if (editing_gain === 4) {
+            editing_gain = "Heading";
+            xText = 40;
+            widthText = 50;
+        } else if (editing_gain === 5) {
+            editing_gain = "Altitude";
+            xText = 37;
+            widthText = 55;
+        } else if (editing_gain === 6) {
+            editing_gain = "Throttle";
+            xText = 37;
+            widthText = 45;
+        }
+        else {
+            editing_gain = "N/A";
+        }
+
+        currentCanva.fillText(editing_gain, xText, yText, widthText);
+        kdCanva.fillText(kd_gain, 60, 15);
+        kiCanva.fillText(ki_gain, 60, 15);
+        kpCanva.fillText(kp_gain, 60, 15);
+    }
+
     // Don't export anything
     return {};
 

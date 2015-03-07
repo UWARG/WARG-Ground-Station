@@ -1,4 +1,4 @@
-var Network = (function(Data, Log) {
+var Network = (function (Data, Log) {
 
     var net = require('net');
     var events = require('events');
@@ -10,6 +10,7 @@ var Network = (function(Data, Log) {
     var emitter = new events.EventEmitter();
 
     connect();
+
     function connect() {
         client = new net.Socket();
         client.connect(port, host, connectHandler);
@@ -20,6 +21,7 @@ var Network = (function(Data, Log) {
 
     function write(data) {
         client.write(data);
+        Log.write(data);
     }
 
     function connectHandler(err) {
@@ -54,13 +56,12 @@ var Network = (function(Data, Log) {
 
         emitter.emit('data', Data.state);
         emitter.write = write;
-        // UpdateUI();
     }
 
     function closeHandler() {
         Log.write('Connection closed - Retrying connection');
         Data.headers = [];
-        setTimeout(connect, Math.random()*500 + 500);
+        setTimeout(connect, Math.random() * 500 + 500);
     }
 
     // Export only the event emitter
