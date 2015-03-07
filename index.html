@@ -33,9 +33,36 @@
             <canvas id="roll" class="instrument"></canvas>
             <canvas id="yaw" class="instrument"></canvas>
         </div>
-        <div id="meters">
-            <canvas id="altimeter" class="instrument"></canvas>
-            <canvas id="speed" class="instrument"></canvas>
+        <div>
+            <div id="meters">
+                <canvas id="altimeter" class="instrument"></canvas>
+                <canvas id="speed" class="instrument"></canvas>
+            </div>
+            <div id="gains">
+                <select id="gainSelect">
+                    <option value="yaw">Yaw</option>
+                    <option value="pitch">Pitch</option>
+                    <option value="roll">Roll</option>
+                    <option value="heading">Heading</option>
+                    <option value="altitude">Altitude</option>
+                    <option value="throttle">Throttle</option>
+                </select>
+                <canvas id="currentCanva" width="130" height="20" class="instrument"></canvas>
+                <pre class="text">     KD_GAIN           KP_GAIN          KI_GAIN</pre>
+                <div>
+                    <canvas id="kdCanva" width="130" height="20" class="instrument"></canvas>
+                    <canvas id="kpCanva" width="130" height="20" class="instrument"></canvas>
+                    <canvas id="kiCanva" width="130" height="20" class="instrument"></canvas>
+                </div>
+                <div>
+                    <input type="number" id="kdInput" value="0">
+                    <input type="number" id="kpInput" value="0">
+                    <input type="number" id="kiInput" value="0">
+                </div>
+                <div class="button" id="sendGains">
+                    Send Gains
+                </div>
+            </div>
         </div>
     </div>
     <div id="path">
@@ -56,6 +83,6 @@
         <div id="map"></div>
     </div>
     <div id="log"></div>
-
 </body>
+
 </html>

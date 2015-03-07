@@ -2,21 +2,32 @@ body {
     background-color: #607d8b;
     font-family: "Calibri";
 }
+
 #cockpit {
-    display: inline-block;
+    display: inline;
 }
+
 #meters {
-    position: fixed;
+    display: inline;
 }
+
+#gains {
+    display: inline;
+    position: fixed;
+    margin-left: 2em;
+}
+
 #buttonContainer {
     display: inline;
     position: fixed;
     top: 0;
     right: 0.5em;
 }
+
 #path {
     display: inline-block;
 }
+
 #map {
     margin: 0 auto;
     right: 0;
@@ -26,10 +37,12 @@ body {
     position: fixed;
     height: 95%;
 }
+
 .instrument {
     margin: 0.5em auto;
     border-style: none;
 }
+
 #log {
     margin: 0 auto;
     left: 0;
@@ -42,11 +55,21 @@ body {
     background-color: #cfd8dc;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
 }
+
+.text {
+    font-family: "Calibri";
+    text-align: center;
+    font-size: 1em;
+    line-height: 1.5em;
+    color: #fff;
+}
+
 .logText {
     text-align: center;
     font-size: 1em;
     line-height: 1.5em;
 }
+
 .button {
     display: inline-block;
     text-align: center;
@@ -57,14 +80,17 @@ body {
     background-color: #607d8b;
     -webkit-transition: background-color .15s ease-in-out;
 }
+
 .button:hover {
     background-color: #546e7a;
     cursor: pointer;
 }
+
 .button:active {
     background-color: #455a64;
     cursor: pointer;
 }
+
 .messagebox-gpsfix {
     border: none;
     border-radius: 6px;

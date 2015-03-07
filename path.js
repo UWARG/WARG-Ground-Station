@@ -38,7 +38,6 @@ var Path = (function ($, Data, Log, Network) {
                 var latLng = waypoints[i];
                 command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "\r\n";
                 Network.write(command);
-                Log.write(command);
             }
         });
 
