@@ -258,34 +258,34 @@ var Cockpit = (function ($, Data, Log, Network) {
     function drawBattery(batteryLevel) {
         //Initialize canvas
         var canvas = document.getElementById("battery");
-        canvas.height = 60;
-        canvas.width = 100;
+        canvas.height = 30;
+        canvas.width = 50;
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         //Outline
         context.fillStyle = "black";
-        context.lineWidth = 5;
-        context.rect(10, 5, 80, 50);
+        context.lineWidth = 2;
+        context.rect(2, 2, 44, 26);
         context.stroke();
-        context.fillRect(0, 20, 10, 20);
+        context.fillRect(0, 10, 2, 10);
         context.stroke();
 
         //Fill
-        if (batteryLevel <= 100 && batteryLevel >= 80) {
-            context.fillStyle = "green";
-        } else if (batteryLevel >= 20 && batteryLevel < 80) {
-            context.fillStyle = "yellow";
+        if (batteryLevel <= 100 && batteryLevel >= 70) {
+            context.fillStyle = "#4caf50";
+        } else if (batteryLevel >= 20 && batteryLevel < 70) {
+            context.fillStyle = "#cddc39";
         } else {
-            context.fillStyle = "red";
+            context.fillStyle = "#f44336";
         }
-        context.fillRect(13, 8, batteryLevel * 0.75, 44);
+        context.fillRect(3.5, 3, batteryLevel * 0.42, 23.5);
 
         //Text
         context.fillStyle = "black";
-        context.font = "20px Calibri";
+        context.font = "16px Calibri";
         context.textAlign = "center";
-        context.fillText(batteryLevel + "%", 50, 35);
+        context.fillText(batteryLevel + "%", 25, 20);
     }
 
     function drawScale(value, height, canvasName, title) {
