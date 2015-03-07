@@ -201,6 +201,7 @@ L.Polyline.plotter = L.Polyline.extend({
     _onGhostDragEnd: function(e){
     	this._indexOfDraggedPoint = -1;
     	this._bindPathHover();
+    	this._fireChangeEvent();
     },
     _setExistingLatLngs: function(latlngs){
         this._existingLatLngs = latlngs;
@@ -208,17 +209,22 @@ L.Polyline.plotter = L.Polyline.extend({
     _replot: function(){
         this._redraw();
     },
+    _fireChangeEvent: function(){
+    	this.fire('change', {foo: 'bar'});
+    },
     _getNewMarker: function(latlng, options){
         return new L.marker(latlng, options);
     },
     _unbindMarkerEvents: function(marker){
-        marker.off('click', this._removePoint, this);
+        marker.off('contextmenu', this._removePoint, this);
         marker.off('drag', this._replot, this);
+        marker.off('dragend', this._fireChangeEvent, this);
         marker.dragging.disable();
     },
     _bindMarkerEvents: function(marker){
-        marker.on('click', this._removePoint, this);
+        marker.on('contextmenu', this._removePoint, this);
         marker.on('drag', this._replot, this);
+        marker.on('dragend', this._fireChangeEvent, this);
         marker.dragging.enable();
     },
     _addToMapAndBindMarker: function(newMarker){
@@ -231,10 +237,12 @@ L.Polyline.plotter = L.Polyline.extend({
         this._map.removeLayer(this._lineMarkers[this._lineMarkers.indexOf(e.target)]);
         this._lineMarkers.splice(this._lineMarkers.indexOf(e.target), 1);
         this._replot();
+        this._fireChangeEvent();
     },
     _onMapClick: function(e){
         this._addNewMarker(e);
         this._replot();
+        this._fireChangeEvent();
     },
     _addNewMarker: function(e){
         var newMarker = this._getNewMarker(e.latlng, { icon: this._editIcon });

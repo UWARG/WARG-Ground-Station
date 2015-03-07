@@ -6,8 +6,7 @@ var Path = (function ($, Data, Log, Network) {
 
     // Interactive map objects here
     var map;
-    var popup = L.popup();
-
+    
     // Initialize map if necessary
     $(document).ready(function () {
         if (!map) {
@@ -17,8 +16,6 @@ var Path = (function ($, Data, Log, Network) {
             L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
                 maxZoom: 19
             }).addTo(map);
-
-            map.on('click', mapClick);
         }
     });
 
@@ -43,29 +40,17 @@ var Path = (function ($, Data, Log, Network) {
 
         $('#clearWaypoints').on('click', function () {
             waypoints = [];
+            waypointPlotter.setLatLngs(waypoints);  // BUG Plotter internal state is not correctly updated after setLatLngs
             redrawMap();
         });
     });
-
-    function mapClick(e) {
-        // popup
-        //     .setLatLng(e.latlng)
-        //     .setContent('<div class="button" id="addWaypoint">Add Waypoint</div>')
-        //     .openOn(map);
-
-        $('#addWaypoint').on('click', function () {
-            map.closePopup();
-            waypoints.push(e.latlng);
-            redrawMap();
-        });
-    }
 
     var planeIcon;
     var planeHollowIcon;
     var planeMarker;
     var gpsFixMessagebox;
     var waypointMarkerGroup;
-    var waypointPolyline;
+    var waypointPlotter;
     var historyPolyline;
 
     Network.on('data', redrawMap);
@@ -116,13 +101,17 @@ var Path = (function ($, Data, Log, Network) {
             waypointMarkerGroup = L.layerGroup().addTo(map);
         }
 
-        // Init waypointPolyline if necessary
-        if (!waypointPolyline) {
-            waypointPolyline = L.Polyline.Plotter(waypoints, {
+        // Init waypointPlotter if necessary
+        if (!waypointPlotter) {
+            waypointPlotter = L.Polyline.Plotter(waypoints, {
                 color: 'red',
                 weight: 5,
                 opacity: 0.5,
             }).addTo(map);
+
+            waypointPlotter.on('change', function(e) {
+                console.log('waypoint polyline change', e.target.getLatLngs().map(function(a){return a+'';}));
+            });
         }
 
         // Init historyPolyline if necessary
@@ -152,16 +141,6 @@ var Path = (function ($, Data, Log, Network) {
         } else {
             gpsFixMessagebox.show('No GPS fix');
         }
-
-        // Redraw waypoint markers
-        waypointMarkerGroup.clearLayers();
-        for (var i = 0; i < waypoints.length; ++i) {
-            waypointMarkerGroup.addLayer(new L.marker(waypoints[i]));
-        }
-
-        // Redraw waypoint polyline
-        // waypointPolyline.setLatLngs(waypoints);
-        // waypointPolyline.spliceLatLngs(0, 0, new L.LatLng(lat, lon));
 
         // Draw points on historyPolyline
         if (gpsFix) {
