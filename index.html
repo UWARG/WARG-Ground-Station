@@ -39,25 +39,31 @@
                 <canvas id="speed" class="instrument"></canvas>
             </div>
             <div id="gains">
-                <select id="gainSelect">
-                    <option value="yaw">Yaw</option>
-                    <option value="pitch">Pitch</option>
-                    <option value="roll">Roll</option>
-                    <option value="heading">Heading</option>
-                    <option value="altitude">Altitude</option>
-                    <option value="throttle">Throttle</option>
-                </select>
-                <canvas id="currentCanva" width="130" height="20" class="instrument"></canvas>
-                <pre class="text">     KD_GAIN           KP_GAIN          KI_GAIN</pre>
                 <div>
-                    <canvas id="kdCanva" width="130" height="20" class="instrument"></canvas>
-                    <canvas id="kpCanva" width="130" height="20" class="instrument"></canvas>
-                    <canvas id="kiCanva" width="130" height="20" class="instrument"></canvas>
+                    <select id="gainSelect" class="dropdown">
+                        <option value="yaw">Yaw</option>
+                        <option value="pitch">Pitch</option>
+                        <option value="roll">Roll</option>
+                        <option value="heading">Heading</option>
+                        <option value="altitude">Altitude</option>
+                        <option value="throttle">Throttle</option>
+                    </select>
+                    <div id="current_gain" class="display"></div>
                 </div>
                 <div>
-                    <input type="number" id="kdInput" value="0">
-                    <input type="number" id="kpInput" value="0">
-                    <input type="number" id="kiInput" value="0">
+                    <div class="display">KD_GAIN</div>
+                    <div class="display">KP_GAIN</div>
+                    <div class="display">KI_GAIN</div>
+                </div>
+                <div>
+                    <div id="current_kd" class="display"></div>
+                    <div id="current_kp" class="display"></div>
+                    <div id="current_ki" class="display"></div>
+                </div>
+                <div>
+                    <input type="number" id="kdInput" class="input" value="0">
+                    <input type="number" id="kpInput" class="input" value="0">
+                    <input type="number" id="kiInput" class="input" value="0">
                 </div>
                 <div class="button" id="sendGains">
                     Send Gains

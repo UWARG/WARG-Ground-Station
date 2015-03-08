@@ -54,8 +54,7 @@ var Cockpit = (function ($, Data, Log, Network) {
                 Network.write("set_throttleKDGain:" + kdInput + "\r\n");
                 Network.write("set_throttleKPGain:" + kpInput + "\r\n");
                 Network.write("set_throttleKIGain:" + kiInput + "\r\n");
-            }
-            else {
+            } else {
                 Log.write("Error sending gains: Plane not in autonomous mode");
             }
         });
@@ -422,59 +421,53 @@ var Cockpit = (function ($, Data, Log, Network) {
     }
 
     function displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain) {
-        var xText = 50;
-        var yText = 20;
-        var widthText = 25;
-
-        var currentCanva = document.getElementById("currentCanva").getContext("2d");
-        var kdCanva = document.getElementById("kdCanva").getContext("2d");
-        var kpCanva = document.getElementById("kpCanva").getContext("2d");
-        var kiCanva = document.getElementById("kiCanva").getContext("2d");
-        currentCanva.clearRect(0, 0, 130, 20);
-        kdCanva.clearRect(0, 0, 130, 20);
-        kpCanva.clearRect(0, 0, 130, 20);
-        kiCanva.clearRect(0, 0, 130, 20);
-
-        currentCanva.font = '15px Calibri';
-        currentCanva.fillStyle = "black";
-        kdCanva.font = '15px Calibri';
-        kdCanva.fillStyle = "black";
-        kpCanva.font = '15px Calibri';
-        kpCanva.fillStyle = "black";
-        kiCanva.font = '15px Calibri';
-        kiCanva.fillStyle = "black";
-
         if (editing_gain === 1)
             editing_gain = "Yaw";
         else if (editing_gain === 2) {
             editing_gain = "Pitch";
-            xText = 47;
-            widthText = 35;
         } else if (editing_gain === 3) {
             editing_gain = "Roll";
-            xText = 52;
-            widthText = 27;
         } else if (editing_gain === 4) {
             editing_gain = "Heading";
-            xText = 40;
-            widthText = 50;
         } else if (editing_gain === 5) {
             editing_gain = "Altitude";
-            xText = 37;
-            widthText = 55;
         } else if (editing_gain === 6) {
             editing_gain = "Throttle";
-            xText = 37;
-            widthText = 45;
-        }
-        else {
+        } else {
             editing_gain = "N/A";
         }
 
-        currentCanva.fillText(editing_gain, xText, yText, widthText);
-        kdCanva.fillText(kd_gain, 60, 15);
-        kiCanva.fillText(ki_gain, 60, 15);
-        kpCanva.fillText(kp_gain, 60, 15);
+        //Display editing_gain
+        var current_gain = $('#current_gain')
+        if (current_gain.children().length === 1) {
+            current_gain.children()[0].remove();
+        }
+        var newItem = $('<div>' + editing_gain + '</div>');
+        current_gain.append(newItem);
+
+        //Display KD
+        var current_kd = $('#current_kd')
+        if (current_kd.children().length === 1) {
+            current_kd.children()[0].remove();
+        }
+        var newItem = $('<div>' + kd_gain + '</div>');
+        current_kd.append(newItem);
+
+        //Display KI
+        var current_ki = $('#current_ki')
+        if (current_ki.children().length === 1) {
+            current_ki.children()[0].remove();
+        }
+        var newItem = $('<div>' + ki_gain + '</div>');
+        current_ki.append(newItem);
+
+        //Display KP
+        var current_kp = $('#current_kp')
+        if (current_kp.children().length === 1) {
+            current_kp.children()[0].remove();
+        }
+        var newItem = $('<div>' + kp_gain + '</div>');
+        current_kp.append(newItem);
     }
 
     // Don't export anything
