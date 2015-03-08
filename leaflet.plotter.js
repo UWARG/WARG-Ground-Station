@@ -96,7 +96,7 @@ L.Polyline.plotter = L.Class.extend({
     	if (i != -1) {
     		p1 = this._map.latLngToContainerPoint(this._futureMarkers[i]._latlng);    // TODO Use this._latLngs instead of this._futureMarkers[i]._latlng
     		p2 = this._map.latLngToContainerPoint(this._futureMarkers[i+1]._latlng);
-    		this._doPathHover(this._map.containerPointToLatLng(this._projectPointOnSegment(p, p1, p2)));
+    		this._doPathHover(this._map.containerPointToLatLng(L.LineUtil.closestPointOnSegment(p, p1, p2)));
     	} else {
     		this._endPathHover();
     	}
@@ -113,6 +113,7 @@ L.Polyline.plotter = L.Class.extend({
 
     	var closestDistance = Math.min.apply(Math, distances);
     	if (closestDistance === Infinity || closestDistance === -1) {
+            // Disable hovering when mouse too near a waypoint marker
     		return -1;
     	}
     	
@@ -146,21 +147,6 @@ L.Polyline.plotter = L.Class.extend({
     	}
 
     	return d;
-    },
-    _projectPointOnSegment: function (p, p1, p2) {
-    	// Project point onto segment
-    	var x  =  p.x, y  =  p.y,
-    		x1 = p1.x, y1 = p1.y,
-    		x2 = p2.x, y2 = p2.y;
-		
-		var ax = x2-x1, ay = y2-y1,
-    		bx =  x-x1, by =  y-y1;
-    	
-    	var k = (ax*bx + ay*by) / (ax*ax + ay*ay);
-    	x = k*ax + x1;
-    	y = k*ay + y1;
-
-    	return L.point(x, y);
     },
     _doPathHover: function(latlng){
     	this._ghostMarker.setLatLng(latlng);
