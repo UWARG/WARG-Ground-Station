@@ -40,7 +40,7 @@ var Path = (function ($, Data, Log, Network) {
 
         $('#clearWaypoints').on('click', function () {
             waypoints = [];
-            waypointPlotter.setLatLngs(waypoints);  // BUG Plotter internal state is not correctly updated after setLatLngs
+            waypointPlotter.setLatLngs(waypoints);
             redrawMap();
         });
     });
@@ -106,7 +106,7 @@ var Path = (function ($, Data, Log, Network) {
             waypointPlotter = L.Polyline.Plotter(waypoints, {
                 color: 'red',
                 weight: 5,
-                opacity: 0.5,
+                opacity: 0.6,
             }).addTo(map);
 
             waypointPlotter.on('change', function(e) {

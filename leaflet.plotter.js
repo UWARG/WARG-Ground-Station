@@ -15,7 +15,7 @@ L.Polyline.plotter = L.Class.extend({
     _future: null,   // L.Polyline
     _latLngs: [],
 
-    _lineMarkers: [],
+    _futureMarkers: [],
     _editIcon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
     _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
     _isHoveringPath: false,
@@ -26,7 +26,8 @@ L.Polyline.plotter = L.Class.extend({
         readOnly: false,
     },
     initialize: function (latlngs, options){
-        this._future = L.polyline(latlngs, options);
+        this._latLngs = latlngs;
+        this._future = L.polyline([], options);
     },
     addTo: function (map) {
         map.addLayer(this);
@@ -35,7 +36,7 @@ L.Polyline.plotter = L.Class.extend({
     onAdd: function (map) {
         this._future.addTo(map);
         this._map = map;
-        this._plotExisting();
+        this._redrawMarkers();
         if(!this.options.readOnly){
             this._bindMapClick();
             this._bindPathHover();
@@ -43,24 +44,19 @@ L.Polyline.plotter = L.Class.extend({
         }
     },
     onRemove: function(){
-        for(index in this._lineMarkers){
-            this._map.removeLayer(this._lineMarkers[index]);
-        }
-        this._lineMarkers = [];
+        this._removeAllMarkers();
         this._unbindMapClick();
         this._unbindPathHover();
         this._unbindGhostMarkerEvents();
         this._map.removeLayer(this._future);
     },
     getLatLngs: function(){
-        return this._future.getLatLngs();
+        return this._latLngs;
     },
     setLatLngs: function(latlngs){
-        this._future.setLatLngs(latlngs);
-        for(index in this._lineMarkers){
-            this._map.removeLayer(this._lineMarkers[index]);
-        }
-        this._plotExisting();
+        this._latLngs = latlngs;
+        this._redrawMarkers();
+        this._redrawLines();
     },
     setReadOnly: function(readOnly){
         if(readOnly && !this.options.readOnly){
@@ -76,8 +72,8 @@ L.Polyline.plotter = L.Class.extend({
         }
         if(typeof markerFunction !== 'undefined'){
             this.options.readOnly = readOnly;
-            for(index in this._lineMarkers){
-                this[markerFunction](this._lineMarkers[index]);
+            for(index in this._futureMarkers){
+                this[markerFunction](this._futureMarkers[index]);
             }
         }
     },
@@ -98,8 +94,8 @@ L.Polyline.plotter = L.Class.extend({
     	var p = e.containerPoint;
     	var i = this._indexOfHoveredSegment(p);
     	if (i != -1) {
-    		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
-    		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
+    		p1 = this._map.latLngToContainerPoint(this._futureMarkers[i]._latlng);    // TODO Use this._latLngs instead of this._futureMarkers[i]._latlng
+    		p2 = this._map.latLngToContainerPoint(this._futureMarkers[i+1]._latlng);
     		this._doPathHover(this._map.containerPointToLatLng(this._projectPointOnSegment(p, p1, p2)));
     	} else {
     		this._endPathHover();
@@ -109,9 +105,9 @@ L.Polyline.plotter = L.Class.extend({
     	// Return index i of 1st endpoint of line segment closest to p (2nd endpoint of segment is at i + 1)
     	// or -1 if no segment hovered; operates in screen space
     	var p1, p2, distances = [];
-    	for (var i = 0, l = this._lineMarkers.length; i < l - 1; ++i) {
-    		p1 = this._map.latLngToContainerPoint(this._lineMarkers[i]._latlng);
-    		p2 = this._map.latLngToContainerPoint(this._lineMarkers[i+1]._latlng);
+    	for (var i = 0, l = this._futureMarkers.length; i < l - 1; ++i) {
+    		p1 = this._map.latLngToContainerPoint(this._futureMarkers[i]._latlng);
+    		p2 = this._map.latLngToContainerPoint(this._futureMarkers[i+1]._latlng);
     		distances.push(this._snapDistanceToSegment(p, p1, p2, 7, 14));
     	}
 
@@ -201,17 +197,20 @@ L.Polyline.plotter = L.Class.extend({
     	this._unbindPathHover();
     	this._ghostMarker.setOpacity(1);
 
-    	var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });   // TODO Check if really necessary (doesn't _redraw handle this?)
-    	this._addToMapAndBindMarker(newMarker);
-    	this._lineMarkers.splice(i + 1, 0, newMarker);
-    	this._redraw();
+        this._latLngs.splice(i + 1, 0, this._ghostMarker.getLatLng());
+
+        var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });   // TODO Check if really necessary (doesn't _redrawLines handle this?)
+        this._addToMapAndBindMarker(newMarker);
+    	this._futureMarkers.splice(i + 1, 0, newMarker);
+    	this._redrawLines();
     },
     _onGhostDrag: function(e){
     	if (this._indexOfDraggedPoint == -1) return;
     	this._ghostMarker.setOpacity(0.5);
     	
-    	this._lineMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
-    	this._redraw();
+        this._latLngs[this._indexOfDraggedPoint] = this._ghostMarker.getLatLng();
+        this._futureMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
+    	this._redrawLines();
     },
     _onGhostDragEnd: function(e){
     	this._indexOfDraggedPoint = -1;
@@ -226,13 +225,13 @@ L.Polyline.plotter = L.Class.extend({
     },
     _unbindMarkerEvents: function(marker){
         marker.off('contextmenu', this._onMarkerRightClick, this);
-        marker.off('drag', this._redraw, this);
+        marker.off('drag', this._onMarkerDrag, this);
         marker.off('dragend', this._fireChangeEvent, this);
         marker.dragging.disable();
     },
     _bindMarkerEvents: function(marker){
         marker.on('contextmenu', this._onMarkerRightClick, this);
-        marker.on('drag', this._redraw, this);
+        marker.on('drag', this._onMarkerDrag, this);
         marker.on('dragend', this._fireChangeEvent, this);
         marker.dragging.enable();
     },
@@ -243,35 +242,47 @@ L.Polyline.plotter = L.Class.extend({
         }
     },
     _onMarkerRightClick: function(e){
-        this._map.removeLayer(this._lineMarkers[this._lineMarkers.indexOf(e.target)]);
-        this._lineMarkers.splice(this._lineMarkers.indexOf(e.target), 1);
-        this._redraw();
+        var index = this._futureMarkers.indexOf(e.target);
+        this._latLngs.splice(index, 1);
+        this._redrawMarkers();
+        this._redrawLines();
         this._fireChangeEvent();
+    },
+    _onMarkerDrag: function(e){
+        var index = this._futureMarkers.indexOf(e.target);
+        console.log('drag marker', index, 'of', this._latLngs.map(function(a){return a+'';}));
+        this._latLngs[index] = e.target.getLatLng();
+        this._redrawLines();
     },
     _onMapRightClick: function(e){
-        this._addNewMarker(e);
-        this._redraw();
+        this._latLngs.push(e.latlng);
+        this._redrawMarkers();
+        this._redrawLines();
         this._fireChangeEvent();
     },
-    _addNewMarker: function(e){
-        var newMarker = this._getNewMarker(e.latlng, { icon: this._editIcon });
+    _addNewMarker: function(latlng){
+        var newMarker = this._getNewMarker(latlng, { icon: this._editIcon }); // TODO Maybe instead of handling markers here, just push to _latLngs, then _redrawMarkers()?
         this._addToMapAndBindMarker(newMarker);
-        this._lineMarkers.push(newMarker);
+        this._futureMarkers.push(newMarker);
     },
-    _plotExisting: function(){
-        var latLngs = this._future.getLatLngs();
-        for(index in latLngs){
-            this._addNewMarker({
-                latlng: latLngs[index]
-            });
+    _removeAllMarkers: function(){
+        for(index in this._futureMarkers){
+            this._map.removeLayer(this._futureMarkers[index]);
         }
-		this._redraw();
+        this._futureMarkers = [];
     },
-    _redraw: function(){
+    _redrawMarkers: function(){
+        // Make future markers for all markers (TODO Only future markers soon)
+        this._removeAllMarkers();
+        for(index in this._latLngs){
+            this._addNewMarker(this._latLngs[index]);
+        }
+        this._redrawLines();
+    },
+    _redrawLines: function(){
         this._future.setLatLngs([]);
-        this._future.redraw();   // TODO Redundant?
-        for(index in this._lineMarkers){
-            this._future.addLatLng(this._lineMarkers[index].getLatLng());
+        for(index in this._latLngs){
+            this._future.addLatLng(this._latLngs[index]);
         }
         this._future.redraw();
     }
