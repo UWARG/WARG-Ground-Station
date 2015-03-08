@@ -23,6 +23,29 @@ var Cockpit = (function ($, Data, Log, Network) {
             Network.write(command);
         });
 
+        $('#sendSetpoints').on('click', function () {
+            var throttle_input = document.getElementById("throttleInput").value;
+            var pitch_input = document.getElementById("pitchInput").value;
+            var roll_input = document.getElementById("rollInput").value;
+            var yaw_input = document.getElementById("yawInput").value;
+            var e = document.getElementById("setpointSelect");
+            var selectedOpt = e.options[e.selectedIndex].text;
+
+            Network.write("set_throttle:" + throttle_input + "\r\n");
+
+            if (selectedOpt === "Angle") {
+                Network.write("set_pitchAngle:" + pitch_input + "\r\n");
+                Network.write("set_rollAngle:" + roll_input + "\r\n");
+                Network.write("set_yawAngle:" + yaw_input + "\r\n");
+            } else if (selectedOpt === "Rate") {
+                Network.write("set_pitchRate:" + pitch_input + "\r\n");
+                Network.write("set_rollRate:" + roll_input + "\r\n");
+                Network.write("set_yawRate:" + yaw_input + "\r\n");
+            } else {
+                Log.write("Error sending setpoints");
+            }
+        });
+
         $('#sendGains').on('click', function () {
             var flightData = Data.state;
             var editing_gain = parseInt(flightData.editing_gain);
@@ -418,6 +441,41 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawScale(altitude, 300, "altimeter", "Altitude");
         drawScale(ground_speed, 300, "speed", "Speed");
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
+        displaySetpoints();
+    }
+
+    function writeToDiv(div, string) {
+        var div = $(div)
+        if (div.children().length === 1) {
+            div.children()[0].remove();
+        }
+        console.log(string);
+        var newItem = $('<div>' + string + '</div>');
+        div.append(newItem);
+    }
+
+    function displaySetpoints() {
+        var flightData = Data.state;
+        var roll = flightData.roll;
+        var pitch = flightData.pitch;
+        var yaw = flightData.yaw;
+        var roll_rate = flightData.roll_rate;
+        var pitch_rate = flightData.pitch_rate;
+        var yaw_rate = flightData.yaw_rate;
+        var e = document.getElementById("setpointSelect");
+        var selectedOpt = e.options[e.selectedIndex].text;
+
+        if (selectedOpt === "Angle") {
+            writeToDiv('#current_throttle', '0');
+            writeToDiv('#current_pitch', pitch);
+            writeToDiv('#current_roll', roll);
+            writeToDiv('#current_yaw', yaw);
+        } else if (selectedOpt === "Rate") {
+            writeToDiv('#current_throttle', '0');
+            writeToDiv('#current_pitch', pitch_rate);
+            writeToDiv('#current_roll', roll_rate);
+            writeToDiv('#current_yaw', yaw_rate);
+        }
     }
 
     function displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain) {
@@ -437,37 +495,10 @@ var Cockpit = (function ($, Data, Log, Network) {
             editing_gain = "N/A";
         }
 
-        //Display editing_gain
-        var current_gain = $('#current_gain')
-        if (current_gain.children().length === 1) {
-            current_gain.children()[0].remove();
-        }
-        var newItem = $('<div>' + editing_gain + '</div>');
-        current_gain.append(newItem);
-
-        //Display KD
-        var current_kd = $('#current_kd')
-        if (current_kd.children().length === 1) {
-            current_kd.children()[0].remove();
-        }
-        var newItem = $('<div>' + kd_gain + '</div>');
-        current_kd.append(newItem);
-
-        //Display KI
-        var current_ki = $('#current_ki')
-        if (current_ki.children().length === 1) {
-            current_ki.children()[0].remove();
-        }
-        var newItem = $('<div>' + ki_gain + '</div>');
-        current_ki.append(newItem);
-
-        //Display KP
-        var current_kp = $('#current_kp')
-        if (current_kp.children().length === 1) {
-            current_kp.children()[0].remove();
-        }
-        var newItem = $('<div>' + kp_gain + '</div>');
-        current_kp.append(newItem);
+        writeToDiv('#current_gain', editing_gain);
+        writeToDiv('#current_kd', kd_gain);
+        writeToDiv('#current_ki', kp_gain);
+        writeToDiv('#current_kp', ki_gain);
     }
 
     // Don't export anything

@@ -69,6 +69,35 @@
                     Send Gains
                 </div>
             </div>
+            <div id="setpoints">
+                <div>
+                    <select id="setpointSelect" class="dropdown">
+                        <option value="yaw">Angle</option>
+                        <option value="pitch">Rate</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="display">Throttle</div>
+                    <div class="display">Pitch</div>
+                    <div class="display">Roll</div>
+                    <div class="display">Yaw</div>
+                </div>
+                <div>
+                    <div id="current_throttle" class="display"></div>
+                    <div id="current_pitch" class="display"></div>
+                    <div id="current_roll" class="display"></div>
+                    <div id="current_yaw" class="display"></div>
+                </div>
+                <div>
+                    <input type="number" id="throttleInput" class="input" value="0">
+                    <input type="number" id="pitchInput" class="input" value="0">
+                    <input type="number" id="rollInput" class="input" value="0">
+                    <input type="number" id="yawInput" class="input" value="0">
+                </div>
+                <div class="button" id="sendSetpoints">
+                    Send Setpoints
+                </div>
+            </div>
         </div>
     </div>
     <div id="path">

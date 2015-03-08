@@ -32,6 +32,11 @@ body {
     display: inline;
 }
 
+#setpoints {
+    display: inline;
+    margin-left: 2em;
+}
+
 #gains {
     display: inline;
     position: fixed;
