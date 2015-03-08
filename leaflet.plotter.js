@@ -236,7 +236,6 @@ L.Polyline.plotter = L.Class.extend({
     },
     _onMarkerDrag: function(e){
         var index = this._futureMarkers.indexOf(e.target);
-        console.log('drag marker', index, 'of', this._latLngs.map(function(a){return a+'';}));
         this._latLngs[index] = e.target.getLatLng();
         this._redrawLines();
     },
