@@ -7,26 +7,33 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* The source code in this file has been extended from original */
+/* The source code in this file has been heavily modified from original */
 
-L.Polyline.plotter = L.Polyline.extend({
+L.Polyline.plotter = L.Class.extend({
+    includes: [L.Mixin.Events],
+
+    _future: null,   // L.Polyline
+    _latLngs: [],
+
     _lineMarkers: [],
     _editIcon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
     _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
     _isHoveringPath: false,
     _indexOfDraggedPoint: -1,
-    _existingLatLngs: [],
     options: {
         weight: 2,
         color: '#000',
         readOnly: false,
     },
     initialize: function (latlngs, options){
-        this._setExistingLatLngs(latlngs);
-        L.Polyline.prototype.initialize.call(this, [], options);
+        this._future = L.polyline(latlngs, options);
+    },
+    addTo: function (map) {
+        map.addLayer(this);
+        return this;
     },
     onAdd: function (map) {
-        L.Polyline.prototype.onAdd.call(this, map);
+        this._future.addTo(map);
         this._map = map;
         this._plotExisting();
         if(!this.options.readOnly){
@@ -43,10 +50,17 @@ L.Polyline.plotter = L.Polyline.extend({
         this._unbindMapClick();
         this._unbindPathHover();
         this._unbindGhostMarkerEvents();
-        L.Polyline.prototype.onRemove.call(this, map);
+        this._map.removeLayer(this._future);
+    },
+    getLatLngs: function(){
+        return this._future.getLatLngs();
     },
     setLatLngs: function(latlngs){
-        L.Polyline.prototype.setLatLngs.call(this, latlngs);
+        this._future.setLatLngs(latlngs);
+        for(index in this._lineMarkers){
+            this._map.removeLayer(this._lineMarkers[index]);
+        }
+        this._plotExisting();
     },
     setReadOnly: function(readOnly){
         if(readOnly && !this.options.readOnly){
@@ -68,10 +82,10 @@ L.Polyline.plotter = L.Polyline.extend({
         }
     },
     _bindMapClick: function(){
-        this._map.on('contextmenu', this._onMapClick, this);
+        this._map.on('contextmenu', this._onMapRightClick, this);
     },
     _unbindMapClick: function(){
-        this._map.off('contextmenu', this._onMapClick, this);
+        this._map.off('contextmenu', this._onMapRightClick, this);
     },
     _bindPathHover: function(){
     	this._map.on('mousemove', this._checkPathHover, this);
@@ -80,6 +94,7 @@ L.Polyline.plotter = L.Polyline.extend({
     	this._map.off('mousemove', this._checkPathHover, this);
     },
     _checkPathHover: function(e){
+        // Called on every mouse movement; handles all the path hovering effects.
     	var p = e.containerPoint;
     	var i = this._indexOfHoveredSegment(p);
     	if (i != -1) {
@@ -186,28 +201,22 @@ L.Polyline.plotter = L.Polyline.extend({
     	this._unbindPathHover();
     	this._ghostMarker.setOpacity(1);
 
-    	var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });
+    	var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });   // TODO Check if really necessary (doesn't _redraw handle this?)
     	this._addToMapAndBindMarker(newMarker);
     	this._lineMarkers.splice(i + 1, 0, newMarker);
-    	this._replot();
+    	this._redraw();
     },
     _onGhostDrag: function(e){
     	if (this._indexOfDraggedPoint == -1) return;
     	this._ghostMarker.setOpacity(0.5);
     	
     	this._lineMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
-    	this._replot();
+    	this._redraw();
     },
     _onGhostDragEnd: function(e){
     	this._indexOfDraggedPoint = -1;
     	this._bindPathHover();
     	this._fireChangeEvent();
-    },
-    _setExistingLatLngs: function(latlngs){
-        this._existingLatLngs = latlngs;
-    },
-    _replot: function(){
-        this._redraw();
     },
     _fireChangeEvent: function(){
     	this.fire('change', {foo: 'bar'});
@@ -216,14 +225,14 @@ L.Polyline.plotter = L.Polyline.extend({
         return new L.marker(latlng, options);
     },
     _unbindMarkerEvents: function(marker){
-        marker.off('contextmenu', this._removePoint, this);
-        marker.off('drag', this._replot, this);
+        marker.off('contextmenu', this._onMarkerRightClick, this);
+        marker.off('drag', this._redraw, this);
         marker.off('dragend', this._fireChangeEvent, this);
         marker.dragging.disable();
     },
     _bindMarkerEvents: function(marker){
-        marker.on('contextmenu', this._removePoint, this);
-        marker.on('drag', this._replot, this);
+        marker.on('contextmenu', this._onMarkerRightClick, this);
+        marker.on('drag', this._redraw, this);
         marker.on('dragend', this._fireChangeEvent, this);
         marker.dragging.enable();
     },
@@ -233,15 +242,15 @@ L.Polyline.plotter = L.Polyline.extend({
             this._bindMarkerEvents(newMarker);
         }
     },
-    _removePoint: function(e){
+    _onMarkerRightClick: function(e){
         this._map.removeLayer(this._lineMarkers[this._lineMarkers.indexOf(e.target)]);
         this._lineMarkers.splice(this._lineMarkers.indexOf(e.target), 1);
-        this._replot();
+        this._redraw();
         this._fireChangeEvent();
     },
-    _onMapClick: function(e){
+    _onMapRightClick: function(e){
         this._addNewMarker(e);
-        this._replot();
+        this._redraw();
         this._fireChangeEvent();
     },
     _addNewMarker: function(e){
@@ -250,23 +259,21 @@ L.Polyline.plotter = L.Polyline.extend({
         this._lineMarkers.push(newMarker);
     },
     _plotExisting: function(){
-        for(index in this._existingLatLngs){
+        var latLngs = this._future.getLatLngs();
+        for(index in latLngs){
             this._addNewMarker({
-                latlng: new L.LatLng(
-                    this._existingLatLngs[index][0],
-                    this._existingLatLngs[index][1]
-                )
+                latlng: latLngs[index]
             });
         }
-		this._replot();
+		this._redraw();
     },
     _redraw: function(){
-        this.setLatLngs([]);
-        this.redraw();
+        this._future.setLatLngs([]);
+        this._future.redraw();   // TODO Redundant?
         for(index in this._lineMarkers){
-            this.addLatLng(this._lineMarkers[index].getLatLng());
+            this._future.addLatLng(this._lineMarkers[index].getLatLng());
         }
-        this.redraw();
+        this._future.redraw();
     }
 });
 
