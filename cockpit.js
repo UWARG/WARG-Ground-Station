@@ -108,10 +108,14 @@ var Cockpit = (function ($, Data, Log, Network) {
             var pitch_input = document.getElementById("pitchInput").value;
             var roll_input = document.getElementById("rollInput").value;
             var yaw_input = document.getElementById("yawInput").value;
+            var altitude_input = document.getElementById("altitudeInput").value;
+            var heading_input = document.getElementById("headingInput").value;
             var e = document.getElementById("setpointSelect");
             var selectedOpt = e.options[e.selectedIndex].text;
 
             Network.write("set_throttle:" + throttle_input + "\r\n");
+            Network.write("set_altitude:" + altitude_input + "\r\n");
+            Network.write("set_heading:" + heading_input + "\r\n");
 
             if (selectedOpt === "Angle") {
                 Network.write("set_pitchAngle:" + pitch_input + "\r\n");
@@ -540,22 +544,27 @@ var Cockpit = (function ($, Data, Log, Network) {
 
     function displaySetpoints() {
         var flightData = Data.state;
-        var roll = flightData.roll;
-        var pitch = flightData.pitch;
-        var yaw = flightData.yaw;
+        var roll_setpoint = flightData.roll_setpoint;
+        var pitch_setpoint = flightData.pitch_setpoint;
+        var yaw_setpoint = flightData.yaw_setpoint;
+        var throttle_setpoint = flightData.throttle_setpoint;
+        var altitude_setpoint = flightData.altitude_setpoint;
+        var heading_setpoint = flightData.heading_setpoint;
         var roll_rate = flightData.roll_rate;
         var pitch_rate = flightData.pitch_rate;
         var yaw_rate = flightData.yaw_rate;
         var e = document.getElementById("setpointSelect");
         var selectedOpt = e.options[e.selectedIndex].text;
 
+        writeToDiv('#current_throttle', throttle_setpoint);
+        writeToDiv('#current_altitude', altitude_setpoint);
+        writeToDiv('#current_heading', heading_setpoint);
+
         if (selectedOpt === "Angle") {
-            writeToDiv('#current_throttle', '0');
-            writeToDiv('#current_pitch', pitch);
-            writeToDiv('#current_roll', roll);
-            writeToDiv('#current_yaw', yaw);
+            writeToDiv('#current_pitch', pitch_setpoint);
+            writeToDiv('#current_roll', roll_setpoint);
+            writeToDiv('#current_yaw', yaw_setpoint);
         } else if (selectedOpt === "Rate") {
-            writeToDiv('#current_throttle', '0');
             writeToDiv('#current_pitch', pitch_rate);
             writeToDiv('#current_roll', roll_rate);
             writeToDiv('#current_yaw', yaw_rate);
