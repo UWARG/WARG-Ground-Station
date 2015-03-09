@@ -72,17 +72,17 @@ L.Polyline.plotter = L.Class.extend({
         this._redrawMarkers();
         this._redrawLines();
     },
+    getNextIndex: function(){
+        return this._nextIndex;
+    },
     setNextIndex: function(nextIndex){
-        this._nextIndex = nextIndex;
+        this._nextIndex = parseInt(nextIndex);
         this._redrawMarkers();
         this._redrawLines();
     },
     getNextLatLng: function(){
-        if (this._latLngs.length) {
-            var latLng = this._latLngs[this._nextIndex];
-            return L.latLng(latLng.lat, latLng.lng);
-        }
-        return null;
+        var latLng = this._latLngs[this._nextIndex];
+        return latLng ? L.latLng(latLng.lat, latLng.lng) : null;
     },
     _bindMapClick: function(){
         this._map.on('contextmenu', this._onMapRightClick, this);

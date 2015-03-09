@@ -53,6 +53,11 @@ var Path = (function ($, Data, Log, Network) {
             waypointPlotter.setNextIndex(0);
             redrawMap();
         });
+
+        $('#goHome').on('click', function () {
+            var command = "return_home\r\n";
+            Network.write(command);
+        });
     });
 
     var planeIcon;
@@ -169,6 +174,13 @@ var Path = (function ($, Data, Log, Network) {
             gpsFixMessagebox.hide();
         } else {
             gpsFixMessagebox.show('No GPS fix');
+        }
+
+        // Update which waypoint we're targeting next
+        if (gpsFix) {
+            if (waypointPlotter.getNextIndex() != waypointIndex && waypointIndex != WAYPOINT_HOME) {    // TODO Manage going home case better
+                waypointPlotter.setNextIndex(waypointIndex)
+            }
         }
 
         // When plane moves, update line going from plane to next waypoint
