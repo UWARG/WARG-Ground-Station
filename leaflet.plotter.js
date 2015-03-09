@@ -32,6 +32,7 @@ L.Polyline.plotter = L.Class.extend({
         future: {color: '#f00', weight: 2, opacity: 0.5},
         present: {color: '#900', weight: 2, opacity: 0.5},
         past: {color: '#000', weight: 2, opacity: 0.5},
+        defaultAlt: 100,
     },
     initialize: function (latlngs, options){
         this._latLngs = latlngs;
@@ -82,7 +83,7 @@ L.Polyline.plotter = L.Class.extend({
     },
     getNextLatLng: function(){
         var latLng = this._latLngs[this._nextIndex];
-        return latLng ? L.latLng(latLng.lat, latLng.lng) : null;
+        return latLng ? L.latLng(latLng) : null;
     },
     _bindMapClick: function(){
         this._map.on('contextmenu', this._onMapRightClick, this);
@@ -191,6 +192,11 @@ L.Polyline.plotter = L.Class.extend({
     	this._unbindPathHover();
     	this._ghostMarker.setOpacity(1);
 
+        var latLng = this._ghostMarker.getLatLng();
+        latLng.alt = ((this._latLngs.length >= 1) ?
+            Math.ceil(0.5 * this._latLngs[this._indexOfDraggedPoint + this._nextIndex - 1].alt + 0.5 * this._latLngs[this._indexOfDraggedPoint + this._nextIndex].alt)
+          : this.options.defaultAlt
+        );
         this._latLngs.splice(this._indexOfDraggedPoint + this._nextIndex, 0, this._ghostMarker.getLatLng());
 
         this._redrawMarkers();
@@ -200,7 +206,9 @@ L.Polyline.plotter = L.Class.extend({
     	if (this._indexOfDraggedPoint == -1) return;
     	this._ghostMarker.setOpacity(0.5);
     	
-        this._latLngs[this._indexOfDraggedPoint + this._nextIndex] = this._ghostMarker.getLatLng();
+        var latLng = this._ghostMarker.getLatLng();
+        this._latLngs[this._indexOfDraggedPoint + this._nextIndex].lat = latLng.lat;
+        this._latLngs[this._indexOfDraggedPoint + this._nextIndex].lng = latLng.lng;
         this._futureMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
     	this._redrawLines();
         this._fireDragEvent();
@@ -217,15 +225,17 @@ L.Polyline.plotter = L.Class.extend({
         this.fire('drag');
     },
     _getNewMarker: function(latlng, options){
-        return new L.marker(latlng, options);
+        return new L.altitudeMarker(latlng, options);
     },
     _unbindMarkerEvents: function(marker){
+        marker.off('change', this._onMarkerChange, this);
         marker.off('contextmenu', this._onMarkerRightClick, this);
         marker.off('drag', this._onMarkerDrag, this);
         marker.off('dragend', this._fireChangeEvent, this);
         marker.dragging.disable();
     },
     _bindMarkerEvents: function(marker){
+        marker.on('change', this._onMarkerChange, this);
         marker.on('contextmenu', this._onMarkerRightClick, this);
         marker.on('drag', this._onMarkerDrag, this);
         marker.on('dragend', this._fireChangeEvent, this);
@@ -236,6 +246,12 @@ L.Polyline.plotter = L.Class.extend({
         if(!newMarker.options.readOnly){
             this._bindMarkerEvents(newMarker);
         }
+    },
+    _onMarkerChange: function(e){
+        var index = this._futureMarkers.indexOf(e.target);
+        if (index == -1) return;    // Only allow deleting future markers
+
+        this._latLngs[index + this._nextIndex].alt = e.target.getLatLng().alt;
     },
     _onMarkerRightClick: function(e){
         var index = this._futureMarkers.indexOf(e.target);
@@ -250,11 +266,16 @@ L.Polyline.plotter = L.Class.extend({
         var index = this._futureMarkers.indexOf(e.target);
         if (index == -1) return;    // Only allow dragging future markers
         
-        this._latLngs[index + this._nextIndex] = e.target.getLatLng();
+        var latLng = e.target.getLatLng();
+        // Assigning properties separately, because altitude is missing from e.target.getLatLng()
+        this._latLngs[index + this._nextIndex].lat = latLng.lat;
+        this._latLngs[index + this._nextIndex].lng = latLng.lng;
+
         this._redrawLines();
         this._fireDragEvent();
     },
     _onMapRightClick: function(e){
+        e.latlng.alt = (this._latLngs.length >= 1) ? this._latLngs[this._latLngs.length-1].alt : this.options.defaultAlt;
         this._latLngs.push(e.latlng);
         this._redrawMarkers();
         this._redrawLines();

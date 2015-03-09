@@ -189,7 +189,7 @@ var Path = (function ($, Data, Log, Network) {
         // Update which waypoint we're targeting next
         if (gpsFix) {
             if (waypointPlotter.getNextIndex() != waypointIndex && waypointIndex != WAYPOINT_HOME) {    // TODO Manage going home case better
-                waypointPlotter.setNextIndex(waypointIndex)
+                waypointPlotter.setNextIndex(waypointIndex);
             }
         }
 

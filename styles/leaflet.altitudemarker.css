@@ -4,8 +4,8 @@
 	color: #fff;
 	font-size: 110%;
 	text-shadow: 1px 1px 1px #000;
-	opacity: 0.5;
-	position: relative;
+	opacity: 0.6;
+	position: absolute;
 }
 
 .leaflet-altitude-legend:hover, .leaflet-altitude-legend:active {
@@ -20,9 +20,9 @@
 .leaflet-altitude-legend > div {
 	display: none;
 	position: absolute;
-	background: rgba(60, 60, 60, 0.5);
-	top: -42px;
-	left: 36px;
+	background: rgba(66, 66, 66, 0.66);
+	top: -43px;
+	left: 35px;
 	border-radius: 4px;
 	padding: 2px;
 	text-align: center;
