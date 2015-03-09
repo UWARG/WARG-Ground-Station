@@ -469,11 +469,15 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         gpsStatus = parseInt(gpsStatus);
+        gpsFix = gpsStatus % 16;
+        gpsSatellites = parseInt(gpsStatus / 16);
 
-        if (checkBit(gpsStatus, 1)) {
-            context.fillStyle = "green";
+        if (gpsFix === 2) {
+            context.fillStyle = "#4caf50";
+        } else if (gpsFix === 1) {
+            context.fillStyle = "#cddc39";
         } else {
-            context.fillStyle = "red";
+            context.fillStyle = "#f44336";
         }
         context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -481,8 +485,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.textAlign = "center";
         context.fillStyle = "white";
 
-        gpsStatus = gpsStatus & 15;
-        context.fillText(gpsStatus, 25, 20);
+        context.fillText(gpsSatellites, 25, 20);
     }
 
     Network.on('data', updateCockpit);
@@ -506,6 +509,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         var kd_gain = flightData.kd_gain;
         var kp_gain = flightData.kp_gain;
         var ki_gain = flightData.ki_gain;
+        var time = flightData.time;
 
         //Used in path.js for some reason
         lat = flightData.lat;
@@ -522,6 +526,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawScale(ground_speed, 300, "speed", "Speed");
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
         displaySetpoints();
+        writeToDiv("#time", time);
     }
 
     function writeToDiv(div, string) {
