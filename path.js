@@ -4,6 +4,7 @@ var Path = (function ($, Data, Log, Network) {
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
     var WAYPOINT_HOME = 255;
+    var WAYPOINT_LEGACY_RADIUS = 13.1415926;    // Just a number here in case plane uses legacy waypoint following
 
     // Interactive map objects here
     var map;
@@ -32,11 +33,18 @@ var Path = (function ($, Data, Log, Network) {
         });
 
         $('#sendWaypoints').on('click', function () {
+
+            var command = "clear_waypoints:0";
+            Network.write(command);
+
             for (i = 0; i < waypoints.length; i++) {
                 var latLng = waypoints[i];
-                command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "\r\n";
+                command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + (latLng.alt || 100) + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
                 Network.write(command);
             }
+
+            // TODO Set new waypointIndex as well?
+            // command = "set_targetWaypoint:" + __;
         });
 
         $('#clearWaypoints').on('click', function () {
@@ -112,10 +120,9 @@ var Path = (function ($, Data, Log, Network) {
                 present: {color: '#f00', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
                 past:    {color: '#000', weight: 5, opacity: 0.6, clickable: false},
             }).addTo(map);
-            window.p = waypointPlotter;
 
             waypointPlotter.on('change', function(e) {
-                console.log('waypoint polyline change', e.target.getLatLngs().map(function(a){return a+'';}));
+                waypoints = waypointPlotter.getLatLngs();
             });
         }
 
