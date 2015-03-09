@@ -12,28 +12,43 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 L.Polyline.plotter = L.Class.extend({
     includes: [L.Mixin.Events],
 
-    _future: null,   // L.Polyline
-    _latLngs: [],
+    _past: null,    // L.Polyline
+    _present: null, // L.Polyline (actually just one line connecting past & future)
+    _future: null,  // L.Polyline
 
+    _latLngs: [],
+    _nextIndex: 0,  // Must be positive; 0 indicates all waypoints are in the future
+
+    _pastMarkers: [],
     _futureMarkers: [],
-    _editIcon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
+
     _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
     _isHoveringPath: false,
-    _indexOfDraggedPoint: -1,
+    _indexOfDraggedPoint: -1,   // If point currently being dragged, this is its index (counted after _nextIndex)
+    
+    _editIcon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
+    _disabledIcon: L.divIcon({className: 'leaflet-div-icon leaflet-disabled-icon'}),
     options: {
-        weight: 2,
-        color: '#000',
+        future: {color: '#f00', weight: 2, opacity: 0.5},
+        present: {color: '#900', weight: 2, opacity: 0.5},
+        past: {color: '#000', weight: 2, opacity: 0.5},
         readOnly: false,
     },
     initialize: function (latlngs, options){
         this._latLngs = latlngs;
-        this._future = L.polyline([], options);
+
+        L.Util.setOptions(this, options);
+        this._future = L.polyline([], options.future);
+        this._present = L.polyline([], options.present);
+        this._past = L.polyline([], options.past);
     },
     addTo: function (map) {
         map.addLayer(this);
         return this;
     },
     onAdd: function (map) {
+        this._past.addTo(map);
+        this._present.addTo(map);
         this._future.addTo(map);
         this._map = map;
         this._redrawMarkers();
@@ -48,6 +63,8 @@ L.Polyline.plotter = L.Class.extend({
         this._unbindMapClick();
         this._unbindPathHover();
         this._unbindGhostMarkerEvents();
+        this._map.removeLayer(this._past);
+        this._map.removeLayer(this._present);
         this._map.removeLayer(this._future);
     },
     getLatLngs: function(){
@@ -77,6 +94,11 @@ L.Polyline.plotter = L.Class.extend({
             }
         }
     },
+    setNextIndex: function(nextIndex){
+        this._nextIndex = nextIndex;
+        this._redrawMarkers();
+        this._redrawLines();
+    },
     _bindMapClick: function(){
         this._map.on('contextmenu', this._onMapRightClick, this);
     },
@@ -105,7 +127,8 @@ L.Polyline.plotter = L.Class.extend({
     	// Return index i of 1st endpoint of line segment closest to p (2nd endpoint of segment is at i + 1)
     	// or -1 if no segment hovered; operates in screen space
     	var p1, p2, distances = [];
-    	for (var i = 0, l = this._futureMarkers.length; i < l - 1; ++i) {
+
+        for (var i = 0, l = this._futureMarkers.length; i < l - 1; ++i) {
     		p1 = this._map.latLngToContainerPoint(this._futureMarkers[i]._latlng);
     		p2 = this._map.latLngToContainerPoint(this._futureMarkers[i+1]._latlng);
     		distances.push(this._snapDistanceToSegment(p, p1, p2, 7, 14));
@@ -177,24 +200,24 @@ L.Polyline.plotter = L.Class.extend({
     _onGhostDragStart: function(e){
     	var p = this._map.latLngToContainerPoint(this._ghostMarker.getLatLng());
     	var i = this._indexOfHoveredSegment(p);
-    	if (i == -1) return;
+    	if (i == -1) return;   // Don't allow inserting between two past waypoints
 
-    	this._indexOfDraggedPoint = i+1;
+        this._indexOfDraggedPoint = i+1;
     	this._unbindPathHover();
     	this._ghostMarker.setOpacity(1);
 
-        this._latLngs.splice(i + 1, 0, this._ghostMarker.getLatLng());
+        this._latLngs.splice(this._indexOfDraggedPoint + this._nextIndex, 0, this._ghostMarker.getLatLng());
 
         var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });   // TODO Check if really necessary (doesn't _redrawLines handle this?)
         this._addToMapAndBindMarker(newMarker);
-    	this._futureMarkers.splice(i + 1, 0, newMarker);
+        this._futureMarkers.splice(this._indexOfDraggedPoint, 0, newMarker);
     	this._redrawLines();
     },
     _onGhostDrag: function(e){
     	if (this._indexOfDraggedPoint == -1) return;
     	this._ghostMarker.setOpacity(0.5);
     	
-        this._latLngs[this._indexOfDraggedPoint] = this._ghostMarker.getLatLng();
+        this._latLngs[this._indexOfDraggedPoint + this._nextIndex] = this._ghostMarker.getLatLng();
         this._futureMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
     	this._redrawLines();
     },
@@ -204,7 +227,7 @@ L.Polyline.plotter = L.Class.extend({
     	this._fireChangeEvent();
     },
     _fireChangeEvent: function(){
-    	this.fire('change', {foo: 'bar'});
+    	this.fire('change');
     },
     _getNewMarker: function(latlng, options){
         return new L.marker(latlng, options);
@@ -223,20 +246,24 @@ L.Polyline.plotter = L.Class.extend({
     },
     _addToMapAndBindMarker: function(newMarker){
         newMarker.addTo(this._map);
-        if(!this.options.readOnly){
+        if(!this.options.readOnly && !newMarker.options.readOnly){
             this._bindMarkerEvents(newMarker);
         }
     },
     _onMarkerRightClick: function(e){
         var index = this._futureMarkers.indexOf(e.target);
-        this._latLngs.splice(index, 1);
+        if (index == -1) return;    // Only allow deleting future markers
+
+        this._latLngs.splice(index + this._nextIndex, 1);
         this._redrawMarkers();
         this._redrawLines();
         this._fireChangeEvent();
     },
     _onMarkerDrag: function(e){
         var index = this._futureMarkers.indexOf(e.target);
-        this._latLngs[index] = e.target.getLatLng();
+        if (index == -1) return;    // Only allow dragging future markers
+        
+        this._latLngs[index + this._nextIndex] = e.target.getLatLng();
         this._redrawLines();
     },
     _onMapRightClick: function(e){
@@ -245,12 +272,12 @@ L.Polyline.plotter = L.Class.extend({
         this._redrawLines();
         this._fireChangeEvent();
     },
-    _addNewMarker: function(latlng){
-        var newMarker = this._getNewMarker(latlng, { icon: this._editIcon }); // TODO Maybe instead of handling markers here, just push to _latLngs, then _redrawMarkers()?
-        this._addToMapAndBindMarker(newMarker);
-        this._futureMarkers.push(newMarker);
-    },
     _removeAllMarkers: function(){
+        var index;
+        for(index in this._pastMarkers){
+            this._map.removeLayer(this._pastMarkers[index]);
+        }
+        this._pastMarkers = [];
         for(index in this._futureMarkers){
             this._map.removeLayer(this._futureMarkers[index]);
         }
@@ -260,16 +287,34 @@ L.Polyline.plotter = L.Class.extend({
         // Make future markers for all markers (TODO Only future markers soon)
         this._removeAllMarkers();
         for(index in this._latLngs){
-            this._addNewMarker(this._latLngs[index]);
+            if (index < this._nextIndex) {
+                var newMarker = this._getNewMarker(this._latLngs[index], { icon: this._disabledIcon, readOnly: true });
+                this._addToMapAndBindMarker(newMarker);
+                this._pastMarkers.push(newMarker);
+            } else if (index >= this._nextIndex) {
+                var newMarker = this._getNewMarker(this._latLngs[index], { icon: this._editIcon });
+                this._addToMapAndBindMarker(newMarker);
+                this._futureMarkers.push(newMarker);
+            }
         }
         this._redrawLines();
     },
     _redrawLines: function(){
+        this._past.setLatLngs([]);
+        this._present.setLatLngs([]);
         this._future.setLatLngs([]);
+
         for(index in this._latLngs){
-            this._future.addLatLng(this._latLngs[index]);
+            if (index < this._nextIndex) {
+                this._past.addLatLng(this._latLngs[index]);
+            }
+            if (index == this._nextIndex - 1 || index == this._nextIndex) {
+                this._present.addLatLng(this._latLngs[index]);
+            }
+            if (index >= this._nextIndex) {
+                this._future.addLatLng(this._latLngs[index]);
+            }
         }
-        this._future.redraw();
     }
 });
 

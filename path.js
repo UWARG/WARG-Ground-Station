@@ -40,7 +40,9 @@ var Path = (function ($, Data, Log, Network) {
 
         $('#clearWaypoints').on('click', function () {
             waypoints = [];
+            waypointIndex = 0;
             waypointPlotter.setLatLngs(waypoints);
+            waypointPlotter.setNextIndex(waypointIndex);
             redrawMap();
         });
     });
@@ -104,10 +106,11 @@ var Path = (function ($, Data, Log, Network) {
         // Init waypointPlotter if necessary
         if (!waypointPlotter) {
             waypointPlotter = L.Polyline.Plotter(waypoints, {
-                color: 'red',
-                weight: 5,
-                opacity: 0.6,
+                future:  {color: '#f00', weight: 5, opacity: 0.6},
+                present: {color: '#f00', weight: 5, opacity: 0.6, dashArray: '3, 8'},
+                past:    {color: '#000', weight: 5, opacity: 0.6},
             }).addTo(map);
+            window.p = waypointPlotter;
 
             waypointPlotter.on('change', function(e) {
                 console.log('waypoint polyline change', e.target.getLatLngs().map(function(a){return a+'';}));
