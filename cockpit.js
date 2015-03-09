@@ -478,8 +478,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         gpsStatus = parseInt(gpsStatus);
-        gpsFix = gpsStatus % 16;
-        gpsSatellites = parseInt(gpsStatus / 16);
+        gpsSatellites = gpsStatus % 16;
+        gpsFix = parseInt(gpsStatus / 16);
 
         if (gpsFix === 2) {
             context.fillStyle = "#4caf50";
