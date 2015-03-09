@@ -78,7 +78,11 @@ L.Polyline.plotter = L.Class.extend({
         this._redrawLines();
     },
     getNextLatLng: function(){
-        return this._latLngs[this._nextIndex];
+        if (this._latLngs.length) {
+            var latLng = this._latLngs[this._nextIndex];
+            return L.latLng(latLng.lat, latLng.lng);
+        }
+        return null;
     },
     _bindMapClick: function(){
         this._map.on('contextmenu', this._onMapRightClick, this);
@@ -97,7 +101,7 @@ L.Polyline.plotter = L.Class.extend({
     	var p = e.containerPoint;
     	var i = this._indexOfHoveredSegment(p);
     	if (i != -1) {
-    		p1 = this._map.latLngToContainerPoint(this._futureMarkers[i]._latlng);    // TODO Use this._latLngs instead of this._futureMarkers[i]._latlng
+    		p1 = this._map.latLngToContainerPoint(this._futureMarkers[i]._latlng);
     		p2 = this._map.latLngToContainerPoint(this._futureMarkers[i+1]._latlng);
     		this._doPathHover(this._map.containerPointToLatLng(L.LineUtil.closestPointOnSegment(p, p1, p2)));
     	} else {
@@ -189,9 +193,7 @@ L.Polyline.plotter = L.Class.extend({
 
         this._latLngs.splice(this._indexOfDraggedPoint + this._nextIndex, 0, this._ghostMarker.getLatLng());
 
-        var newMarker = this._getNewMarker(this._ghostMarker.getLatLng(), { icon: this._editIcon });   // TODO Check if really necessary (doesn't _redrawLines handle this?)
-        this._addToMapAndBindMarker(newMarker);
-        this._futureMarkers.splice(this._indexOfDraggedPoint, 0, newMarker);
+        this._redrawMarkers();
     	this._redrawLines();
     },
     _onGhostDrag: function(e){

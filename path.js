@@ -128,16 +128,11 @@ var Path = (function ($, Data, Log, Network) {
                 clickable: false,
             }).addTo(map);
 
-            redrawLineToNextWaypoint = function() {
-                var nextWaypoint = waypointPlotter.getNextLatLng();
-                if (!nextWaypoint) return;
-
-                lineToNextWaypoint.setLatLngs([
-                    [lat, lon],
-                    [nextWaypoint.lat, nextWaypoint.lng]
-                ]);
-            };
-            waypointPlotter.on('drag', redrawLineToNextWaypoint);
+            // When waypoints change, update line going from plane to next waypoint
+            waypointPlotter.on('change drag', function(e) {
+                var nextWaypoint = waypointPlotter.getNextLatLng() || lineToNextWaypoint.getLatLngs()[0];
+                lineToNextWaypoint.spliceLatLngs(1, 1, {lat: nextWaypoint.lat, lng: nextWaypoint.lng});
+            });
         }
 
         // Init historyPolyline if necessary
@@ -169,9 +164,9 @@ var Path = (function ($, Data, Log, Network) {
             gpsFixMessagebox.show('No GPS fix');
         }
 
-        // Update line going from plane to next waypoint
+        // When plane moves, update line going from plane to next waypoint
         if (gpsFix) {
-            redrawLineToNextWaypoint();
+            lineToNextWaypoint.spliceLatLngs(0, 1, {lat: lat, lng: lon});
         }
 
         // Draw points on historyPolyline
