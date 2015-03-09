@@ -39,7 +39,6 @@ body {
 
 #gains {
     display: inline;
-    position: fixed;
     margin-left: 2em;
 }
 
@@ -64,6 +63,10 @@ body {
     height: 95%;
 }
 
+#footer {
+    height: 100px;
+}
+
 .instrument {
     margin: 0.5em auto;
     border-style: none;
@@ -80,6 +83,7 @@ body {
 }
 
 #log {
+    overflow-x: hidden;
     margin: 0 auto;
     left: 0;
     bottom: 0;
