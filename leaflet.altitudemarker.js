@@ -54,6 +54,7 @@ L.AltitudeMarker = L.Marker.extend({
     	this._legendMarker = L.marker(latlng, {
     		icon: this._legend,
     		clickable: false,
+    		riseOnHover: true,
     	});
     	this.on('move', this._onMove);
 
