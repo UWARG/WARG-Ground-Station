@@ -96,6 +96,7 @@ L.AltitudeMarker = L.Marker.extend({
     	this._updateSlider();
 
     	var sliderDiv = document.createElement('div');
+    	sliderDiv.classList.add("leaflet-revealable");
     	sliderDiv.appendChild(this._slider);
     	div.appendChild(sliderDiv);
     	this._updateLegendText();
