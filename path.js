@@ -3,6 +3,7 @@ var Path = (function ($, Data, Log, Network) {
 
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
+    var WAYPOINT_HOME = 255;
 
     // Interactive map objects here
     var map;
@@ -40,9 +41,8 @@ var Path = (function ($, Data, Log, Network) {
 
         $('#clearWaypoints').on('click', function () {
             waypoints = [];
-            waypointIndex = 0;
             waypointPlotter.setLatLngs(waypoints);
-            waypointPlotter.setNextIndex(waypointIndex);
+            waypointPlotter.setNextIndex(0);
             redrawMap();
         });
     });
@@ -53,6 +53,7 @@ var Path = (function ($, Data, Log, Network) {
     var gpsFixMessagebox;
     var waypointMarkerGroup;
     var waypointPlotter;
+    var lineToNextWaypoint, redrawLineToNextWaypoint;
     var historyPolyline;
 
     Network.on('data', redrawMap);
@@ -67,6 +68,7 @@ var Path = (function ($, Data, Log, Network) {
         lon = parseFloat(Data.state.lon);
         heading = Data.state.heading;
         yaw = Data.state.yaw;
+        waypointIndex = Data.state.waypointIndex;
 
         // Init icons for planeMarker if necessary
         if (!planeIcon) {
@@ -107,14 +109,35 @@ var Path = (function ($, Data, Log, Network) {
         if (!waypointPlotter) {
             waypointPlotter = L.Polyline.Plotter(waypoints, {
                 future:  {color: '#f00', weight: 5, opacity: 0.6},
-                present: {color: '#f00', weight: 5, opacity: 0.6, dashArray: '3, 8'},
-                past:    {color: '#000', weight: 5, opacity: 0.6},
+                present: {color: '#f00', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
+                past:    {color: '#000', weight: 5, opacity: 0.6, clickable: false},
             }).addTo(map);
             window.p = waypointPlotter;
 
             waypointPlotter.on('change', function(e) {
                 console.log('waypoint polyline change', e.target.getLatLngs().map(function(a){return a+'';}));
             });
+        }
+
+        // Init lineToNextWaypoint if necessary
+        if (!lineToNextWaypoint) {
+            lineToNextWaypoint = L.polyline([], {
+                color: '#900',
+                weight: 5,
+                dashArray: '3, 8',
+                clickable: false,
+            }).addTo(map);
+
+            redrawLineToNextWaypoint = function() {
+                var nextWaypoint = waypointPlotter.getNextLatLng();
+                if (!nextWaypoint) return;
+
+                lineToNextWaypoint.setLatLngs([
+                    [lat, lon],
+                    [nextWaypoint.lat, nextWaypoint.lng]
+                ]);
+            };
+            waypointPlotter.on('drag', redrawLineToNextWaypoint);
         }
 
         // Init historyPolyline if necessary
@@ -131,9 +154,10 @@ var Path = (function ($, Data, Log, Network) {
         if (gpsFix) {
             planeMarker.setIcon(planeIcon);
             planeMarker.setLatLng(new L.LatLng(lat, lon));
-            planeMarker._icon.title = lat + "°, " + lon + "°\nyaw " + Math.round(yaw) + "°, hdg " + heading + "°";
+            planeMarker._icon.title = lat + "°, " + lon + "°\nyaw " + Math.round(yaw) + "°, hdg " + heading + "°\nnext-wpt: " + waypointIndex;
             planeMarker.options.angle = yaw;
             planeMarker.update();
+            // waypointPlotter.setNextIndex(0); // lol
         } else {
             planeMarker.setIcon(planeHollowIcon);
         }
@@ -143,6 +167,11 @@ var Path = (function ($, Data, Log, Network) {
             gpsFixMessagebox.hide();
         } else {
             gpsFixMessagebox.show('No GPS fix');
+        }
+
+        // Update line going from plane to next waypoint
+        if (gpsFix) {
+            redrawLineToNextWaypoint();
         }
 
         // Draw points on historyPolyline

@@ -77,6 +77,9 @@ L.Polyline.plotter = L.Class.extend({
         this._redrawMarkers();
         this._redrawLines();
     },
+    getNextLatLng: function(){
+        return this._latLngs[this._nextIndex];
+    },
     _bindMapClick: function(){
         this._map.on('contextmenu', this._onMapRightClick, this);
     },
@@ -198,6 +201,7 @@ L.Polyline.plotter = L.Class.extend({
         this._latLngs[this._indexOfDraggedPoint + this._nextIndex] = this._ghostMarker.getLatLng();
         this._futureMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
     	this._redrawLines();
+        this._fireDragEvent();
     },
     _onGhostDragEnd: function(e){
     	this._indexOfDraggedPoint = -1;
@@ -206,6 +210,9 @@ L.Polyline.plotter = L.Class.extend({
     },
     _fireChangeEvent: function(){
     	this.fire('change');
+    },
+    _fireDragEvent: function(){
+        this.fire('drag');
     },
     _getNewMarker: function(latlng, options){
         return new L.marker(latlng, options);
@@ -243,6 +250,7 @@ L.Polyline.plotter = L.Class.extend({
         
         this._latLngs[index + this._nextIndex] = e.target.getLatLng();
         this._redrawLines();
+        this._fireDragEvent();
     },
     _onMapRightClick: function(e){
         this._latLngs.push(e.latlng);
