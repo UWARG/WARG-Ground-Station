@@ -32,7 +32,6 @@ L.Polyline.plotter = L.Class.extend({
         future: {color: '#f00', weight: 2, opacity: 0.5},
         present: {color: '#900', weight: 2, opacity: 0.5},
         past: {color: '#000', weight: 2, opacity: 0.5},
-        readOnly: false,
     },
     initialize: function (latlngs, options){
         this._latLngs = latlngs;
@@ -52,11 +51,9 @@ L.Polyline.plotter = L.Class.extend({
         this._future.addTo(map);
         this._map = map;
         this._redrawMarkers();
-        if(!this.options.readOnly){
-            this._bindMapClick();
-            this._bindPathHover();
-            this._bindGhostMarkerEvents();
-        }
+        this._bindMapClick();
+        this._bindPathHover();
+        this._bindGhostMarkerEvents();
     },
     onRemove: function(){
         this._removeAllMarkers();
@@ -74,25 +71,6 @@ L.Polyline.plotter = L.Class.extend({
         this._latLngs = latlngs;
         this._redrawMarkers();
         this._redrawLines();
-    },
-    setReadOnly: function(readOnly){
-        if(readOnly && !this.options.readOnly){
-            var markerFunction = '_unbindMarkerEvents';
-            this._unbindMapClick();
-            this._unbindPathHover();
-            this._unbindGhostMarkerEvents();
-        }else if(!readOnly && this.options.readOnly){
-            var markerFunction = '_bindMarkerEvents';
-            this._bindMapClick();
-            this._bindPathHover();
-            this._bindGhostMarkerEvents();
-        }
-        if(typeof markerFunction !== 'undefined'){
-            this.options.readOnly = readOnly;
-            for(index in this._futureMarkers){
-                this[markerFunction](this._futureMarkers[index]);
-            }
-        }
     },
     setNextIndex: function(nextIndex){
         this._nextIndex = nextIndex;
@@ -246,7 +224,7 @@ L.Polyline.plotter = L.Class.extend({
     },
     _addToMapAndBindMarker: function(newMarker){
         newMarker.addTo(this._map);
-        if(!this.options.readOnly && !newMarker.options.readOnly){
+        if(!newMarker.options.readOnly){
             this._bindMarkerEvents(newMarker);
         }
     },
