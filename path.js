@@ -3,6 +3,9 @@ var Path = (function ($, Data, Log, Network) {
 
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
+    var localWaypointIndex = 0;
+    var localInSync = true; // True when localWaypointIndex is equal to that on the plane
+
     var WAYPOINT_HOME = 255;
     var WAYPOINT_LEGACY_RADIUS = 13.1415926;    // Just a number here in case plane uses legacy waypoint following
 
@@ -32,26 +35,31 @@ var Path = (function ($, Data, Log, Network) {
             }
         });
 
+        $('#clearWaypoints').on('click', function () {
+            waypoints = [];
+            localWaypointIndex = 0;
+            localInSync = false;
+
+            waypointPlotter.setLatLngs(waypoints);
+            waypointPlotter.setNextIndex(localWaypointIndex);
+            redrawMap();
+        });
+
         $('#sendWaypoints').on('click', function () {
 
-            var command = "clear_waypoints:0";
+            var command = "clear_waypoints:0\r\n";
             Network.write(command);
-
+            
             for (i = 0; i < waypoints.length; i++) {
                 var latLng = waypoints[i];
-                command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + (latLng.alt || 100) + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
+                command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
                 Network.write(command);
             }
 
-            // TODO Set new waypointIndex as well?
-            // command = "set_targetWaypoint:" + __;
-        });
+            command = "set_targetWaypoint:" + localWaypointIndex + "\r\n";
+            Network.write(command);
 
-        $('#clearWaypoints').on('click', function () {
-            waypoints = [];
-            waypointPlotter.setLatLngs(waypoints);
-            waypointPlotter.setNextIndex(0);
-            redrawMap();
+            localInSync = true;
         });
 
         $('#goHome').on('click', function () {
@@ -66,22 +74,23 @@ var Path = (function ($, Data, Log, Network) {
     var gpsFixMessagebox;
     var waypointMarkerGroup;
     var waypointPlotter;
-    var lineToNextWaypoint, redrawLineToNextWaypoint;
+    var lineToNextWaypoint;
     var historyPolyline;
 
     Network.on('data', redrawMap);
 
     function redrawMap() {
 
+        var lat = parseFloat(Data.state.lat);
+        var lon = parseFloat(Data.state.lon);
+
         // Check for GPS fix, assuming we'll never fly off the coast of West Africa
         // (No GPS fix if coordinates close to (0; 0) or impossibly big)
         var gpsFix = (Math.abs(lat) > 1) && (Math.abs(lon) > 1) && (Math.abs(lat) < 360) && (Math.abs(lon) < 360);
-
-        lat = parseFloat(Data.state.lat);
-        lon = parseFloat(Data.state.lon);
-        heading = Data.state.heading;
-        yaw = Data.state.yaw;
-        waypointIndex = Data.state.waypointIndex;
+        
+        var heading = Data.state.heading;
+        var yaw = Data.state.yaw;
+        var waypointIndex = Data.state.waypointIndex;
 
         // Init icons for planeMarker if necessary
         if (!planeIcon) {
@@ -122,7 +131,7 @@ var Path = (function ($, Data, Log, Network) {
         if (!waypointPlotter) {
             waypointPlotter = L.Polyline.Plotter(waypoints, {
                 future:  {color: '#f00', weight: 5, opacity: 0.6},
-                present: {color: '#f00', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
+                present: {color: '#000', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
                 past:    {color: '#000', weight: 5, opacity: 0.6, clickable: false},
             }).addTo(map);
 
@@ -134,16 +143,19 @@ var Path = (function ($, Data, Log, Network) {
         // Init lineToNextWaypoint if necessary
         if (!lineToNextWaypoint) {
             lineToNextWaypoint = L.polyline([], {
-                color: '#900',
-                weight: 5,
-                dashArray: '3, 8',
-                clickable: false,
+                color: '#f00', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8',
             }).addTo(map);
 
             // When waypoints change, update line going from plane to next waypoint
             waypointPlotter.on('change drag', function(e) {
-                var nextWaypoint = waypointPlotter.getNextLatLng() || lineToNextWaypoint.getLatLngs()[0];
-                lineToNextWaypoint.spliceLatLngs(1, 1, {lat: nextWaypoint.lat, lng: nextWaypoint.lng});
+                var nextWaypoint = waypointPlotter.getNextLatLng();
+                if (nextWaypoint) {
+                    if (lineToNextWaypoint.getLatLngs().length) {
+                        lineToNextWaypoint.spliceLatLngs(1, 1, {lat: nextWaypoint.lat, lng: nextWaypoint.lng});
+                    }
+                } else {
+                    lineToNextWaypoint.setLatLngs([]);
+                }
             });
         }
 
@@ -161,14 +173,13 @@ var Path = (function ($, Data, Log, Network) {
         if (gpsFix) {
             planeMarker.setIcon(planeIcon);
             planeMarker.setLatLng(new L.LatLng(lat, lon));
-            planeMarker._icon.title = lat + "°, " + lon + "°\nyaw " + Math.round(yaw) + "°, hdg " + heading + "°\nnext-wpt: " + waypointIndex;
             planeMarker.options.angle = yaw;
             planeMarker.update();
-            // waypointPlotter.setNextIndex(0); // lol
         } else {
             planeMarker.setIcon(planeHollowIcon);
         }
-
+        planeMarker._icon.title = lat + "°, " + lon + "°\nyaw " + Math.round(yaw) + "°, hdg " + heading + "°\nnext-wpt: " + waypointIndex + (waypointIndex == WAYPOINT_HOME ? " (home)" : "");
+        
         // Update gpsFix message box
         if (gpsFix) {
             gpsFixMessagebox.hide();
@@ -176,16 +187,20 @@ var Path = (function ($, Data, Log, Network) {
             gpsFixMessagebox.show('No GPS fix');
         }
 
-        // Update which waypoint we're targeting next
-        if (gpsFix) {
-            if (waypointPlotter.getNextIndex() != waypointIndex && waypointIndex != WAYPOINT_HOME) {    // TODO Manage going home case better
-                waypointPlotter.setNextIndex(waypointIndex);
+        // Update which waypoint we're targeting next (if we're in sync)
+        if (localInSync) {
+            localWaypointIndex = waypointIndex;
+            if (waypointPlotter.getNextIndex() != localWaypointIndex && localWaypointIndex != WAYPOINT_HOME) {
+                // TODO Manage going home case better
+                waypointPlotter.setNextIndex(localWaypointIndex);
             }
         }
 
         // When plane moves, update line going from plane to next waypoint
         if (gpsFix) {
             lineToNextWaypoint.spliceLatLngs(0, 1, {lat: lat, lng: lon});
+        } else {
+            lineToNextWaypoint.setLatLngs([]);
         }
 
         // Draw points on historyPolyline

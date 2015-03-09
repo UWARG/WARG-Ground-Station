@@ -18,6 +18,7 @@ L.Polyline.plotter = L.Class.extend({
 
     _latLngs: [],
     _nextIndex: 0,  // Must be positive; 0 indicates all waypoints are in the future
+                    // Also, Plotter will never modify _nextIndex.
 
     _pastMarkers: [],
     _futureMarkers: [],
@@ -72,6 +73,7 @@ L.Polyline.plotter = L.Class.extend({
         this._latLngs = latlngs;
         this._redrawMarkers();
         this._redrawLines();
+        this._fireChangeEvent();
     },
     getNextIndex: function(){
         return this._nextIndex;
@@ -80,6 +82,7 @@ L.Polyline.plotter = L.Class.extend({
         this._nextIndex = parseInt(nextIndex);
         this._redrawMarkers();
         this._redrawLines();
+        this._fireChangeEvent();
     },
     getNextLatLng: function(){
         var latLng = this._latLngs[this._nextIndex];
@@ -293,7 +296,7 @@ L.Polyline.plotter = L.Class.extend({
         this._futureMarkers = [];
     },
     _redrawMarkers: function(){
-        // Make future markers for all markers (TODO Only future markers soon)
+        // Make past & future markers
         this._removeAllMarkers();
         for(index in this._latLngs){
             if (index < this._nextIndex) {
