@@ -63,6 +63,7 @@ var Path = (function ($, Data, Log, Network) {
     var planeIcon;
     var planeHollowIcon;
     var planeMarker;
+    var testAltitudeMarker;
     var gpsFixMessagebox;
     var waypointMarkerGroup;
     var waypointPlotter;
@@ -103,6 +104,15 @@ var Path = (function ($, Data, Log, Network) {
             planeMarker = new L.RotatedMarker([lat, lon], {
                 icon: planeIcon,
             }).addTo(map);
+        }
+
+        // Init a test marker for our shiny new AltitudeMarker class
+        if (!testAltitudeMarker) {
+            testAltitudeMarker = new L.AltitudeMarker([43.532, -80.578, 100], {
+                icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}),
+                draggable: true,
+            }).addTo(map);
+            window.a = testAltitudeMarker;
         }
 
         // Init messagebox about GPS fix
