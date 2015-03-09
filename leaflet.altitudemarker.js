@@ -54,11 +54,9 @@ L.AltitudeMarker = L.Marker.extend({
     	this._legendMarker = L.marker(latlng, {
     		icon: this._legend,
     		clickable: false,
-    		riseOnHover: true,
+    		riseOnHover: !this.options.readOnly,
     	});
     	this.on('move', this._onMove);
-
-    	this._slider = this._createSlider();
     },
 
     onAdd: function (map) {
@@ -92,13 +90,17 @@ L.AltitudeMarker = L.Marker.extend({
 
     	var altSpan = document.createElement('span');
     	div.appendChild(altSpan);
-    	this._slider = this._createSlider();
-    	this._updateSlider();
-
-    	var sliderDiv = document.createElement('div');
-    	sliderDiv.classList.add("leaflet-revealable");
-    	sliderDiv.appendChild(this._slider);
-    	div.appendChild(sliderDiv);
+    	
+    	// Create slider only if not readonly
+    	if (!this.options.readOnly) {
+		    this._slider = this._createSlider();
+	    	this._updateSlider();
+	    	
+    		var sliderDiv = document.createElement('div');
+	    	sliderDiv.classList.add("leaflet-revealable");
+	    	sliderDiv.appendChild(this._slider);
+	    	div.appendChild(sliderDiv);
+	    }
     	this._updateLegendText();
     },
 
@@ -113,8 +115,8 @@ L.AltitudeMarker = L.Marker.extend({
 
     _updateSlider: function () {
     	var alt = this.getLatLng().alt;
-    	this._slider.min = Math.floor(alt * 0.25);
-    	this._slider.max = Math.ceil((alt + 1) * 1.75);
+    	this._slider.min = Math.floor(alt * 0.45);
+    	this._slider.max = Math.ceil((alt + 1) * 1.55);
     	this._slider.step = (alt < 25) ? 0.2 : 1;
     	this._slider.value = alt;
     },

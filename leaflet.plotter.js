@@ -301,7 +301,7 @@ L.Polyline.plotter = L.Class.extend({
                 this._addToMapAndBindMarker(newMarker);
                 this._pastMarkers.push(newMarker);
             } else if (index >= this._nextIndex) {
-                var newMarker = this._getNewMarker(this._latLngs[index], { icon: this._editIcon });
+                var newMarker = this._getNewMarker(this._latLngs[index], { icon: this._editIcon, zIndexOffset: 1000 });
                 this._addToMapAndBindMarker(newMarker);
                 this._futureMarkers.push(newMarker);
             }
