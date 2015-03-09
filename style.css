@@ -4,11 +4,11 @@ body {
 }
 
 .dropdown {
-    display: block;
+    display: inline-block;
     padding: 0.5em;
     font-size: 1em;
     text-align: center;
-    width: 6em;
+    width: 8em;
     margin: 0.1em;
 }
 
@@ -18,7 +18,7 @@ body {
     font-size: 1em;
     text-align: center;
     height: 20px;
-    width: 5em;
+    width: 7em;
     margin: 0.1em;
     background-color: #cfd8dc;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
@@ -75,7 +75,7 @@ body {
     padding: 0.5em;
     font-size: 1em;
     text-align: center;
-    width: 5em;
+    width: 7em;
     margin: 0.1em;
 }
 

@@ -23,6 +23,86 @@ var Cockpit = (function ($, Data, Log, Network) {
             Network.write(command);
         });
 
+        $('#send_autonomous').on('click', function () {
+            var e = document.getElementById("pitch_source");
+            var pitch_source = e.options[e.selectedIndex].text;
+            var e = document.getElementById("roll_source");
+            var roll_source = e.options[e.selectedIndex].text;
+            var e = document.getElementById("altitude_on");
+            var altitude_on = e.options[e.selectedIndex].text;
+            var e = document.getElementById("heading_source");
+            var heading_source = e.options[e.selectedIndex].text;
+            var e = document.getElementById("heading_on");
+            var heading_on = e.options[e.selectedIndex].text;
+            var e = document.getElementById("pitch_control");
+            var pitch_control = e.options[e.selectedIndex].text;
+            var e = document.getElementById("roll_control");
+            var roll_control = e.options[e.selectedIndex].text;
+            var e = document.getElementById("altitude_source");
+            var altitude_source = e.options[e.selectedIndex].text;
+            var e = document.getElementById("throttle_source");
+            var throttle_source = e.options[e.selectedIndex].text;
+            var level = 0;
+
+            if (pitch_control === "Rate") {
+                level += 0;
+            } else if (pitch_control === "Angle") {
+                level += 1;
+            }
+
+            if (pitch_source === "Controller") {
+                level += 0;
+            } else if (pitch_source === "Ground Station") {
+                level += 2;
+            }
+
+            if (roll_control === "Rate") {
+                level += 0;
+            } else if (roll_control === "Angle") {
+                level += 4;
+            }
+
+            if (roll_source === "Controller") {
+                level += 0;
+            } else if (roll_source === "Ground Station") {
+                level += 8;
+            }
+
+            if (throttle_source === "Controller") {
+                level += 0;
+            } else if (throttle_source === "Ground Station") {
+                level += 16;
+            } else if (throttle_source === "Autopilot") {
+                level += 32;
+            }
+
+            if (altitude_source === "Ground Station") {
+                level += 0;
+            } else if (altitude_source === "Autopilot") {
+                level += 64;
+            }
+
+            if (altitude_on === "Off") {
+                level += 0;
+            } else if (altitude_on === "On") {
+                level += 128;
+            }
+
+            if (heading_source === "Ground Station") {
+                level += 0;
+            } else if (heading_source === "Autopilot") {
+                level += 256;
+            }
+
+            if (heading_on === "Off") {
+                level += 0;
+            } else if (heading_on === "On") {
+                level += 512;
+            }
+
+            Network.write("set_autonomousLevel:" + level + "\r\n");
+        });
+
         $('#sendSetpoints').on('click', function () {
             var throttle_input = document.getElementById("throttleInput").value;
             var pitch_input = document.getElementById("pitchInput").value;
@@ -449,7 +529,6 @@ var Cockpit = (function ($, Data, Log, Network) {
         if (div.children().length === 1) {
             div.children()[0].remove();
         }
-        console.log(string);
         var newItem = $('<div>' + string + '</div>');
         div.append(newItem);
     }

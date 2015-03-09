@@ -41,8 +41,8 @@
             <div id="gains">
                 <div>
                     <select id="gainSelect" class="dropdown">
-                        <option value="yaw">Yaw</option>
-                        <option value="pitch">Pitch</option>
+                        <option>Yaw</option>
+                        <option>Pitch</option>
                         <option value="roll">Roll</option>
                         <option value="heading">Heading</option>
                         <option value="altitude">Altitude</option>
@@ -72,8 +72,8 @@
             <div id="setpoints">
                 <div>
                     <select id="setpointSelect" class="dropdown">
-                        <option value="yaw">Angle</option>
-                        <option value="pitch">Rate</option>
+                        <option>Angle</option>
+                        <option>Rate</option>
                     </select>
                 </div>
                 <div>
@@ -96,6 +96,69 @@
                 </div>
                 <div class="button" id="sendSetpoints">
                     Send Setpoints
+                </div>
+            </div>
+            <div id="autonomous_level">
+                <div>
+                    <div class="display">Pitch Control</div>
+                    <div class="display">Roll Control</div>
+                    <div class="display">Altitude Source</div>
+                </div>
+                <div>
+                    <select id="pitch_control" class="dropdown">
+                        <option>Angle</option>
+                        <option>Rate</option>
+                    </select>
+                    <select id="roll_control" class="dropdown">
+                        <option>Angle</option>
+                        <option>Rate</option>
+                    </select>
+                    <select id="altitude_source" class="dropdown">
+                        <option>Angle</option>
+                        <option>Rate</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="display">Pitch Source</div>
+                    <div class="display">Roll Source</div>
+                    <div class="display">Altitude On/Off</div>
+                </div>
+                <div>
+                    <select id="pitch_source" class="dropdown">
+                        <option>Controller</option>
+                        <option>Ground Station</option>
+                    </select>
+                    <select id="roll_source" class="dropdown">
+                        <option>Controller</option>
+                        <option>Ground Station</option>
+                    </select>
+                    <select id="altitude_on" class="dropdown">
+                        <option>On</option>
+                        <option>Off</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="display">Heading Source</div>
+                    <div class="display">Heading On/Off</div>
+                    <div class="display">Throttle Source</div>
+                </div>
+                <div>
+                    <select id="heading_source" class="dropdown">
+                        <option>Angle</option>
+                        <option>Rate</option>
+                    </select>
+                    <select id="heading_on" class="dropdown">
+                        <option>On</option>
+                        <option>Off</option>
+                    </select>
+                    <select id="throttle_source" class="dropdown">
+                        <option>Controller</option>
+                        <option>Ground Station</option>
+                        <option>Autopilot</option>
+                    </select>
+                </div>
+                <div class="button" id="send_autonomous">
+                    Send Autonomous Level
                 </div>
             </div>
         </div>
