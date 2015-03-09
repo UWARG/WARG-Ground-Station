@@ -23,6 +23,11 @@ var Cockpit = (function ($, Data, Log, Network) {
             Network.write(command);
         });
 
+        $('#send_command').on('click', function () {
+            var raw_command = document.getElementById("raw_command").value;
+            Network.write(raw_command + "\r\n");
+        });
+
         $('#send_autonomous').on('click', function () {
             var e = document.getElementById("pitch_source");
             var pitch_source = e.options[e.selectedIndex].text;
