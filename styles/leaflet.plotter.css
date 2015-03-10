@@ -1,0 +1,13 @@
+.leaflet-editing-icon {
+	border-radius: 50%;
+}
+
+.leaflet-editing-icon:hover {
+	background-color: #fcc;
+}
+
+.leaflet-disabled-icon {
+	border-radius: 50%;
+	background-color: #ccc;
+	cursor: default;
+}

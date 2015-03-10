@@ -18,11 +18,6 @@ var Cockpit = (function ($, Data, Log, Network) {
         displayGPSStatus(0);
 
         //Buttons
-        $('#goHome').on('click', function () {
-            var command = "return_home\r\n";
-            Network.write(command);
-        });
-
         $('#send_command').on('click', function () {
             var raw_command = document.getElementById("raw_command").value;
             Network.write(raw_command + "\r\n");
