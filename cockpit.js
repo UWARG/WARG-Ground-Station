@@ -8,9 +8,9 @@ var Cockpit = (function ($, Data, Log, Network) {
     $(document).ready(function () {
         //Initialize instruments
         drawArtificalHorizon(0, 0);
-        drawPitch(0);
-        drawRoll(0);
-        drawYaw(0);
+        drawPitch(0, 0);
+        drawRoll(0, 0);
+        drawYaw(0, 0);
         drawBattery(0);
         drawScale(0, 300, "altimeter", "Altitude");
         drawScale(0, 300, "speed", "Speed");
@@ -189,7 +189,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         });
     });
 
-    function drawYaw(yaw) {
+    function drawYaw(yaw, yaw_setpoint) {
         //Initialize canvas
         var canvas = document.getElementById("yaw");
         canvas.height = 200;
@@ -219,6 +219,17 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.textAlign = "center";
         context.fillText(yawText, 100, 30);
 
+        //Setpoint
+        yaw_setpoint = (parseFloat(yaw_setpoint)).toFixed(2);
+        yaw_setpoint = yaw_setpoint.toString() + "°";
+        context.fillStyle = "black";
+        context.font = "20px Calibri";
+        context.textAlign = "center";
+        context.fillText(yaw_setpoint, 100, 170);
+        context.lineWidth = 2;
+        context.rect(60, 150, 76, 30);
+        context.stroke();
+
         //Indicator
         image = document.createElement('img');
         image.src = "yaw.png";
@@ -228,7 +239,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.drawImage(image, -64, -64);
     }
 
-    function drawRoll(roll) {
+    function drawRoll(roll, roll_setpoint) {
         roll = -roll;
         //Initialize canvas
         var canvas = document.getElementById("roll");
@@ -265,6 +276,17 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.textAlign = "center";
         context.fillText(rollText, 100, 30);
 
+        //Setpoint
+        roll_setpoint = (parseFloat(roll_setpoint)).toFixed(2);
+        roll_setpoint = roll_setpoint.toString() + "°";
+        context.fillStyle = "black";
+        context.font = "20px Calibri";
+        context.textAlign = "center";
+        context.fillText(roll_setpoint, 100, 170);
+        context.lineWidth = 2;
+        context.rect(60, 150, 76, 30);
+        context.stroke();
+
         //Indicator
         image = document.createElement('img');
         image.src = "roll.png";
@@ -274,7 +296,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.drawImage(image, -64, -64);
     }
 
-    function drawPitch(pitch) {
+    function drawPitch(pitch, pitch_setpoint) {
         //Initialize canvas
         var canvas = document.getElementById("pitch");
         canvas.height = 200;
@@ -309,6 +331,17 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.font = "20px Calibri";
         context.textAlign = "center";
         context.fillText(pitchText, 100, 30);
+
+        //Setpoint
+        pitch_setpoint = (parseFloat(pitch_setpoint)).toFixed(2);
+        pitch_setpoint = pitch_setpoint.toString() + "°";
+        context.fillStyle = "black";
+        context.font = "20px Calibri";
+        context.textAlign = "center";
+        context.fillText(pitch_setpoint, 100, 170);
+        context.lineWidth = 2;
+        context.rect(60, 150, 76, 30);
+        context.stroke();
 
         //Indicator
         image = document.createElement('img');
@@ -513,6 +546,9 @@ var Cockpit = (function ($, Data, Log, Network) {
         var kd_gain = flightData.kd_gain;
         var kp_gain = flightData.kp_gain;
         var ki_gain = flightData.ki_gain;
+        var roll_setpoint = flightData.roll_setpoint;
+        var pitch_setpoint = flightData.pitch_setpoint;
+        var yaw_setpoint = flightData.yaw_setpoint;
         var time = flightData.time;
 
         //Used in path.js for some reason
@@ -520,9 +556,9 @@ var Cockpit = (function ($, Data, Log, Network) {
         lon = flightData.lon;
 
         drawArtificalHorizon(roll, pitch);
-        drawPitch(pitch);
-        drawRoll(roll);
-        drawYaw(yaw);
+        drawPitch(pitch, pitch_setpoint);
+        drawRoll(roll, roll_setpoint);
+        drawYaw(yaw, yaw_setpoint);
         drawBattery(batteryLevel);
         displayControlStatus(editing_gain);
         displayGPSStatus(gpsStatus);
