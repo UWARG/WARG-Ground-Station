@@ -25,7 +25,12 @@ body {
 }
 
 #cockpit {
+    overflow-x: hidden;
     display: inline;
+    position: fixed;
+    top: 0;
+    height: 90%;
+    left: 0;
 }
 
 #meters {
