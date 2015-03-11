@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
 
+
+
 <head>
     <title>WARG-Ground-Station-V2</title>
     <meta charset="utf-8">
 
     <link rel="stylesheet" href="leaflet.css">
+    <link rel="stylesheet" type="text/css" href="simplegrid.css">
     <link rel="stylesheet" href="styles/leaflet.altitudemarker.css">
     <link rel="stylesheet" href="styles/leaflet.messagebox.css">
     <link rel="stylesheet" href="styles/leaflet.plotter.css">
@@ -27,160 +30,227 @@
 </head>
 
 <body>
-    <div id="cockpit">
-        <div id="time" class="display"></div>
-        <canvas id="battery" class="instrument"></canvas>
-        <canvas id="control_status" class="instrument"></canvas>
-        <canvas id="gps_status" class="instrument"></canvas>
+  <div class="grid-pad">
+    <!-- COL 1  -->
+    <div class="col-5-12">
+      <div class="col-1-2">
         <div>
-            <canvas id="horizon" class="instrument"></canvas>
-            <canvas id="pitch" class="instrument"></canvas>
-            <canvas id="roll" class="instrument"></canvas>
-            <canvas id="yaw" class="instrument"></canvas>
+          <h3 align="center"> Pitch </h3>
+          <canvas id="pitch" class="instrument"></canvas>
         </div>
+      </div>
+      <div class="col-1-2">
         <div>
-            <div id="meters">
-                <canvas id="altimeter" class="instrument"></canvas>
-                <canvas id="speed" class="instrument"></canvas>
-            </div>
-            <div id="gains">
-                <div>
-                    <select id="gainSelect" class="dropdown">
-                        <option>Yaw</option>
-                        <option>Pitch</option>
-                        <option value="roll">Roll</option>
-                        <option value="heading">Heading</option>
-                        <option value="altitude">Altitude</option>
-                        <option value="throttle">Throttle</option>
-                    </select>
-                    <div id="current_gain" class="display"></div>
-                </div>
-                <div>
-                    <div class="display">KD_GAIN</div>
-                    <div class="display">KP_GAIN</div>
-                    <div class="display">KI_GAIN</div>
-                </div>
-                <div>
-                    <div id="current_kd" class="display"></div>
-                    <div id="current_kp" class="display"></div>
-                    <div id="current_ki" class="display"></div>
-                </div>
-                <div>
-                    <input type="number" id="kdInput" class="input" value="0">
-                    <input type="number" id="kpInput" class="input" value="0">
-                    <input type="number" id="kiInput" class="input" value="0">
-                </div>
-                <div class="button" id="sendGains">
-                    Send Gains
-                </div>
+          <h3 align="center"> Roll </h3>
+          <canvas id="roll" class="instrument"></canvas>
+        </div>
+      </div>
+      <div class="col-1-2">
+        <div>
+          <h3 align="center"> Yaw </h3>
+          <canvas id="yaw" class="instrument"></canvas>
+        </div>
+      </div>
+      <div class="col-1-2">
+        <div>
+          <h3 align="center"> Horizon </h3>
+          <canvas id="horizon" class="instrument"></canvas>
+        </div>
+      </div>
+      <div class="col-2-2">
+        <div id="setpoints">
+          <h3 align="center"> SETPOINTS </h3>
+            <div>
+                <select id="setpointSelect" class="dropdown">
+                    <option>Angle</option>
+                    <option>Rate</option>
+                </select>
             </div>
             <div>
-                <input type="text" id="raw_command" class="input">
-                <div class="button" id="send_command">
-                    Send Command
-                </div>
+                <div class="display">Throttle</div>
+                <div class="display">Pitch</div>
+                <div class="display">Roll</div>
+                <div class="display">Yaw</div>
+                <div class="display">Altitude</div>
+                <div class="display">Heading</div>
             </div>
-            <div id="setpoints">
-                <div>
-                    <select id="setpointSelect" class="dropdown">
-                        <option>Angle</option>
-                        <option>Rate</option>
-                    </select>
-                </div>
-                <div>
-                    <div class="display">Throttle</div>
-                    <div class="display">Pitch</div>
-                    <div class="display">Roll</div>
-                    <div class="display">Yaw</div>
-                    <div class="display">Altitude</div>
-                    <div class="display">Heading</div>
-                </div>
-                <div>
-                    <div id="current_throttle" class="display"></div>
-                    <div id="current_pitch" class="display"></div>
-                    <div id="current_roll" class="display"></div>
-                    <div id="current_yaw" class="display"></div>
-                    <div id="current_altitude" class="display"></div>
-                    <div id="current_heading" class="display"></div>
-                </div>
-                <div>
-                    <input type="number" id="throttleInput" class="input" value="0">
-                    <input type="number" id="pitchInput" class="input" value="0">
-                    <input type="number" id="rollInput" class="input" value="0">
-                    <input type="number" id="yawInput" class="input" value="0">
-                    <input type="number" id="altitudeInput" class="input" value="0">
-                    <input type="number" id="headingInput" class="input" value="0">
-                </div>
-                <div class="button" id="sendSetpoints">
-                    Send Setpoints
-                </div>
+            <div>
+                <div id="current_throttle" class="display"></div>
+                <div id="current_pitch" class="display"></div>
+                <div id="current_roll" class="display"></div>
+                <div id="current_yaw" class="display"></div>
+                <div id="current_altitude" class="display"></div>
+                <div id="current_heading" class="display"></div>
             </div>
-            <div id="autonomous_level">
-                <div>
-                    <div class="display">Pitch Control</div>
-                    <div class="display">Roll Control</div>
-                    <div class="display">Altitude Source</div>
-                </div>
-                <div>
-                    <select id="pitch_control" class="dropdown">
-                        <option>Angle</option>
-                        <option>Rate</option>
-                    </select>
-                    <select id="roll_control" class="dropdown">
-                        <option>Angle</option>
-                        <option>Rate</option>
-                    </select>
-                    <select id="altitude_source" class="dropdown">
-                        <option>Angle</option>
-                        <option>Rate</option>
-                    </select>
-                </div>
-                <div>
-                    <div class="display">Pitch Source</div>
-                    <div class="display">Roll Source</div>
-                    <div class="display">Altitude On/Off</div>
-                </div>
-                <div>
-                    <select id="pitch_source" class="dropdown">
-                        <option>Controller</option>
-                        <option>Ground Station</option>
-                    </select>
-                    <select id="roll_source" class="dropdown">
-                        <option>Controller</option>
-                        <option>Ground Station</option>
-                    </select>
-                    <select id="altitude_on" class="dropdown">
-                        <option>On</option>
-                        <option>Off</option>
-                    </select>
-                </div>
-                <div>
-                    <div class="display">Heading Source</div>
-                    <div class="display">Heading On/Off</div>
-                    <div class="display">Throttle Source</div>
-                </div>
-                <div>
-                    <select id="heading_source" class="dropdown">
-                        <option>Angle</option>
-                        <option>Rate</option>
-                    </select>
-                    <select id="heading_on" class="dropdown">
-                        <option>On</option>
-                        <option>Off</option>
-                    </select>
-                    <select id="throttle_source" class="dropdown">
-                        <option>Controller</option>
-                        <option>Ground Station</option>
-                        <option>Autopilot</option>
-                    </select>
-                </div>
-                <div class="button" id="send_autonomous">
-                    Send Autonomous Level
-                </div>
+            <div>
+                <input type="number" id="throttleInput" class="input" value="0">
+                <input type="number" id="pitchInput" class="input" value="0">
+                <input type="number" id="rollInput" class="input" value="0">
+                <input type="number" id="yawInput" class="input" value="0">
+                <input type="number" id="altitudeInput" class="input" value="0">
+                <input type="number" id="headingInput" class="input" value="0">
+            </div>
+            <div class="button" id="sendSetpoints">
+                Send Setpoints
             </div>
         </div>
-        <div id="footer"></div>
+
+      </div>
+
+      <div class="col-2-2">
+        <div class="col-2-2">
+          <h3 align="center"> GAINS </h3>
+          <div id="gains">
+              <div>
+                  <select id="gainSelect" class="dropdown">
+                      <option>Yaw</option>
+                      <option>Pitch</option>
+                      <option value="roll">Roll</option>
+                      <option value="heading">Heading</option>
+                      <option value="altitude">Altitude</option>
+                      <option value="throttle">Throttle</option>
+                  </select>
+                  <div id="current_gain" class="display"></div>
+              </div>
+              <div>
+                  <div class="display">KD_GAIN</div>
+                  <div class="display">KP_GAIN</div>
+                  <div class="display">KI_GAIN</div>
+              </div>
+              <div>
+                  <div id="current_kd" class="display"></div>
+                  <div id="current_kp" class="display"></div>
+                  <div id="current_ki" class="display"></div>
+              </div>
+              <div>
+                  <input type="number" id="kdInput" class="input" value="0">
+                  <input type="number" id="kpInput" class="input" value="0">
+                  <input type="number" id="kiInput" class="input" value="0">
+              </div>
+              <div class="button" id="sendGains">
+                  Send Gains
+              </div>
+          </div>
+
+      </div>
     </div>
+    <div class="col-2-2">
+      <div>
+          <input type="text" id="raw_command" class="input">
+          <div class="button" id="send_command">
+              Send Command
+          </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- COL 2  -->
+  <div class="col-3-12">
+
+    <div class="col-2-2">
+      <div class="col-2-2">
+        <div class ="col-1-2">
+          <h4 align="right"> Time </h4>
+        </div>
+        <div class ="col-1-2">
+            <div id="time" class="display"></div>
+        </div>
+
+
+      </div>
+
+      <div class="col-1-2">
+        <canvas id="control_status" class="instrument"></canvas>
+        <canvas id="gps_status" class="instrument"></canvas>
+      </div>
+      <div class="col-1-2">
+        <canvas id="battery" class="instrument"></canvas>
+      </div>
+
+
+    </div>
+
+
+    <div class="col-1-2">
+      <canvas id="altimeter" class="instrument"></canvas>
+    </div>
+    <div class="col-1-2">
+      <canvas id="speed" class="instrument"></canvas>
+    </div>
+
+      <div class="col-2-2">
+        <div id="autonomous_level">
+            <div>
+                <div class="display">Pitch Control</div>
+                <div class="display">Roll Control</div>
+                <div class="display">Altitude Source</div>
+            </div>
+            <div>
+                <select id="pitch_control" class="dropdown">
+                    <option>Angle</option>
+                    <option>Rate</option>
+                </select>
+                <select id="roll_control" class="dropdown">
+                    <option>Angle</option>
+                    <option>Rate</option>
+                </select>
+                <select id="altitude_source" class="dropdown">
+                    <option>Angle</option>
+                    <option>Rate</option>
+                </select>
+            </div>
+            <div>
+                <div class="display">Pitch Source</div>
+                <div class="display">Roll Source</div>
+                <div class="display">Altitude On/Off</div>
+            </div>
+            <div>
+                <select id="pitch_source" class="dropdown">
+                    <option>Controller</option>
+                    <option>Ground Station</option>
+                </select>
+                <select id="roll_source" class="dropdown">
+                    <option>Controller</option>
+                    <option>Ground Station</option>
+                </select>
+                <select id="altitude_on" class="dropdown">
+                    <option>On</option>
+                    <option>Off</option>
+                </select>
+            </div>
+            <div>
+                <div class="display">Heading Source</div>
+                <div class="display">Heading On/Off</div>
+                <div class="display">Throttle Source</div>
+            </div>
+            <div>
+                <select id="heading_source" class="dropdown">
+                    <option>Angle</option>
+                    <option>Rate</option>
+                </select>
+                <select id="heading_on" class="dropdown">
+                    <option>On</option>
+                    <option>Off</option>
+                </select>
+                <select id="throttle_source" class="dropdown">
+                    <option>Controller</option>
+                    <option>Ground Station</option>
+                    <option>Autopilot</option>
+                </select>
+            </div>
+            <div class="button" id="send_autonomous">
+                Send Autonomous Level
+            </div>
+        </div>
+    </div>
+      </div>
+
+      </div>
+
+    </div>
+
     <div id="path">
         <div id="buttonContainer">
             <div class="button" id="lockOn">
@@ -196,7 +266,7 @@
                 Go Home
             </div>
         </div>
-        <div id="map"></div>
+      <div id="map"></div>
     </div>
     <div id="log"></div>
 </body>
