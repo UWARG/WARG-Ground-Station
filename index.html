@@ -35,7 +35,6 @@
         <div class="col-5-12">
             <div class="col-1-2">
                 <div>
-                    <h3 align="center"> Pitch </h3>
                     <canvas id="pitch" class="instrument"></canvas>
                     <input type="number" id="pitch_setpoint" class="input" value="0">
                     <div class="button" id="send_pitch">
@@ -45,7 +44,6 @@
             </div>
             <div class="col-1-2">
                 <div>
-                    <h3 align="center"> Roll </h3>
                     <canvas id="roll" class="instrument"></canvas>
                     <input type="number" id="roll_setpoint" class="input" value="0">
                     <div class="button" id="send_roll">
@@ -55,7 +53,6 @@
             </div>
             <div class="col-1-2">
                 <div>
-                    <h3 align="center"> Yaw </h3>
                     <canvas id="yaw" class="instrument"></canvas>
                     <input type="number" id="yaw_setpoint" class="input" value="0">
                     <div class="button" id="send_yaw">
@@ -65,20 +62,25 @@
             </div>
             <div class="col-1-2">
                 <div>
-                    <h3 align="center"> Horizon </h3>
                     <canvas id="horizon" class="instrument"></canvas>
                 </div>
             </div>
             <div class="col-2-2">
                 <div id="setpoints">
-                    <h3 align="center"> SETPOINTS </h3>
+                    <h3 align="center"> Setpoints and Rates </h3>
                     <div>
                         <div class="display">Throttle</div>
                         <div class="display">Heading</div>
+                        <div class="display">Pitch Rate</div>
+                        <div class="display">Roll Rate</div>
+                        <div class="display">Yaw Rate</div>
                     </div>
                     <div>
                         <div id="throttle_setpoint_display" class="display"></div>
                         <div id="heading_setpoint_display" class="display"></div>
+                        <div id="pitch_rate" class="display"></div>
+                        <div id="roll_rate" class="display"></div>
+                        <div id="yaw_rate" class="display"></div>
                     </div>
                     <div>
                         <input type="number" id="throttle_setpoint_input" class="input" value="0">
@@ -88,24 +90,11 @@
                         Send Setpoints
                     </div>
                 </div>
-                <div id="setpoints">
-                    <h3 align="center"> RATES </h3>
-                    <div>
-                        <div class="display">Pitch Rate</div>
-                        <div class="display">Roll Rate</div>
-                        <div class="display">Yaw Rate</div>
-                    </div>
-                    <div>
-                        <div id="pitch_rate" class="display"></div>
-                        <div id="roll_rate" class="display"></div>
-                        <div id="yaw_rate" class="display"></div>
-                    </div>
-                </div>
             </div>
 
             <div class="col-2-2">
                 <div class="col-2-2">
-                    <h3 align="center"> GAINS </h3>
+                    <h3 align="center"> Gains </h3>
                     <div id="gains">
                         <div>
                             <select id="gainSelect" class="dropdown">
@@ -142,7 +131,7 @@
             </div>
             <div class="col-2-2">
                 <div>
-                    <h3 align="center"> RAW COMMAND </h3>
+                    <h3 align="center"> Raw Command </h3>
                     <input type="text" id="raw_command" class="input">
                     <div class="button" id="send_command">
                         Send Command
@@ -198,7 +187,7 @@
             </div>
 
             <div class="col-2-2">
-                <h3 align="center"> AUTONOMOUS LEVEL </h3>
+                <h3 align="center"> Autonomous Level </h3>
                 <div id="autonomous_level">
                     <div>
                         <div class="display">Pitch Control</div>
