@@ -21,12 +21,12 @@ var Network = (function (Data, Log) {
 
     function write(data) {
         client.write(data);
-        Log.Info("Sent: " + data);
+        Log.info("Sent: " + data);
     }
 
     function connectHandler(err) {
         if (!err) {
-            Log.Info('Connected: ' + host + ':' + port);
+            Log.info('Connected: ' + host + ':' + port);
             write("commander\r\n");
         }
     }
@@ -60,7 +60,7 @@ var Network = (function (Data, Log) {
     }
 
     function closeHandler() {
-        Log.Error('Connection closed - Retrying connection');
+        Log.error('Connection closed - Retrying connection');
         Data.headers = [];
         setTimeout(connect, Math.random() * 500 + 500);
     }
