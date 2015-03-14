@@ -32,7 +32,7 @@
 <body>
     <div id="cockpit" class="grid-pad">
         <!-- COL 1  -->
-        <div class="col-5-12">
+        <div class="col-4-12">
             <div class="col-1-2">
                 <div>
                     <canvas id="pitch" class="instrument"></canvas>
@@ -65,126 +65,7 @@
                     <canvas id="horizon" class="instrument"></canvas>
                 </div>
             </div>
-            <div class="col-2-2">
-                <div id="setpoints">
-                    <h3 align="center"> Setpoints and Rates </h3>
-                    <div>
-                        <div class="display">Throttle</div>
-                        <div class="display">Heading</div>
-                        <div class="display">Pitch Rate</div>
-                        <div class="display">Roll Rate</div>
-                        <div class="display">Yaw Rate</div>
-                    </div>
-                    <div>
-                        <div id="throttle_setpoint_display" class="display"></div>
-                        <div id="heading_setpoint_display" class="display"></div>
-                        <div id="pitch_rate" class="display"></div>
-                        <div id="roll_rate" class="display"></div>
-                        <div id="yaw_rate" class="display"></div>
-                    </div>
-                    <div>
-                        <input type="number" id="throttle_setpoint_input" class="input" value="0">
-                        <input type="number" id="heading_setpoint_input" class="input" value="0">
-                    </div>
-                    <div class="button" id="send_setpoints">
-                        Send Setpoints
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-2-2">
-                <div class="col-2-2">
-                    <h3 align="center"> Gains </h3>
-                    <div id="gains">
-                        <div>
-                            <select id="gainSelect" class="dropdown">
-                                <option>Yaw</option>
-                                <option>Pitch</option>
-                                <option value="roll">Roll</option>
-                                <option value="heading">Heading</option>
-                                <option value="altitude">Altitude</option>
-                                <option value="throttle">Throttle</option>
-                            </select>
-                            <div id="current_gain" class="display"></div>
-                        </div>
-                        <div>
-                            <div class="display">KD_GAIN</div>
-                            <div class="display">KP_GAIN</div>
-                            <div class="display">KI_GAIN</div>
-                        </div>
-                        <div>
-                            <div id="current_kd" class="display"></div>
-                            <div id="current_kp" class="display"></div>
-                            <div id="current_ki" class="display"></div>
-                        </div>
-                        <div>
-                            <input type="number" id="kdInput" class="input" value="0">
-                            <input type="number" id="kpInput" class="input" value="0">
-                            <input type="number" id="kiInput" class="input" value="0">
-                        </div>
-                        <div class="button" id="sendGains">
-                            Send Gains
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-2-2">
-                <div>
-                    <h3 align="center"> Raw Command </h3>
-                    <input type="text" id="raw_command" class="input">
-                    <div class="button" id="send_command">
-                        Send Command
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-
-        <!-- COL 2  -->
-        <div class="col-3-12">
-
-            <div class="col-2-2">
-                <div class="col-2-2">
-                    <div class="col-1-2">
-                        <h4 align="right"> Time </h4>
-                    </div>
-                    <div class="col-1-2">
-                        <div id="time" class="display"></div>
-                    </div>
-
-
-                </div>
-
-                <div class="col-1-2">
-                    <canvas id="control_status" class="instrument"></canvas>
-                    <canvas id="gps_status" class="instrument"></canvas>
-                </div>
-                <div class="col-1-2">
-                    <canvas id="battery" class="instrument"></canvas>
-                </div>
-
-
-            </div>
-
-
-            <div class="col-1-2">
-                <canvas id="altimeter" class="instrument"></canvas>
-                <div id="altitude_setpoint_display" class="display"></div>
-                <input type="number" id="altitude_setpoint_input" class="input" value="0">
-                <div class="button" id="send_altitude">
-                    Send Altitude
-                </div>
-            </div>
-            <div class="col-1-2">
-                <canvas id="speed" class="instrument"></canvas>
-                <div id="speed_setpoint_display" class="display"></div>
-                <input type="number" id="speed_setpoint_input" class="input" value="0">
-                <div class="button" id="send_speed">
-                    Send Speed
-                </div>
-            </div>
 
             <div class="col-2-2">
                 <h3 align="center"> Autonomous Level </h3>
@@ -252,6 +133,162 @@
                     </div>
                 </div>
             </div>
+            <div class="col-2-2">
+                <div>
+                    <h3 align="center"> Raw Command </h3>
+                    <input type="text" id="raw_command" class="input">
+                    <div class="button" id="send_command">
+                        Send Command
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+        <!-- COL 2  -->
+        <div class="col-4-12">
+            <div class="col-2-2">
+                <div class="col-2-2">
+                    <div class="col-1-8">
+
+                        <b>Time</b>
+                    </div>
+                    <div class="col-2-8">
+                        <div id="time" class="display"></div>
+                    </div>
+                    <div class="col-2-8">
+                      <canvas id="control_status" class="instrument"></canvas>
+                    </div>
+                    <div class="col-1-8">
+                      <canvas id="gps_status" class="instrument"></canvas>
+                    </div>
+                    <div class="col-2-8">
+                          <canvas id="battery" class="instrument"></canvas>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+            <div class="col-1-2">
+                <div class="col-1-2">
+                  <canvas id="altimeter" class="instrument"></canvas>
+                </div>
+                <div class="col-1-2">
+                  <div class="centered-div">
+
+                      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+                      <div class="col-2-2">
+                        <div id="altitude_setpoint_display" class="display"></div>
+                      </div>
+                      <div class="col-2-2">
+                        <input type="number" id="altitude_setpoint_input" class="input" value="0">
+
+                      </div>
+                      <div class="col-2-2">
+                        <div class="button" id="send_altitude">
+                            Send Altitude
+                        </div>
+                      </div>
+
+                </div>
+
+                </div>
+            </div>
+            <div class="col-1-2">
+                <div class="col-1-2">
+                  <canvas id="speed" class="instrument"></canvas>
+                </div>
+                <div class="col-1-2">
+
+                                      <br/><br/><br/><br/><br/><br/>
+
+                  <div class="col-2-2">
+                    <div id="speed_setpoint_display" class="display"></div>
+
+                  </div>
+                  <div class="col-2-2">
+                    <input type="number" id="speed_setpoint_input" class="input" value="0">
+
+                  </div>
+                  <div class="col-2-2">
+                    <div class="button" id="send_speed">
+                        Send Speed
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+            <div class="col-2-2">
+                <div id="setpoints">
+                    <h3 align="center"> Setpoints and Rates </h3>
+                    <div>
+                        <div class="display">Throttle</div>
+                        <div class="display">Heading</div>
+                        <div class="display">Pitch Rate</div>
+                        <div class="display">Roll Rate</div>
+                        <div class="display">Yaw Rate</div>
+                    </div>
+                    <div>
+                        <div id="throttle_setpoint_display" class="display"></div>
+                        <div id="heading_setpoint_display" class="display"></div>
+                        <div id="pitch_rate" class="display"></div>
+                        <div id="roll_rate" class="display"></div>
+                        <div id="yaw_rate" class="display"></div>
+                    </div>
+                    <div>
+                        <input type="number" id="throttle_setpoint_input" class="input" value="0">
+                        <input type="number" id="heading_setpoint_input" class="input" value="0">
+                    </div>
+                    <div class="button" id="send_setpoints">
+                        Send Setpoints
+                    </div>
+                </div>
+            </div>
+            <div class="col-2-2">
+                <div class="col-2-2">
+                    <h3 align="center"> Gains </h3>
+                    <div id="gains">
+                        <div>
+                            <select id="gainSelect" class="dropdown">
+                                <option>Yaw</option>
+                                <option>Pitch</option>
+                                <option value="roll">Roll</option>
+                                <option value="heading">Heading</option>
+                                <option value="altitude">Altitude</option>
+                                <option value="throttle">Throttle</option>
+                            </select>
+                            <div id="current_gain" class="display"></div>
+                        </div>
+                        <div>
+                            <div class="display">KD_GAIN</div>
+                            <div class="display">KP_GAIN</div>
+                            <div class="display">KI_GAIN</div>
+                        </div>
+                        <div>
+                            <div id="current_kd" class="display"></div>
+                            <div id="current_kp" class="display"></div>
+                            <div id="current_ki" class="display"></div>
+                        </div>
+                        <div>
+                            <input type="number" id="kdInput" class="input" value="0">
+                            <input type="number" id="kpInput" class="input" value="0">
+                            <input type="number" id="kiInput" class="input" value="0">
+                        </div>
+                        <div class="button" id="sendGains">
+                            Send Gains
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
 
     </div>
