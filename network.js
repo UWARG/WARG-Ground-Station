@@ -27,6 +27,7 @@ var Network = (function (Data, Log) {
     function connectHandler(err) {
         if (!err) {
             Log.write('Connected: ' + host + ':' + port);
+            write("commander\r\n");
         }
     }
 
