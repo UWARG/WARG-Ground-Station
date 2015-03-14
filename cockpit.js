@@ -193,6 +193,25 @@ var Cockpit = (function ($, Data, Log, Network) {
             command += "\r\n";
             Network.write(command);
         });
+
+        $('#save_comment').on('click', function () {
+
+          var fileName = document.getElementById("send_file").value;
+          var comment = document.getElementById("send_comment").value;
+
+          var fs = require('fs');
+          var wstream = fs.createWriteStream(fileName + ".txt", { 'flags': 'a'
+                                                                , 'encoding': null
+                                                                , 'mode': 0666
+                                                                });
+          wstream.write(comment + "\r\n");
+          wstream.end();
+          document.getElementById("send_file").value = "";
+          document.getElementById("send_comment").value = "";
+
+
+          Log.write("Comment Successfully Written to "+fileName+".txt");
+        });
     });
 
     function drawYaw(yaw, yaw_setpoint) {
