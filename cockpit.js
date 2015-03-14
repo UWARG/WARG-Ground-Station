@@ -204,7 +204,26 @@ var Cockpit = (function ($, Data, Log, Network) {
                                                                 , 'encoding': null
                                                                 , 'mode': 0666
                                                                 });
-          wstream.write(comment + "\r\n");
+          wstream.write("New Input ====\r\n");
+          var flightData = Data.state;
+          wstream.write("currentTime: " + flightData.time + "\r\n");
+          //wstream.write("currentThrottle: " + flightData. + "\r\n");
+          wstream.write("roll: " + flightData.roll * (Math.PI / 180) + "\r\n");
+          wstream.write("pitch: " + flightData.pitch * (Math.PI / 180) + "\r\n");
+          wstream.write("yaw: " + flightData.yaw * (Math.PI / 180) + "\r\n");
+          wstream.write("altitude: " + parseFloat(flightData.altitude) + "\r\n");
+          wstream.write("heading: " + flightData.heading + "\r\n");
+          wstream.write("ground speed: " + parseFloat(flightData.ground_speed) + "\r\n");
+          wstream.write("battery level: " + Math.round(parseFloat(flightData.batteryLevel)) + "\r\n");
+          wstream.write("editing gain: " + parseInt(flightData.editing_gain) + "\r\n");
+          wstream.write("gps status: " + flightData.gpsStatus + "\r\n");
+          wstream.write("kd gain: " + flightData.kd_gain + "\r\n");
+          wstream.write("kp gain: " + flightData.kp_gain + "\r\n");
+          wstream.write("ki gain: " + flightData.ki_gain + "\r\n");
+          wstream.write("roll setpoint: " + flightData.roll_setpoint + "\r\n");
+          wstream.write("pitch setpoint: " + flightData.pitch_setpoint + "\r\n");
+          wstream.write("yaw setpoint: " + flightData.yaw_setpoint + "\r\n");
+          wstream.write("Comment: " + comment + "\r\n\r\n");
           wstream.end();
           document.getElementById("send_file").value = "";
           document.getElementById("send_comment").value = "";
