@@ -103,31 +103,37 @@ var Cockpit = (function ($, Data, Log, Network) {
             Network.write("set_autonomousLevel:" + level + "\r\n");
         });
 
-        $('#sendSetpoints').on('click', function () {
-            var throttle_input = document.getElementById("throttleInput").value;
-            var pitch_input = document.getElementById("pitchInput").value;
-            var roll_input = document.getElementById("rollInput").value;
-            var yaw_input = document.getElementById("yawInput").value;
-            var altitude_input = document.getElementById("altitudeInput").value;
-            var heading_input = document.getElementById("headingInput").value;
-            var e = document.getElementById("setpointSelect");
-            var selectedOpt = e.options[e.selectedIndex].text;
+        $('#send_pitch').on('click', function () {
+            var pitch_input = document.getElementById("pitch_setpoint").value;
+            Network.write("set_pitchAngle:" + pitch_input + "\r\n");
+        });
+
+        $('#send_roll').on('click', function () {
+            var roll_setpoint = document.getElementById("roll_setpoint").value;
+            Network.write("set_rollAngle:" + roll_setpoint + "\r\n");
+        });
+
+        $('#send_yaw').on('click', function () {
+            var yaw_setpoint = document.getElementById("yaw_setpoint").value;
+            Network.write("set_yawAngle:" + yaw_setpoint + "\r\n");
+        });
+
+        $('#send_altitude').on('click', function () {
+            var altitude_setpoint = document.getElementById("altitude_setpoint_input").value;
+            Network.write("set_altitude:" + altitude_setpoint + "\r\n");
+        });
+
+        $('#send_speed').on('click', function () {
+            var speed_setpoint = document.getElementById("speed_setpoint_input").value;
+            Network.write("set_speed:" + speed_setpoint + "\r\n");
+        });
+
+        $('#send_setpoints').on('click', function () {
+            var throttle_input = document.getElementById("throttle_setpoint_input").value;
+            var heading_input = document.getElementById("heading_setpoint_input").value;
 
             Network.write("set_throttle:" + throttle_input + "\r\n");
-            Network.write("set_altitude:" + altitude_input + "\r\n");
             Network.write("set_heading:" + heading_input + "\r\n");
-
-            if (selectedOpt === "Angle") {
-                Network.write("set_pitchAngle:" + pitch_input + "\r\n");
-                Network.write("set_rollAngle:" + roll_input + "\r\n");
-                Network.write("set_yawAngle:" + yaw_input + "\r\n");
-            } else if (selectedOpt === "Rate") {
-                Network.write("set_pitchRate:" + pitch_input + "\r\n");
-                Network.write("set_rollRate:" + roll_input + "\r\n");
-                Network.write("set_yawRate:" + yaw_input + "\r\n");
-            } else {
-                Log.write("Error sending setpoints");
-            }
         });
 
         $('#sendGains').on('click', function () {
@@ -565,7 +571,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawScale(altitude, 300, "altimeter", "Altitude");
         drawScale(ground_speed, 300, "speed", "Speed");
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
-        displaySetpoints();
+        displaySetpointsAndRates();
         writeToDiv("#time", time);
     }
 
@@ -578,33 +584,23 @@ var Cockpit = (function ($, Data, Log, Network) {
         div.append(newItem);
     }
 
-    function displaySetpoints() {
+    function displaySetpointsAndRates() {
         var flightData = Data.state;
-        var roll_setpoint = flightData.roll_setpoint;
-        var pitch_setpoint = flightData.pitch_setpoint;
-        var yaw_setpoint = flightData.yaw_setpoint;
         var throttle_setpoint = flightData.throttle_setpoint;
         var altitude_setpoint = flightData.altitude_setpoint;
         var heading_setpoint = flightData.heading_setpoint;
+        var speed_setpoint = flightData.speed_setpoint;
         var roll_rate = flightData.roll_rate;
         var pitch_rate = flightData.pitch_rate;
         var yaw_rate = flightData.yaw_rate;
-        var e = document.getElementById("setpointSelect");
-        var selectedOpt = e.options[e.selectedIndex].text;
 
-        writeToDiv('#current_throttle', throttle_setpoint);
-        writeToDiv('#current_altitude', altitude_setpoint);
-        writeToDiv('#current_heading', heading_setpoint);
-
-        if (selectedOpt === "Angle") {
-            writeToDiv('#current_pitch', pitch_setpoint);
-            writeToDiv('#current_roll', roll_setpoint);
-            writeToDiv('#current_yaw', yaw_setpoint);
-        } else if (selectedOpt === "Rate") {
-            writeToDiv('#current_pitch', pitch_rate);
-            writeToDiv('#current_roll', roll_rate);
-            writeToDiv('#current_yaw', yaw_rate);
-        }
+        writeToDiv('#throttle_setpoint_display', throttle_setpoint);
+        writeToDiv('#altitude_setpoint_display', altitude_setpoint);
+        writeToDiv('#heading_setpoint_display', heading_setpoint);
+        writeToDiv('#speed_setpoint_display', speed_setpoint);
+        writeToDiv('#pitch_rate', pitch_rate);
+        writeToDiv('#roll_rate', roll_rate);
+        writeToDiv('#yaw_rate', yaw_rate);
     }
 
     function displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain) {

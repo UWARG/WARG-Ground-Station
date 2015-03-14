@@ -5,10 +5,9 @@ body {
 
 .dropdown {
     display: inline-block;
-    padding: 0.5em;
     font-size: 1em;
     text-align: center;
-    width: 8em;
+    width: 7em;
     margin: 0.1em;
 }
 
@@ -25,7 +24,12 @@ body {
 }
 
 #cockpit {
+    overflow-x: hidden;
     display: inline;
+    position: fixed;
+    top: 0;
+    height: 90%;
+    left: 0;
 }
 
 #meters {
@@ -75,7 +79,6 @@ body {
 .input {
     display: inline-block;
     border-style: none;
-    padding: 0.5em;
     font-size: 1em;
     text-align: center;
     width: 7em;
