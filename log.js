@@ -1,6 +1,6 @@
 var Log = (function ($) {
     var fs = require('fs');
-    var log_file = fs.createWriteStream("GCS.log");
+    var log_file = fs.createWriteStream("GCS-" + getDateTime().replace(/\:/g, "") + ".log");
 
     function writeToWindow(text) {
         var logDiv = $('#log')
@@ -32,30 +32,30 @@ var Log = (function ($) {
         log_file.write(getDateTime() + " " + text.trim() + "\r\n");
     }
 
-    function Debug(text) {
+    function debug(text) {
         writeToFile("[DEBUG] " + text);
     }
 
-    function Info(text) {
+    function info(text) {
         writeToFile("[INFO] " + text);
         writeToWindow(text);
     }
 
-    function Warning(text) {
+    function warning(text) {
         writeToFile("[WARNING] " + text);
         writeToWindow("WARNING: " + text);
     }
 
-    function Error(text) {
+    function error(text) {
         writeToFile("[ERROR] " + text);
         writeToWindow("ERROR: " + text);
     }
 
     return {
-        Debug: Debug,
-        Info: Info,
-        Warning: Warning,
-        Error: Error
+        debug: debug,
+        info: info,
+        warning: warning,
+        error: error
     };
 
 })($);
