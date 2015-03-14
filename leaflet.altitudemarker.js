@@ -38,9 +38,8 @@ L.AltitudeMarker = L.Marker.extend({
 
 	_map: null,	// L.Map
 
-	_legend: null,
-	_legendMarker: null,	// L.Marker
-
+	_legend: null, // HTML div
+	
 	_slider: null,	// HTML input[type="range"]
 
     initialize: function (latlng, options) {
@@ -48,26 +47,14 @@ L.AltitudeMarker = L.Marker.extend({
     		throw new Error("AltitudeMarker must be initialized with an altitude");
     		return;
     	}
-    	L.Marker.prototype.initialize.call(this, latlng, options);
-
-    	this._legend = L.bareDivIcon({className: "leaflet-altitude-legend", iconSize: L.point(36, 12)});
-    	this._legendMarker = L.marker(latlng, {
-    		icon: this._legend,
-    		clickable: false,
-    		riseOnHover: !this.options.readOnly,
-    	});
-    	this.on('move', this._onMove);
+        L.Marker.prototype.initialize.call(this, latlng, options);
     },
 
     onAdd: function (map) {
     	this._map = map;
-    	this._addLegendMarker();
-    	L.Marker.prototype.onAdd.call(this, map);
-    },
+        L.Marker.prototype.onAdd.call(this, map);
 
-    onRemove: function (map) {
-    	this._removeLegendMarker();
-    	L.Marker.prototype.onRemove.call(this, map);
+        this._addLegend();
     },
 
     _createSlider: function () {
@@ -83,13 +70,12 @@ L.AltitudeMarker = L.Marker.extend({
     	return slider;
     },
 
-    _addLegendMarker: function () {
-    	this._legendMarker.addTo(this._map);
+    _addLegend: function () {
+        this._legend = document.createElement('div');
+        L.DomUtil.addClass(this._legend, 'leaflet-altitude-legend');
 
-    	var legendDiv = this._legend.getContainer();
-
-    	var altSpan = document.createElement('span');
-    	legendDiv.appendChild(altSpan);
+    	var altitudeSpan = document.createElement('span');
+    	this._legend.appendChild(altitudeSpan);
     	
     	// Create slider only if not readonly
     	if (!this.options.readOnly) {
@@ -98,29 +84,26 @@ L.AltitudeMarker = L.Marker.extend({
 	    	
     		var sliderDiv = document.createElement('div');
 	    	sliderDiv.appendChild(this._slider);
-            legendDiv.appendChild(sliderDiv);
+            this._legend.appendChild(sliderDiv);
 
-            L.DomEvent.on(legendDiv, 'mouseenter', this._showSlider, this);
-            L.DomEvent.on(legendDiv, 'mouseleave', this._hideSlider, this);
+            L.DomEvent.on(this._legend, 'mouseover', this._showSlider, this);
+            L.DomEvent.on(this._legend, 'mouseout', this._hideSlider, this);
 	    }
     	this._updateLegendText();
-    },
 
-    _removeLegendMarker: function () {
-    	this._map.removeLayer(this._legendMarker);
+        this._icon.appendChild(this._legend);
     },
 
     _showSlider: function (e) {
-        L.DomUtil.addClass(this._slider.parentNode, 'show');
+        L.DomUtil.addClass(this._slider.parentNode.parentNode, 'show-slider');
     },
 
     _hideSlider: function (e) {
-        L.DomUtil.removeClass(this._slider.parentNode, 'show');
+        L.DomUtil.removeClass(this._slider.parentNode.parentNode, 'show-slider');
     },
 
     _updateLegendText: function () {
-    	var legendDiv = this._legend.getContainer();
-    	legendDiv.getElementsByTagName('span')[0].innerHTML = this.getLatLng().alt;
+        this._legend.getElementsByTagName('span')[0].innerHTML = this.getLatLng().alt;
     },
 
     _updateSlider: function () {
@@ -129,10 +112,6 @@ L.AltitudeMarker = L.Marker.extend({
     	this._slider.max = Math.ceil((alt + 1) * 1.55);
     	this._slider.step = (alt < 25) ? 0.2 : 1;
     	this._slider.value = alt;
-    },
-
-    _onMove: function (e) {
-    	this._legendMarker.setLatLng(e.latlng);
     },
 
     _onSliderInput: function (e) {

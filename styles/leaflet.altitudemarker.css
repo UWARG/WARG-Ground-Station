@@ -1,16 +1,22 @@
 .leaflet-altitude-legend {
-	top: 11px;
+	top: -4px;
 	text-align: center;
 	color: #fff;
 	font-size: 110%;
 	text-shadow: 1px 1px 1px #000;
 	opacity: 0.6;
 	position: absolute;
+	width: 36px;
+	margin-left: -13px;
+	padding-top: 15px;
 }
 
 .leaflet-altitude-legend:hover, .leaflet-altitude-legend:active {
 	opacity: 1;
-	padding-bottom: 65px;
+}
+
+.leaflet-altitude-legend.show-slider {
+	padding-bottom: 42px;
 }
 
 .leaflet-altitude-legend:focus {
@@ -43,7 +49,7 @@
 	margin-top: -7px;
 }
 
-.leaflet-altitude-legend > div.show {
+.leaflet-altitude-legend.show-slider > div {
 	display: block;
 }
 
