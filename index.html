@@ -129,18 +129,102 @@
 
                 </div>
             </div>
-            <div class="col-2-2">
-                <div>
-                    <h3 align="center"> Raw Command </h3>
-                    <input type="text" id="raw_command" class="input">
-                    <div class="button" id="send_command">
-                        Send Command
-                    </div>
-                </div>
-
-            </div>
         </div>
 
+        <link rel="stylesheet" href="jquery-ui-themes-1.11.2\themes\smoothness\jquery-ui.css">
+        <script src="jquery-2.1.1.min.js"></script>
+        <script src="jquery-ui-1.11.2\jquery-ui.js"></script>
+        <link rel="stylesheet" href="resources\demos\style.css">
+
+        <div id="tabs">
+          <ul>
+            <li><a href="#Raw_Command">Raw Command</a></li>
+            <li><a href="#Data_Entry">Data Entry</a></li>
+            <li><a href="#Autonomous_Lvl">Autonomous Lvl</a></li>
+          </ul>
+
+          <div id="Raw_Command">
+            <input type="text" id="raw_command" class="input">
+            <div class="button" id="send_command">
+                Send Command
+          </div>
+
+          <div id="Data_Entry">
+              <h3>File Name</h3>
+              <input type="text" id="send_file" class="input">
+              <h3>Comment to add</h3>
+              <input type="text" id="send_comment" class="input">
+              <div class="button" id="save_comment">
+                  Save Comment
+              </div>
+          </div>
+
+          <div id="Autonomous_Lvl">
+            <div id="autonomous_level">
+                <div>
+                    <div class="display">Pitch Control</div>
+                    <div class="display">Roll Control</div>
+                    <div class="display">Altitude Source</div>
+                </div>
+                <div>
+                    <select id="pitch_control" class="dropdown">
+                        <option>Angle</option>
+                        <option>Rate</option>
+                    </select>
+                    <select id="roll_control" class="dropdown">
+                        <option>Angle</option>
+                        <option>Rate</option>
+                    </select>
+                    <select id="altitude_source" class="dropdown">
+                        <option>Ground Station</option>
+                        <option>Autopilot</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="display">Pitch Source</div>
+                    <div class="display">Roll Source</div>
+                    <div class="display">Altitude On/Off</div>
+                </div>
+                <div>
+                    <select id="pitch_source" class="dropdown">
+                        <option>Controller</option>
+                        <option>Ground Station</option>
+                    </select>
+                    <select id="roll_source" class="dropdown">
+                        <option>Controller</option>
+                        <option>Ground Station</option>
+                    </select>
+                    <select id="altitude_on" class="dropdown">
+                        <option>On</option>
+                        <option>Off</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="display">Heading Source</div>
+                    <div class="display">Heading On/Off</div>
+                    <div class="display">Throttle Source</div>
+                </div>
+                <div>
+                    <select id="heading_source" class="dropdown">
+                        <option>Ground Station</option>
+                        <option>Autopilot</option>
+                    </select>
+                    <select id="heading_on" class="dropdown">
+                        <option>On</option>
+                        <option>Off</option>
+                    </select>
+                    <select id="throttle_source" class="dropdown">
+                        <option>Controller</option>
+                        <option>Ground Station</option>
+                        <option>Autopilot</option>
+                    </select>
+                </div>
+                <div class="button" id="send_autonomous">
+                    Send Autonomous Level
+                </div>
+            </div>
+          </div>
+        </div>
 
         <!-- COL 2  -->
         <div class="col-3-12">
@@ -153,7 +237,6 @@
                     <div class="col-1-2">
                         <div id="time" class="display"></div>
                     </div>
-
 
                 </div>
 
@@ -183,73 +266,6 @@
                 <input type="number" id="speed_setpoint_input" class="input" value="0">
                 <div class="button" id="send_speed">
                     Send Speed
-                </div>
-            </div>
-
-            <div class="col-2-2">
-                <h3 align="center"> Autonomous Level </h3>
-                <div id="autonomous_level">
-                    <div>
-                        <div class="display">Pitch Control</div>
-                        <div class="display">Roll Control</div>
-                        <div class="display">Altitude Source</div>
-                    </div>
-                    <div>
-                        <select id="pitch_control" class="dropdown">
-                            <option>Angle</option>
-                            <option>Rate</option>
-                        </select>
-                        <select id="roll_control" class="dropdown">
-                            <option>Angle</option>
-                            <option>Rate</option>
-                        </select>
-                        <select id="altitude_source" class="dropdown">
-                            <option>Ground Station</option>
-                            <option>Autopilot</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div class="display">Pitch Source</div>
-                        <div class="display">Roll Source</div>
-                        <div class="display">Altitude On/Off</div>
-                    </div>
-                    <div>
-                        <select id="pitch_source" class="dropdown">
-                            <option>Controller</option>
-                            <option>Ground Station</option>
-                        </select>
-                        <select id="roll_source" class="dropdown">
-                            <option>Controller</option>
-                            <option>Ground Station</option>
-                        </select>
-                        <select id="altitude_on" class="dropdown">
-                            <option>On</option>
-                            <option>Off</option>
-                        </select>
-                    </div>
-                    <div>
-                        <div class="display">Heading Source</div>
-                        <div class="display">Heading On/Off</div>
-                        <div class="display">Throttle Source</div>
-                    </div>
-                    <div>
-                        <select id="heading_source" class="dropdown">
-                            <option>Ground Station</option>
-                            <option>Autopilot</option>
-                        </select>
-                        <select id="heading_on" class="dropdown">
-                            <option>On</option>
-                            <option>Off</option>
-                        </select>
-                        <select id="throttle_source" class="dropdown">
-                            <option>Controller</option>
-                            <option>Ground Station</option>
-                            <option>Autopilot</option>
-                        </select>
-                    </div>
-                    <div class="button" id="send_autonomous">
-                        Send Autonomous Level
-                    </div>
                 </div>
             </div>
         </div>

@@ -573,6 +573,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
         displaySetpointsAndRates();
         writeToDiv("#time", time);
+        tabs();
     }
 
     function writeToDiv(div, string) {
@@ -625,6 +626,10 @@ var Cockpit = (function ($, Data, Log, Network) {
         writeToDiv('#current_ki', kp_gain);
         writeToDiv('#current_kp', ki_gain);
     }
+
+    $(function tabs() {
+      $( "#tabs" ).tabs();
+    });
 
     // Don't export anything
     return {};
