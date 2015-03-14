@@ -39,3 +39,4 @@ nwjs.app/Contents/Resources/textAreaResizeCorner.png
 nwjs/*
 nw.sh
 images/Thumbs.db
+*.log

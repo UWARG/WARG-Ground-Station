@@ -168,7 +168,7 @@ var Cockpit = (function ($, Data, Log, Network) {
                 Network.write("set_throttleKPGain:" + kpInput + "\r\n");
                 Network.write("set_throttleKIGain:" + kiInput + "\r\n");
             } else {
-                Log.write("Error sending gains: Plane not in autonomous mode");
+                Log.Error("Error sending gains: Plane not in autonomous mode");
             }
         });
 
