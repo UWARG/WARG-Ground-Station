@@ -17,7 +17,7 @@
 	outline: 0;
 }
 
-.leaflet-altitude-legend > div.leaflet-revealable {
+.leaflet-altitude-legend > div {
 	display: none;
 	position: absolute;
 	background: rgba(72, 72, 72, 0.72);
@@ -28,7 +28,7 @@
 	text-align: center;
 }
 
-.leaflet-altitude-legend > div.leaflet-revealable:after {
+.leaflet-altitude-legend > div:after {
 	right: 100%;
 	top: 50%;
 	border: solid transparent;
@@ -43,7 +43,7 @@
 	margin-top: -7px;
 }
 
-.leaflet-altitude-legend:hover > div.leaflet-revealable, .leaflet-altitude-legend:active > div.leaflet-revealable {
+.leaflet-altitude-legend > div.show {
 	display: block;
 }
 

@@ -86,10 +86,10 @@ L.AltitudeMarker = L.Marker.extend({
     _addLegendMarker: function () {
     	this._legendMarker.addTo(this._map);
 
-    	var div = this._legend.getContainer();
+    	var legendDiv = this._legend.getContainer();
 
     	var altSpan = document.createElement('span');
-    	div.appendChild(altSpan);
+    	legendDiv.appendChild(altSpan);
     	
     	// Create slider only if not readonly
     	if (!this.options.readOnly) {
@@ -97,9 +97,11 @@ L.AltitudeMarker = L.Marker.extend({
 	    	this._updateSlider();
 	    	
     		var sliderDiv = document.createElement('div');
-	    	sliderDiv.classList.add("leaflet-revealable");
 	    	sliderDiv.appendChild(this._slider);
-	    	div.appendChild(sliderDiv);
+            legendDiv.appendChild(sliderDiv);
+
+            L.DomEvent.on(legendDiv, 'mouseenter', this._showSlider, this);
+            L.DomEvent.on(legendDiv, 'mouseleave', this._hideSlider, this);
 	    }
     	this._updateLegendText();
     },
@@ -108,9 +110,17 @@ L.AltitudeMarker = L.Marker.extend({
     	this._map.removeLayer(this._legendMarker);
     },
 
+    _showSlider: function (e) {
+        L.DomUtil.addClass(this._slider.parentNode, 'show');
+    },
+
+    _hideSlider: function (e) {
+        L.DomUtil.removeClass(this._slider.parentNode, 'show');
+    },
+
     _updateLegendText: function () {
-    	var div = this._legend.getContainer();
-    	div.getElementsByTagName('span')[0].innerHTML = this.getLatLng().alt;
+    	var legendDiv = this._legend.getContainer();
+    	legendDiv.getElementsByTagName('span')[0].innerHTML = this.getLatLng().alt;
     },
 
     _updateSlider: function () {
