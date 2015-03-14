@@ -40,3 +40,4 @@ nwjs/*
 nw.sh
 images/Thumbs.db
 *.log
+*.7z
