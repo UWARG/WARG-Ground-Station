@@ -3,7 +3,7 @@ The ground station that displays received from the [data-relay](https://github.c
 Setup instructions:  
 1. Clone the repo  
 1. Download the version of [NW.js](http://nwjs.io) for your OS and put it into the repo  
-2. Download the [satellite tiles and libraries](https://drive.google.com/open?id=0B8UsyD-yKi1PODBQeFFqRjFPOWc&authuser=0) and extract them into the repo  
+2. Download the [satellite tiles and libraries](https://drive.google.com/open?id=0B8UsyD-yKi1PRDNrY0FGZnVRNUE&authuser=0) and extract them into the repo  
 3. Run node  
 
 Uses the following:  
