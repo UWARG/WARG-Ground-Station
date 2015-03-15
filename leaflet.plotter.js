@@ -16,12 +16,12 @@ L.Polyline.plotter = L.Class.extend({
     _present: null, // L.Polyline (actually just one line connecting past & future)
     _future: null,  // L.Polyline
 
-    _latLngs: [],
+    _latLngs: null,
     _nextIndex: 0,  // Must be positive; 0 indicates all waypoints are in the future
                     // Also, Plotter will never modify _nextIndex.
 
-    _pastMarkers: [],
-    _futureMarkers: [],
+    _pastMarkers: null,
+    _futureMarkers: null,
 
     _ghostMarker: L.marker(L.LatLng(0, 0), {icon: L.divIcon({className: 'leaflet-div-icon leaflet-editing-icon'}), opacity: 0.5}),
     _isHoveringPath: false,
@@ -34,6 +34,7 @@ L.Polyline.plotter = L.Class.extend({
         present: {color: '#900', weight: 2, opacity: 0.5},
         past: {color: '#000', weight: 2, opacity: 0.5},
         defaultAlt: 100,
+        readOnly: false,
     },
     initialize: function (latlngs, options){
         this._latLngs = latlngs;
@@ -42,6 +43,9 @@ L.Polyline.plotter = L.Class.extend({
         this._future = L.polyline([], options.future);
         this._present = L.polyline([], options.present);
         this._past = L.polyline([], options.past);
+
+        this._pastMarkers = [];
+        this._futureMarkers = [];
     },
     addTo: function (map) {
         map.addLayer(this);
@@ -53,15 +57,19 @@ L.Polyline.plotter = L.Class.extend({
         this._future.addTo(map);
         this._map = map;
         this._redrawMarkers();
-        this._bindMapClick();
-        this._bindPathHover();
-        this._bindGhostMarkerEvents();
+        if (!this.options.readOnly) {
+            this._bindMapClick();
+            this._bindPathHover();
+            this._bindGhostMarkerEvents();
+        }
     },
     onRemove: function(){
         this._removeAllMarkers();
-        this._unbindMapClick();
-        this._unbindPathHover();
-        this._unbindGhostMarkerEvents();
+        if (!this.options.readOnly) {
+            this._unbindMapClick();
+            this._unbindPathHover();
+            this._unbindGhostMarkerEvents();
+        }
         this._map.removeLayer(this._past);
         this._map.removeLayer(this._present);
         this._map.removeLayer(this._future);

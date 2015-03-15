@@ -6,7 +6,6 @@ var Path = (function ($, Data, Log, Network) {
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
     var localWaypointIndex = 0;
-    var localInSync = true; // True when localWaypointIndex is equal to that on the plane
 
     var WAYPOINT_HOME = 255;
     var WAYPOINT_LEGACY_RADIUS = 13.1415926;    // Just a number here in case plane uses legacy waypoint following
@@ -38,9 +37,17 @@ var Path = (function ($, Data, Log, Network) {
         });
 
         $('#clearWaypoints').on('click', function () {
-            waypoints = [];
-            localWaypointIndex = 0;
-            localInSync = false;
+            saveVisitedWaypoints();
+
+            // Clear newer waypoints
+            var visitedLatLngs = visitedPlotter.getLatLngs();
+            if (visitedLatLngs.length) {
+                waypoints = [visitedLatLngs[visitedLatLngs.length - 1]];
+                localWaypointIndex = 1;
+            } else {
+                waypoints = [];
+                localWaypointIndex = 0;
+            }
 
             waypointPlotter.setLatLngs(waypoints);
             waypointPlotter.setNextIndex(localWaypointIndex);
@@ -48,6 +55,8 @@ var Path = (function ($, Data, Log, Network) {
         });
 
         $('#sendWaypoints').on('click', function () {
+
+            saveVisitedWaypoints();
 
             var command = "clear_waypoints:0\r\n";
             Network.write(command);
@@ -60,8 +69,6 @@ var Path = (function ($, Data, Log, Network) {
 
             command = "set_targetWaypoint:" + localWaypointIndex + "\r\n";
             Network.write(command);
-
-            localInSync = true;
         });
 
         $('#goHome').on('click', function () {
@@ -74,7 +81,8 @@ var Path = (function ($, Data, Log, Network) {
     var planeHollowIcon;
     var planeMarker;
     var gpsFixMessagebox;
-    var waypointPlotter;
+    var visitedPlotter;     // Contains & displays waypoints which at previous upload
+    var waypointPlotter;    // Contains any waypoints added after previous upload (could be visited, or not); essentially a working copy
     var lineToNextWaypoint;
     var historyPolyline;
 
@@ -121,6 +129,18 @@ var Path = (function ($, Data, Log, Network) {
                 timeout: null,
                 className: 'messagebox-gpsfix',
             }).addTo(map);
+        }
+
+        // Init visitedPlotter if necessary
+        if (!visitedPlotter) {
+            visitedPlotter = L.Polyline.Plotter([], {
+                readOnly: true,
+                future:  {color: '#f0f', weight: 10, opacity:   1},
+                present: {color: '#0f0', weight:  5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
+                past:    {color: '#0f0', weight:  5, opacity: 0.6, clickable: false},
+            }).addTo(map);
+
+            visitedPlotter.setNextIndex(Number.MAX_SAFE_INTEGER);
         }
 
         // Init waypointPlotter if necessary
@@ -184,14 +204,12 @@ var Path = (function ($, Data, Log, Network) {
         }
 
         // Update which waypoint we're targeting next (if we're in sync)
-        if (localInSync) {
-            localWaypointIndex = waypointIndex;
-            if (waypointPlotter.getNextIndex() != localWaypointIndex && localWaypointIndex != WAYPOINT_HOME) {
-                // TODO Manage going home case better
-                waypointPlotter.setNextIndex(localWaypointIndex);
-            }
+        localWaypointIndex = waypointIndex;
+        if (waypointPlotter.getNextIndex() != localWaypointIndex && localWaypointIndex != WAYPOINT_HOME) {
+            // TODO Manage going home case better
+            waypointPlotter.setNextIndex(localWaypointIndex);
         }
-
+        
         // When plane moves, update line going from plane to next waypoint
         if (gpsFix) {
             lineToNextWaypoint.spliceLatLngs(0, 1, {lat: lat, lng: lon});
@@ -204,6 +222,45 @@ var Path = (function ($, Data, Log, Network) {
             historyPolyline.addLatLng(L.latLng(lat, lon));
         }
     }
+
+    var saveVisitedWaypoints = exports.mig = function () {
+        var latLngs = waypointPlotter.getLatLngs();
+        var nextIndex = waypointPlotter.getNextIndex();
+
+        // Get lat-lons that just became old (i.e. will migrate to the visited list)
+        var oldLatLngs = latLngs.filter(function (latLng, index) {
+            return index < nextIndex;
+        });
+        console.log('oldLatLngs', oldLatLngs);
+
+        // Return if nothing old to migrate
+        if (!oldLatLngs.length) {
+            console.log('Nothing old to migrate');
+            return;
+        }
+        
+        // Put old waypoints into visited list
+        var visitedLatLngs = visitedPlotter.getLatLngs();
+        if (!visitedLatLngs.length) {
+            console.log('set empty visited latlngs to', oldLatLngs);
+            visitedPlotter.setLatLngs(oldLatLngs);
+            console.log('visitedPlotter', visitedPlotter);
+        } else {
+            oldLatLngs.shift();     // Remove 1st old waypoint, which visitedPlotter already has from an older migrate
+            console.log('appended to visited latlngs', oldLatLngs);
+            visitedPlotter.setLatLngs(visitedLatLngs.concat(oldLatLngs));
+            console.log('visitedPlotter', visitedPlotter);
+        }
+
+        // Remove old waypoints from working list
+        var remainingLatLngs = latLngs.filter(function (latLng, index) {
+            return index >= nextIndex - 1;
+        });
+        localWaypointIndex = 1;
+        waypointPlotter.setLatLngs(remainingLatLngs);
+        waypointPlotter.setNextIndex(localWaypointIndex);
+        console.log('waypointPlotter', waypointPlotter);
+    };
 
     // Export what needs to be
     return exports;
