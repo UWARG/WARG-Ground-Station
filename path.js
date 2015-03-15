@@ -1,4 +1,6 @@
 var Path = (function ($, Data, Log, Network) {
+    // Camera FOV: horz 94.38, vert 78.3
+
     var exports = {};
 
     // Data objects here: array of L.LatLng objects
@@ -72,7 +74,6 @@ var Path = (function ($, Data, Log, Network) {
     var planeHollowIcon;
     var planeMarker;
     var gpsFixMessagebox;
-    var waypointMarkerGroup;
     var waypointPlotter;
     var lineToNextWaypoint;
     var historyPolyline;
@@ -120,11 +121,6 @@ var Path = (function ($, Data, Log, Network) {
                 timeout: null,
                 className: 'messagebox-gpsfix',
             }).addTo(map);
-        }
-
-        // Init waypoint marker layer-group if necessary
-        if (!waypointMarkerGroup) {
-            waypointMarkerGroup = L.layerGroup().addTo(map);
         }
 
         // Init waypointPlotter if necessary
