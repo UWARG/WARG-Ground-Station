@@ -96,6 +96,27 @@ L.Polyline.plotter = L.Class.extend({
         var latLng = this._latLngs[this._nextIndex];
         return latLng ? L.latLng(latLng) : null;
     },
+    setReadOnly: function(readOnly){
+        if(readOnly && !this.options.readOnly){
+            // Set read-only
+            var markerFunction = '_unbindMarkerEvents';
+            this._unbindMapClick();
+            this._unbindPathHover();
+            this._unbindGhostMarkerEvents();
+        }else if(!readOnly && this.options.readOnly){
+            // Unset read-only
+            var markerFunction = '_bindMarkerEvents';
+            this._bindMapClick();
+            this._bindPathHover();
+            this._bindGhostMarkerEvents();
+        }
+        if(typeof markerFunction !== 'undefined'){
+            this.options.readOnly = readOnly;
+            for(index in this._futureMarkers){
+                this[markerFunction](this._futureMarkers[index]);
+            }
+        }
+    },
     _bindMapClick: function(){
         this._map.on('contextmenu', this._onMapRightClick, this);
     },
@@ -212,14 +233,16 @@ L.Polyline.plotter = L.Class.extend({
 
         this._redrawMarkers();
     	this._redrawLines();
+        
     },
     _onGhostDrag: function(e){
     	if (this._indexOfDraggedPoint == -1) return;
-    	this._ghostMarker.setOpacity(0.5);
+        this._ghostMarker.setOpacity(0.5);
     	
         var latLng = this._ghostMarker.getLatLng();
         this._latLngs[this._indexOfDraggedPoint + this._nextIndex].lat = latLng.lat;
         this._latLngs[this._indexOfDraggedPoint + this._nextIndex].lng = latLng.lng;
+        this._latLngs[this._indexOfDraggedPoint + this._nextIndex].alt = latLng.alt;
         this._futureMarkers[this._indexOfDraggedPoint].setLatLng(this._ghostMarker.getLatLng());
     	this._redrawLines();
         this._fireDragEvent();
