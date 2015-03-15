@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="styles/leaflet.messagebox.css">
     <link rel="stylesheet" href="styles/leaflet.plotter.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="jquery-ui-themes-1.11.2\themes\smoothness\jquery-ui.css">
+    <script src="jquery-2.1.1.min.js"></script>
+    <script src="jquery-ui-1.11.2\jquery-ui.js"></script>
++        <link rel="stylesheet" href="resources\demos\style.css">
 
     <script src="mousetrap.js"></script>
     <script src="nw-shortcuts.js"></script>
@@ -67,7 +71,7 @@
             </div>
 
 
-            <div class="col-2-2">
+         <div class="col-2-2">
                 <h3 align="center"> Autonomous Level </h3>
                 <div id="autonomous_level">
                     <div>
@@ -133,17 +137,18 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2-2">
-                <div>
-                    <h3 align="center"> Raw Command </h3>
-                    <input type="text" id="raw_command" class="input">
-                    <div class="button" id="send_command">
-                        Send Command
-                    </div>
-                </div>
 
-            </div>
-
+                        <div class="col-2-2">
+                          <div id="Data_Entry">
+                          <h3>File Name</h3>
+                          <input type="text" id="send_file" class="input">
+                          <h3>Comment to add</h3>
+                          <input type="text" id="send_comment" class="input">
+                          <div class="button" id="save_comment">
+                              Save Comment
+                          </div>
+                      </div>
+                        </div>
 
 
         </div>
@@ -252,8 +257,12 @@
                 </div>
             </div>
             <div class="col-2-2">
+              <div class="col-2-2">
+
+                <h3 align="center"> Gains </h3>
+              </div>
                 <div class="col-2-2">
-                    <h3 align="center"> Gains </h3>
+
                     <div id="gains">
                         <div>
                             <select id="gainSelect" class="dropdown">
@@ -288,6 +297,19 @@
 
                 </div>
             </div>
+
+            <div class="col-2-2">
+                <div>
+                    <h3 align="center"> Raw Command </h3>
+                    <input type="text" id="raw_command" class="input">
+                    <div class="button" id="send_command">
+                        Send Command
+                    </div>
+                </div>
+
+            </div>
+s
+
 
         </div>
 
