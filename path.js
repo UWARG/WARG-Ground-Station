@@ -135,9 +135,9 @@ var Path = (function ($, Data, Log, Network) {
         if (!visitedPlotter) {
             visitedPlotter = L.Polyline.Plotter([], {
                 readOnly: true,
-                future:  {color: '#f0f', weight: 5, opacity:   1},
-                present: {color: '#f0f', weight: 5, opacity:   1, clickable: false, dashArray: '3, 8'},
-                past:    {color: '#000', weight: 5, opacity: 0.6, clickable: false},
+                future:  {color: '#0f0', weight: 5, opacity:   1},
+                present: {color: '#0f0', weight: 5, opacity:   1, clickable: false, dashArray: '3, 8'},
+                past:    {color: '#090', weight: 5, opacity: 0.6, clickable: false},
             }).addTo(map);
 
             visitedPlotter.setNextIndex(Number.MAX_SAFE_INTEGER);
@@ -146,7 +146,7 @@ var Path = (function ($, Data, Log, Network) {
         // Init waypointPlotter if necessary
         if (!waypointPlotter) {
             waypointPlotter = L.Polyline.Plotter(waypoints, {
-                future:  {color: '#f00', weight: 5, opacity: 0.6},
+                future:  {color: '#f11', weight: 5, opacity: 0.75},
                 present: {color: '#000', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
                 past:    {color: '#000', weight: 5, opacity: 0.6, clickable: false},
             }).addTo(map);
@@ -154,12 +154,14 @@ var Path = (function ($, Data, Log, Network) {
             waypointPlotter.on('change', function(e) {
                 waypoints = waypointPlotter.getLatLngs();
             });
+
+            window.l = waypointPlotter;
         }
 
         // Init lineToNextWaypoint if necessary
         if (!lineToNextWaypoint) {
             lineToNextWaypoint = L.polyline([], {
-                color: '#f00', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8',
+                color: '#f11', weight: 5, opacity: 0.75, clickable: false, dashArray: '3, 8',
             }).addTo(map);
 
             // When waypoints change, update line going from plane to next waypoint
