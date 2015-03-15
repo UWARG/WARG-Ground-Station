@@ -232,7 +232,7 @@ var Cockpit = (function ($, Data, Log, Network) {
             document.getElementById("send_comment").value = "";
 
 
-            Log.write("Comment Successfully Written to " + fileName + ".txt");
+            Log.info("Comment Successfully Written to " + fileName + ".txt");
         });
     });
 
