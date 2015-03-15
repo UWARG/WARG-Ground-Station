@@ -135,9 +135,9 @@ var Path = (function ($, Data, Log, Network) {
         if (!visitedPlotter) {
             visitedPlotter = L.Polyline.Plotter([], {
                 readOnly: true,
-                future:  {color: '#f0f', weight: 10, opacity:   1},
-                present: {color: '#0f0', weight:  5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
-                past:    {color: '#0f0', weight:  5, opacity: 0.6, clickable: false},
+                future:  {color: '#f0f', weight: 5, opacity:   1},
+                present: {color: '#f0f', weight: 5, opacity:   1, clickable: false, dashArray: '3, 8'},
+                past:    {color: '#000', weight: 5, opacity: 0.6, clickable: false},
             }).addTo(map);
 
             visitedPlotter.setNextIndex(Number.MAX_SAFE_INTEGER);
@@ -223,7 +223,8 @@ var Path = (function ($, Data, Log, Network) {
         }
     }
 
-    var saveVisitedWaypoints = exports.mig = function () {
+    // Save past waypoints from waypointPlotter into visitedPlotter
+    var saveVisitedWaypoints = function () {
         var latLngs = waypointPlotter.getLatLngs();
         var nextIndex = waypointPlotter.getNextIndex();
 
@@ -231,25 +232,19 @@ var Path = (function ($, Data, Log, Network) {
         var oldLatLngs = latLngs.filter(function (latLng, index) {
             return index < nextIndex;
         });
-        console.log('oldLatLngs', oldLatLngs);
 
         // Return if nothing old to migrate
         if (!oldLatLngs.length) {
-            console.log('Nothing old to migrate');
             return;
         }
         
         // Put old waypoints into visited list
         var visitedLatLngs = visitedPlotter.getLatLngs();
         if (!visitedLatLngs.length) {
-            console.log('set empty visited latlngs to', oldLatLngs);
             visitedPlotter.setLatLngs(oldLatLngs);
-            console.log('visitedPlotter', visitedPlotter);
         } else {
             oldLatLngs.shift();     // Remove 1st old waypoint, which visitedPlotter already has from an older migrate
-            console.log('appended to visited latlngs', oldLatLngs);
             visitedPlotter.setLatLngs(visitedLatLngs.concat(oldLatLngs));
-            console.log('visitedPlotter', visitedPlotter);
         }
 
         // Remove old waypoints from working list
@@ -259,7 +254,6 @@ var Path = (function ($, Data, Log, Network) {
         localWaypointIndex = 1;
         waypointPlotter.setLatLngs(remainingLatLngs);
         waypointPlotter.setNextIndex(localWaypointIndex);
-        console.log('waypointPlotter', waypointPlotter);
     };
 
     // Export what needs to be
