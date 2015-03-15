@@ -41,3 +41,6 @@ nw.sh
 images/Thumbs.db
 *.log
 *.7z
+jquery-ui.js
+jquery-ui.css
+jquery-ui.theme.css
