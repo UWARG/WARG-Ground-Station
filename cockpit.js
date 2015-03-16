@@ -23,6 +23,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         $('#send_command').on('click', function () {
             var raw_command = document.getElementById("raw_command").value;
             Network.write(raw_command + "\r\n");
+            document.getElementById("raw_command").value = "";
         });
 
         $('#send_autonomous').on('click', function () {
@@ -233,6 +234,12 @@ var Cockpit = (function ($, Data, Log, Network) {
 
 
             Log.info("Comment Successfully Written to " + fileName + ".txt");
+        });
+
+        $("#raw_command").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#send_command").click();
+            }
         });
     });
 
