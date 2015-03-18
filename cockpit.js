@@ -23,6 +23,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         $('#send_command').on('click', function () {
             var raw_command = document.getElementById("raw_command").value;
             Network.write(raw_command + "\r\n");
+            document.getElementById("raw_command").value = "";
         });
 
         $('#send_autonomous').on('click', function () {
@@ -233,6 +234,12 @@ var Cockpit = (function ($, Data, Log, Network) {
 
 
             Log.info("Comment Successfully Written to " + fileName + ".txt");
+        });
+
+        $("#raw_command").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#send_command").click();
+            }
         });
     });
 
@@ -639,9 +646,9 @@ var Cockpit = (function ($, Data, Log, Network) {
         writeToDiv('#altitude_setpoint_display', altitude_setpoint);
         writeToDiv('#heading_setpoint_display', heading_setpoint);
         writeToDiv('#speed_setpoint_display', speed_setpoint);
-        writeToDiv('#pitch_rate', pitch_rate);
-        writeToDiv('#roll_rate', roll_rate);
-        writeToDiv('#yaw_rate', yaw_rate);
+        writeToDiv('#pitch_rate', parseFloat(pitch_rate).toFixed(7));
+        writeToDiv('#roll_rate', parseFloat(roll_rate).toFixed(7));
+        writeToDiv('#yaw_rate', parseFloat(yaw_rate).toFixed(7));
     }
 
     function displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain) {
