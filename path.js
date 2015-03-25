@@ -1,10 +1,3 @@
-// Return intersection between arrays a1 & a2
-function inter(a1, a2) {
-    return a1.filter(function(n) {
-        return a2.indexOf(n) != -1
-    });
-}
-
 var Path = (function ($, Data, Log, Network) {
     // Camera FOV: horz 94.38, vert 78.3
 
@@ -12,7 +5,7 @@ var Path = (function ($, Data, Log, Network) {
 
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
-    var localIndex = 0; window.lo = function(){return localIndex};
+    var localIndex = 0;
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
@@ -70,38 +63,28 @@ var Path = (function ($, Data, Log, Network) {
             readonlyLatLngs = readonlyLatLngs.filter(function (latlng, index) {
                 return index < readonlyNextIndex;
             });
-                console.log('Keeping readonly points', readonlyLatLngs.length);
 
             // Keep only future waypoints + the previous waypoint in local line
             localLatLngs = localLatLngs.filter(function (latlng, index) {
                 return index >= localNextIndex - 1;
             });
-                console.log('Keeping local points', localLatLngs.length);
 
             // Copy over local future waypoints to readonly future waypoints
             var futureLatLngs = localLatLngs.map(function (latlng) {
                 return new L.LatLng(latlng.lat, latlng.lng, latlng.alt);    // Clone object
             });
-                console.log('future', futureLatLngs);
-                console.log('local', localLatLngs);
 
             // There's an edge case when readonly line is empty at start up
             if (!readonlyLatLngs.length) {
-                    console.log('Edge case: empty readonly line');
-                    console.log('Copied local -> readonly', futureLatLngs.length);
-                    console.log('Local nextIndex set to', 0);
                 readonlyPlotter.setLatLngs(futureLatLngs);
                 localPlotter.setNextIndex(0);
                 localIndex += localNextIndex;
             } else {
                 futureLatLngs.shift();  // Don't copy over the previous waypoint, which is already in readonlyLatLngs
-                    console.log('Copied local -> readonly', futureLatLngs.length);
-                    console.log('Local nextIndex set to', 1);
                 readonlyPlotter.setLatLngs(readonlyLatLngs.concat(futureLatLngs));
                 localPlotter.setNextIndex(1);
                 localIndex += localNextIndex - 1;
             }
-                console.log('localIndex set to', localIndex);
             localPlotter.setLatLngs(localLatLngs);
 
             // Upload new future waypoints
@@ -190,8 +173,6 @@ var Path = (function ($, Data, Log, Network) {
                 present: {color: '#f00', weight: 4, opacity: 0.8, clickable: false},
                 past:    {color: '#844', weight: 4, opacity: 0.8, clickable: false},
             }).addTo(map);
-
-            window.l = localPlotter;
         }
 
         // Init readonlyPlotter if necessary
@@ -202,8 +183,6 @@ var Path = (function ($, Data, Log, Network) {
                 present: {color: '#1a1a80', weight: 5, opacity: 1, clickable: false},
                 past:    {color: '#0a0a33', weight: 5, opacity: 1, clickable: false},
             }).addTo(map);
-
-            window.r = readonlyPlotter;
         }
 
         // Init lineToNextWaypoint if necessary
