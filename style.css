@@ -1,6 +1,6 @@
 body {
     background-color: #607d8b;
-    font-family: "Calibri";
+    font-family: "Calibri", sans-serif;
 }
 
 .dropdown {
@@ -142,6 +142,18 @@ body {
 .button:active {
     background-color: #455a64;
     cursor: pointer;
+}
+
+.button-transmits {
+    background-color: #474766;
+}
+
+.button-transmits:hover {
+    background-color: #505073;
+}
+
+.button-transmits:active {
+    background-color: #3e3e59;
 }
 
 .messagebox-gpsfix {
