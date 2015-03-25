@@ -33,7 +33,7 @@ L.Polyline.plotter = L.Class.extend({
         future: {color: '#f00', weight: 2, opacity: 0.5},
         present: {color: '#900', weight: 2, opacity: 0.5},
         past: {color: '#000', weight: 2, opacity: 0.5},
-        defaultAlt: 100,
+        defaultAlt: 30,
         readOnly: false,
     },
     initialize: function (latlngs, options){
@@ -88,6 +88,10 @@ L.Polyline.plotter = L.Class.extend({
     },
     setNextIndex: function(nextIndex){
         this._nextIndex = parseInt(nextIndex);
+        if (this._nextIndex < 0) {
+            this._nextIndex = 0;
+            console.error('Plotter being set to a negative nextIndex', nextIndex);
+        }
         this._redrawMarkers();
         this._redrawLines();
         this._fireChangeEvent();
@@ -335,7 +339,7 @@ L.Polyline.plotter = L.Class.extend({
                 this._addToMapAndBindMarker(newMarker);
                 this._pastMarkers.push(newMarker);
             } else if (index >= this._nextIndex) {
-                var newMarker = this._getNewMarker(this._latLngs[index], { icon: this._editIcon, zIndexOffset: 1000 });
+                var newMarker = this._getNewMarker(this._latLngs[index], { icon: this._editIcon, zIndexOffset: 1000 , readOnly: this.options.readOnly, clickable: !this.options.readOnly });
                 this._addToMapAndBindMarker(newMarker);
                 this._futureMarkers.push(newMarker);
             }
