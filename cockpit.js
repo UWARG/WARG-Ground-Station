@@ -141,32 +141,32 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         $('#sendGains').on('click', function () {
             var flightData = Data.state;
-            var editing_gain = parseInt(flightData.editing_gain);
+            var editing_gain = parseInt(flightData.editing_gain) % 16;
             var kdInput = document.getElementById("kdInput").value;
             var kpInput = document.getElementById("kpInput").value;
             var kiInput = document.getElementById("kiInput").value;
 
-            if (editing_gain === 1) {
+            if (editing_gain === 0) {
                 Network.write("set_yawKDGain:" + kdInput + "\r\n");
                 Network.write("set_yawKPGain:" + kpInput + "\r\n");
                 Network.write("set_yawKIGain:" + kiInput + "\r\n");
-            } else if (editing_gain === 2) {
+            } else if (editing_gain === 1) {
                 Network.write("set_pitchKDGain:" + kdInput + "\r\n");
                 Network.write("set_pitchKPGain:" + kpInput + "\r\n");
                 Network.write("set_pitchKIGain:" + kiInput + "\r\n");
-            } else if (editing_gain === 3) {
+            } else if (editing_gain === 2) {
                 Network.write("set_rollKDGain:" + kdInput + "\r\n");
                 Network.write("set_rollKPGain:" + kpInput + "\r\n");
                 Network.write("set_rollKIGain:" + kiInput + "\r\n");
-            } else if (editing_gain === 4) {
+            } else if (editing_gain === 3) {
                 Network.write("set_headingKDGain:" + kdInput + "\r\n");
                 Network.write("set_headingKPGain:" + kpInput + "\r\n");
                 Network.write("set_headingKIGain:" + kiInput + "\r\n");
-            } else if (editing_gain === 5) {
+            } else if (editing_gain === 4) {
                 Network.write("set_altitudeKDGain:" + kdInput + "\r\n");
                 Network.write("set_altitudeKPGain:" + kpInput + "\r\n");
                 Network.write("set_altitudeKIGain:" + kiInput + "\r\n");
-            } else if (editing_gain === 6) {
+            } else if (editing_gain === 5) {
                 Network.write("set_throttleKDGain:" + kdInput + "\r\n");
                 Network.write("set_throttleKPGain:" + kpInput + "\r\n");
                 Network.write("set_throttleKIGain:" + kiInput + "\r\n");
@@ -588,14 +588,11 @@ var Cockpit = (function ($, Data, Log, Network) {
 
     function updateCockpit() {
         var flightData = Data.state;
-        var roll = flightData.roll * (Math.PI / 180);
-        var pitch = flightData.pitch * (Math.PI / 180);
-        var yaw = flightData.yaw * (Math.PI / 180);
         var altitude = parseFloat(flightData.altitude);
         var heading = flightData.heading;
         var ground_speed = parseFloat(flightData.ground_speed);
         var batteryLevel = Math.round(parseFloat(flightData.batteryLevel));
-        var editing_gain = parseInt(flightData.editing_gain);
+        var editing_gain = parseInt(flightData.editing_gain) % 16;
         var gpsStatus = flightData.gpsStatus;
         var kd_gain = flightData.kd_gain;
         var kp_gain = flightData.kp_gain;
@@ -604,6 +601,10 @@ var Cockpit = (function ($, Data, Log, Network) {
         var pitch_setpoint = flightData.pitch_setpoint;
         var yaw_setpoint = flightData.yaw_setpoint;
         var time = flightData.time;
+
+        var roll = flightData.roll * (Math.PI / 180);
+        var pitch = -flightData.pitch * (Math.PI / 180);
+        var yaw = (flightData.yaw * (Math.PI / 180)) + Math.PI;
 
         //Used in path.js for some reason
         lat = flightData.lat;
@@ -652,17 +653,17 @@ var Cockpit = (function ($, Data, Log, Network) {
     }
 
     function displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain) {
-        if (editing_gain === 1)
+        if (editing_gain === 0)
             editing_gain = "Yaw";
-        else if (editing_gain === 2) {
+        else if (editing_gain === 1) {
             editing_gain = "Pitch";
-        } else if (editing_gain === 3) {
+        } else if (editing_gain === 2) {
             editing_gain = "Roll";
-        } else if (editing_gain === 4) {
+        } else if (editing_gain === 3) {
             editing_gain = "Heading";
-        } else if (editing_gain === 5) {
+        } else if (editing_gain === 4) {
             editing_gain = "Altitude";
-        } else if (editing_gain === 6) {
+        } else if (editing_gain === 5) {
             editing_gain = "Throttle";
         } else {
             editing_gain = "N/A";
@@ -670,8 +671,8 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         writeToDiv('#current_gain', editing_gain);
         writeToDiv('#current_kd', kd_gain);
-        writeToDiv('#current_ki', kp_gain);
-        writeToDiv('#current_kp', ki_gain);
+        writeToDiv('#current_ki', ki_gain);
+        writeToDiv('#current_kp', kp_gain);
     }
 
     // Don't export anything

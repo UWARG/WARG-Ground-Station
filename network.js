@@ -49,8 +49,8 @@ var Network = (function (Data, Log) {
         var dataSplit = data.split(",");
         var cloneState = {};
         for (var i = 0; i < dataSplit.length; i++) {
-            Data.state[Data.headers[i]] = dataSplit[i].trim().toString();
-            cloneState[Data.headers[i]] = dataSplit[i].trim().toString();
+            Data.state[Data.headers[i]] = dataSplit[i].trim().toString().replace('(','').replace(')','');
+            cloneState[Data.headers[i]] = dataSplit[i].trim().toString().replace('(','').replace(')','');
         }
 
         Data.history.push(cloneState);
