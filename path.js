@@ -11,8 +11,9 @@ var Path = (function ($, Data, Log, Network) {
     var WAYPOINT_HOME = 255;
     var WAYPOINT_LEGACY_RADIUS = 13.1415926;    // Just a number here in case plane uses legacy waypoint following
 
-    // Interactive map objects here
+    // Interactive objects here
     var map;
+    var graph;
     
     // Initialize map if necessary
     $(document).ready(function () {

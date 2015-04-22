@@ -1,6 +1,11 @@
+html {
+    height: 100%;
+}
+
 body {
     background-color: #607d8b;
     font-family: "Calibri", sans-serif;
+    height: 100%;
 }
 
 .dropdown {
@@ -57,25 +62,37 @@ body {
     display: inline;
 }
 
-#buttonContainer {
-    display: inline;
-    position: fixed;
-    top: 0;
-    right: 0.5em;
+#path {
+    float: right;
+    position: relative;
+    width: 35%;
+    height: 100%;
 }
 
-#path {
-    display: inline-block;
+#buttonContainer {
+    display: inline;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 40px;
 }
 
 #map {
-    margin: 0 auto;
-    right: 0;
+    position: absolute;
+    width: 100%;
+    bottom: 200px;
+    top: 40px;
+    margin: 0;
+}
+
+#height-graph {
+    position: absolute;
+    width: 100%;
+    height: 200px;
     bottom: 0;
-    border-style: none;
-    width: 33%;
-    position: fixed;
-    height: 95%;
+    background-color: #ffffff;
+    padding: 0;
+    margin: 0;
 }
 
 #footer {
@@ -103,7 +120,7 @@ body {
     bottom: 0;
     color: #000;
     border-style: none;
-    width: 67%;
+    right: 35%;
     position: fixed;
     height: 10%;
     background-color: #cfd8dc;
