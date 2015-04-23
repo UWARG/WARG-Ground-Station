@@ -5,7 +5,7 @@ var Path = (function ($, Data, Log, Network) {
 
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
-    var localIndex = 0;
+/**/var localIndex = 0;
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
@@ -41,24 +41,24 @@ var Path = (function ($, Data, Log, Network) {
         $('#clearWaypoints').on('click', function () {
             // Clear local future waypoints
 
-            // Replace local waypoints with those from readonlyPlotter[localIndex] through readonlyPlotter[nextIndex]
+            // Replace local waypoints with those from remoteLine[0] through remoteLine[nextIndex]
             // (These are the waypoints that have already been visited but still exist on the plane)
-            var nextIndex = readonlyPlotter.getNextIndex();
-            var pastLatLngs = readonlyPlotter.getLatLngs().slice(localIndex, nextIndex).map(function (latlng) {
+            var nextIndex = remoteLine.getNextIndex();
+            var pastLatLngs = remoteLine.getLatLngs().slice(0, nextIndex).map(function (latlng) {
                 return new L.LatLng(latlng.lat, latlng.lng, latlng.alt);    // Clone object
             });
-            localPlotter.setLatLngs(pastLatLngs);
-            localPlotter.setNextIndex(pastLatLngs.length);
+            localLine.setLatLngs(pastLatLngs);
+            localLine.setNextIndex(pastLatLngs.length);
             
             redrawMap();
         });
 
-        $('#sendWaypoints').on('click', function () {
+/**/    $('#sendWaypoints').on('click', function () {
 
-            var readonlyLatLngs = readonlyPlotter.getLatLngs();
-            var readonlyNextIndex = readonlyPlotter.getNextIndex();
-            var localLatLngs = localPlotter.getLatLngs();
-            var localNextIndex = localPlotter.getNextIndex();
+            var readonlyLatLngs = remoteLine.getLatLngs();
+            var readonlyNextIndex = remoteLine.getNextIndex();
+            var localLatLngs = localLine.getLatLngs();
+            var localNextIndex = localLine.getNextIndex();
 
             // Keep only past waypoints in readonly line
             readonlyLatLngs = readonlyLatLngs.filter(function (latlng, index) {
@@ -77,16 +77,16 @@ var Path = (function ($, Data, Log, Network) {
 
             // There's an edge case when readonly line is empty at start up
             if (!readonlyLatLngs.length) {
-                readonlyPlotter.setLatLngs(futureLatLngs);
-                localPlotter.setNextIndex(0);
+                remoteLine.setLatLngs(futureLatLngs);
+                localLine.setNextIndex(0);
                 localIndex += localNextIndex;
             } else {
                 futureLatLngs.shift();  // Don't copy over the previous waypoint, which is already in readonlyLatLngs
-                readonlyPlotter.setLatLngs(readonlyLatLngs.concat(futureLatLngs));
-                localPlotter.setNextIndex(1);
+                remoteLine.setLatLngs(readonlyLatLngs.concat(futureLatLngs));
+                localLine.setNextIndex(1);
                 localIndex += localNextIndex - 1;
             }
-            localPlotter.setLatLngs(localLatLngs);
+            localLine.setLatLngs(localLatLngs);
 
             // Upload new future waypoints
             var command = "clear_waypoints:0\r\n";
@@ -98,12 +98,12 @@ var Path = (function ($, Data, Log, Network) {
                 Network.write(command);
             }
 
-            command = "set_targetWaypoint:" + localPlotter.getNextIndex() + "\r\n";
+            command = "set_targetWaypoint:" + localLine.getNextIndex() + "\r\n";
             Network.write(command);
 
             // If we're overriding the waypointIndex we receive from plane, then simulate it accordingly
             if (exports.testPlaneWaypointIndex !== null) {
-                exports.testPlaneWaypointIndex = localPlotter.getNextIndex();
+                exports.testPlaneWaypointIndex = localLine.getNextIndex();
             }
         });
 
@@ -117,9 +117,12 @@ var Path = (function ($, Data, Log, Network) {
     var planeHollowIcon;
     var planeMarker;
     var gpsFixMessagebox;
-    var localPlotter;       // Contains local working copy of what we're planning
-    var readonlyPlotter;    // Contains any wpt already visited + any future wpt currently on plane
-    var lineToNextWaypoint;
+    var passedLine; // Contains any wpts we're sure to have already passed (flown over)
+    var remoteLine; // Contains any wpts currently on plane & index of wpt plane is travelling to
+    var localLine;  // Contains local working copy of what we're planning
+    var passedToRemote; // Line connecting end of passedLine to begining of remoteLine
+    var remoteToLocal;  // Line connecting current waypoint on plane to next local waypoint
+    var planeToNextRemote;  // Line connecting current plane position to next waypoint on plane
     var historyPolyline;
 
     Network.on('data', redrawMap);
@@ -167,18 +170,16 @@ var Path = (function ($, Data, Log, Network) {
             }).addTo(map);
         }
 
-        // Init localPlotter if necessary
-        if (!localPlotter) {
-            localPlotter = L.Polyline.Plotter(waypoints, {
-                future:  {color: '#f00', weight: 4, opacity: 0.8, dashArray: '3, 6'},
-                present: {color: '#f00', weight: 4, opacity: 0.8, clickable: false},
-                past:    {color: '#844', weight: 4, opacity: 0.8, clickable: false},
+        // Init passedLine if necessary
+        if (!passedLine) {
+            passedLine = L.polyline([], {
+                color: '#0a0a33', weight: 5, opacity: 1, clickable: false,
             }).addTo(map);
         }
 
-        // Init readonlyPlotter if necessary
-        if (!readonlyPlotter) {
-            readonlyPlotter = L.Polyline.Plotter([], {
+        // Init remoteLine if necessary
+/**/    if (!remoteLine) {
+            remoteLine = L.Polyline.Plotter([], {
                 readOnly: true,
                 future:  {color: '#1a1a80', weight: 5, opacity: 1, clickable: false, dashArray: '3, 6'},
                 present: {color: '#1a1a80', weight: 5, opacity: 1, clickable: false},
@@ -186,21 +187,50 @@ var Path = (function ($, Data, Log, Network) {
             }).addTo(map);
         }
 
-        // Init lineToNextWaypoint if necessary
-        if (!lineToNextWaypoint) {
-            lineToNextWaypoint = L.polyline([], {
+        // Init localLine if necessary
+/**/    if (!localLine) {
+            localLine = L.Polyline.Plotter(waypoints, {
+                future:  {color: '#f00', weight: 4, opacity: 0.8, dashArray: '3, 6'},
+                present: {color: '#f00', weight: 4, opacity: 0.8, clickable: false},
+                past:    {color: '#844', weight: 4, opacity: 0.8, clickable: false},
+            }).addTo(map);
+        }
+
+        // Init passedToRemote if necessary
+        if (!passedToRemote) {
+            remoteToLocal = L.polyline([], {
+                color: '#00ff00', weight: 5, opacity: 1, clickable: false
+            }).addTo(map);
+
+            // When local or remote line change, update this line
+/**/        ;
+        }
+
+        // Init remoteToLocal if necessary
+        if (!remoteToLocal) {
+            remoteToLocal = L.polyline([], {
+                color: '#00ff00', weight: 5, opacity: 1, clickable: false
+            }).addTo(map);
+
+            // When local or remote line change, update this line
+/**/        ;
+        }
+
+        // Init planeToNextRemote if necessary
+        if (!planeToNextRemote) {
+            planeToNextRemote = L.polyline([], {
                 color: '#1a1a80', weight: 5, opacity: 0.8, clickable: false, dashArray: '3, 6',
             }).addTo(map);
 
             // When waypoints change, update line going from plane to next waypoint
-            readonlyPlotter.on('change', function(e) {
-                var nextWaypoint = readonlyPlotter.getNextLatLng();
+            remoteLine.on('change', function(e) {
+                var nextWaypoint = remoteLine.getNextLatLng();
                 if (nextWaypoint) {
-                    if (lineToNextWaypoint.getLatLngs().length) {
-                        lineToNextWaypoint.spliceLatLngs(1, 1, {lat: nextWaypoint.lat, lng: nextWaypoint.lng});
+                    if (planeToNextRemote.getLatLngs().length) {
+                        planeToNextRemote.spliceLatLngs(1, 1, {lat: nextWaypoint.lat, lng: nextWaypoint.lng});
                     }
                 } else {
-                    lineToNextWaypoint.setLatLngs([]);
+                    planeToNextRemote.setLatLngs([]);
                 }
             });
         }
@@ -237,17 +267,22 @@ var Path = (function ($, Data, Log, Network) {
             // Path.testPlaneWaypointIndex to some number (from the console)
             waypointIndex = exports.testPlaneWaypointIndex;
         }
-        if (localPlotter.getNextIndex() != waypointIndex && waypointIndex != WAYPOINT_HOME) {
+/**/    if (localLine.getNextIndex() != waypointIndex && waypointIndex != WAYPOINT_HOME) {
             // TODO Manage going home case
-            readonlyPlotter.setNextIndex(waypointIndex + localIndex);
-            localPlotter.setNextIndex(waypointIndex);
+            remoteLine.setNextIndex(waypointIndex + localIndex);
+            localLine.setNextIndex(waypointIndex);
         }
         
         // When plane moves, update line going from plane to next waypoint
-        if (gpsFix) {
-            lineToNextWaypoint.spliceLatLngs(0, 1, {lat: lat, lng: lon});
-        } else {
-            lineToNextWaypoint.setLatLngs([]);
+/**/    if (gpsFix) {
+            planeToNextRemote.spliceLatLngs(0, 1, {lat: lat, lng: lon});
+/**/    } else {
+            planeToNextRemote.setLatLngs([]);
+        }
+
+/**/    // When local or remote change, do something?
+        if (0) {
+            ;
         }
 
         // Draw points on historyPolyline
