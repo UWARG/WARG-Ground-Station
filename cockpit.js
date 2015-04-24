@@ -531,6 +531,10 @@ var Cockpit = (function ($, Data, Log, Network) {
         }
     }
 
+    function displayUHF(errorCodes) {
+        writeToDiv('#uhf', parseInt(errorCodes) & 2048);
+    }
+
     function displayControlStatus(editing_gain) {
         var canvas = document.getElementById("control_status");
         canvas.height = 30;
@@ -567,9 +571,12 @@ var Cockpit = (function ($, Data, Log, Network) {
             context.fillStyle = "#4caf50";
         } else if (gpsFix === 1) {
             context.fillStyle = "#cddc39";
-        } else {
+        } else if (gpsFix === 0) {
             context.fillStyle = "#f44336";
+        } else {
+            context.fillStyle = "#727272";
         }
+
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         context.font = '20px Calibri';
@@ -601,6 +608,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         var pitch_setpoint = flightData.pitch_setpoint;
         var yaw_setpoint = flightData.yaw_setpoint;
         var time = flightData.time;
+        var errorCodes = flightData.errorCodes;
 
         var roll = flightData.roll * (Math.PI / 180);
         var pitch = -flightData.pitch * (Math.PI / 180);
@@ -617,6 +625,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawBattery(batteryLevel);
         displayControlStatus(editing_gain);
         displayGPSStatus(gpsStatus);
+        displayUHF(errorCodes);
         drawScale(altitude, 300, "altimeter", "Altitude");
         drawScale(ground_speed, 300, "speed", "Speed");
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
