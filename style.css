@@ -7,7 +7,7 @@ body {
     display: inline-block;
     font-size: 1em;
     text-align: center;
-    width: 7em;
+    width: 6em;
     margin: 0.1em;
 }
 
@@ -17,7 +17,7 @@ body {
     font-size: 1em;
     text-align: center;
     height: 20px;
-    width: 7em;
+    width: 6em;
     margin: 0.1em;
     background-color: #cfd8dc;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
@@ -81,7 +81,7 @@ body {
     border-style: none;
     font-size: 1em;
     text-align: center;
-    width: 7em;
+    width: 6em;
     margin: 0.1em;
 }
 

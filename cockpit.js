@@ -118,7 +118,7 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         $('#send_yaw').on('click', function () {
             var yaw_setpoint = document.getElementById("yaw_setpoint").value;
-            Network.write("set_yawAngle:" + yaw_setpoint + "\r\n");
+            Network.write("set_heading:" + yaw_setpoint + "\r\n");
         });
 
         $('#send_altitude').on('click', function () {
@@ -241,6 +241,42 @@ var Cockpit = (function ($, Data, Log, Network) {
                 $("#send_command").click();
             }
         });
+        
+                $("#yaw_setpoint").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#send_yaw").click();
+            }
+        });
+        
+                $("#pitch_setpoint").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#send_pitch").click();
+            }
+        });
+        
+                $("#roll_setpoint").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#send_roll").click();
+            }
+        });
+        
+                        $("#kdInput").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#sendGains").click();
+            }
+        });
+       
+                                $("#kiInput").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#sendGains").click();
+            }
+        });
+        
+                                $("#kpInput").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#sendGains").click();
+            }
+        });
     });
 
     function drawYaw(yaw, yaw_setpoint) {
@@ -266,7 +302,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.stroke();
 
         //Text
-        var yawText = (parseFloat(yaw) * (180 / Math.PI)).toFixed(2);
+        var yawText = parseFloat(yaw);
         yawText = yawText.toString() + "°";
         context.fillStyle = "black";
         context.font = "20px Calibri";
@@ -274,7 +310,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.fillText(yawText, 100, 30);
 
         //Setpoint
-        yaw_setpoint = (parseFloat(yaw_setpoint)).toFixed(2);
+        yaw_setpoint = (parseFloat(yaw_setpoint));
         yaw_setpoint = yaw_setpoint.toString() + "°";
         context.fillStyle = "black";
         context.font = "20px Calibri";
@@ -532,16 +568,17 @@ var Cockpit = (function ($, Data, Log, Network) {
     }
 
     function displayUHF(errorCodes) {
-        writeToDiv('#uhf', parseInt(errorCodes) & 2048);
+        writeToDiv('#uhf', parseInt(parseInt(errorCodes) / 2048));
     }
 
     function displayControlStatus(editing_gain) {
+        editing_gain = parseInt(editing_gain / 16);
         var canvas = document.getElementById("control_status");
         canvas.height = 30;
         canvas.width = 100;
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
-
+        
         context.font = '20px Calibri';
         context.textAlign = "center";
         context.fillStyle = "white";
@@ -570,18 +607,18 @@ var Cockpit = (function ($, Data, Log, Network) {
         if (gpsFix === 2) {
             context.fillStyle = "#4caf50";
         } else if (gpsFix === 1) {
-            context.fillStyle = "#cddc39";
+            context.fillStyle = "#e9ff11";
         } else if (gpsFix === 0) {
             context.fillStyle = "#f44336";
         } else {
-            context.fillStyle = "#727272";
+            context.fillStyle = "#b9b9b9";
         }
 
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         context.font = '20px Calibri';
         context.textAlign = "center";
-        context.fillStyle = "white";
+        context.fillStyle = "black";
 
         context.fillText(gpsSatellites, 25, 20);
     }
@@ -599,19 +636,20 @@ var Cockpit = (function ($, Data, Log, Network) {
         var heading = flightData.heading;
         var ground_speed = parseFloat(flightData.ground_speed);
         var batteryLevel = Math.round(parseFloat(flightData.batteryLevel));
-        var editing_gain = parseInt(flightData.editing_gain) % 16;
+        var editing_gain = parseInt(flightData.editing_gain);
         var gpsStatus = flightData.gpsStatus;
         var kd_gain = flightData.kd_gain;
         var kp_gain = flightData.kp_gain;
         var ki_gain = flightData.ki_gain;
+                var heading_setpoint = flightData.heading_setpoint;
         var roll_setpoint = flightData.roll_setpoint;
         var pitch_setpoint = flightData.pitch_setpoint;
         var yaw_setpoint = flightData.yaw_setpoint;
         var time = flightData.time;
         var errorCodes = flightData.errorCodes;
-
+        
         var roll = flightData.roll * (Math.PI / 180);
-        var pitch = -flightData.pitch * (Math.PI / 180);
+        var pitch = flightData.pitch * (Math.PI / 180);
         var yaw = (flightData.yaw * (Math.PI / 180)) + Math.PI;
 
         //Used in path.js for some reason
@@ -621,7 +659,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawArtificalHorizon(roll, pitch);
         drawPitch(pitch, pitch_setpoint);
         drawRoll(roll, roll_setpoint);
-        drawYaw(yaw, yaw_setpoint);
+        drawYaw(heading, heading_setpoint);
         drawBattery(batteryLevel);
         displayControlStatus(editing_gain);
         displayGPSStatus(gpsStatus);
@@ -662,6 +700,7 @@ var Cockpit = (function ($, Data, Log, Network) {
     }
 
     function displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain) {
+        editing_gain = editing_gain % 16;
         if (editing_gain === 0)
             editing_gain = "Yaw";
         else if (editing_gain === 1) {
