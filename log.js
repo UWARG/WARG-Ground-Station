@@ -4,7 +4,7 @@ var Log = (function ($) {
 
     function writeToWindow(text) {
         var logDiv = $('#log')
-        var newItem = $('<div class="logText">' + text + '</div>');
+        var newItem = $('<div>' + text + '</div>');
         logDiv.append(newItem);
         var elem = document.getElementById('log');
         if (elem) {
