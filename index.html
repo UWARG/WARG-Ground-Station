@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-
-
 <head>
     <title>WARG-Ground-Station-V2</title>
     <meta charset="utf-8">
@@ -57,16 +55,17 @@
             </div>
             <div class="col-1-2">
                 <div>
-                    <canvas id="yaw" class="instrument"></canvas>
-                    <input type="number" id="yaw_setpoint" class="input" value="0">
-                    <div class="button" id="send_yaw">
-                        Send Yaw
+                    <canvas id="heading" class="instrument"></canvas>
+                    <input type="number" id="heading_setpoint" class="input" value="0">
+                    <div class="button" id="send_heading">
+                        Send Heading
                     </div>
                 </div>
             </div>
             <div class="col-1-2">
                 <div>
                     <canvas id="horizon" class="instrument"></canvas>
+                    <div id="control_status" class="display-bold"></div>
                 </div>
             </div>
 
@@ -91,12 +90,12 @@
                         </div>
                         <div>
                             <select id="pitch_control" class="dropdown">
-                                <option>Angle</option>
                                 <option>Rate</option>
+                                <option>Angle</option>
                             </select>
                             <select id="roll_control" class="dropdown">
-                                <option>Angle</option>
                                 <option>Rate</option>
+                                <option>Angle</option>
                             </select>
                             <select id="altitude_source" class="dropdown">
                                 <option>Ground Station</option>
@@ -118,8 +117,8 @@
                                 <option>Ground Station</option>
                             </select>
                             <select id="altitude_on" class="dropdown">
-                                <option>On</option>
                                 <option>Off</option>
+                                <option>On</option>
                             </select>
                         </div>
                         <div>
@@ -133,8 +132,8 @@
                                 <option>Autopilot</option>
                             </select>
                             <select id="heading_on" class="dropdown">
-                                <option>On</option>
                                 <option>Off</option>
+                                <option>On</option>
                             </select>
                             <select id="throttle_source" class="dropdown">
                                 <option>Controller</option>
@@ -174,26 +173,14 @@
         <div class="col-4-12">
             <div class="col-2-2">
                 <div class="col-2-2">
-                     <b>UHF</b>
+                    <b>UHF</b>
                     <div id="uhf" class="display"></div>
-                    <div class="col-1-8">
-
                     <b>Time</b>
-                    </div>
+                    <div id="time" class="display"></div>
                     <div class="col-2-8">
-                        <div id="time" class="display"></div>
-                    </div>
-                    <div class="col-2-8">
-                        <canvas id="control_status" class="instrument"></canvas>
-                    </div>
-                    <div class="col-1-8">
                         <canvas id="gps_status" class="instrument"></canvas>
-                    </div>
-                    <div class="col-2-8">
                         <canvas id="battery" class="instrument"></canvas>
                     </div>
-
-
                 </div>
             </div>
 
@@ -205,7 +192,6 @@
                 <div class="col-1-2">
                     <div class="centered-div">
 
-                        <br/>
                         <br/>
                         <br/>
                         <br/>
@@ -247,6 +233,11 @@
                     <br/>
                     <br/>
                     <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
 
                     <div class="col-2-2">
                         <div id="speed_setpoint_display" class="display"></div>
@@ -266,76 +257,69 @@
             </div>
 
             <div class="col-2-2">
-                <div id="setpoints">
-                    <h3 align="center"> Setpoints and Rates </h3>
+                <h3 align="center"> Gains </h3>
+                <div id="gains">
                     <div>
-                        <div class="display">Throttle</div>
-                        <div class="display">Heading</div>
-                        <div class="display">Pitch Rate</div>
-                        <div class="display">Roll Rate</div>
-                        <div class="display">Yaw Rate</div>
-                    </div>
-                    <div>
-                        <div id="throttle_setpoint_display" class="display"></div>
-                        <div id="heading_setpoint_display" class="display"></div>
-                        <div id="pitch_rate" class="display"></div>
-                        <div id="roll_rate" class="display"></div>
-                        <div id="yaw_rate" class="display"></div>
+                        <select id="gainSelect" class="dropdown">
+                            <option>Yaw</option>
+                            <option>Pitch</option>
+                            <option value="roll">Roll</option>
+                            <option value="heading">Heading</option>
+                            <option value="altitude">Altitude</option>
+                            <option value="throttle">Throttle</option>
+                        </select>
+                        <div id="current_gain" class="display"></div>
                     </div>
                     <div>
-                        <input type="number" id="throttle_setpoint_input" class="input" value="0">
-                        <input type="number" id="heading_setpoint_input" class="input" value="0">
+                        <div class="display">KD_GAIN</div>
+                        <div class="display">KP_GAIN</div>
+                        <div class="display">KI_GAIN</div>
                     </div>
-                    <div class="button" id="send_setpoints">
-                        Send Setpoints
+                    <div>
+                        <div id="current_kd" class="display"></div>
+                        <div id="current_kp" class="display"></div>
+                        <div id="current_ki" class="display"></div>
                     </div>
+                    <div>
+                        <input type="number" id="kdInput" class="input" value="0">
+                        <input type="number" id="kpInput" class="input" value="0">
+                        <input type="number" id="kiInput" class="input" value="0">
+                    </div>
+                    <div class="button" id="sendGains">
+                        Send Gains
+                    </div>
+
                 </div>
-            </div>
-            <div class="col-2-2">
                 <div class="col-2-2">
-
-                    <h3 align="center"> Gains </h3>
-                </div>
-                <div class="col-2-2">
-
-                    <div id="gains">
+                    <div id="setpoints">
+                        <h3 align="center"> Setpoints and Rates </h3>
                         <div>
-                            <select id="gainSelect" class="dropdown">
-                                <option>Yaw</option>
-                                <option>Pitch</option>
-                                <option value="roll">Roll</option>
-                                <option value="heading">Heading</option>
-                                <option value="altitude">Altitude</option>
-                                <option value="throttle">Throttle</option>
-                            </select>
-                            <div id="current_gain" class="display"></div>
+                            <div class="display">Throttle</div>
+                            <div class="display">Yaw</div>
+                            <div class="display">Pitch Rate</div>
+                            <div class="display">Roll Rate</div>
+                            <div class="display">Yaw Rate</div>
                         </div>
                         <div>
-                            <div class="display">KD_GAIN</div>
-                            <div class="display">KP_GAIN</div>
-                            <div class="display">KI_GAIN</div>
+                            <div id="throttle_setpoint_display" class="display"></div>
+                            <div id="yaw_display" class="display"></div>
+                            <div id="pitch_rate" class="display"></div>
+                            <div id="roll_rate" class="display"></div>
+                            <div id="yaw_rate" class="display"></div>
                         </div>
                         <div>
-                            <div id="current_kd" class="display"></div>
-                            <div id="current_kp" class="display"></div>
-                            <div id="current_ki" class="display"></div>
+                            <input type="number" id="throttle_setpoint_input" class="input" value="0">
                         </div>
-                        <div>
-                            <input type="number" id="kdInput" class="input" value="0">
-                            <input type="number" id="kpInput" class="input" value="0">
-                            <input type="number" id="kiInput" class="input" value="0">
-                        </div>
-                        <div class="button" id="sendGains">
-                            Send Gains
+                        <div class="button" id="send_throttle">
+                            Send Throttle
                         </div>
                     </div>
 
                 </div>
+
             </div>
 
         </div>
-
-    </div>
 
     </div>
 
