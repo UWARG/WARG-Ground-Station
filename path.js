@@ -1,4 +1,4 @@
-var Path = (function ($, Data, Log, Network) {
+var Path = (function ($, Data, Log, Network, Mousetrap) {
     // Camera FOV: horz 94.38, vert 78.3
 
     var exports = {};
@@ -42,9 +42,16 @@ var Path = (function ($, Data, Log, Network) {
             localPath.setLatLngs([]);
             
             redrawMap();
+
+            Log.debug("Path Operator cleared local waypoints");
         });
 
         $('#sendWaypoints').on('click', function () {
+
+            Log.debug("Path Operator is sending waypoints");
+            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
+            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
+            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
 
             // Move past waypoints from remotePath into passedPath
             var passedLatLngs = passedPath.getLatLngs().concat(
@@ -96,7 +103,8 @@ var Path = (function ($, Data, Log, Network) {
                 if (!targetWaypointIsSent) {
                     command = "set_targetWaypoint:" + targetWaypointIndex + "\r\n";
                     Network.write(command);
-                    console.warn('Sent target waypoint', targetWaypointIndex, 'probably out of range of waypoint list, length', remoteLatLngs.length);
+                    console.warn('Path Sent target waypoint', targetWaypointIndex, 'probably out of range of waypoint list, length', remoteLatLngs.length);
+                    Log.warning('Path Sent target waypoint ' + targetWaypointIndex + ' probably out of range of waypoint list, length ' + remoteLatLngs.length);
                 }
 
             } else {
@@ -104,18 +112,31 @@ var Path = (function ($, Data, Log, Network) {
                 // TODO Or even just do nothing -- clearing waypoints makes plane automatically go home
                 command = "return_home:0\r\n";
                 Network.write(command);
+                Log.debug("Path Returning home, nothing sent, probably because operator cleared waypoints before pressing send");
             }
 
             // If we're overriding the waypointIndex we receive from plane, then simulate it accordingly
             if (exports.testPlaneWaypointIndex !== null) {
                 exports.testPlaneWaypointIndex = remotePath.getNextIndex();
             }
+
+            Log.debug("Path Waypoints have been sent, and map paths updated");
+            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
+            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
+            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
         });
 
         $('#goHome').on('click', function () {
             var command = "return_home:0\r\n";
             Network.write(command);
+            Log.debug("Path Operator sent Go home");
         });
+    });
+
+    // Handle key presses
+    Mousetrap.bind(["f8"], function () {
+        // Press f8 to mark location as interesting in the logfile
+        Log.debug('Path F8 pressed - This location is flagged as interesting');
     });
 
     var planeIcon;
@@ -305,10 +326,19 @@ var Path = (function ($, Data, Log, Network) {
         if (remotePath.getNextIndex() != waypointIndex && waypointIndex != WAYPOINT_HOME) {
             // TODO Manage going home case
 
+            Log.debug('Path Plane waypointIndex changed to ' + waypointIndex + ' (was ' + remotePath.getNextIndex() + ')');
+
+            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
+            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
+            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
+
             remotePath.setNextIndex(waypointIndex);
 
             var firstDifferentIndex = findFirstLocalDifferent(localPath, remotePath);
             localPath.setNextIndex(Math.min(waypointIndex, firstDifferentIndex));
+
+            Log.debug('Path localPath.nextIndex set to ' + localPath.getNextIndex() + ' (first locally different waypoint index is ' + firstDifferentIndex + ')');
+
         }
         
         // When plane moves, update line going from plane to next waypoint
@@ -351,4 +381,4 @@ var Path = (function ($, Data, Log, Network) {
     // Export what needs to be
     return exports;
 
-})($, Data, Log, Network);
+})($, Data, Log, Network, Mousetrap);

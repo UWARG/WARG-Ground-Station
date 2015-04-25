@@ -21,12 +21,12 @@ var Network = (function (Data, Log) {
 
     function write(data) {
         client.write(data);
-        Log.info("Sent: " + data);
+        Log.info("Network Sent: " + data);
     }
 
     function connectHandler(err) {
         if (!err) {
-            Log.info('Connected: ' + host + ':' + port);
+            Log.info('Network Connected: ' + host + ':' + port);
             write("commander\r\n");
         }
     }
@@ -37,6 +37,8 @@ var Network = (function (Data, Log) {
 
     function dataHandler(data) {
         data = data.toString();
+
+        // Log.debug("Network Received: " + data);
 
         // First transmission is header columns
         if (Data.headers.length === 0) {
@@ -52,15 +54,17 @@ var Network = (function (Data, Log) {
             Data.state[Data.headers[i]] = dataSplit[i].trim().toString().replace('(','').replace(')','');
             cloneState[Data.headers[i]] = dataSplit[i].trim().toString().replace('(','').replace(')','');
         }
-
+        
         Data.history.push(cloneState);
+
+        Log.debug("Network Parsed: " + JSON.stringify(Data.state));
 
         emitter.emit('data', Data.state);
         emitter.write = write;
     }
 
     function closeHandler() {
-        Log.error('Connection closed - Retrying connection');
+        Log.error('Network Connection closed - Retrying connection');
         Data.headers = [];
         setTimeout(connect, Math.random() * 500 + 500);
     }

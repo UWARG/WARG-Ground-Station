@@ -1,6 +1,6 @@
 var Log = (function ($) {
     var fs = require('fs');
-    var log_file = fs.createWriteStream("GCS-" + getDateTime().replace(/\:/g, "") + ".log");
+    var log_file = fs.createWriteStream("GCS-" + getDateTime().replace(/[\:\.]/g, "") + ".log");
 
     function writeToWindow(text) {
         var logDiv = $('#log')
@@ -20,12 +20,14 @@ var Log = (function ($) {
         min = (min < 10 ? "0" : "") + min;
         var sec = date.getSeconds();
         sec = (sec < 10 ? "0" : "") + sec;
+        var msec = date.getMilliseconds();
+        msec = (msec < 100 ? "0" : "") + (msec < 10 ? "0" : "") + msec;
         var year = date.getFullYear();
         var month = date.getMonth() + 1;
         month = (month < 10 ? "0" : "") + month;
         var day = date.getDate();
         day = (day < 10 ? "0" : "") + day;
-        return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
+        return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec + "." + msec;
     }
 
     function writeToFile(text) {
