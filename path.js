@@ -1,16 +1,18 @@
-var Path = (function ($, Data, Log, Network) {
+var Path = (function ($, Data, Log, Network, Mousetrap) {
+    // Camera FOV: horz 94.38, vert 78.3
+
     var exports = {};
 
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
-    var localWaypointIndex = 0;
-    var localInSync = true; // True when localWaypointIndex is equal to that on the plane
+    exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
     var WAYPOINT_LEGACY_RADIUS = 13.1415926;    // Just a number here in case plane uses legacy waypoint following
 
-    // Interactive map objects here
+    // Interactive objects here
     var map;
+    var graph;
     
     // Initialize map if necessary
     $(document).ready(function () {
@@ -36,45 +38,117 @@ var Path = (function ($, Data, Log, Network) {
         });
 
         $('#clearWaypoints').on('click', function () {
-            waypoints = [];
-            localWaypointIndex = 0;
-            localInSync = false;
-
-            waypointPlotter.setLatLngs(waypoints);
-            waypointPlotter.setNextIndex(localWaypointIndex);
+            // Clear all waypoints in localPath
+            localPath.setLatLngs([]);
+            
             redrawMap();
+
+            Log.debug("Path Operator cleared local waypoints");
         });
 
         $('#sendWaypoints').on('click', function () {
 
+            Log.debug("Path Operator is sending waypoints");
+            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
+            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
+            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
+
+            // Move past waypoints from remotePath into passedPath
+            var passedLatLngs = passedPath.getLatLngs().concat(
+                remotePath.getLatLngs().filter(function (latlng, index) {
+                    return index < remotePath.getNextIndex();
+                })
+            );
+            passedPath.setLatLngs(passedLatLngs);
+
+            // Retain only future waypoints in localPath (delete all past ones)
+            var localLatLngs = localPath.getLatLngs().filter(function (latlng, index) {
+                return index >= localPath.getNextIndex();
+            });
+            localPath.setLatLngs(localLatLngs);
+            localPath.setNextIndex(0);
+
+            // Replace waypoints in remotePath with those from localPath
+            var remoteLatLngs = localPath.getLatLngs().map(function (latlng, index) {
+                return new L.LatLng(latlng.lat, latlng.lng, latlng.alt);    // Clone object
+            });
+            remotePath.setLatLngs(remoteLatLngs);
+            remotePath.setNextIndex(0);
+
+            // Hack to force localPath to redraw its markers (so they reappear on top)
+            localPath.setNextIndex(localPath.getNextIndex());
+
+            // Clear current waypoints on plane
             var command = "clear_waypoints:0\r\n";
             Network.write(command);
             
-            for (i = 0; i < waypoints.length; i++) {
-                var latLng = waypoints[i];
-                command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
+            // Upload new waypoints; or if no new waypoints, order to go home
+            var remoteLatLngs = remotePath.getLatLngs();
+            if (remoteLatLngs.length) {
+                var targetWaypointIsSent = false;
+                var targetWaypointIndex = remotePath.getNextIndex();
+
+                for (i = 0, l = remoteLatLngs.length; i < l; i++) {
+                    var latLng = remoteLatLngs[i];
+                    command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
+                    Network.write(command);
+
+                    if (i == targetWaypointIndex) {
+                        command = "set_targetWaypoint:" + targetWaypointIndex + "\r\n";
+                        Network.write(command);
+                        targetWaypointIsSent = true;
+                    }
+                }
+
+                if (!targetWaypointIsSent) {
+                    command = "set_targetWaypoint:" + targetWaypointIndex + "\r\n";
+                    Network.write(command);
+                    console.warn('Path Sent target waypoint', targetWaypointIndex, 'probably out of range of waypoint list, length', remoteLatLngs.length);
+                    Log.warning('Path Sent target waypoint ' + targetWaypointIndex + ' probably out of range of waypoint list, length ' + remoteLatLngs.length);
+                }
+
+            } else {
+                // Probably uploading just after clearing waypoints; go home then.
+                // TODO Or even just do nothing -- clearing waypoints makes plane automatically go home
+                command = "return_home:0\r\n";
                 Network.write(command);
+                Log.debug("Path Returning home, nothing sent, probably because operator cleared waypoints before pressing send");
             }
 
-            command = "set_targetWaypoint:" + localWaypointIndex + "\r\n";
-            Network.write(command);
+            // If we're overriding the waypointIndex we receive from plane, then simulate it accordingly
+            if (exports.testPlaneWaypointIndex !== null) {
+                exports.testPlaneWaypointIndex = remotePath.getNextIndex();
+            }
 
-            localInSync = true;
+            Log.debug("Path Waypoints have been sent, and map paths updated");
+            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
+            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
+            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
         });
 
         $('#goHome').on('click', function () {
-            var command = "return_home\r\n";
+            var command = "return_home:0\r\n";
             Network.write(command);
+            Log.debug("Path Operator sent Go home");
         });
+    });
+
+    // Handle key presses
+    Mousetrap.bind(["f8"], function () {
+        // Press f8 to mark location as interesting in the logfile
+        Log.debug('Path F8 pressed - This location is flagged as interesting');
     });
 
     var planeIcon;
     var planeHollowIcon;
     var planeMarker;
     var gpsFixMessagebox;
-    var waypointMarkerGroup;
-    var waypointPlotter;
-    var lineToNextWaypoint;
+    var passedPath; // Contains any wpts we're sure to have already passed (flown over)
+    var localPath;  // Contains local working copy of what we're planning
+    var remotePath; // Contains any wpts currently on plane & index of wpt plane is travelling to
+    var remoteToLocal;  // Line connecting current waypoint on plane to next local waypoint
+    var passedToRemote; // Line connecting end of passedPath to begining of remotePath
+    var planeToNextRemote;  // Line connecting current plane position to next waypoint on plane
     var historyPolyline;
 
     Network.on('data', redrawMap);
@@ -122,39 +196,93 @@ var Path = (function ($, Data, Log, Network) {
             }).addTo(map);
         }
 
-        // Init waypoint marker layer-group if necessary
-        if (!waypointMarkerGroup) {
-            waypointMarkerGroup = L.layerGroup().addTo(map);
+        // Init passedPath if necessary
+        if (!passedPath) {
+            passedPath = L.Polyline.Plotter([], {
+                readOnly: true,
+                future:  {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                past:    {color: '#09092e', weight: 5, opacity: 1, clickable: false},
+            }).addTo(map);
+            passedPath.setNextIndex(Number.MAX_SAFE_INTEGER);
+            exports.passedPath = passedPath;
         }
 
-        // Init waypointPlotter if necessary
-        if (!waypointPlotter) {
-            waypointPlotter = L.Polyline.Plotter(waypoints, {
-                future:  {color: '#f00', weight: 5, opacity: 0.6},
-                present: {color: '#000', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8'},
-                past:    {color: '#000', weight: 5, opacity: 0.6, clickable: false},
+        // Init localPath if necessary
+        if (!localPath) {
+            localPath = L.Polyline.Plotter(waypoints, {
+                future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
+                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
             }).addTo(map);
-
-            waypointPlotter.on('change', function(e) {
-                waypoints = waypointPlotter.getLatLngs();
-            });
+            localPath.setNextIndex(0);
+            exports.localPath = localPath;
         }
 
-        // Init lineToNextWaypoint if necessary
-        if (!lineToNextWaypoint) {
-            lineToNextWaypoint = L.polyline([], {
-                color: '#f00', weight: 5, opacity: 0.6, clickable: false, dashArray: '3, 8',
+        // Init remotePath if necessary
+        if (!remotePath) {
+            remotePath = L.Polyline.Plotter([], {
+                readOnly: true,
+                future:  {color: '#1a1a80', weight: 5, opacity: 1, clickable: false, dashArray: '3, 6'},
+                present: {color: '#09092e', weight: 5, opacity: 1, clickable: false},
+                past:    {color: '#09092e', weight: 5, opacity: 1, clickable: false},
+            }); // Not adding to map yet; we want to add this last.
+            exports.remotePath = remotePath;
+        }
+
+        // Init remoteToLocal if necessary
+        if (!remoteToLocal) {
+            remoteToLocal = L.polyline([], {
+                color: '#f21818', weight: 4, opacity: 1, clickable: false
             }).addTo(map);
+            exports.remoteToLocal = remoteToLocal;
+
+            // When remote or local line changes, update this line
+            var updateRemoteToLocal = function () {
+                if (remotePath.getNextIndex() == 0) {
+                    var start = passedPath.getLatLngs()[passedPath.getLatLngs().length-1];  // "Wrap around" to passedPath
+                } else {
+                    var start = remotePath.getLatLngs()[remotePath.getNextIndex()-1];
+                }
+                setLineEndpoints(remoteToLocal,
+                    start,
+                    localPath.getLatLngs()[localPath.getNextIndex()]
+                );
+            };
+            remotePath.on('change drag', updateRemoteToLocal);
+            localPath.on('change drag', updateRemoteToLocal);
+        }
+
+        // Init passedToRemote if necessary
+        if (!passedToRemote) {
+            passedToRemote = L.polyline([], {
+                color: '#09092e', weight: 5, opacity: 1, clickable: false
+            }).addTo(map);
+            exports.passedToRemote = passedToRemote;
+
+            // When passed or remote line changes, update this line
+            var updatePassedToRemote = function () {
+                setLineEndpoints(passedToRemote,
+                    passedPath.getLatLngs()[passedPath.getLatLngs().length-1],
+                    remotePath.getLatLngs()[0]
+                );
+            };
+            passedPath.on('change drag', updatePassedToRemote);
+            remotePath.on('change drag', updatePassedToRemote);
+        }
+
+        // Init planeToNextRemote if necessary
+        if (!planeToNextRemote) {
+            planeToNextRemote = L.polyline([], {
+                color: '#1a1a80', weight: 5, opacity: 1, clickable: false, dashArray: '3, 6',
+            }).addTo(map);
+            exports.planeToNextRemote = planeToNextRemote;
 
             // When waypoints change, update line going from plane to next waypoint
-            waypointPlotter.on('change drag', function(e) {
-                var nextWaypoint = waypointPlotter.getNextLatLng();
-                if (nextWaypoint) {
-                    if (lineToNextWaypoint.getLatLngs().length) {
-                        lineToNextWaypoint.spliceLatLngs(1, 1, {lat: nextWaypoint.lat, lng: nextWaypoint.lng});
-                    }
-                } else {
-                    lineToNextWaypoint.setLatLngs([]);
+            remotePath.on('change drag', function(e) {
+                setLineEndpoints(planeToNextRemote, planeMarker.getLatLng(), remotePath.getNextLatLng());
+                if (!remotePath.getNextLatLng()) {
+                    console.log('planeToNextRemote not visible because remotePath has no next waypoint');
                 }
             });
         }
@@ -162,10 +290,13 @@ var Path = (function ($, Data, Log, Network) {
         // Init historyPolyline if necessary
         if (!historyPolyline) {
             historyPolyline = new L.Polyline([], {
-                color: '#0000ff',
-                weight: 5,
-                clickable: false,
+                color: '#190019', opacity: 0.6, weight: 4, clickable: false,
             }).addTo(map);
+        }
+
+        // Add remotePath to top-most z-index of map
+        if (!map.hasLayer(remotePath)) {
+            remotePath.addTo(map);
         }
 
 
@@ -173,7 +304,7 @@ var Path = (function ($, Data, Log, Network) {
         if (gpsFix) {
             planeMarker.setIcon(planeIcon);
             planeMarker.setLatLng(new L.LatLng(lat, lon));
-            planeMarker.options.angle = yaw;
+            planeMarker.options.angle = yaw*1 + 180;    // FIXME Make this more consistent across all files
             planeMarker.update();
         } else {
             planeMarker.setIcon(planeHollowIcon);
@@ -187,20 +318,34 @@ var Path = (function ($, Data, Log, Network) {
             gpsFixMessagebox.show('No GPS fix');
         }
 
-        // Update which waypoint we're targeting next (if we're in sync)
-        if (localInSync) {
-            localWaypointIndex = waypointIndex;
-            if (waypointPlotter.getNextIndex() != localWaypointIndex && localWaypointIndex != WAYPOINT_HOME) {
-                // TODO Manage going home case better
-                waypointPlotter.setNextIndex(localWaypointIndex);
-            }
+        // Update which waypoint we're targeting next & redraw lines accordingly
+        if (exports.testPlaneWaypointIndex !== null) {
+            // You can override waypointIndex received from plane by console-setting Path.testPlaneWaypointIndex
+            waypointIndex = exports.testPlaneWaypointIndex;
         }
+        if (remotePath.getNextIndex() != waypointIndex && waypointIndex != WAYPOINT_HOME) {
+            // TODO Manage going home case
 
+            Log.debug('Path Plane waypointIndex changed to ' + waypointIndex + ' (was ' + remotePath.getNextIndex() + ')');
+
+            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
+            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
+            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
+
+            remotePath.setNextIndex(waypointIndex);
+
+            var firstDifferentIndex = findFirstLocalDifferent(localPath, remotePath);
+            localPath.setNextIndex(Math.min(waypointIndex, firstDifferentIndex));
+
+            Log.debug('Path localPath.nextIndex set to ' + localPath.getNextIndex() + ' (first locally different waypoint index is ' + firstDifferentIndex + ')');
+
+        }
+        
         // When plane moves, update line going from plane to next waypoint
         if (gpsFix) {
-            lineToNextWaypoint.spliceLatLngs(0, 1, {lat: lat, lng: lon});
+            setLineEndpoints(planeToNextRemote, {lat: lat, lng: lon}, remotePath.getNextLatLng());
         } else {
-            lineToNextWaypoint.setLatLngs([]);
+            planeToNextRemote.setLatLngs([]);
         }
 
         // Draw points on historyPolyline
@@ -209,7 +354,31 @@ var Path = (function ($, Data, Log, Network) {
         }
     }
 
+    // Init function to set endpoints of a line segment
+    var setLineEndpoints = function (polyline, start, end) {
+        if (start && end) {
+            polyline.setLatLngs([start, end]);
+        } else {
+            polyline.setLatLngs([]);
+        }
+    };
+
+    // Return index of first different waypoint in localPath
+    var findFirstLocalDifferent = exports.findFirstLocalDifferent = function (localPath, remotePath) {
+        var localLatLngs = localPath.getLatLngs();
+        var remoteLatLngs = remotePath.getLatLngs();
+        for (var i = 0; i < localLatLngs.length; ++i) {
+            if (!remoteLatLngs[i]) {
+                return i;
+            }
+            if (localLatLngs[i].lat != remoteLatLngs[i].lat && localLatLngs[i].lng != remoteLatLngs[i].lng) {
+                return i;
+            }
+        }
+        return i;
+    };
+
     // Export what needs to be
     return exports;
 
-})($, Data, Log, Network);
+})($, Data, Log, Network, Mousetrap);

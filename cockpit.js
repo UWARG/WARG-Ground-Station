@@ -168,7 +168,7 @@ var Cockpit = (function ($, Data, Log, Network) {
                 Network.write("set_throttleKPGain:" + kpInput + "\r\n");
                 Network.write("set_throttleKIGain:" + kiInput + "\r\n");
             } else {
-                Log.error("Error sending gains: Plane not in autonomous mode");
+                Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
             }
         });
 
@@ -230,7 +230,7 @@ var Cockpit = (function ($, Data, Log, Network) {
             document.getElementById("send_comment").value = "";
 
 
-            Log.info("Comment Successfully Written to " + fileName + ".txt");
+            Log.info("Cockpit Comment successfully written to " + fileName + ".txt");
         });
 
         $("#raw_command").keyup(function (event) {

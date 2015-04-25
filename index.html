@@ -24,10 +24,12 @@
     <script src="network.js"></script>
     <script src="cockpit.js"></script>
     <script src="leaflet.js"></script>
+    <script src="leaflet.core-extensions.js"></script>
     <script src="leaflet.rotatedmarker.js"></script>
     <script src="leaflet.altitudemarker.js"></script>
     <script src="leaflet.messagebox.js"></script>
     <script src="leaflet.plotter.js"></script>
+    <script src="d3.js"></script>
     <script src="path.js"></script>
 </head>
 
@@ -325,13 +327,15 @@
 
     <div id="path">
         <div id="buttonContainer">
-            <div class="button" id="lockOn">
+            <div class="button" id="lockOn" title="Center map on the plane">
                 Lock on
             </div>
-            <div class="button" id="clearWaypoints">
+            <div class="button" id="clearWaypoints" title="Clear all local waypoints
+
+            (To clear all waypoints on the plane, click &quot;Clear Waypoints&quot;, then &quot;Send Waypoints&quot;.)">
                 Clear Waypoints
             </div>
-            <div class="button" id="sendWaypoints">
+            <div class="button button-transmits" id="sendWaypoints" title="Send all local waypoints to the plane">
                 Send Waypoints
             </div>
             <div class="button" id="goHome">
@@ -339,6 +343,12 @@
             </div>
         </div>
         <div id="map"></div>
+        <div id="height-graph">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%">
+                <path stroke-linejoin="round" stroke-linecap="round" pointer-events="none" stroke="none" fill="#ccccff" d="M20 200L20 190L50 130L67 120L132 125L210 100L210 200" />
+                <path stroke-linejoin="round" stroke-linecap="round" pointer-events="none" stroke="#1a1a80" stroke-opacity="1" stroke-width="5" fill="none" d="M20 190L50 130L67 120L132 125L210 100" />
+            </svg>
+        </div>
     </div>
     <div id="log"></div>
 

@@ -1,9 +1,10 @@
 .leaflet-editing-icon {
 	border-radius: 50%;
+	opacity: 0.75;
 }
 
 .leaflet-editing-icon:hover {
-	background-color: #fcc;
+	opacity: 1;
 }
 
 .leaflet-disabled-icon {
