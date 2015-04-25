@@ -44,11 +44,15 @@ body {
 
 #cockpit {
     overflow-x: hidden;
-    display: inline;
-    position: fixed;
+    position: absolute;
     top: 0;
-    height: 90%;
     left: 0;
+    width: 65%;
+    height: 90%;
+}
+
+.target-acquisition #cockpit {
+    display: none;
 }
 
 #meters {
@@ -63,11 +67,41 @@ body {
     display: inline;
 }
 
+#log {
+    overflow-x: hidden;
+    margin: 0 auto;
+    bottom: 0;
+    left: 0;
+    width: 65%;
+    height: 10%;
+    color: #000;
+    border-style: none;
+    position: absolute;
+    background-color: #cfd8dc;
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
+}
+
+#log > div {
+    line-height: 1.5em;
+    text-align: center;
+    font-size: 1em;
+}
+
+.target-acquisition #log {
+    display: none;
+}
+
 #path {
-    float: right;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 65%;
     width: 35%;
     height: 100%;
+}
+
+.target-acquisition #path {
+    left: 0;
+    width: 100%;
 }
 
 #buttonContainer {
@@ -114,30 +148,10 @@ body {
     margin: 0.1em;
 }
 
-#log {
-    overflow-x: hidden;
-    margin: 0 auto;
-    left: 0;
-    bottom: 0;
-    color: #000;
-    border-style: none;
-    right: 35%;
-    position: fixed;
-    height: 10%;
-    background-color: #cfd8dc;
-    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
-}
-
 .text {
     font-family: "Calibri";
     font-size: 1em;
     color: #fff;
-}
-
-.logText {
-    line-height: 1.5em;
-    text-align: center;
-    font-size: 1em;
 }
 
 .button {
