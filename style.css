@@ -17,12 +17,13 @@ body {
 }
 
 .display {
+    overflow: hidden;
     display: inline-block;
     padding: 0;
     font-size: 1em;
     text-align: center;
     height: 20px;
-    width: 6.5em;
+    width: 6.6em;
     margin: 0.1em;
     background-color: #cfd8dc;
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
