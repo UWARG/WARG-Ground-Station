@@ -15,9 +15,11 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     var graph;
     
     // Initialize map if necessary
+    // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
+    var defaultLatLng = [43.53086, -80.5772];   // Waterloo North field
     $(document).ready(function () {
         if (!map) {
-            map = L.map('map').setView([43.53086, -80.5772], 17);
+            map = L.map('map').setView(defaultLatLng, 17);
             map.attributionControl.setPrefix(false);
 
             L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
@@ -137,6 +139,12 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     Mousetrap.bind(["f8"], function () {
         // Press f8 to mark location as interesting in the logfile
         Log.debug('Path F8 pressed - This location is flagged as interesting');
+    });
+    Mousetrap.bind(["mod+m"], function () {
+        $(document.body).toggleClass('target-acquisition');
+        if (map) {
+            map.invalidateSize(false);
+        }
     });
 
     var planeIcon;
@@ -377,6 +385,48 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
         }
         return i;
     };
+
+    Network.multiEcho.on('data', addTarget);
+
+    var targetMarkers = [];
+
+    // Initialize target tooltip
+    var targetTooltip;
+    $(document).ready(function () {
+        targetTooltip = $('<div id="target-tooltip"></div>').hide();
+        $(document.body).append(targetTooltip);
+    });
+
+    function addTarget(target) {
+        var typeLabels = [undefined, 'F', 'S', 'D', 'C', 'P'];
+        var typeNames = [undefined, 'Contaminated field', 'Structure', 'Debris pile', 'Container', 'Person'];
+
+        var marker = new L.Marker([target.lat, target.lon], {
+            riseOnHover: true,
+            icon: L.divIcon({
+                iconSize: [20, 20],
+                className: 'target-icon target-compid-'+target.comp,
+                html: '<span>' + typeLabels[target.type] + '</span>',
+            }),
+        }).addTo(map);
+
+        $(marker._icon).hover(function (e) {
+            targetTooltip.show().text(typeNames[target.type]).attr('class', 'target-compid-' + target.comp);
+            $(document.body).on('mousemove', mousemove);
+        }, function (e) {
+            targetTooltip.hide();
+            $(document.body).off('mousemove', mousemove);
+        });
+
+        var mousemove = function (e) {
+            targetTooltip.css({
+                left: (e.screenX + 15) + 'px',
+                top: e.screenY + 'px',
+            });
+        };
+
+        targetMarkers.push(marker);
+    }
 
     // Export what needs to be
     return exports;

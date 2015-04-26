@@ -104,13 +104,22 @@ var Network = (function (Data, Log) {
             var parts = data[i].split(':');
             if (parts[0] != "TA") return;
 
-            var arr = parts[1].split(',').map(function (str){return str.trim();});
+            var arr = parts[1].split(',').map(function (str){
+                return str.trim();
+            });
+
+            var comp = Data.compIDs.indexOf(arr[3]);
+            if (comp == -1) {
+                comp = Data.compIDs.push(arr[3]) - 1;
+            }
+
             var target = {
                 lat: arr[0],
                 lon: arr[1],
                 type: arr[2],
-                compId: arr[3],
+                comp: comp,
             };
+            Data.targets.push(target);
 
             Log.debug("Network (multiEcho) Parsed: " + JSON.stringify(target));
 
