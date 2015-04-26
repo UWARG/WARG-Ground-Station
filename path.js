@@ -8,7 +8,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
-    var WAYPOINT_LEGACY_RADIUS = 13.1415926;    // Just a number here in case plane uses legacy waypoint following
+    var WAYPOINT_LEGACY_RADIUS = 2;     // The turning radius around each waypoint
 
     // Interactive objects here
     var map;
