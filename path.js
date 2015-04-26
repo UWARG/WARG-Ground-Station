@@ -15,9 +15,11 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     var graph;
     
     // Initialize map if necessary
+    // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
+    var defaultLatLng = [43.53086, -80.5772];   // Waterloo North field
     $(document).ready(function () {
         if (!map) {
-            map = L.map('map').setView([43.53086, -80.5772], 17);
+            map = L.map('map').setView(defaultLatLng, 17);
             map.attributionControl.setPrefix(false);
 
             L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
@@ -80,7 +82,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
 
             // Clear current waypoints on plane
             var command = "clear_waypoints:0\r\n";
-            Network.write(command);
+            Network.dataRelay.write(command);
             
             // Upload new waypoints; or if no new waypoints, order to go home
             var remoteLatLngs = remotePath.getLatLngs();
@@ -88,14 +90,14 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
                 for (i = 0, l = remoteLatLngs.length; i < l; i++) {
                     var latLng = remoteLatLngs[i];
                     command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
-                    Network.write(command);
+                    Network.dataRelay.write(command);
                 }
 
             } else {
                 // Probably uploading just after clearing waypoints; go home then.
                 // TODO Or even just do nothing -- clearing waypoints makes plane automatically go home
                 command = "return_home:0\r\n";
-                Network.write(command);
+                Network.dataRelay.write(command);
                 Log.debug("Path Returning home, nothing sent, probably because operator cleared waypoints before pressing send");
             }
 
@@ -112,7 +114,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
 
         $('#goHome').on('click', function () {
             var command = "return_home:0\r\n";
-            Network.write(command);
+            Network.dataRelay.write(command);
             Log.debug("Path Operator sent Go home");
         });
     });
@@ -121,6 +123,12 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     Mousetrap.bind(["f8"], function () {
         // Press f8 to mark location as interesting in the logfile
         Log.debug('Path F8 pressed - This location is flagged as interesting');
+    });
+    Mousetrap.bind(["mod+m"], function () {
+        $(document.body).toggleClass('target-acquisition');
+        if (map) {
+            map.invalidateSize(false);
+        }
     });
 
     var planeIcon;
@@ -135,7 +143,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     var planeToNextRemote;  // Line connecting current plane position to next waypoint on plane
     var historyPolyline;
 
-    Network.on('data', redrawMap);
+    Network.dataRelay.on('data', redrawMap);
 
     function redrawMap() {
 
@@ -361,6 +369,48 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
         }
         return i;
     };
+
+    Network.multiEcho.on('data', addTarget);
+
+    var targetMarkers = [];
+
+    // Initialize target tooltip
+    var targetTooltip;
+    $(document).ready(function () {
+        targetTooltip = $('<div id="target-tooltip"></div>').hide();
+        $(document.body).append(targetTooltip);
+    });
+
+    function addTarget(target) {
+        var typeLabels = [undefined, 'F', 'S', 'D', 'C', 'P'];
+        var typeNames = [undefined, 'Contaminated field', 'Structure', 'Debris pile', 'Container', 'Person'];
+
+        var marker = new L.Marker([target.lat, target.lon], {
+            riseOnHover: true,
+            icon: L.divIcon({
+                iconSize: [20, 20],
+                className: 'target-icon target-compid-'+target.comp,
+                html: '<span>' + typeLabels[target.type] + '</span>',
+            }),
+        }).addTo(map);
+
+        $(marker._icon).hover(function (e) {
+            targetTooltip.show().text(typeNames[target.type]).attr('class', 'target-compid-' + target.comp);
+            $(document.body).on('mousemove', mousemove);
+        }, function (e) {
+            targetTooltip.hide();
+            $(document.body).off('mousemove', mousemove);
+        });
+
+        var mousemove = function (e) {
+            targetTooltip.css({
+                left: (e.screenX + 15) + 'px',
+                top: e.screenY + 'px',
+            });
+        };
+
+        targetMarkers.push(marker);
+    }
 
     // Export what needs to be
     return exports;
