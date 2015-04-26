@@ -85,26 +85,10 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
             // Upload new waypoints; or if no new waypoints, order to go home
             var remoteLatLngs = remotePath.getLatLngs();
             if (remoteLatLngs.length) {
-                var targetWaypointIsSent = false;
-                var targetWaypointIndex = remotePath.getNextIndex();
-
                 for (i = 0, l = remoteLatLngs.length; i < l; i++) {
                     var latLng = remoteLatLngs[i];
                     command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
                     Network.write(command);
-
-                    if (i == targetWaypointIndex) {
-                        command = "set_targetWaypoint:" + targetWaypointIndex + "\r\n";
-                        Network.write(command);
-                        targetWaypointIsSent = true;
-                    }
-                }
-
-                if (!targetWaypointIsSent) {
-                    command = "set_targetWaypoint:" + targetWaypointIndex + "\r\n";
-                    Network.write(command);
-                    console.warn('Path Sent target waypoint', targetWaypointIndex, 'probably out of range of waypoint list, length', remoteLatLngs.length);
-                    Log.warning('Path Sent target waypoint ' + targetWaypointIndex + ' probably out of range of waypoint list, length ' + remoteLatLngs.length);
                 }
 
             } else {
