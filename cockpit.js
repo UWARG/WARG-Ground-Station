@@ -5,6 +5,8 @@
 
 var Cockpit = (function ($, Data, Log, Network) {
 
+    var dataRelay = Network.dataRelay;
+
     $(document).ready(function () {
         //Initialize instruments
         drawArtificalHorizon(0, 0);
@@ -22,7 +24,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         //Buttons
         $('#send_command').on('click', function () {
             var raw_command = document.getElementById("raw_command").value;
-            Network.write(raw_command + "\r\n");
+            dataRelay.write(raw_command + "\r\n");
             document.getElementById("raw_command").value = "";
         });
 
@@ -103,37 +105,37 @@ var Cockpit = (function ($, Data, Log, Network) {
                 level += 512;
             }
 
-            Network.write("set_autonomousLevel:" + level + "\r\n");
+            dataRelay.write("set_autonomousLevel:" + level + "\r\n");
         });
 
         $('#send_pitch').on('click', function () {
             var pitch_input = document.getElementById("pitch_setpoint").value;
-            Network.write("set_pitchAngle:" + pitch_input + "\r\n");
+            dataRelay.write("set_pitchAngle:" + pitch_input + "\r\n");
         });
 
         $('#send_roll').on('click', function () {
             var roll_setpoint = document.getElementById("roll_setpoint").value;
-            Network.write("set_rollAngle:" + roll_setpoint + "\r\n");
+            dataRelay.write("set_rollAngle:" + roll_setpoint + "\r\n");
         });
 
         $('#send_heading').on('click', function () {
             var heading_setpoint = document.getElementById("heading_setpoint").value;
-            Network.write("set_heading:" + heading_setpoint + "\r\n");
+            dataRelay.write("set_heading:" + heading_setpoint + "\r\n");
         });
 
         $('#send_altitude').on('click', function () {
             var altitude_setpoint = document.getElementById("altitude_setpoint_input").value;
-            Network.write("set_altitude:" + altitude_setpoint + "\r\n");
+            dataRelay.write("set_altitude:" + altitude_setpoint + "\r\n");
         });
 
         $('#send_speed').on('click', function () {
             var speed_setpoint = document.getElementById("speed_setpoint_input").value;
-            Network.write("set_speed:" + speed_setpoint + "\r\n");
+            dataRelay.write("set_speed:" + speed_setpoint + "\r\n");
         });
 
         $('#send_throttle').on('click', function () {
             var throttle_input = document.getElementById("throttle_setpoint_input").value;
-            Network.write("set_throttle:" + throttle_input + "\r\n");
+            dataRelay.write("set_throttle:" + throttle_input + "\r\n");
         });
 
         $('#sendGains').on('click', function () {
@@ -144,29 +146,29 @@ var Cockpit = (function ($, Data, Log, Network) {
             var kiInput = document.getElementById("kiInput").value;
 
             if (editing_gain === 0) {
-                Network.write("set_yawKDGain:" + kdInput + "\r\n");
-                Network.write("set_yawKPGain:" + kpInput + "\r\n");
-                Network.write("set_yawKIGain:" + kiInput + "\r\n");
+                dataRelay.write("set_yawKDGain:" + kdInput + "\r\n");
+                dataRelay.write("set_yawKPGain:" + kpInput + "\r\n");
+                dataRelay.write("set_yawKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 1) {
-                Network.write("set_pitchKDGain:" + kdInput + "\r\n");
-                Network.write("set_pitchKPGain:" + kpInput + "\r\n");
-                Network.write("set_pitchKIGain:" + kiInput + "\r\n");
+                dataRelay.write("set_pitchKDGain:" + kdInput + "\r\n");
+                dataRelay.write("set_pitchKPGain:" + kpInput + "\r\n");
+                dataRelay.write("set_pitchKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 2) {
-                Network.write("set_rollKDGain:" + kdInput + "\r\n");
-                Network.write("set_rollKPGain:" + kpInput + "\r\n");
-                Network.write("set_rollKIGain:" + kiInput + "\r\n");
+                dataRelay.write("set_rollKDGain:" + kdInput + "\r\n");
+                dataRelay.write("set_rollKPGain:" + kpInput + "\r\n");
+                dataRelay.write("set_rollKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 3) {
-                Network.write("set_headingKDGain:" + kdInput + "\r\n");
-                Network.write("set_headingKPGain:" + kpInput + "\r\n");
-                Network.write("set_headingKIGain:" + kiInput + "\r\n");
+                dataRelay.write("set_headingKDGain:" + kdInput + "\r\n");
+                dataRelay.write("set_headingKPGain:" + kpInput + "\r\n");
+                dataRelay.write("set_headingKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 4) {
-                Network.write("set_altitudeKDGain:" + kdInput + "\r\n");
-                Network.write("set_altitudeKPGain:" + kpInput + "\r\n");
-                Network.write("set_altitudeKIGain:" + kiInput + "\r\n");
+                dataRelay.write("set_altitudeKDGain:" + kdInput + "\r\n");
+                dataRelay.write("set_altitudeKPGain:" + kpInput + "\r\n");
+                dataRelay.write("set_altitudeKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 5) {
-                Network.write("set_throttleKDGain:" + kdInput + "\r\n");
-                Network.write("set_throttleKPGain:" + kpInput + "\r\n");
-                Network.write("set_throttleKIGain:" + kiInput + "\r\n");
+                dataRelay.write("set_throttleKDGain:" + kdInput + "\r\n");
+                dataRelay.write("set_throttleKPGain:" + kpInput + "\r\n");
+                dataRelay.write("set_throttleKIGain:" + kiInput + "\r\n");
             } else {
                 Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
             }
@@ -191,7 +193,7 @@ var Cockpit = (function ($, Data, Log, Network) {
                 command += "0x05";
 
             command += "\r\n";
-            Network.write(command);
+            dataRelay.write(command);
         });
 
         $('#save_comment').on('click', function () {
@@ -620,7 +622,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         context.fillText(gpsSatellites, 20, 21);
     }
 
-    Network.on('data', updateCockpit);
+    dataRelay.on('data', updateCockpit);
 
     function updateCockpit() {
         var flightData = Data.state;
