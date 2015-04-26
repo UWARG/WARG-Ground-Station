@@ -136,36 +136,66 @@ var Cockpit = (function ($, Data, Log, Network) {
             Network.write("set_throttle:" + throttle_input + "\r\n");
         });
 
-        $('#sendGains').on('click', function () {
+        $('#send_kd').on('click', function () {
             var flightData = Data.state;
             var editing_gain = parseInt(flightData.editing_gain) % 16;
             var kdInput = document.getElementById("kdInput").value;
-            var kpInput = document.getElementById("kpInput").value;
-            var kiInput = document.getElementById("kiInput").value;
 
             if (editing_gain === 0) {
                 Network.write("set_yawKDGain:" + kdInput + "\r\n");
-                Network.write("set_yawKPGain:" + kpInput + "\r\n");
-                Network.write("set_yawKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 1) {
                 Network.write("set_pitchKDGain:" + kdInput + "\r\n");
-                Network.write("set_pitchKPGain:" + kpInput + "\r\n");
-                Network.write("set_pitchKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 2) {
                 Network.write("set_rollKDGain:" + kdInput + "\r\n");
-                Network.write("set_rollKPGain:" + kpInput + "\r\n");
-                Network.write("set_rollKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 3) {
                 Network.write("set_headingKDGain:" + kdInput + "\r\n");
-                Network.write("set_headingKPGain:" + kpInput + "\r\n");
-                Network.write("set_headingKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 4) {
                 Network.write("set_altitudeKDGain:" + kdInput + "\r\n");
-                Network.write("set_altitudeKPGain:" + kpInput + "\r\n");
-                Network.write("set_altitudeKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 5) {
                 Network.write("set_throttleKDGain:" + kdInput + "\r\n");
+            } else {
+                Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
+            }
+        });
+
+        $('#send_kp').on('click', function () {
+            var flightData = Data.state;
+            var editing_gain = parseInt(flightData.editing_gain) % 16;
+            var kpInput = document.getElementById("kpInput").value;
+
+            if (editing_gain === 0) {
+                Network.write("set_yawKPGain:" + kpInput + "\r\n");
+            } else if (editing_gain === 1) {
+                Network.write("set_pitchKPGain:" + kpInput + "\r\n");
+            } else if (editing_gain === 2) {
+                Network.write("set_rollKPGain:" + kpInput + "\r\n");
+            } else if (editing_gain === 3) {
+                Network.write("set_headingKPGain:" + kpInput + "\r\n");
+            } else if (editing_gain === 4) {
+                Network.write("set_altitudeKPGain:" + kpInput + "\r\n");
+            } else if (editing_gain === 5) {
                 Network.write("set_throttleKPGain:" + kpInput + "\r\n");
+            } else {
+                Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
+            }
+        });
+
+        $('#send_ki').on('click', function () {
+            var flightData = Data.state;
+            var editing_gain = parseInt(flightData.editing_gain) % 16;
+            var kiInput = document.getElementById("kiInput").value;
+
+            if (editing_gain === 0) {
+                Network.write("set_yawKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 1) {
+                Network.write("set_pitchKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 2) {
+                Network.write("set_rollKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 3) {
+                Network.write("set_headingKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 4) {
+                Network.write("set_altitudeKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 5) {
                 Network.write("set_throttleKIGain:" + kiInput + "\r\n");
             } else {
                 Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
@@ -259,19 +289,19 @@ var Cockpit = (function ($, Data, Log, Network) {
 
         $("#kdInput").keyup(function (event) {
             if (event.keyCode == 13) {
-                $("#sendGains").click();
+                $("#send_kd").click();
             }
         });
 
         $("#kiInput").keyup(function (event) {
             if (event.keyCode == 13) {
-                $("#sendGains").click();
+                $("#send_ki").click();
             }
         });
 
         $("#kpInput").keyup(function (event) {
             if (event.keyCode == 13) {
-                $("#sendGains").click();
+                $("#send_kp").click();
             }
         });
 
@@ -293,7 +323,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         var canvas = document.getElementById("heading");
         canvas.height = 200;
         canvas.width = 200;
-        canvas.title = heading * 180 / Math.PI + "°";
+        canvas.title = heading + "°";
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -676,7 +706,6 @@ var Cockpit = (function ($, Data, Log, Network) {
         var throttle_setpoint = flightData.throttle_setpoint;
         var altitude_setpoint = flightData.altitude_setpoint;
         var heading_setpoint = flightData.heading_setpoint;
-        var speed_setpoint = flightData.speed_setpoint;
         var roll_rate = flightData.roll_rate;
         var pitch_rate = flightData.pitch_rate;
         var yaw = flightData.yaw;
@@ -685,7 +714,6 @@ var Cockpit = (function ($, Data, Log, Network) {
         writeToDiv('#throttle_setpoint_display', throttle_setpoint);
         writeToDiv('#altitude_setpoint_display', altitude_setpoint);
         writeToDiv('#yaw_display', yaw);
-        writeToDiv('#speed_setpoint_display', speed_setpoint);
         writeToDiv('#pitch_rate', parseFloat(pitch_rate).toFixed(7));
         writeToDiv('#roll_rate', parseFloat(roll_rate).toFixed(7));
         writeToDiv('#yaw_rate', parseFloat(yaw_rate).toFixed(7));

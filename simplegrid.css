@@ -36,8 +36,8 @@ body {
 }
 
 .grid-pad {
-	padding-top: 20px;
-	padding-left: 20px; /* grid-space to left */
+	padding-top: 10px;
+	padding-left: 10px; /* grid-space to left */
 	padding-right: 0px; /* grid-space to right: (grid-space-left - column-space) e.g. 20px-20px=0 */
 }
 

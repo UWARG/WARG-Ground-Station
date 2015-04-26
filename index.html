@@ -242,16 +242,16 @@
                     <br/>
 
                     <div class="col-2-2">
-                        <div id="speed_setpoint_display" class="display"></div>
+                        <div id="throttle_setpoint_display" class="display"></div>
 
                     </div>
                     <div class="col-2-2">
-                        <input type="number" id="speed_setpoint_input" class="input" value="0">
+                        <input type="number" id="throttle_setpoint_input" class="input" value="0">
 
                     </div>
                     <div class="col-2-2">
-                        <div class="button" id="send_speed">
-                            Send Speed
+                        <div class="button" id="send_throttle">
+                            Send Throttle
                         </div>
                     </div>
 
@@ -287,33 +287,30 @@
                         <input type="number" id="kpInput" class="input" value="0">
                         <input type="number" id="kiInput" class="input" value="0">
                     </div>
-                    <div class="button" id="sendGains">
-                        Send Gains
+                    <div class="button" id="send_kd">
+                        Send KD Gain
                     </div>
-
+                    <div class="button" id="send_kp">
+                        Send KP Gain
+                    </div>
+                    <div class="button" id="send_ki">
+                        Send KI Gain
+                    </div>
                 </div>
                 <div class="col-2-2">
                     <div id="setpoints">
-                        <h3 align="center"> Setpoints and Rates </h3>
+                        <h3 align="center"> Rates and Yaw </h3>
                         <div>
-                            <div class="display">Throttle</div>
                             <div class="display">Yaw</div>
                             <div class="display">Pitch Rate</div>
                             <div class="display">Roll Rate</div>
                             <div class="display">Yaw Rate</div>
                         </div>
                         <div>
-                            <div id="throttle_setpoint_display" class="display"></div>
                             <div id="yaw_display" class="display"></div>
                             <div id="pitch_rate" class="display"></div>
                             <div id="roll_rate" class="display"></div>
                             <div id="yaw_rate" class="display"></div>
-                        </div>
-                        <div>
-                            <input type="number" id="throttle_setpoint_input" class="input" value="0">
-                        </div>
-                        <div class="button" id="send_throttle">
-                            Send Throttle
                         </div>
                     </div>
 
