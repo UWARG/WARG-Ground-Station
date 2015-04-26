@@ -2,6 +2,8 @@ var Data = {
 	headers: [],	// Title of each column of data received
 	state: {},		// Current flight state
 	history: [],	// All past flight states (increasing index means more recent)
+	compIDs: [],	// A list of computer IDs
+	targets: [],	// All received targets ({lat: float, lon: float, type: enum(1..5), comp: enum(0..2)})
 };
 
 /*
