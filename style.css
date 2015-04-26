@@ -206,15 +206,15 @@ body {
     text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000;
 }
 
-.target-icon.target-compid-1 {
+.target-icon.target-compid-0 {
     color: #f9f;
 }
 
-.target-icon.target-compid-2 {
+.target-icon.target-compid-1 {
     color: #ff0;
 }
 
-.target-icon.target-compid-3 {
+.target-icon.target-compid-2 {
     color: #0ff;
 }
 
@@ -224,15 +224,15 @@ body {
     font-size: 13px;
 }
 
-#target-tooltip.target-compid-1 {
+#target-tooltip.target-compid-0 {
     background-color: #f9f;
 }
 
-#target-tooltip.target-compid-2 {
+#target-tooltip.target-compid-1 {
     background-color: #ff0;
 }
 
-#target-tooltip.target-compid-3 {
+#target-tooltip.target-compid-2 {
     background-color: #0ff;
 }
 
