@@ -80,7 +80,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
 
             // Clear current waypoints on plane
             var command = "clear_waypoints:0\r\n";
-            Network.write(command);
+            Network.dataRelay.write(command);
             
             // Upload new waypoints; or if no new waypoints, order to go home
             var remoteLatLngs = remotePath.getLatLngs();
@@ -88,14 +88,14 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
                 for (i = 0, l = remoteLatLngs.length; i < l; i++) {
                     var latLng = remoteLatLngs[i];
                     command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
-                    Network.write(command);
+                    Network.dataRelay.write(command);
                 }
 
             } else {
                 // Probably uploading just after clearing waypoints; go home then.
                 // TODO Or even just do nothing -- clearing waypoints makes plane automatically go home
                 command = "return_home:0\r\n";
-                Network.write(command);
+                Network.dataRelay.write(command);
                 Log.debug("Path Returning home, nothing sent, probably because operator cleared waypoints before pressing send");
             }
 
@@ -112,7 +112,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
 
         $('#goHome').on('click', function () {
             var command = "return_home:0\r\n";
-            Network.write(command);
+            Network.dataRelay.write(command);
             Log.debug("Path Operator sent Go home");
         });
     });
@@ -135,7 +135,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     var planeToNextRemote;  // Line connecting current plane position to next waypoint on plane
     var historyPolyline;
 
-    Network.on('data', redrawMap);
+    Network.dataRelay.on('data', redrawMap);
 
     function redrawMap() {
 
