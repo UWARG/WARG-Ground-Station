@@ -13,10 +13,10 @@
 		this.options.ymin = options.ymin || 0;
 
 		this.padding = {
-			 "top":    this.options.title  ? 40 : 20,
-			 "right":                 30,
-			 "bottom": this.options.xlabel ? 50 : 10,
-			 "left":   this.options.ylabel ? 60 : 45
+			 "top":    15,
+			 "right":  15,
+			 "bottom": 15,
+			 "left":   25,
 		};
 
 		this.size = {
@@ -83,36 +83,6 @@
 						.attr("class", "line")
 						.attr("d", this.line(this.points));
 
-		// add Chart Title
-		if (this.options.title) {
-			this.vis.append("text")
-					.attr("class", "axis")
-					.text(this.options.title)
-					.attr("x", this.size.width/2)
-					.attr("dy","-0.8em")
-					.style("text-anchor","middle");
-		}
-
-		// Add the x-axis label
-		if (this.options.xlabel) {
-			this.vis.append("text")
-					.attr("class", "axis")
-					.text(this.options.xlabel)
-					.attr("x", this.size.width/2)
-					.attr("y", this.size.height)
-					.attr("dy","2.4em")
-					.style("text-anchor","middle");
-		}
-
-		// add y-axis label
-		if (this.options.ylabel) {
-			this.vis.append("g").append("text")
-					.attr("class", "axis")
-					.text(this.options.ylabel)
-					.style("text-anchor","middle")
-					.attr("transform","translate(" + -40 + " " + this.size.height/2+") rotate(-90)");
-		}
-
 		d3.select(this.chart)
 				.on("mousemove.drag", self.mousemove())
 				.on("touchmove.drag", self.mousemove())
@@ -154,29 +124,21 @@
 		var lines = this.vis.select("path").attr("d", this.line(this.points));
 					
 		var circle = this.vis.select("svg").selectAll("circle")
-				.data(this.points, function(d) { return d; });
+				.data(this.points);
 
 		circle.enter().append("circle")
-				.attr("class", function(d) { return d === self.selected ? "selected" : null; })
 				.attr("cx",    function(d) { return self.x(d.x); })
 				.attr("cy",    function(d) { return self.y(d.y); })
-				.attr("r", 10.0)
-				.style("cursor", "ns-resize")
+				.attr("r", 8.0)
 				.on("mousedown.drag",  self.datapoint_drag())
 				.on("touchstart.drag", self.datapoint_drag());
 
 		circle
-				.attr("class", function(d) { return d === self.selected ? "selected" : null; })
-				.attr("cx",    function(d) { 
-					return self.x(d.x); })
+				.attr("cx",    function(d) { return self.x(d.x); })
 				.attr("cy",    function(d) { return self.y(d.y); });
 
 		circle.exit().remove();
 
-		if (d3.event && d3.event.keyCode) {
-			d3.event.preventDefault();
-			d3.event.stopPropagation();
-		}
 	}
 
 	SimpleGraph.prototype.datapoint_drag = function() {
@@ -258,23 +220,6 @@
 		}
 	}
 
-	SimpleGraph.prototype.keydown = function() {
-		var self = this;
-		return function() {
-			if (!self.selected) return;
-			switch (d3.event.keyCode) {
-				case 8: // backspace
-				case 46: { // delete
-					var i = self.points.indexOf(self.selected);
-					self.points.splice(i, 1);
-					self.selected = self.points.length ? self.points[i > 0 ? i - 1 : 0] : null;
-					self.update();
-					break;
-				}
-			}
-		}
-	};
-
 	SimpleGraph.prototype.redraw = function() {
 		var self = this;
 		return function() {
@@ -290,7 +235,7 @@
 			fx = self.x.tickFormat(10),
 			fy = self.y.tickFormat(10);
 
-			// Regenerate x-ticksâ€¦
+			// Regenerate x-ticks
 			var gx = self.vis.selectAll("g.x")
 					.data(self.x.ticks(10), String)
 					.attr("transform", tx);
@@ -321,7 +266,7 @@
 
 			gx.exit().remove();
 
-			// Regenerate y-ticksâ€¦
+			// Regenerate y-ticks
 			var gy = self.vis.selectAll("g.y")
 					.data(self.y.ticks(10), String)
 					.attr("transform", ty);
