@@ -120,7 +120,7 @@ body {
     margin: 0;
 }
 
-#height-graph {
+#height-graph-div {
     position: absolute;
     width: 100%;
     height: 200px;
@@ -240,3 +240,31 @@ body {
     display: block;
     margin-top: -7px;
 }
+
+
+
+
+/*rect { fill: #fff; }*/
+.axis { font-size: 1.5em; }
+.chart {
+    background-color: #F7F2C5;
+    width: 960px;
+    height: 500px;
+}
+circle, .line {
+fill: none;
+stroke: steelblue;
+stroke-width: 2px; }
+circle {
+fill: white;
+fill-opacity: 0.2;
+cursor: move; }
+circle.selected {
+  fill: #ff7f0e;
+  stroke: #ff7f0e; }
+circle:hover {
+  fill: #ff7f0e;
+  stroke: #707f0e; }
+circle.selected:hover {
+  fill: #ff7f0e;
+  stroke: #ff7f0e; }

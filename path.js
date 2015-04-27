@@ -1,4 +1,4 @@
-var Path = (function ($, Data, Log, Network, Mousetrap) {
+var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     // Camera FOV: horz 94.38, vert 78.3
 
     var exports = {};
@@ -12,7 +12,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
 
     // Interactive objects here
     var map;
-    var graph;
     
     // Initialize map if necessary
     // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
@@ -415,4 +414,4 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     // Export what needs to be
     return exports;
 
-})($, Data, Log, Network, Mousetrap);
+})($, Data, Log, Network, Mousetrap, HeightGraph);
