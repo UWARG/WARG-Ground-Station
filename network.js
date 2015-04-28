@@ -17,8 +17,8 @@ var Network = (function (Data, Log) {
         this.emitter = new events.EventEmitter();
 
         this.write = function (data) {};    // To be defined
-        this.emitter.write = function () {
-            this.write.apply(this.arguments);
+        this.emitter.write = function (data) {
+            self.write(data);
         };
     };
 
@@ -149,7 +149,7 @@ var Network = (function (Data, Log) {
 
     $(function () {
         dataRelay.connect();
-        multiEcho.connect();
+        // multiEcho.connect();
     });
 
     // Export all relevant event emitters
