@@ -1,4 +1,4 @@
-var Path = (function ($, Data, Log, Network, Mousetrap) {
+var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     // Camera FOV: horz 94.38, vert 78.3
 
     var exports = {};
@@ -12,7 +12,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
 
     // Interactive objects here
     var map;
-    var graph;
     
     // Initialize map if necessary
     // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
@@ -149,6 +148,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
 
         var lat = parseFloat(Data.state.lat);
         var lon = parseFloat(Data.state.lon);
+        var alt = parseFloat(Data.state.altitude);
 
         // Check for GPS fix, assuming we'll never fly off the coast of West Africa
         // (No GPS fix if coordinates close to (0; 0) or impossibly big)
@@ -343,6 +343,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
         // Draw points on historyPolyline
         if (gpsFix) {
             historyPolyline.addLatLng(L.latLng(lat, lon));
+            var heightGraphLatLng = L.latLng(lat, lon);
+            heightGraphLatLng.alt = alt;
+            HeightGraph.addLatLng(heightGraphLatLng);
         }
     }
 
@@ -415,4 +418,4 @@ var Path = (function ($, Data, Log, Network, Mousetrap) {
     // Export what needs to be
     return exports;
 
-})($, Data, Log, Network, Mousetrap);
+})($, Data, Log, Network, Mousetrap, HeightGraph);
