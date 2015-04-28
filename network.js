@@ -53,6 +53,7 @@ var Network = (function (Data, Log, Mousetrap) {
 
     dataRelay.socket.on('data', function (data) {
         data = data.toString();
+        Data.received.push((new Date).toString() + ' ' + data);
 
         // First transmission is header columns
         if (Data.headers.length === 0) {
@@ -94,6 +95,7 @@ var Network = (function (Data, Log, Mousetrap) {
 
     dataRelay.write = function (data) {
         dataRelay.socket.write(data);
+        Data.sent.push((new Date).toString() + ' ' + data);
         Log.info("Network (dataRelay) Sent: " + data);
     };
 
