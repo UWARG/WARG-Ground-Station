@@ -1,4 +1,4 @@
-var Network = (function (Data, Log) {
+var Network = (function (Data, Log, Mousetrap) {
 
     var net = require('net');
     var events = require('events');
@@ -19,6 +19,15 @@ var Network = (function (Data, Log) {
         this.write = function (data) {};    // To be defined
         this.emitter.write = function (data) {
             self.write(data);
+        };
+        this.emitter.socket = this.socket;
+        this.emitter.configure = function (host, port) {
+            if (!host || !port) {
+                console.error(self.name, "network configure error: empty host", host, "or empty port", port);
+                return;
+            }
+            self.host = host;
+            self.port = port;
         };
     };
 
@@ -47,9 +56,11 @@ var Network = (function (Data, Log) {
 
         // First transmission is header columns
         if (Data.headers.length === 0) {
+            Log.debug('Network (dataRelay) Received headers: ' + data);
             Data.headers = data.split(",").map(function (str) {
                 return str.trim();
             });
+            Log.debug('Network (dataRelay) Parsed headers: ' + JSON.stringify(Data.headers));
             return;
         }
 
@@ -72,13 +83,13 @@ var Network = (function (Data, Log) {
 
     dataRelay.socket.on('close', function (had_error) {
         if (had_error) {
-            Log.error('Network (dataRelay) Closed: Retrying connection');
+            Log.error('Network (dataRelay) Closed: Not reconnecting');
         } else {
-            Log.info('Network (dataRelay) Closed: Retrying connection');
+            Log.info('Network (dataRelay) Closed: Not reconnecting');
         }
 
         Data.headers = [];
-        setTimeout(dataRelay.connect, Math.random() * 1000 + 1000);
+        // setTimeout(dataRelay.connect, Math.random() * 1000 + 1000);
     });
 
     dataRelay.write = function (data) {
@@ -152,10 +163,37 @@ var Network = (function (Data, Log) {
         multiEcho.connect();
     });
 
+    Mousetrap.bind(["mod+l"], function () {
+        var connectionId;
+        while (connectionId != "d" && connectionId != "m") {
+            connectionId = prompt("Connect to a server\n\nWhich connection?\n(d: dataRelay, m: multiEcho)");
+            if (connectionId === null) return;
+        }
+        var connection = {d: dataRelay, m: multiEcho}[connectionId];
+
+        var parseLocation = function (locationStr) {
+            if (!locationStr) return null;
+            var parts = locationStr.trim().split(':');
+            if (parts.length != 2) return null;
+            return {host: parts[0], port: parts[1]};
+        };
+        var location, locationStr;
+        while (!(location = parseLocation(locationStr))) {
+            locationStr = prompt("Connect to a server (" + connection.name + ")\n\nWhich locationStr?\n(host:port)", connection.host + ":" + connection.port);
+            if (locationStr === null) return;
+        };
+
+        // Reconnect
+        connection.host = location.host;
+        connection.port = location.port;
+        connection.socket.destroy();
+        connection.connect();
+    });
+
     // Export all relevant event emitters
     return {
         dataRelay: dataRelay.emitter,
         multiEcho: multiEcho.emitter,
     };
 
-})(Data, Log);
+})(Data, Log, Mousetrap);
