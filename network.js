@@ -95,14 +95,14 @@ var Network = (function (Data, Log) {
         console.log('Network (multiEcho) Connected: ' + multiEcho.host + ':' + multiEcho.port);
     });
 
-    multiEcho.socket.on('data', function (data) {console.log('multiEcho.data', data+'');
+    multiEcho.socket.on('data', function (data) {
         data = data.toString().trim();
 
         data = data.split('\n');
 
         for (var i = 0; i < data.length; ++i) {
             var parts = data[i].split(':');
-            if (parts[0] != "TA") return;
+            if (parts[0] != "TA") continue;
 
             var arr = parts[1].split(',').map(function (str){
                 return str.trim();
@@ -133,12 +133,12 @@ var Network = (function (Data, Log) {
 
     multiEcho.socket.on('close', function (had_error) {
         if (had_error) {
-            Log.error('Network (multiEcho) Closed: Retrying connection');
+            Log.error('Network (multiEcho) Closed: Not reconnecting');
         } else {
-            Log.info('Network (multiEcho) Closed: Retrying connection');
+            Log.info('Network (multiEcho) Closed: Not reconnecting');
         }
 
-        setTimeout(multiEcho.connect, Math.random() * 1000 + 1000);
+        // setTimeout(multiEcho.connect, Math.random() * 1000 + 1000);
     });
 
     multiEcho.write = function (data) {
@@ -149,7 +149,7 @@ var Network = (function (Data, Log) {
 
     $(function () {
         dataRelay.connect();
-        // multiEcho.connect();
+        multiEcho.connect();
     });
 
     // Export all relevant event emitters
