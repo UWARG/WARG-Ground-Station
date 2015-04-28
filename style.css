@@ -120,17 +120,6 @@ body {
     margin: 0;
 }
 
-#height-graph-div {
-    position: absolute;
-    width: 100%;
-    height: 200px;
-    bottom: 0;
-    background-color: #ffffff;
-    padding: 0;
-    margin: 0;
-    overflow-y: hidden;
-}
-
 #footer {
     height: 100px;
 }
@@ -244,11 +233,21 @@ body {
 
 
 
+#height-graph-div {
+    position: absolute;
+    width: 100%;
+    height: 200px;
+    bottom: 0;
+    padding: 0;
+    margin: 0;
+    background-color: #cfd8dc;
+    overflow-y: hidden;
+}
 .axis {
     font-size: 0.8em;
 }
 .chart {
-    background-color: #F7F2C5;
+    background-color: #f7f2c5;
 }
 circle, .line {
     fill: none;

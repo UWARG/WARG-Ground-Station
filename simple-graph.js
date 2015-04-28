@@ -91,6 +91,12 @@
 
 		this.redraw()();
 	};
+
+	SimpleGraph.prototype.setPoints = function(points) {
+		this.points = points;
+		this.update();
+		this.redraw()();
+	};
 		
 	//
 	// SimpleGraph methods
@@ -122,34 +128,7 @@
 	SimpleGraph.prototype.update = function() {
 		var self = this;
 		var lines = this.vis.select("path").attr("d", this.line(this.points));
-					
-		var circle = this.vis.select("svg").selectAll("circle")
-				.data(this.points);
-
-		circle.enter().append("circle")
-				.attr("cx",    function(d) { return self.x(d.x); })
-				.attr("cy",    function(d) { return self.y(d.y); })
-				.attr("r", 8.0)
-				.on("mousedown.drag",  self.datapoint_drag())
-				.on("touchstart.drag", self.datapoint_drag());
-
-		circle
-				.attr("cx",    function(d) { return self.x(d.x); })
-				.attr("cy",    function(d) { return self.y(d.y); });
-
-		circle.exit().remove();
-
 	}
-
-	SimpleGraph.prototype.datapoint_drag = function() {
-		var self = this;
-		return function(d) {
-			document.onselectstart = function() { return false; };
-			self.selected = self.dragged = d;
-			self.update();
-			
-		}
-	};
 
 	SimpleGraph.prototype.mousemove = function() {
 		var self = this;
@@ -234,6 +213,8 @@
 			},
 			fx = self.x.tickFormat(10),
 			fy = self.y.tickFormat(10);
+			self.cx = self.chart.clientWidth;
+			self.cy = self.chart.clientHeight;
 
 			// Regenerate x-ticks
 			var gx = self.vis.selectAll("g.x")

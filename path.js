@@ -148,6 +148,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
         var lat = parseFloat(Data.state.lat);
         var lon = parseFloat(Data.state.lon);
+        var alt = parseFloat(Data.state.altitude);
 
         // Check for GPS fix, assuming we'll never fly off the coast of West Africa
         // (No GPS fix if coordinates close to (0; 0) or impossibly big)
@@ -342,6 +343,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Draw points on historyPolyline
         if (gpsFix) {
             historyPolyline.addLatLng(L.latLng(lat, lon));
+            var heightGraphLatLng = L.latLng(lat, lon);
+            heightGraphLatLng.alt = alt;
+            HeightGraph.addLatLng(heightGraphLatLng);
         }
     }
 
