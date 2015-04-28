@@ -296,7 +296,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         if (gpsFix) {
             planeMarker.setIcon(planeIcon);
             planeMarker.setLatLng(new L.LatLng(lat, lon));
-            planeMarker.options.angle = yaw*1 + 180;    // FIXME Make this more consistent across all files
+            planeMarker.options.angle = heading*1;    // FIXME Make this more consistent across all files
             planeMarker.update();
         } else {
             planeMarker.setIcon(planeHollowIcon);
