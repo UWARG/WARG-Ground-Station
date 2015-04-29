@@ -13,6 +13,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
     // Interactive objects here
     var map;
+    var clearHistoryPopup;
     
     // Initialize map if necessary
     // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
@@ -25,6 +26,18 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
                 maxZoom: 19
             }).addTo(map);
+        }
+    });
+
+    // Initialize clear-history popup if necessary
+    $(document).ready(function () {
+        if (!clearHistoryPopup) {
+            var button = $('<div class="button" id="clearHistory">Clear plane trail</div>');
+            button.on('click', function () {
+                map.closePopup(clearHistoryPopup);
+                historyPolyline.setLatLngs([]);
+            });
+            clearHistoryPopup = L.popup().setContent(button[0]);
         }
     });
 
@@ -319,8 +332,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Init historyPolyline if necessary
         if (!historyPolyline) {
             historyPolyline = new L.Polyline([], {
-                color: '#190019', opacity: 0.6, weight: 4, clickable: false,
+                color: '#190019', opacity: 0.6, weight: 5, clickable: true,
             }).addTo(map);
+            historyPolyline.bindPopup(clearHistoryPopup);
         }
 
         // Add remotePath to top-most z-index of map
