@@ -109,14 +109,28 @@ body {
     position: absolute;
     top: 0;
     width: 100%;
-    height: 40px;
+    height: 50px;
+}
+
+.display-connections {
+    color: #B89393;
+    font-size: 90%;
+}
+
+.display-connections.connected {
+    color: #19FF19;
+}
+
+#display-altitudes, #display-radii {
+    color: #fff;
 }
 
 #map {
     position: absolute;
     width: 100%;
-    bottom: 200px;
-    top: 40px;
+    /*bottom: 200px;*/
+    bottom: 0;
+    top: 50px;
     margin: 0;
 }
 
@@ -242,6 +256,8 @@ body {
     margin: 0;
     background-color: #cfd8dc;
     overflow-y: hidden;
+    
+    visibility: hidden;
 }
 .axis {
     font-size: 0.8em;

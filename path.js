@@ -8,10 +8,12 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
-    var WAYPOINT_LEGACY_RADIUS = 2;     // The turning radius around each waypoint
+    var waypoint_default_alt = 30;  // Default altitude for all waypoints
+    var waypoint_radius = 2;     // The turning radius around each waypoint
 
     // Interactive objects here
     var map;
+    var clearHistoryPopup;
     
     // Initialize map if necessary
     // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
@@ -25,6 +27,24 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 maxZoom: 19
             }).addTo(map);
         }
+    });
+
+    // Initialize clear-history popup if necessary
+    $(document).ready(function () {
+        if (!clearHistoryPopup) {
+            var button = $('<div class="button" id="clearHistory">Clear plane trail</div>');
+            button.on('click', function () {
+                map.closePopup(clearHistoryPopup);
+                historyPolyline.setLatLngs([]);
+            });
+            clearHistoryPopup = L.popup().setContent(button[0]);
+        }
+    });
+
+    // Set initial values of altitude & radii displays
+    $(document).ready(function () {
+        $('#display-altitudes').text(waypoint_default_alt);
+        $('#display-radii').text(waypoint_radius);
     });
 
     // Handle button clicks
@@ -88,7 +108,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             if (remoteLatLngs.length) {
                 for (i = 0, l = remoteLatLngs.length; i < l; i++) {
                     var latLng = remoteLatLngs[i];
-                    command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
+                    command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + waypoint_radius + "\r\n";
                     Network.dataRelay.write(command);
                 }
 
@@ -123,11 +143,49 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Press f8 to mark location as interesting in the logfile
         Log.debug('Path F8 pressed - This location is flagged as interesting');
     });
-    Mousetrap.bind(["mod+m"], function () {
+    Mousetrap.bind(["mod+t"], function () {
         $(document.body).toggleClass('target-acquisition');
         if (map) {
             map.invalidateSize(false);
         }
+    });
+    var localPath;
+    Mousetrap.bind(["alt+a"], function (e) {
+        var value;
+        while (!value) {
+            value = prompt("Set all waypoint altitudes to how many meters?", waypoint_default_alt);
+            if (value === null) return;
+            value = parseFloat(value);
+        }
+
+        waypoint_default_alt = value;
+        $('#display-altitudes').text(waypoint_default_alt);
+        if (localPath) {
+            localPath.setAllAltitudes(value);
+            localPath.options.defaultAlt = value;
+        }
+        Log.info("Path Set all waypoint altitudes to " + value);
+    });
+    Mousetrap.bind(["alt+r"], function () {
+        var value;
+        while (!value) {
+            value = prompt("Set all waypoint radii to how many meters?", waypoint_radius);
+            if (value === null) return;
+            value = parseFloat(value);
+        }
+
+        waypoint_radius = value;
+        $('#display-radii').text(waypoint_radius);
+        if (localPath) {
+            localPath.setMinSpacing(value * 2);
+            var actualMinSpacing = localPath.getActualMinSpacing();
+            if (actualMinSpacing < value * 2) {
+                console.log(actualMinSpacing, value * 2);
+                var recommended = Math.floor(actualMinSpacing / 2);
+                alert("Some waypoints are closer than that.\nRecommend radius of at most " + recommended + " m.");
+            }
+        }
+        Log.info("Path Set all waypoint radii to " + value + (recommended ? " (" + recommended + " recommended)" : ""));
     });
 
     var planeIcon;
@@ -206,6 +264,8 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
                 present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
                 past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                defaultAlt: waypoint_default_alt,
+                minSpacing: waypoint_radius * 2,
             }).addTo(map);
             localPath.setNextIndex(0);
             exports.localPath = localPath;
@@ -282,8 +342,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Init historyPolyline if necessary
         if (!historyPolyline) {
             historyPolyline = new L.Polyline([], {
-                color: '#190019', opacity: 0.6, weight: 4, clickable: false,
+                color: '#190019', opacity: 0.6, weight: 5, clickable: true,
             }).addTo(map);
+            historyPolyline.bindPopup(clearHistoryPopup);
         }
 
         // Add remotePath to top-most z-index of map
@@ -296,7 +357,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         if (gpsFix) {
             planeMarker.setIcon(planeIcon);
             planeMarker.setLatLng(new L.LatLng(lat, lon));
-            planeMarker.options.angle = yaw*1 + 180;    // FIXME Make this more consistent across all files
+            planeMarker.options.angle = heading*1;    // FIXME Make this more consistent across all files
             planeMarker.update();
         } else {
             planeMarker.setIcon(planeHollowIcon);
@@ -343,9 +404,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Draw points on historyPolyline
         if (gpsFix) {
             historyPolyline.addLatLng(L.latLng(lat, lon));
-            var heightGraphLatLng = L.latLng(lat, lon);
-            heightGraphLatLng.alt = alt;
-            HeightGraph.addLatLng(heightGraphLatLng);
+            // var heightGraphLatLng = L.latLng(lat, lon);
+            // heightGraphLatLng.alt = alt;
+            // HeightGraph.addLatLng(heightGraphLatLng);
         }
     }
 
