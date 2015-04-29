@@ -112,6 +112,15 @@ body {
     height: 50px;
 }
 
+.display-connections {
+    color: #B89393;
+    font-size: 90%;
+}
+
+.display-connections.connected {
+    color: #19FF19;
+}
+
 #display-altitudes, #display-radii {
     color: #fff;
 }

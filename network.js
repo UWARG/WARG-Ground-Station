@@ -1,4 +1,4 @@
-var Network = (function (Data, Log, Mousetrap) {
+var Network = (function (Data, Log, $, Mousetrap) {
 
     var net = require('net');
     var events = require('events');
@@ -49,6 +49,7 @@ var Network = (function (Data, Log, Mousetrap) {
     dataRelay.socket.on('connect', function () {
         Log.info('Network (dataRelay) Connected: ' + dataRelay.host + ':' + dataRelay.port);
         dataRelay.write("commander\r\n");
+        $('#display-connections-dataRelay').addClass('connected');
     });
 
     dataRelay.socket.on('data', function (data) {
@@ -90,7 +91,7 @@ var Network = (function (Data, Log, Mousetrap) {
         }
 
         Data.headers = [];
-        // setTimeout(dataRelay.connect, Math.random() * 1000 + 1000);
+        $('#display-connections-dataRelay').removeClass('connected');
     });
 
     dataRelay.write = function (data) {
@@ -106,6 +107,7 @@ var Network = (function (Data, Log, Mousetrap) {
     multiEcho.socket.on('connect', function () {
         Log.info('Network (multiEcho) Connected: ' + multiEcho.host + ':' + multiEcho.port);
         console.log('Network (multiEcho) Connected: ' + multiEcho.host + ':' + multiEcho.port);
+        $('#display-connections-multiEcho').addClass('connected');
     });
 
     multiEcho.socket.on('data', function (data) {
@@ -151,7 +153,7 @@ var Network = (function (Data, Log, Mousetrap) {
             Log.info('Network (multiEcho) Closed: Not reconnecting');
         }
 
-        // setTimeout(multiEcho.connect, Math.random() * 1000 + 1000);
+        $('#display-connections-multiEcho').removeClass('connected');
     });
 
     multiEcho.write = function (data) {
@@ -198,4 +200,4 @@ var Network = (function (Data, Log, Mousetrap) {
         multiEcho: multiEcho.emitter,
     };
 
-})(Data, Log, Mousetrap);
+})(Data, Log, $, Mousetrap);
