@@ -34,6 +34,7 @@ L.Polyline.plotter = L.Class.extend({
         present: {color: '#900', weight: 2, opacity: 0.5},
         past: {color: '#000', weight: 2, opacity: 0.5},
         defaultAlt: 30,
+        minSpacing: 0,
         readOnly: false,
     },
     initialize: function (latlngs, options){
@@ -82,6 +83,9 @@ L.Polyline.plotter = L.Class.extend({
         this._redrawMarkers();
         this._redrawLines();
         this._fireChangeEvent();
+    },
+    setMinSpacing: function (minSpacing) {
+        this.options.minSpacing = minSpacing;
     },
     getNextIndex: function(){
         return this._nextIndex;
@@ -260,8 +264,20 @@ L.Polyline.plotter = L.Class.extend({
         this._fireDragEvent();
     },
     _onGhostDragEnd: function(e){
+        this._bindPathHover();
+
+        // If ghost drag finished violating min spacing, delete it
+        var i = this._indexOfDraggedPoint;
+        var neighbors = [];
+        if (this._latLngs[i + this._nextIndex - 1]) neighbors.push(this._latLngs[i + this._nextIndex - 1]);
+        if (this._latLngs[i + this._nextIndex + 1]) neighbors.push(this._latLngs[i + this._nextIndex + 1]);
+        if (!this._checkMinSpacing(this._latLngs[i + this._nextIndex], neighbors)) {
+            this._latLngs.splice(i + this._nextIndex, 1);
+            this._redrawMarkers();
+            this._redrawLines();
+        }
+
     	this._indexOfDraggedPoint = -1;
-    	this._bindPathHover();
     	this._fireChangeEvent();
     },
     _fireChangeEvent: function(){
@@ -313,6 +329,17 @@ L.Polyline.plotter = L.Class.extend({
         if (index == -1) return;    // Only allow dragging future markers
         
         var latLng = e.target.getLatLng();
+
+        // Abort drag if min spacing being violated
+        var neighbors = [];
+        if (this._latLngs[index + this._nextIndex - 1]) neighbors.push(this._latLngs[index + this._nextIndex - 1]);
+        if (this._latLngs[index + this._nextIndex + 1]) neighbors.push(this._latLngs[index + this._nextIndex + 1]);
+        if (!this._checkMinSpacing(latLng, neighbors)) {
+            this._redrawMarkers();
+            this._redrawLines();
+            return;
+        }
+
         // Assigning properties separately, because altitude is missing from e.target.getLatLng()
         this._latLngs[index + this._nextIndex].lat = latLng.lat;
         this._latLngs[index + this._nextIndex].lng = latLng.lng;
@@ -320,8 +347,21 @@ L.Polyline.plotter = L.Class.extend({
         this._redrawLines();
         this._fireDragEvent();
     },
+    _checkMinSpacing: function(inputLatLng, latLngList) {   // true means all good
+        var self = this;
+        if (this.options.minSpacing <= 0) return true;
+        return !latLngList.some(function (latLng) {
+            return inputLatLng.distanceTo(latLng) < self.options.minSpacing;
+        });
+    },
     _onMapRightClick: function(e){
         e.latlng.alt = (this._latLngs.length >= 1) ? this._latLngs[this._latLngs.length-1].alt : this.options.defaultAlt;
+
+        // Check min spacing
+        if (!this._checkMinSpacing(e.latlng, this._latLngs.slice(-1))) {
+            return;
+        }
+
         this._latLngs.push(e.latlng);
         this._redrawMarkers();
         this._redrawLines();

@@ -176,6 +176,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
         waypoint_radius = value;
         $('#display-radii').text(waypoint_radius);
+        if (localPath) {
+            localPath.setMinSpacing(value * 2);
+        }
         Log.info("Path Set all waypoint radii to " + value);
     });
 
@@ -256,6 +259,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
                 past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
                 defaultAlt: waypoint_default_alt,
+                minSpacing: waypoint_radius * 2,
             }).addTo(map);
             localPath.setNextIndex(0);
             exports.localPath = localPath;
