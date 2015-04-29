@@ -87,6 +87,14 @@ L.Polyline.plotter = L.Class.extend({
     setMinSpacing: function (minSpacing) {
         this.options.minSpacing = minSpacing;
     },
+    getActualMinSpacing: function () {
+        var self = this;
+        return this._latLngs.slice(0, this._latLngs.length - 1).map(function (latLng, index) {
+            return latLng.distanceTo(self._latLngs[index + 1]);
+        }).reduce(function (prev, curr) {
+            return Math.min(prev, curr);
+        }, Infinity);
+    },
     getNextIndex: function(){
         return this._nextIndex;
     },

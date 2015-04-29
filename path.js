@@ -178,8 +178,14 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         $('#display-radii').text(waypoint_radius);
         if (localPath) {
             localPath.setMinSpacing(value * 2);
+            var actualMinSpacing = localPath.getActualMinSpacing();
+            if (actualMinSpacing < value * 2) {
+                console.log(actualMinSpacing, value * 2);
+                var recommended = Math.floor(actualMinSpacing / 2);
+                alert("Some waypoints are closer than that.\nRecommend radius of at most " + recommended + " m.");
+            }
         }
-        Log.info("Path Set all waypoint radii to " + value);
+        Log.info("Path Set all waypoint radii to " + value + (recommended ? " (" + recommended + " recommended)" : ""));
     });
 
     var planeIcon;
