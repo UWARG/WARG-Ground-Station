@@ -1,8 +1,8 @@
 {
-    "name": "WARG-Ground-Station-V2",
+    "name": "WARG-Ground-Station-V2t",
     "version": "1.0.0",
     "description": "",
-    "main": "index.html",
+    "main": "../index.html",
     "window": {
         "toolbar": false,
         "width": 1300,
