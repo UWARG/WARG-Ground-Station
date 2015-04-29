@@ -8,7 +8,8 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
-    var WAYPOINT_LEGACY_RADIUS = 2;     // The turning radius around each waypoint
+    var waypoint_default_alt = 30;  // Default altitude for all waypoints
+    var waypoint_radius = 2;     // The turning radius around each waypoint
 
     // Interactive objects here
     var map;
@@ -25,6 +26,12 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 maxZoom: 19
             }).addTo(map);
         }
+    });
+
+    // Set initial values of altitude & radii displays
+    $(document).ready(function () {
+        $('#display-altitudes').text(waypoint_default_alt);
+        $('#display-radii').text(waypoint_radius);
     });
 
     // Handle button clicks
@@ -88,7 +95,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             if (remoteLatLngs.length) {
                 for (i = 0, l = remoteLatLngs.length; i < l; i++) {
                     var latLng = remoteLatLngs[i];
-                    command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + WAYPOINT_LEGACY_RADIUS + "\r\n";
+                    command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + waypoint_radius + "\r\n";
                     Network.dataRelay.write(command);
                 }
 
@@ -123,11 +130,40 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Press f8 to mark location as interesting in the logfile
         Log.debug('Path F8 pressed - This location is flagged as interesting');
     });
-    Mousetrap.bind(["mod+m"], function () {
+    Mousetrap.bind(["mod+t"], function () {
         $(document.body).toggleClass('target-acquisition');
         if (map) {
             map.invalidateSize(false);
         }
+    });
+    var localPath;
+    Mousetrap.bind(["alt+a"], function (e) {
+        var value;
+        while (!value) {
+            value = prompt("Set all waypoint altitudes to how many meters?", waypoint_default_alt);
+            if (value === null) return;
+            value = parseFloat(value);
+        }
+
+        waypoint_default_alt = value;
+        $('#display-altitudes').text(waypoint_default_alt);
+        if (localPath) {
+            localPath.setAllAltitudes(value);
+            localPath.options.defaultAlt = value;
+        }
+        Log.info("Path Set all waypoint altitudes to " + value);
+    });
+    Mousetrap.bind(["alt+r"], function () {
+        var value;
+        while (!value) {
+            value = prompt("Set all waypoint radii to how many meters?", waypoint_radius);
+            if (value === null) return;
+            value = parseFloat(value);
+        }
+
+        waypoint_radius = value;
+        $('#display-radii').text(waypoint_radius);
+        Log.info("Path Set all waypoint radii to " + value);
     });
 
     var planeIcon;
@@ -206,6 +242,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
                 present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
                 past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                defaultAlt: waypoint_default_alt,
             }).addTo(map);
             localPath.setNextIndex(0);
             exports.localPath = localPath;
@@ -343,9 +380,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Draw points on historyPolyline
         if (gpsFix) {
             historyPolyline.addLatLng(L.latLng(lat, lon));
-            var heightGraphLatLng = L.latLng(lat, lon);
-            heightGraphLatLng.alt = alt;
-            HeightGraph.addLatLng(heightGraphLatLng);
+            // var heightGraphLatLng = L.latLng(lat, lon);
+            // heightGraphLatLng.alt = alt;
+            // HeightGraph.addLatLng(heightGraphLatLng);
         }
     }
 

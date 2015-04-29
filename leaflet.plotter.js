@@ -121,6 +121,14 @@ L.Polyline.plotter = L.Class.extend({
             }
         }
     },
+    setAllAltitudes: function(altitude){    // This probably shouldn't be in Plotter (not really its responsibility)
+        this._latLngs.forEach(function (latLng) {
+            latLng.alt = altitude;
+        });
+        this._redrawMarkers();
+        this._redrawLines();
+        this._fireChangeEvent();
+    },
     _bindMapClick: function(){
         this._map.on('contextmenu', this._onMapRightClick, this);
     },

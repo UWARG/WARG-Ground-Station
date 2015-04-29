@@ -48,7 +48,7 @@ var Network = (function (Data, Log, Mousetrap) {
 
     dataRelay.socket.on('connect', function () {
         Log.info('Network (dataRelay) Connected: ' + dataRelay.host + ':' + dataRelay.port);
-        this.write("commander\r\n");
+        dataRelay.write("commander\r\n");
     });
 
     dataRelay.socket.on('data', function (data) {
