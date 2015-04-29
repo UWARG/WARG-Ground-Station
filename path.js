@@ -12,7 +12,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     var waypoint_radius = 2;     // The turning radius around each waypoint
 
     // Interactive objects here
-    var map;
+    var map, localPath;
     var clearHistoryPopup;
     
     // Initialize map if necessary
@@ -26,6 +26,17 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
                 maxZoom: 19
             }).addTo(map);
+
+            // Init localPath if necessary
+            localPath = L.Polyline.Plotter(waypoints, {
+                future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
+                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                defaultAlt: waypoint_default_alt,
+                minSpacing: waypoint_radius * 2,
+            }).addTo(map);
+            localPath.setNextIndex(0);
+            exports.localPath = localPath;
         }
     });
 
@@ -149,7 +160,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             map.invalidateSize(false);
         }
     });
-    var localPath;
     Mousetrap.bind(["alt+a"], function (e) {
         var value;
         while (!value) {
@@ -256,19 +266,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             }).addTo(map);
             passedPath.setNextIndex(Number.MAX_SAFE_INTEGER);
             exports.passedPath = passedPath;
-        }
-
-        // Init localPath if necessary
-        if (!localPath) {
-            localPath = L.Polyline.Plotter(waypoints, {
-                future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
-                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
-                past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
-                defaultAlt: waypoint_default_alt,
-                minSpacing: waypoint_radius * 2,
-            }).addTo(map);
-            localPath.setNextIndex(0);
-            exports.localPath = localPath;
         }
 
         // Init remotePath if necessary
