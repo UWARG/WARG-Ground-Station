@@ -8,7 +8,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
-    var waypoint_default_alt = 30;  // Default altitude for all waypoints
+    var waypoint_default_alt = 100;  // Default altitude for all waypoints
     var waypoint_radius = 2;     // The turning radius around each waypoint
 
     // Interactive objects here
@@ -33,7 +33,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
                 past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
                 defaultAlt: waypoint_default_alt,
-                minSpacing: waypoint_radius * 2,
+                minSpacing: waypoint_radius * 4,
             }).addTo(map);
             localPath.setNextIndex(0);
             exports.localPath = localPath;
@@ -187,11 +187,11 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         waypoint_radius = value;
         $('#display-radii').text(waypoint_radius);
         if (localPath) {
-            localPath.setMinSpacing(value * 2);
+            localPath.setMinSpacing(value * 4);
             var actualMinSpacing = localPath.getActualMinSpacing();
-            if (actualMinSpacing < value * 2) {
-                console.log(actualMinSpacing, value * 2);
-                var recommended = Math.floor(actualMinSpacing / 2);
+            if (actualMinSpacing < value * 4) {
+                console.log(actualMinSpacing, value * 4);
+                var recommended = Math.floor(actualMinSpacing / 4);
                 alert("Some waypoints are closer than that.\nRecommend radius of at most " + recommended + " m.");
             }
         }
