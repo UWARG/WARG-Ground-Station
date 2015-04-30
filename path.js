@@ -85,6 +85,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 var planeLatLng = L.latLng(Data.state.lat, Data.state.lon);
                 var planeSpacing = planeLatLng.distanceTo(localPath.getNextLatLng());
                 if (planeSpacing < localPath.options.minSpacing) {
+                    alert("Plane too close to next waypoint.\nTry again in a bit.");
                     Log.error("Path Cannot send; plane too close to next waypoint (" + Math.round(planeSpacing*10)/10 + " < " + localPath.options.minSpacing + ")");
                     return;
                 }
