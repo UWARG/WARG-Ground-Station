@@ -80,6 +80,22 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
         $('#sendWaypoints').on('click', function () {
 
+            // Check plane is not within minimum spacing of next waypoint at this moment
+            if (localPath.getNextLatLng() && Data.state.lat && Data.state.lon) {
+                var planeLatLng = L.latLng(Data.state.lat, Data.state.lon);
+                var planeSpacing = planeLatLng.distanceTo(localPath.getNextLatLng());
+                if (planeSpacing < localPath.options.minSpacing) {
+                    Log.error("Path Cannot send; plane too close to next waypoint (" + Math.round(planeSpacing*10)/10 + " < " + localPath.options.minSpacing + ")");
+                    return;
+                }
+            }
+
+            // Sanity check if plane is there
+            if (!passedPath || !remotePath) {
+                Log.error("Path Cannot send; no valid data received from plane so far");
+                return;
+            }
+
             Log.debug("Path Operator is sending waypoints");
             Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
             Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
