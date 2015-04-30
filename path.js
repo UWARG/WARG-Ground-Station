@@ -2,6 +2,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     // Camera FOV: horz 94.38, vert 78.3
 
     var exports = {};
+    var fs = require('fs');
 
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
@@ -67,6 +68,46 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
     // Handle button clicks
     $(document).ready(function () {
+
+        $('#loadWaypoints').on('click', function () {
+            var f = $('<input type="file" id="pathLoadFile" accept=".path">').click();
+            f.one('change', function () {
+                if (!f[0].files[0]) return;
+                var filepath = f[0].files[0].path;
+                var filename = f[0].files[0].name;
+
+                var txt = fs.readFileSync(filepath);
+                var loadedPath = JSON.parse(txt).map(function (latLng) {
+                    var obj = L.latLng(latLng.lat, latLng.lng);
+                    obj.alt = latLng.alt;
+                    return obj;
+                });
+                console.log(loadedPath);
+
+                var newPath = localPath.getLatLngs().concat(loadedPath);
+                localPath.setLatLngs(newPath);
+                Log.info("Path Loaded " + loadedPath.length + " red waypoints from " + filename);
+            });
+        });
+
+        $('#saveWaypoints').on('click', function () {
+            var f = $('<input type="file" id="pathSaveFile" nwsaveas="awesome.path">').click();
+            f.one('change', function () {
+                if (!f[0].files[0]) return;
+                var filepath = f[0].files[0].path;
+                var filename = f[0].files[0].name;
+
+                var latLngs = localPath.getLatLngs().filter(function (latLng, index) {
+                    return index >= localPath.getNextIndex();
+                });
+
+                var txt = JSON.stringify(latLngs);
+                fs.writeFile(filepath, txt, function (err) {
+                    if (err) throw err;
+                    Log.info("Path Saved " + latLngs.length + " red waypoints in " + filename);
+                });
+            });
+        });
 
         $('#clearWaypoints').on('click', function () {
             // Clear all waypoints in localPath
