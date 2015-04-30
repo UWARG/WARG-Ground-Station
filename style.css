@@ -113,12 +113,12 @@ body {
 }
 
 .display-connections {
-    color: #B89393;
+    color: #a80000;
     font-size: 90%;
 }
 
 .display-connections.connected {
-    color: #19FF19;
+    color: #00ff00;
 }
 
 #display-altitudes, #display-radii {
