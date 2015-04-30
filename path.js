@@ -27,6 +27,13 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 maxZoom: 19
             }).addTo(map);
 
+            var centerControl = L.control.button({name: 'recenter', text: '', title: 'Center on plane', onclick: function () {
+                if (planeMarker) {
+                    map.panTo(planeMarker.getLatLng());
+                }
+            }});
+            map.addControl(centerControl);
+
             // Init localPath if necessary
             localPath = L.Polyline.Plotter(waypoints, {
                 future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
@@ -60,14 +67,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
     // Handle button clicks
     $(document).ready(function () {
-
-        $('#lockOn').on('click', function () {
-            // TODO Decouple this from plane marker & figure out somewhere to store last "sensible GPS coordinates"
-            // (to prevent bug with erroneous GPS coordinates crashing Leaflet)
-            if (planeMarker) {
-                map.panTo(planeMarker.getLatLng());
-            }
-        });
 
         $('#clearWaypoints').on('click', function () {
             // Clear all waypoints in localPath
