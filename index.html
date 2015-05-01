@@ -27,6 +27,7 @@
     <script src="leaflet.core-extensions.js"></script>
     <script src="leaflet.rotatedmarker.js"></script>
     <script src="leaflet.altitudemarker.js"></script>
+    <script src="leaflet.control.button.js"></script>
     <script src="leaflet.messagebox.js"></script>
     <script src="leaflet.plotter.js"></script>
     <script src="d3.js"></script>
@@ -328,16 +329,19 @@
 
     <div id="path">
         <div id="buttonContainer">
-            <div class="button" id="lockOn" title="Center map on the plane">
-                Recenter
+            <div class="button" id="loadWaypoints" title="Load waypoints from a file (and add them to the local path)">
+                Load
+            </div>
+            <div class="button" id="saveWaypoints" title="Save local waypoints to a file">
+                Save
             </div>
             <div class="button" id="clearWaypoints" title="Clear all local waypoints
 
 (To clear all waypoints on the plane, click &quot;Clear Waypoints&quot;, then &quot;Send Waypoints&quot;.)">
-                Clear waypoints
+                Clear
             </div>
             <div class="button button-transmits" id="sendWaypoints" title="Send all local waypoints to the plane">
-                Send waypoints
+                Send
             </div>
             <div class="button" id="goHome">
                 Go home

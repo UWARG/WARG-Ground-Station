@@ -2,17 +2,18 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     // Camera FOV: horz 94.38, vert 78.3
 
     var exports = {};
+    var fs = require('fs');
 
     // Data objects here: array of L.LatLng objects
     var waypoints = [];
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
-    var waypoint_default_alt = 30;  // Default altitude for all waypoints
+    var waypoint_default_alt = 100;  // Default altitude for all waypoints
     var waypoint_radius = 2;     // The turning radius around each waypoint
 
     // Interactive objects here
-    var map;
+    var map, localPath;
     var clearHistoryPopup;
     
     // Initialize map if necessary
@@ -26,6 +27,24 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
                 maxZoom: 19
             }).addTo(map);
+
+            var centerControl = L.control.button({name: 'recenter', text: '', title: 'Center on plane', onclick: function () {
+                if (planeMarker) {
+                    map.panTo(planeMarker.getLatLng());
+                }
+            }});
+            map.addControl(centerControl);
+
+            // Init localPath if necessary
+            localPath = L.Polyline.Plotter(waypoints, {
+                future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
+                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                defaultAlt: waypoint_default_alt,
+                minSpacing: waypoint_radius * 4,
+            }).addTo(map);
+            localPath.setNextIndex(0);
+            exports.localPath = localPath;
         }
     });
 
@@ -50,12 +69,44 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     // Handle button clicks
     $(document).ready(function () {
 
-        $('#lockOn').on('click', function () {
-            // TODO Decouple this from plane marker & figure out somewhere to store last "sensible GPS coordinates"
-            // (to prevent bug with erroneous GPS coordinates crashing Leaflet)
-            if (planeMarker) {
-                map.panTo(planeMarker.getLatLng());
-            }
+        $('#loadWaypoints').on('click', function () {
+            var f = $('<input type="file" id="pathLoadFile" accept=".path">').click();
+            f.one('change', function () {
+                if (!f[0].files[0]) return;
+                var filepath = f[0].files[0].path;
+                var filename = f[0].files[0].name;
+
+                var txt = fs.readFileSync(filepath);
+                var loadedPath = JSON.parse(txt).map(function (latLng) {
+                    var obj = L.latLng(latLng.lat, latLng.lng);
+                    obj.alt = latLng.alt;
+                    return obj;
+                });
+                console.log(loadedPath);
+
+                var newPath = localPath.getLatLngs().concat(loadedPath);
+                localPath.setLatLngs(newPath);
+                Log.info("Path Loaded " + loadedPath.length + " red waypoints from " + filename);
+            });
+        });
+
+        $('#saveWaypoints').on('click', function () {
+            var f = $('<input type="file" id="pathSaveFile" nwsaveas="awesome.path">').click();
+            f.one('change', function () {
+                if (!f[0].files[0]) return;
+                var filepath = f[0].files[0].path;
+                var filename = f[0].files[0].name;
+
+                var latLngs = localPath.getLatLngs().filter(function (latLng, index) {
+                    return index >= localPath.getNextIndex();
+                });
+
+                var txt = JSON.stringify(latLngs);
+                fs.writeFile(filepath, txt, function (err) {
+                    if (err) throw err;
+                    Log.info("Path Saved " + latLngs.length + " red waypoints in " + filename);
+                });
+            });
         });
 
         $('#clearWaypoints').on('click', function () {
@@ -68,6 +119,23 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         });
 
         $('#sendWaypoints').on('click', function () {
+
+            // Check plane is not within minimum spacing of next waypoint at this moment
+            if (localPath.getNextLatLng() && Data.state.lat && Data.state.lon) {
+                var planeLatLng = L.latLng(Data.state.lat, Data.state.lon);
+                var planeSpacing = planeLatLng.distanceTo(localPath.getNextLatLng());
+                if (planeSpacing < localPath.options.minSpacing) {
+                    alert("Plane too close to next waypoint.\nTry again in a bit.");
+                    Log.error("Path Cannot send; plane too close to next waypoint (" + Math.round(planeSpacing*10)/10 + " < " + localPath.options.minSpacing + ")");
+                    return;
+                }
+            }
+
+            // Sanity check if plane is there
+            if (!passedPath || !remotePath) {
+                Log.error("Path Cannot send; no valid data received from plane so far");
+                return;
+            }
 
             Log.debug("Path Operator is sending waypoints");
             Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
@@ -149,7 +217,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             map.invalidateSize(false);
         }
     });
-    var localPath;
     Mousetrap.bind(["alt+a"], function (e) {
         var value;
         while (!value) {
@@ -177,11 +244,11 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         waypoint_radius = value;
         $('#display-radii').text(waypoint_radius);
         if (localPath) {
-            localPath.setMinSpacing(value * 2);
+            localPath.setMinSpacing(value * 4);
             var actualMinSpacing = localPath.getActualMinSpacing();
-            if (actualMinSpacing < value * 2) {
-                console.log(actualMinSpacing, value * 2);
-                var recommended = Math.floor(actualMinSpacing / 2);
+            if (actualMinSpacing < value * 4) {
+                console.log(actualMinSpacing, value * 4);
+                var recommended = Math.floor(actualMinSpacing / 4);
                 alert("Some waypoints are closer than that.\nRecommend radius of at most " + recommended + " m.");
             }
         }
@@ -256,19 +323,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             }).addTo(map);
             passedPath.setNextIndex(Number.MAX_SAFE_INTEGER);
             exports.passedPath = passedPath;
-        }
-
-        // Init localPath if necessary
-        if (!localPath) {
-            localPath = L.Polyline.Plotter(waypoints, {
-                future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
-                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
-                past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
-                defaultAlt: waypoint_default_alt,
-                minSpacing: waypoint_radius * 2,
-            }).addTo(map);
-            localPath.setNextIndex(0);
-            exports.localPath = localPath;
         }
 
         // Init remotePath if necessary

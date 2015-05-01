@@ -423,7 +423,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         image.src = "roll.png";
         context.translate(36, 36);
         context.translate(64, 64);
-        context.rotate(roll);
+        context.rotate(-roll);
         context.drawImage(image, -64, -64);
     }
 
