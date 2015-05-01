@@ -4,7 +4,7 @@
 
 		this.id = id;
 		
-		var tooltip = $('<div>').attr('id', id).css({position: 'fixed', padding: '2px', fontSize: '13px'});
+		var tooltip = $('<div>').attr('id', id).css({position: 'fixed', padding: '2px', fontSize: '13px'}).hide();
 		this.attr = tooltip.attr;
 		this.text = tooltip.text;
 
