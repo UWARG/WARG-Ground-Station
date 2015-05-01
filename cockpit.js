@@ -265,6 +265,14 @@ var Cockpit = (function ($, Data, Log, Network) {
             Log.info("Cockpit Comment successfully written to " + fileName + ".txt");
         });
 
+        $('#lock_gopro').on('click', function () {
+            dataRelay.write("lock_goPro: 3");
+        });
+
+        $('#unlock_gopro').on('click', function () {
+            dataRelay.write("lock_goPro: 0");
+        });
+
         $("#raw_command").keyup(function (event) {
             if (event.keyCode == 13) {
                 $("#send_command").click();
@@ -366,7 +374,7 @@ var Cockpit = (function ($, Data, Log, Network) {
         image.src = "heading.png";
         context.translate(50, 50);
         context.translate(50, 50);
-        context.rotate(heading*Math.PI/180);
+        context.rotate(heading * Math.PI / 180);
         context.drawImage(image, -50, -50);
     }
 
