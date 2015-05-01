@@ -208,6 +208,11 @@ body {
     cursor: pointer;
 }
 
+#raw_command {
+    width: 230px;
+    text-align: left;
+}
+
 .messagebox-gpsfix {
     border: none;
     border-radius: 6px;
