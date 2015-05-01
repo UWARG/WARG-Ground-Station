@@ -22,8 +22,10 @@ var Cockpit = (function ($, Data, Log, Network) {
         $("#tabs").tabs();
 
         //Buttons
+        var last_raw_command = "";
         $('#send_command').on('click', function () {
             var raw_command = document.getElementById("raw_command").value;
+            last_raw_command = raw_command;
             dataRelay.write(raw_command + "\r\n");
             document.getElementById("raw_command").value = "";
         });
@@ -284,8 +286,30 @@ var Cockpit = (function ($, Data, Log, Network) {
         });
 
         $("#raw_command").keyup(function (event) {
-            if (event.keyCode == 13) {
-                $("#send_command").click();
+            switch (event.keyCode) {
+                case 13 :   // enter
+                    $("#send_command").click();
+                    break;
+            }
+        });
+
+        var raw_command_pos = 0;
+        var raw_command_cache = "";
+        $("#raw_command").keydown(function (event) {
+            switch (event.keyCode) {
+                case 38 :   // up
+                    if (raw_command_pos == 0) {
+                        raw_command_cache = $("#raw_command").val();
+                        $("#raw_command").val(last_raw_command);
+                        raw_command_pos = 1;
+                    }
+                    break;
+                case 40 :   // down
+                    if (raw_command_pos == 1) {
+                        $("#raw_command").val(raw_command_cache);
+                        raw_command_pos = 0;
+                    }
+                    break;
             }
         });
 
