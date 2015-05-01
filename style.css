@@ -188,15 +188,24 @@ body {
 }
 
 .button-transmits {
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
+    display: inline-block;
+    text-align: center;
+    padding: 0.3em;
+    margin: 0.1em;
+    border-style: none;
+    -webkit-transition: background-color .15s ease-in-out;
     background-color: #474766;
 }
 
 .button-transmits:hover {
     background-color: #505073;
+    cursor: pointer;
 }
 
 .button-transmits:active {
     background-color: #3e3e59;
+    cursor: pointer;
 }
 
 .messagebox-gpsfix {
