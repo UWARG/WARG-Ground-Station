@@ -113,6 +113,7 @@ var Network = (function (Data, Log, $, Mousetrap) {
     multiEcho.socket.on('data', function (data) {
         data = data.toString().trim();
 
+        data = data.replace(/TA:/g, '\nTA:');
         data = data.split('\n');
 
         for (var i = 0; i < data.length; ++i) {
