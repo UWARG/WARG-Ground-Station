@@ -36,6 +36,71 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             }});
             map.addControl(centerControl);
 
+            // Map measuring tool
+            var measureTooltip = new Tooltip('measure-tooltip');
+            var measureLine = L.polyline([], {weight: 1, color: '#fff', opacity: 1});
+            var measureCircle = L.circle([0, 0], 0, {weight: 2, color: '#fff', opacity: 1, fillOpacity: 0});
+            var measureToolOn = false;
+            var measureControl = L.control.button({name: 'measure', text: '=', title: 'Measure a length (left-click on the map)', onclick: function () {
+                switch (measureToolOn) {
+                    case false :
+                        measureToolOn = true;
+                        $('div.leaflet-control-measure').addClass('active');
+                        map.once('click', measurePlot1);
+
+                        measureLine.setLatLngs([]);
+                        measureLine.addTo(map);
+                        measureCircle.setLatLng([0, 0]);
+                        measureCircle.addTo(map);
+                        
+                        measureTooltip.show();
+                        break;
+                    default :
+                        measureToolOn = false;
+                        $('div.leaflet-control-measure').removeClass('active');
+                        
+                        map.removeLayer(measureLine);
+                        map.removeLayer(measureCircle);
+
+                        measureTooltip.hide().text('');
+                        break;
+                }
+            }});
+            var measurePlot1 = function (e) {
+                measureLine.setLatLngs([e.latlng]);
+
+                measureCircle.setLatLng(e.latlng);
+                measureCircle.setRadius(0);
+
+                measureTooltip.text('');
+
+                map.on('mousemove', measureMousemove);
+                map.once('click', measurePlot2);
+            };
+            var measureMousemove = function (e) {
+                var dist = measureCircle.getLatLng().distanceTo(e.latlng);
+
+                var line = measureLine.getLatLngs();
+                line[1] = e.latlng;
+                measureLine.setLatLngs(line);
+                measureCircle.setRadius(dist);
+
+                if (dist >= 1000) {
+                    dist /= 1000;
+                    dist = Math.round(dist*100)/100;
+                    dist += ' km';
+                } else {
+                    dist = Math.round(dist*10)/10;
+                    dist += ' m';
+                }
+                measureTooltip.text('r = ' + dist);
+            };
+            var measurePlot2 = function (e) {
+                map.off('mousemove', measureMousemove);
+                map.once('click', measurePlot1);
+            };
+            map.addControl(measureControl);
+
             // Init localPath if necessary
             localPath = L.Polyline.Plotter(waypoints, {
                 future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
@@ -561,14 +626,10 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
     var targetMarkers = [];
 
-    // Initialize target tooltip
-    var targetTooltip;
-    $(document).ready(function () {
-        targetTooltip = $('<div id="target-tooltip"></div>').hide();
-        $(document.body).append(targetTooltip);
-    });
-
+    // Initialize targetTooltip
+    var targetTooltip = new Tooltip('target-tooltip');
     function addTarget(target) {
+
         var typeLabels = [undefined, 'F', 'S', 'D', 'C', 'P'];
         var typeNames = [undefined, 'Contaminated field', 'Structure', 'Debris pile', 'Container', 'Person'];
 
@@ -582,19 +643,10 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         }).addTo(map);
 
         $(marker._icon).hover(function (e) {
-            targetTooltip.show().text(typeNames[target.type]).attr('class', 'target-compid-' + target.comp);
-            $(document.body).on('mousemove', mousemove);
+            targetTooltip.text(typeNames[target.type]).attr('class', 'target-compid-' + target.comp).show();
         }, function (e) {
             targetTooltip.hide();
-            $(document.body).off('mousemove', mousemove);
         });
-
-        var mousemove = function (e) {
-            targetTooltip.css({
-                left: (e.screenX + 15) + 'px',
-                top: e.screenY + 'px',
-            });
-        };
 
         targetMarkers.push(marker);
     }
