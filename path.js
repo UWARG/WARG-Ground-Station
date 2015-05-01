@@ -13,7 +13,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     var waypoint_radius = 2;     // The turning radius around each waypoint
 
     // Interactive objects here
-    var map, localPath;
+    var map, localPath, status;
     var clearHistoryPopup;
     
     // Initialize map if necessary
@@ -46,6 +46,19 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             }).addTo(map);
             localPath.setNextIndex(0);
             exports.localPath = localPath;
+
+            // Init status control if necessary
+            if (!status) {
+                status = L.control.text({name: 'status', title: 'We are legion'});
+                map.addControl(status);
+
+                map.on('mousemove', function (e) {
+                    status.setText('(' + e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5) + ')');
+                });
+                map.on('mouseout', function () {
+                    status.setText('');
+                });
+            }
 
             // Init SC box if necessary
             if (!scLimits) {
@@ -456,6 +469,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             planeMarker.setIcon(planeHollowIcon);
         }
         planeMarker._icon.title = lat + "°, " + lon + "°\nyaw " + Math.round(yaw) + "°, hdg " + heading + "°\nnext-wpt: " + waypointIndex + (waypointIndex == WAYPOINT_HOME ? " (home)" : "");
+
+        // Update waypointIndex in status
+        status.setTitle('next-wpt: ' + waypointIndex);
         
         // Update gpsFix message box
         if (gpsFix) {
