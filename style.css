@@ -309,6 +309,10 @@ body {
     background-color: #cfd8dc;
     overflow-y: hidden;
     visibility: hidden;
+    bottom: -200px;
+}
+body {
+    overflow-y: hidden;
 }
 
 .axis {
