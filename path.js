@@ -18,7 +18,8 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     
     // Initialize map if necessary
     // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
-    var defaultLatLng = [43.53086, -80.5772];   // Waterloo North field
+    // var defaultLatLng = [43.53086, -80.5772];   // Waterloo North field
+    var defaultLatLng = [48.508809, -71.638846]; // Alma, Quebec
     $(document).ready(function () {
         if (!map) {
             map = L.map('map').setView(defaultLatLng, 17);
