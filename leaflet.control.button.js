@@ -1,5 +1,5 @@
 /*
- * L.Control.Center is used for the default zoom buttons on the map.
+ * L.Control.Button shows a button on the map
  */
 
 L.Control.Button = L.Control.extend({

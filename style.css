@@ -217,15 +217,6 @@ body {
     font-weight: bold;
 }
 
-.leaflet-control-recenter {
-    font: 20px 'Lucida Console', Monaco, monospace;
-    text-indent: 1px;
-}
-
-.leaflet-control-recenter a {
-    color: #999;
-}
-
 .leaflet-control-recenter::before {
     content: '';
     position: absolute;
@@ -256,6 +247,22 @@ body {
     pointer-events: none;
 }
 
+.leaflet-control-measure {
+    font: 19px 'Lucida Console', Monaco, monospace;
+    text-indent: 1px;
+}
+
+.leaflet-control-measure.active a {
+    background-color: #89e;
+    color: #fff;
+}
+
+.leaflet-control-status {
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+    font-size: 110%;
+}
+
 .target-icon {
     font-size: 22px;
     font-weight: bold;
@@ -276,10 +283,8 @@ body {
     color: #0ff;
 }
 
-#target-tooltip {
-    position: fixed;
-    padding: 2px;
-    font-size: 13px;
+#measure-tooltip {
+    background-color: #fff;
 }
 
 #target-tooltip.target-compid-0 {
@@ -309,6 +314,10 @@ body {
     background-color: #cfd8dc;
     overflow-y: hidden;
     visibility: hidden;
+    bottom: -200px;
+}
+body {
+    overflow-y: hidden;
 }
 
 .axis {
