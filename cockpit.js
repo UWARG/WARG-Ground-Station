@@ -14,8 +14,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawRoll(0, 0);
         drawHeading(0, 0);
         drawBattery(0);
-        drawScale(0, 300, "altimeter", "Altitude");
-        drawScale(0, 300, "speed", "Speed");
+        drawScale(0, 250, "altimeter", "Altitude");
+        drawScale(0, 250, "speed", "Speed");
         displayControlStatus(0);
         displayGPSStatus(0);
 
@@ -592,8 +592,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         //draw the scaling
         context.fillText(value, OFFSET + 2, mid);
         context.textAlign = "end";
-        context.font = '10pt Calibri';
-        A = 20;
+        context.font = '12pt Calibri';
+        A = 40;
         B = 0.1;
 
         for (i = mid; i < height; i += B) {
@@ -685,8 +685,8 @@ var Cockpit = (function ($, Data, Log, Network) {
         drawBattery(batteryLevel);
         displayControlStatus(editing_gain);
         displayGPSStatus(gpsStatus);
-        drawScale(altitude, 300, "altimeter", "Altitude");
-        drawScale(ground_speed, 300, "speed", "Speed");
+        drawScale(altitude, 250, "altimeter", "Altitude");
+        drawScale(ground_speed, 250, "speed", "Speed");
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
         displaySetpointsAndRates();
 
