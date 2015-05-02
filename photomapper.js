@@ -6,7 +6,7 @@
         "mode": 0666
     });
 
-    wstream.write('filename,latitude,longitude,time,heading,altitude\r\n');
+    wstream.write('filename,latitude,longitude,altitude,heading\r\n');
 
     function getDateTime() {
         var date = new Date();
@@ -43,7 +43,7 @@
 	};
 
 	var logLine = function (data) {
-		wstream.write(',' + data.lat + ',' + data.lon + ',' + data.time + ',' + data.heading + ',' + data.altitude + '\r\n');
+		wstream.write(',' + data.lat + ',' + data.lon + ',' + data.altitude + ',' + data.heading + '\r\n');
 	};
 
 })(Network, Log);
