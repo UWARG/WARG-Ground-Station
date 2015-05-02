@@ -187,6 +187,17 @@ body {
     cursor: pointer;
 }
 
+.button-group {
+    display: inline-block;
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+}
+
+.button-group .button {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .button-transmits {
     box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.24);
     display: inline-block;

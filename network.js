@@ -16,7 +16,7 @@ var Network = (function (Data, Log, $, Mousetrap) {
         this.socket = new net.Socket();
         this.emitter = new events.EventEmitter();
 
-        this.write = function (data) {};    // To be defined
+        this.write = function (data) {}; // To be defined
         this.emitter.write = function (data) {
             self.write(data);
         };
@@ -46,6 +46,12 @@ var Network = (function (Data, Log, $, Mousetrap) {
 
     // Data-relay handlers
 
+    dataRelay.socket.on('timeout', function () {
+        Log.error('Network (dataRelay) No data received for 5 seconds: ' + dataRelay.host + ':' + dataRelay.port);
+        $("#log").css("background-color", "#f44336");
+        dataRelay.socket.setTimeout(5000);
+    });
+
     dataRelay.socket.on('connect', function () {
         Log.info('Network (dataRelay) Connected: ' + dataRelay.host + ':' + dataRelay.port);
         dataRelay.write("commander\r\n");
@@ -55,6 +61,8 @@ var Network = (function (Data, Log, $, Mousetrap) {
     dataRelay.socket.on('data', function (data) {
         data = data.toString();
         Data.received.push((new Date).toString() + ' ' + data);
+
+        $("#log").css("background-color", "#cfd8dc");
 
         // First transmission is header columns
         if (Data.headers.length === 0) {
@@ -69,8 +77,8 @@ var Network = (function (Data, Log, $, Mousetrap) {
         var dataSplit = data.split(",");
         var cloneState = {};
         for (var i = 0; i < dataSplit.length; i++) {
-            Data.state[Data.headers[i]] = dataSplit[i].trim().toString().replace('(','').replace(')','');
-            cloneState[Data.headers[i]] = dataSplit[i].trim().toString().replace('(','').replace(')','');
+            Data.state[Data.headers[i]] = dataSplit[i].trim().toString().replace('(', '').replace(')', '');
+            cloneState[Data.headers[i]] = dataSplit[i].trim().toString().replace('(', '').replace(')', '');
         }
         Data.history.push(cloneState);
 
@@ -81,11 +89,13 @@ var Network = (function (Data, Log, $, Mousetrap) {
 
     dataRelay.socket.on('error', function (err) {
         console.log('dataRelay.error', err.code);
+        $("#log").css("background-color", "#f44336");
     });
 
     dataRelay.socket.on('close', function (had_error) {
         if (had_error) {
             Log.error('Network (dataRelay) Closed: Not reconnecting');
+            $("#log").css("background-color", "#f44336");
         } else {
             Log.info('Network (dataRelay) Closed: Not reconnecting');
         }
@@ -120,7 +130,7 @@ var Network = (function (Data, Log, $, Mousetrap) {
             var parts = data[i].split(':');
             if (parts[0] != "TA") continue;
 
-            var arr = parts[1].split(',').map(function (str){
+            var arr = parts[1].split(',').map(function (str) {
                 return str.trim();
             });
 
@@ -165,6 +175,7 @@ var Network = (function (Data, Log, $, Mousetrap) {
 
     $(function () {
         dataRelay.connect();
+        dataRelay.socket.setTimeout(5000);
         multiEcho.connect();
     });
 
@@ -174,13 +185,19 @@ var Network = (function (Data, Log, $, Mousetrap) {
             connectionId = prompt("Connect to a server\n\nWhich connection?\n(d: dataRelay, m: multiEcho)");
             if (connectionId === null) return;
         }
-        var connection = {d: dataRelay, m: multiEcho}[connectionId];
+        var connection = {
+            d: dataRelay,
+            m: multiEcho
+        }[connectionId];
 
         var parseLocation = function (locationStr) {
             if (!locationStr) return null;
             var parts = locationStr.trim().split(':');
             if (parts.length != 2) return null;
-            return {host: parts[0], port: parts[1]};
+            return {
+                host: parts[0],
+                port: parts[1]
+            };
         };
         var location, locationStr;
         while (!(location = parseLocation(locationStr))) {
