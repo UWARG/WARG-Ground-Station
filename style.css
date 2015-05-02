@@ -47,7 +47,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 65%;
+    width: 55%;
     height: 90%;
 }
 
@@ -72,7 +72,7 @@ body {
     margin: 0 auto;
     bottom: 0;
     left: 0;
-    width: 65%;
+    width: 55%;
     height: 10%;
     color: #000;
     border-style: none;
@@ -94,8 +94,8 @@ body {
 #path {
     position: absolute;
     top: 0;
-    left: 65%;
-    width: 35%;
+    left: 55%;
+    width: 45%;
     height: 100%;
 }
 
