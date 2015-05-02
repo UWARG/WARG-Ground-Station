@@ -268,21 +268,21 @@ var Cockpit = (function ($, Data, Log, Network) {
         });
 
         $('#lock_gopro').on('click', function () {
-            dataRelay.write("lock_goPro:3");
+            dataRelay.write("lock_goPro:3\r\n");
         });
 
         $('#unlock_gopro').on('click', function () {
-            dataRelay.write("lock_goPro:0");
+            dataRelay.write("lock_goPro:0\r\n");
         });
 
         $('#kill_plane').on('click', function () {
             if (confirm("Are you sure you want to KILL PLANE? (1/2)") && confirm("Are you ABSOLUTELY sure you want to KILL PLANE? (2/2)")) {
-                dataRelay.write("kill_plane:1234");
+                dataRelay.write("kill_plane:1234\r\n");
             }
         });
 
         $('#unkill_plane').on('click', function () {
-            dataRelay.write("unkill_plane:1234");
+            dataRelay.write("unkill_plane:1234\r\n");
         });
 
         $("#raw_command").keyup(function (event) {
