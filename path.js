@@ -162,6 +162,16 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 });
             }
 
+            var practiceArea = new L.Polyline([
+                L.latLng(48.51235, -71.65159),
+                L.latLng(48.51109, -71.65238),
+                L.latLng(48.50488, -71.63170),
+                L.latLng(48.50620, -71.63085),
+                L.latLng(48.51235, -71.65159),
+            ], {
+                color: '#00ffff', opacity: 1, weight: 3, clickable: false
+            }).addTo(map);
+
             var flightArea = new L.Polyline([
                 L.latLng(48.51132222222222, -71.65194722222223),
                 L.latLng(48.51888888888889, -71.64944444444446),
@@ -304,6 +314,9 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             Log.debug("Path Operator cleared local waypoints");
         });
 
+        var uploadInterval;
+        exports.ui = function(){return uploadInterval};
+
         $('#sendWaypoints').on('click', function () {
 
             // Check plane is not within minimum spacing of next waypoint at this moment
@@ -369,11 +382,29 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             // Upload new waypoints; or if no new waypoints, order to go home
             var remoteLatLngs = remotePath.getLatLngs();
             if (remoteLatLngs.length) {
-                for (i = 0, l = remoteLatLngs.length; i < l; i++) {
-                    var latLng = remoteLatLngs[i];
-                    command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + waypoint_radius + "\r\n";
-                    Network.dataRelay.write(command);
-                }
+                var latLngQueue = remoteLatLngs.slice(0);
+
+                uploadInterval = setInterval(function () {
+                    var latLng = latLngQueue.shift();
+                    var totalCount = remotePath.getLatLngs().length;
+                    var remainingCount = latLngQueue.length;
+                    if (!latLng) {
+                        // No more waypoints to upload
+                        clearInterval(uploadInterval);
+                        Log.info("Path Send waypoint complete, total count is " + totalCount);
+                        Log.info("Path Plane says waypointCount is " + Data.state.waypointCount);
+                    } else {
+                        // Upload a waypoint
+                        command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + waypoint_radius + "\r\n";
+                        Network.dataRelay.write(command);
+                        Log.info("Path Sent waypoint " + (totalCount - remainingCount) + "/" + totalCount);
+                    }
+                }, 150);
+                // for (i = 0, l = remoteLatLngs.length; i < l; i++) {
+                //     var latLng = remoteLatLngs[i];
+                //     command = "new_Waypoint:" + latLng.lat + "," + latLng.lng + "," + latLng.alt + "," + waypoint_radius + "\r\n";
+                //     Network.dataRelay.write(command);
+                // }
 
             } else {
                 // Probably uploading just after clearing waypoints; go home then.
