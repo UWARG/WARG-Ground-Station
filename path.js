@@ -9,13 +9,13 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     exports.testPlaneWaypointIndex = null;
 
     var WAYPOINT_HOME = 255;
-    var waypoint_default_alt = 100;  // Default altitude for all waypoints
-    var waypoint_radius = 2;     // The turning radius around each waypoint
+    var waypoint_default_alt = 100; // Default altitude for all waypoints
+    var waypoint_radius = 2; // The turning radius around each waypoint
 
     // Interactive objects here
     var map, localPath, status;
     var clearHistoryPopup;
-    
+
     // Initialize map if necessary
     // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
     // var defaultLatLng = [43.53086, -80.5772];   // Waterloo North field
@@ -29,21 +29,39 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 maxZoom: 19
             }).addTo(map);
 
-            var centerControl = L.control.button({name: 'recenter', text: '', title: 'Center on plane', onclick: function () {
-                if (planeMarker) {
-                    map.panTo(planeMarker.getLatLng());
+            var centerControl = L.control.button({
+                name: 'recenter',
+                text: '',
+                title: 'Center on plane',
+                onclick: function () {
+                    if (planeMarker) {
+                        map.panTo(planeMarker.getLatLng());
+                    }
                 }
-            }});
+            });
             map.addControl(centerControl);
 
             // Map measuring tool
             var measureTooltip = new Tooltip('measure-tooltip');
-            var measureLine = L.polyline([], {weight: 1, color: '#fff', opacity: 1});
-            var measureCircle = L.circle([0, 0], 0, {weight: 2, color: '#fff', opacity: 1, fillOpacity: 0});
+            var measureLine = L.polyline([], {
+                weight: 1,
+                color: '#fff',
+                opacity: 1
+            });
+            var measureCircle = L.circle([0, 0], 0, {
+                weight: 2,
+                color: '#fff',
+                opacity: 1,
+                fillOpacity: 0
+            });
             var measureToolOn = false;
-            var measureControl = L.control.button({name: 'measure', text: '=', title: 'Measure a length (left-click on the map)', onclick: function () {
-                switch (measureToolOn) {
-                    case false :
+            var measureControl = L.control.button({
+                name: 'measure',
+                text: '=',
+                title: 'Measure a length (left-click on the map)',
+                onclick: function () {
+                    switch (measureToolOn) {
+                    case false:
                         measureToolOn = true;
                         $('div.leaflet-control-measure').addClass('active');
                         map.once('click', measurePlot1);
@@ -52,20 +70,21 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                         measureLine.addTo(map);
                         measureCircle.setLatLng([0, 0]);
                         measureCircle.addTo(map);
-                        
+
                         measureTooltip.show();
                         break;
-                    default :
+                    default:
                         measureToolOn = false;
                         $('div.leaflet-control-measure').removeClass('active');
-                        
+
                         map.removeLayer(measureLine);
                         map.removeLayer(measureCircle);
 
                         measureTooltip.hide().text('');
                         break;
+                    }
                 }
-            }});
+            });
             var measurePlot1 = function (e) {
                 measureLine.setLatLngs([e.latlng]);
 
@@ -87,10 +106,10 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
                 if (dist >= 1000) {
                     dist /= 1000;
-                    dist = Math.round(dist*100)/100;
+                    dist = Math.round(dist * 100) / 100;
                     dist += ' km';
                 } else {
-                    dist = Math.round(dist*10)/10;
+                    dist = Math.round(dist * 10) / 10;
                     dist += ' m';
                 }
                 measureTooltip.text('r = ' + dist);
@@ -103,9 +122,24 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
             // Init localPath if necessary
             localPath = L.Polyline.Plotter(waypoints, {
-                future:  {color: '#f21818', weight: 4, opacity: 1, dashArray: '3, 6'},
-                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
-                past:    {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
+                future: {
+                    color: '#f21818',
+                    weight: 4,
+                    opacity: 1,
+                    dashArray: '3, 6'
+                },
+                present: {
+                    color: '#ff00ff',
+                    weight: 5,
+                    opacity: 0.1,
+                    clickable: false
+                }, // Shouldn't ever appear
+                past: {
+                    color: '#ff00ff',
+                    weight: 5,
+                    opacity: 0.1,
+                    clickable: false
+                }, // Shouldn't ever appear
                 defaultAlt: waypoint_default_alt,
                 minSpacing: waypoint_radius * 4,
             }).addTo(map);
@@ -114,7 +148,10 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
             // Init status control if necessary
             if (!status) {
-                status = L.control.text({name: 'status', title: 'We are legion'});
+                status = L.control.text({
+                    name: 'status',
+                    title: 'We are legion'
+                });
                 map.addControl(status);
 
                 map.on('mousemove', function (e) {
@@ -126,55 +163,73 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             }
 
             var flightArea = new L.Polyline([
-                L.latLng(48.51132222222222,-71.65194722222223),
-                L.latLng(48.51888888888889,-71.64944444444446),
-                L.latLng(48.51450555555556,-71.6239111111111),
-                L.latLng(48.50423333333333,-71.62925555555555),
-                L.latLng(48.51132222222222,-71.65194722222223),
+                L.latLng(48.51132222222222, -71.65194722222223),
+                L.latLng(48.51888888888889, -71.64944444444446),
+                L.latLng(48.51450555555556, -71.6239111111111),
+                L.latLng(48.50423333333333, -71.62925555555555),
+                L.latLng(48.51132222222222, -71.65194722222223),
             ], {
-                color: '#00ff00', opacity: 1, weight: 3, clickable: false
+                color: '#00ff00',
+                opacity: 1,
+                weight: 3,
+                clickable: false
             }).addTo(map);
 
             var safetyArea = new L.Polyline([
-                L.latLng(48.51138888888889,-71.65472222222223),
-                L.latLng(48.52111111111111,-71.65138888888889),
-                L.latLng(48.51575277777778,-71.6214111111111),
-                L.latLng(48.50275277777778,-71.62819999999999),
-                L.latLng(48.51138888888889,-71.65472222222223),
+                L.latLng(48.51138888888889, -71.65472222222223),
+                L.latLng(48.52111111111111, -71.65138888888889),
+                L.latLng(48.51575277777778, -71.6214111111111),
+                L.latLng(48.50275277777778, -71.62819999999999),
+                L.latLng(48.51138888888889, -71.65472222222223),
             ], {
-                color: '#ff0000', opacity: 1, weight: 3, clickable: false
+                color: '#ff0000',
+                opacity: 1,
+                weight: 3,
+                clickable: false
             }).addTo(map);
 
             var sfocZone = new L.Polyline([
-                L.latLng(48.5086083790736,-71.6162770248457),L.latLng(48.5118541612874,-71.6167579646704),L.latLng(48.51497540600781,-71.6181856364077),L.latLng(48.5178521318939,-71.6205053277789),L.latLng(48.5203737375709,-71.623627996229),L.latLng(48.5224432596526,-71.6274336752373),L.latLng(48.5239811080518,-71.63177607907041),L.latLng(48.524928133651,-71.6364882298688),L.latLng(48.5252479090618,-71.64138889),L.latLng(48.524928133651,-71.6462895501312),L.latLng(48.5239811080518,-71.6510017009296),L.latLng(48.5224432596526,-71.65534410476271),L.latLng(48.5203737375709,-71.659149783771),L.latLng(48.5178521318939,-71.6622724522211),L.latLng(48.51497540600781,-71.6645921435923),L.latLng(48.5118541612874,-71.66601981532961),L.latLng(48.5086083790736,-71.6665007551543),L.latLng(48.5053628047391,-71.6660166604061),L.latLng(48.5022421520091,-71.66458631405369),L.latLng(48.4993663120992,-71.6622648355615),L.latLng(48.49684575150241,-71.6591415395575),L.latLng(48.494777274501,-71.65533648810219),L.latLng(48.4932403120782,-71.6509958713897),L.latLng(48.4922938784696,-71.6462863952069),L.latLng(48.4919743109381,-71.64138889),L.latLng(48.4922938784696,-71.6364913847931),L.latLng(48.4932403120782,-71.63178190861029),L.latLng(48.494777274501,-71.6274412918978),L.latLng(48.49684575150241,-71.62363624044249),L.latLng(48.4993663120992,-71.6205129444385),L.latLng(48.5022421520091,-71.6181914659463),L.latLng(48.5053628047391,-71.6167611195939),L.latLng(48.5086083790736,-71.6162770248457),L.latLng(48.5086083790736,-71.6162770248457)
+                L.latLng(48.5086083790736, -71.6162770248457), L.latLng(48.5118541612874, -71.6167579646704), L.latLng(48.51497540600781, -71.6181856364077), L.latLng(48.5178521318939, -71.6205053277789), L.latLng(48.5203737375709, -71.623627996229), L.latLng(48.5224432596526, -71.6274336752373), L.latLng(48.5239811080518, -71.63177607907041), L.latLng(48.524928133651, -71.6364882298688), L.latLng(48.5252479090618, -71.64138889), L.latLng(48.524928133651, -71.6462895501312), L.latLng(48.5239811080518, -71.6510017009296), L.latLng(48.5224432596526, -71.65534410476271), L.latLng(48.5203737375709, -71.659149783771), L.latLng(48.5178521318939, -71.6622724522211), L.latLng(48.51497540600781, -71.6645921435923), L.latLng(48.5118541612874, -71.66601981532961), L.latLng(48.5086083790736, -71.6665007551543), L.latLng(48.5053628047391, -71.6660166604061), L.latLng(48.5022421520091, -71.66458631405369), L.latLng(48.4993663120992, -71.6622648355615), L.latLng(48.49684575150241, -71.6591415395575), L.latLng(48.494777274501, -71.65533648810219), L.latLng(48.4932403120782, -71.6509958713897), L.latLng(48.4922938784696, -71.6462863952069), L.latLng(48.4919743109381, -71.64138889), L.latLng(48.4922938784696, -71.6364913847931), L.latLng(48.4932403120782, -71.63178190861029), L.latLng(48.494777274501, -71.6274412918978), L.latLng(48.49684575150241, -71.62363624044249), L.latLng(48.4993663120992, -71.6205129444385), L.latLng(48.5022421520091, -71.6181914659463), L.latLng(48.5053628047391, -71.6167611195939), L.latLng(48.5086083790736, -71.6162770248457), L.latLng(48.5086083790736, -71.6162770248457)
             ], {
-                color: '#ff0000', opacity: 0.3, weight: 3, clickable: false
+                color: '#ff0000',
+                opacity: 0.3,
+                weight: 3,
+                clickable: false
             }).addTo(map);
 
             var trainTracks = new L.Polyline([
-                L.latLng(48.5162755819232,-71.63250403329089),L.latLng(48.5163102476489,-71.6327694480642),L.latLng(48.5162574149596,-71.6329301903933),L.latLng(48.5161805721872,-71.63304785980456),L.latLng(48.5161497076492,-71.63314218794399),L.latLng(48.5160260757411,-71.63336154514867),L.latLng(48.5157731607004,-71.63372020309205),L.latLng(48.515668209743,-71.63382323746912),L.latLng(48.515610622191,-71.63391074520047),L.latLng(48.515567074787,-71.63403473491475),L.latLng(48.5155618150142,-71.63431999161347),L.latLng(48.5155284870591,-71.63454653690035),L.latLng(48.5155537791712,-71.63480432261336),L.latLng(48.5155135334483,-71.63495619776255),L.latLng(48.5155094094050,-71.63515675265431),L.latLng(48.5155475889916,-71.63562507188112),L.latLng(48.5155625387678,-71.63601145636949),L.latLng(48.5154840376431,-71.63645998690578),L.latLng(48.5153538766264,-71.63675579414426),L.latLng(48.5152023301526,-71.63711703170277),L.latLng(48.5151543105535,-71.63743757747247),L.latLng(48.5151316729667,-71.63770455861663),L.latLng(48.5150039928407,-71.63793990813846),L.latLng(48.5149564625315,-71.63826695563398),L.latLng(48.5148376774686,-71.63843578564969),L.latLng(48.5146695641818,-71.63870363048132),L.latLng(48.5144973984139,-71.63901692817946),L.latLng(48.5144643358187,-71.63924121317129),L.latLng(48.5144372923652,-71.63959702833552),L.latLng(48.514455090835,-71.63989006687152),L.latLng(48.5145014842794,-71.64004141547767),L.latLng(48.5145209781692,-71.64027301494676),L.latLng(48.5144722703484,-71.64071517834104),L.latLng(48.5144731954732,-71.64094724206814),L.latLng(48.5144997665578,-71.64113345778085),L.latLng(48.5145695009960,-71.64143195077185),L.latLng(48.5145767716332,-71.6415750610042),L.latLng(48.514516357570,-71.64178577562694),L.latLng(48.514441297501,-71.64200768492411),L.latLng(48.5143527399406,-71.64217957720426),L.latLng(48.5142940005396,-71.64245598006845),L.latLng(48.514229934894,-71.64272322981438),L.latLng(48.5141668303420,-71.64298634227224),L.latLng(48.5141999605376,-71.64311318047641),L.latLng(48.5141245442810,-71.64327501072344),L.latLng(48.5141257626132,-71.64343986474104),L.latLng(48.5141150039736,-71.64352193648972),L.latLng(48.5140664918555,-71.64359330389894),L.latLng(48.5140000304290,-71.64363393369553),L.latLng(48.5139350503852,-71.64372309805816),L.latLng(48.5139116953452,-71.6439045339274),L.latLng(48.5138305412140,-71.64396802701484),L.latLng(48.5136941843826,-71.64412058791534),L.latLng(48.5132155739175,-71.64480106497251),L.latLng(48.5130718554188,-71.64502651265536),L.latLng(48.5129572911329,-71.64514722452501),L.latLng(48.5128183481959,-71.64533643810508),L.latLng(48.5126958912406,-71.6455201088537),L.latLng(48.5125531615775,-71.64569400994198),L.latLng(48.5124977837571,-71.64578180333183),L.latLng(48.5124814913043,-71.64589341084097),L.latLng(48.5124720744692,-71.64602272698026),L.latLng(48.5124963957212,-71.64614133272849),L.latLng(48.5125431717108,-71.64629643438728),L.latLng(48.5125700153419,-71.64646202005568),L.latLng(48.5126013506840,-71.64656297259033),L.latLng(48.5126381490966,-71.64667059934746),L.latLng(48.5126879154163,-71.64677706626775),L.latLng(48.5127767470247,-71.64718432767067),L.latLng(48.5131389885934,-71.64791182817523),L.latLng(48.5142307843079,-71.64922989812578),L.latLng(48.5153843969667,-71.65065917575285),L.latLng(48.5165925127118,-71.65229583288559)
+                L.latLng(48.5162755819232, -71.63250403329089), L.latLng(48.5163102476489, -71.6327694480642), L.latLng(48.5162574149596, -71.6329301903933), L.latLng(48.5161805721872, -71.63304785980456), L.latLng(48.5161497076492, -71.63314218794399), L.latLng(48.5160260757411, -71.63336154514867), L.latLng(48.5157731607004, -71.63372020309205), L.latLng(48.515668209743, -71.63382323746912), L.latLng(48.515610622191, -71.63391074520047), L.latLng(48.515567074787, -71.63403473491475), L.latLng(48.5155618150142, -71.63431999161347), L.latLng(48.5155284870591, -71.63454653690035), L.latLng(48.5155537791712, -71.63480432261336), L.latLng(48.5155135334483, -71.63495619776255), L.latLng(48.5155094094050, -71.63515675265431), L.latLng(48.5155475889916, -71.63562507188112), L.latLng(48.5155625387678, -71.63601145636949), L.latLng(48.5154840376431, -71.63645998690578), L.latLng(48.5153538766264, -71.63675579414426), L.latLng(48.5152023301526, -71.63711703170277), L.latLng(48.5151543105535, -71.63743757747247), L.latLng(48.5151316729667, -71.63770455861663), L.latLng(48.5150039928407, -71.63793990813846), L.latLng(48.5149564625315, -71.63826695563398), L.latLng(48.5148376774686, -71.63843578564969), L.latLng(48.5146695641818, -71.63870363048132), L.latLng(48.5144973984139, -71.63901692817946), L.latLng(48.5144643358187, -71.63924121317129), L.latLng(48.5144372923652, -71.63959702833552), L.latLng(48.514455090835, -71.63989006687152), L.latLng(48.5145014842794, -71.64004141547767), L.latLng(48.5145209781692, -71.64027301494676), L.latLng(48.5144722703484, -71.64071517834104), L.latLng(48.5144731954732, -71.64094724206814), L.latLng(48.5144997665578, -71.64113345778085), L.latLng(48.5145695009960, -71.64143195077185), L.latLng(48.5145767716332, -71.6415750610042), L.latLng(48.514516357570, -71.64178577562694), L.latLng(48.514441297501, -71.64200768492411), L.latLng(48.5143527399406, -71.64217957720426), L.latLng(48.5142940005396, -71.64245598006845), L.latLng(48.514229934894, -71.64272322981438), L.latLng(48.5141668303420, -71.64298634227224), L.latLng(48.5141999605376, -71.64311318047641), L.latLng(48.5141245442810, -71.64327501072344), L.latLng(48.5141257626132, -71.64343986474104), L.latLng(48.5141150039736, -71.64352193648972), L.latLng(48.5140664918555, -71.64359330389894), L.latLng(48.5140000304290, -71.64363393369553), L.latLng(48.5139350503852, -71.64372309805816), L.latLng(48.5139116953452, -71.6439045339274), L.latLng(48.5138305412140, -71.64396802701484), L.latLng(48.5136941843826, -71.64412058791534), L.latLng(48.5132155739175, -71.64480106497251), L.latLng(48.5130718554188, -71.64502651265536), L.latLng(48.5129572911329, -71.64514722452501), L.latLng(48.5128183481959, -71.64533643810508), L.latLng(48.5126958912406, -71.6455201088537), L.latLng(48.5125531615775, -71.64569400994198), L.latLng(48.5124977837571, -71.64578180333183), L.latLng(48.5124814913043, -71.64589341084097), L.latLng(48.5124720744692, -71.64602272698026), L.latLng(48.5124963957212, -71.64614133272849), L.latLng(48.5125431717108, -71.64629643438728), L.latLng(48.5125700153419, -71.64646202005568), L.latLng(48.5126013506840, -71.64656297259033), L.latLng(48.5126381490966, -71.64667059934746), L.latLng(48.5126879154163, -71.64677706626775), L.latLng(48.5127767470247, -71.64718432767067), L.latLng(48.5131389885934, -71.64791182817523), L.latLng(48.5142307843079, -71.64922989812578), L.latLng(48.5153843969667, -71.65065917575285), L.latLng(48.5165925127118, -71.65229583288559)
             ], {
-                color: '#990000', opacity: 1, weight: 6, clickable: false
+                color: '#990000',
+                opacity: 1,
+                weight: 6,
+                clickable: false
             }).addTo(map);
 
             var launchRecovery = new L.Polyline([
-                L.latLng(48.51038889,-71.64783889), // vert
-                L.latLng(48.51048889,-71.64783889),
-                L.latLng(48.51043889,-71.64783889), // ctr
-                L.latLng(48.51043889,-71.64775889), // horz
-                L.latLng(48.51043889,-71.64791889),
+                L.latLng(48.51038889, -71.64783889), // vert
+                L.latLng(48.51048889, -71.64783889),
+                L.latLng(48.51043889, -71.64783889), // ctr
+                L.latLng(48.51043889, -71.64775889), // horz
+                L.latLng(48.51043889, -71.64791889),
             ], {
-                color: '#ffcc00', opacity: 1, weight: 3, clickable: false
+                color: '#ffcc00',
+                opacity: 1,
+                weight: 3,
+                clickable: false
             }).addTo(map);
 
             var gcsArea = new L.Polyline([
-                L.latLng(48.50941944,-71.64803611), // vert
-                L.latLng(48.50951944,-71.64803611),
-                L.latLng(48.50946944,-71.64803611), // ctr
-                L.latLng(48.50946944,-71.64795611), // horz
-                L.latLng(48.50946944,-71.64811611),
+                L.latLng(48.50941944, -71.64803611), // vert
+                L.latLng(48.50951944, -71.64803611),
+                L.latLng(48.50946944, -71.64803611), // ctr
+                L.latLng(48.50946944, -71.64795611), // horz
+                L.latLng(48.50946944, -71.64811611),
             ], {
-                color: '#00ccff', opacity: 1, weight: 3, clickable: false
+                color: '#00ccff',
+                opacity: 1,
+                weight: 3,
+                clickable: false
             }).addTo(map);
         }
     });
@@ -243,7 +298,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         $('#clearWaypoints').on('click', function () {
             // Clear all waypoints in localPath
             localPath.setLatLngs([]);
-            
+
             redrawMap();
 
             Log.debug("Path Operator cleared local waypoints");
@@ -257,7 +312,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 var planeSpacing = planeLatLng.distanceTo(localPath.getNextLatLng());
                 if (planeSpacing < localPath.options.minSpacing) {
                     alert("Plane too close to next waypoint.\nTry again in a bit.");
-                    Log.error("Path Cannot send; plane too close to next waypoint (" + Math.round(planeSpacing*10)/10 + " < " + localPath.options.minSpacing + ")");
+                    Log.error("Path Cannot send; plane too close to next waypoint (" + Math.round(planeSpacing * 10) / 10 + " < " + localPath.options.minSpacing + ")");
                     return;
                 }
             }
@@ -269,9 +324,18 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             }
 
             Log.debug("Path Operator is sending waypoints");
-            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
-            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
-            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
+            Log.debug("Path passedPath: " + JSON.stringify({
+                nextIndex: passedPath.getNextIndex(),
+                latLngs: passedPath.getLatLngs()
+            }));
+            Log.debug("Path remotePath: " + JSON.stringify({
+                nextIndex: remotePath.getNextIndex(),
+                latLngs: remotePath.getLatLngs()
+            }));
+            Log.debug("Path localPath: " + JSON.stringify({
+                nextIndex: localPath.getNextIndex(),
+                latLngs: localPath.getLatLngs()
+            }));
 
             // Move past waypoints from remotePath into passedPath
             var passedLatLngs = passedPath.getLatLngs().concat(
@@ -290,7 +354,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
             // Replace waypoints in remotePath with those from localPath
             var remoteLatLngs = localPath.getLatLngs().map(function (latlng, index) {
-                return new L.LatLng(latlng.lat, latlng.lng, latlng.alt);    // Clone object
+                return new L.LatLng(latlng.lat, latlng.lng, latlng.alt); // Clone object
             });
             remotePath.setLatLngs(remoteLatLngs);
             remotePath.setNextIndex(0);
@@ -301,7 +365,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             // Clear current waypoints on plane
             var command = "clear_waypoints:0\r\n";
             Network.dataRelay.write(command);
-            
+
             // Upload new waypoints; or if no new waypoints, order to go home
             var remoteLatLngs = remotePath.getLatLngs();
             if (remoteLatLngs.length) {
@@ -325,13 +389,28 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             }
 
             Log.debug("Path Waypoints have been sent, and map paths updated");
-            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
-            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
-            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
+            Log.debug("Path passedPath: " + JSON.stringify({
+                nextIndex: passedPath.getNextIndex(),
+                latLngs: passedPath.getLatLngs()
+            }));
+            Log.debug("Path remotePath: " + JSON.stringify({
+                nextIndex: remotePath.getNextIndex(),
+                latLngs: remotePath.getLatLngs()
+            }));
+            Log.debug("Path localPath: " + JSON.stringify({
+                nextIndex: localPath.getNextIndex(),
+                latLngs: localPath.getLatLngs()
+            }));
         });
 
-        $('#goHome').on('click', function () {
+        $('#go_home').on('click', function () {
             var command = "return_home:0\r\n";
+            Network.dataRelay.write(command);
+            Log.debug("Path Operator sent Go home");
+        });
+
+        $('#cancel_go_home').on('click', function () {
+            var command = "cancel_returnHome:0\r\n";
             Network.dataRelay.write(command);
             Log.debug("Path Operator sent Go home");
         });
@@ -391,13 +470,13 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     var planeMarker;
     var gpsFixMessagebox;
     var passedPath; // Contains any wpts we're sure to have already passed (flown over)
-    var localPath;  // Contains local working copy of what we're planning
+    var localPath; // Contains local working copy of what we're planning
     var remotePath; // Contains any wpts currently on plane & index of wpt plane is travelling to
-    var remoteToLocal;  // Line connecting current waypoint on plane to next local waypoint
+    var remoteToLocal; // Line connecting current waypoint on plane to next local waypoint
     var passedToRemote; // Line connecting end of passedPath to begining of remotePath
-    var planeToNextRemote;  // Line connecting current plane position to next waypoint on plane
+    var planeToNextRemote; // Line connecting current plane position to next waypoint on plane
     var historyPolyline;
-    
+
     Network.dataRelay.on('data', redrawMap);
 
     function redrawMap() {
@@ -409,7 +488,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Check for GPS fix, assuming we'll never fly off the coast of West Africa
         // (No GPS fix if coordinates close to (0; 0) or impossibly big)
         var gpsFix = (Math.abs(lat) > 1) && (Math.abs(lon) > 1) && (Math.abs(lat) < 360) && (Math.abs(lon) < 360);
-        
+
         var heading = Data.state.heading;
         var yaw = Data.state.yaw;
         var waypointIndex = Data.state.waypointIndex;
@@ -448,9 +527,24 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         if (!passedPath) {
             passedPath = L.Polyline.Plotter([], {
                 readOnly: true,
-                future:  {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
-                present: {color: '#ff00ff', weight: 5, opacity: 0.1, clickable: false},  // Shouldn't ever appear
-                past:    {color: '#09092e', weight: 5, opacity: 1, clickable: false},
+                future: {
+                    color: '#ff00ff',
+                    weight: 5,
+                    opacity: 0.1,
+                    clickable: false
+                }, // Shouldn't ever appear
+                present: {
+                    color: '#ff00ff',
+                    weight: 5,
+                    opacity: 0.1,
+                    clickable: false
+                }, // Shouldn't ever appear
+                past: {
+                    color: '#09092e',
+                    weight: 5,
+                    opacity: 1,
+                    clickable: false
+                },
             }).addTo(map);
             passedPath.setNextIndex(Number.MAX_SAFE_INTEGER);
             exports.passedPath = passedPath;
@@ -460,9 +554,25 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         if (!remotePath) {
             remotePath = L.Polyline.Plotter([], {
                 readOnly: true,
-                future:  {color: '#1a1a80', weight: 5, opacity: 1, clickable: false, dashArray: '3, 6'},
-                present: {color: '#09092e', weight: 5, opacity: 1, clickable: false},
-                past:    {color: '#09092e', weight: 5, opacity: 1, clickable: false},
+                future: {
+                    color: '#1a1a80',
+                    weight: 5,
+                    opacity: 1,
+                    clickable: false,
+                    dashArray: '3, 6'
+                },
+                present: {
+                    color: '#09092e',
+                    weight: 5,
+                    opacity: 1,
+                    clickable: false
+                },
+                past: {
+                    color: '#09092e',
+                    weight: 5,
+                    opacity: 1,
+                    clickable: false
+                },
             }); // Not adding to map yet; we want to add this last.
             exports.remotePath = remotePath;
         }
@@ -470,16 +580,19 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Init remoteToLocal if necessary
         if (!remoteToLocal) {
             remoteToLocal = L.polyline([], {
-                color: '#f21818', weight: 4, opacity: 1, clickable: false
+                color: '#f21818',
+                weight: 4,
+                opacity: 1,
+                clickable: false
             }).addTo(map);
             exports.remoteToLocal = remoteToLocal;
 
             // When remote or local line changes, update this line
             var updateRemoteToLocal = function () {
                 if (remotePath.getNextIndex() == 0) {
-                    var start = passedPath.getLatLngs()[passedPath.getLatLngs().length-1];  // "Wrap around" to passedPath
+                    var start = passedPath.getLatLngs()[passedPath.getLatLngs().length - 1]; // "Wrap around" to passedPath
                 } else {
-                    var start = remotePath.getLatLngs()[remotePath.getNextIndex()-1];
+                    var start = remotePath.getLatLngs()[remotePath.getNextIndex() - 1];
                 }
                 setLineEndpoints(remoteToLocal,
                     start,
@@ -493,14 +606,17 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Init passedToRemote if necessary
         if (!passedToRemote) {
             passedToRemote = L.polyline([], {
-                color: '#09092e', weight: 5, opacity: 1, clickable: false
+                color: '#09092e',
+                weight: 5,
+                opacity: 1,
+                clickable: false
             }).addTo(map);
             exports.passedToRemote = passedToRemote;
 
             // When passed or remote line changes, update this line
             var updatePassedToRemote = function () {
                 setLineEndpoints(passedToRemote,
-                    passedPath.getLatLngs()[passedPath.getLatLngs().length-1],
+                    passedPath.getLatLngs()[passedPath.getLatLngs().length - 1],
                     remotePath.getLatLngs()[0]
                 );
             };
@@ -511,12 +627,16 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Init planeToNextRemote if necessary
         if (!planeToNextRemote) {
             planeToNextRemote = L.polyline([], {
-                color: '#1a1a80', weight: 5, opacity: 1, clickable: false, dashArray: '3, 6',
+                color: '#1a1a80',
+                weight: 5,
+                opacity: 1,
+                clickable: false,
+                dashArray: '3, 6',
             }).addTo(map);
             exports.planeToNextRemote = planeToNextRemote;
 
             // When waypoints change, update line going from plane to next waypoint
-            remotePath.on('change drag', function(e) {
+            remotePath.on('change drag', function (e) {
                 setLineEndpoints(planeToNextRemote, planeMarker.getLatLng(), remotePath.getNextLatLng());
                 if (!remotePath.getNextLatLng()) {
                     console.log('planeToNextRemote not visible because remotePath has no next waypoint');
@@ -527,7 +647,10 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Init historyPolyline if necessary
         if (!historyPolyline) {
             historyPolyline = new L.Polyline([], {
-                color: '#190019', opacity: 0.6, weight: 5, clickable: true,
+                color: '#190019',
+                opacity: 0.6,
+                weight: 5,
+                clickable: true,
             }).addTo(map);
             historyPolyline.bindPopup(clearHistoryPopup);
         }
@@ -542,7 +665,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         if (gpsFix) {
             planeMarker.setIcon(planeIcon);
             planeMarker.setLatLng(new L.LatLng(lat, lon));
-            planeMarker.options.angle = heading*1;    // FIXME Make this more consistent across all files
+            planeMarker.options.angle = heading * 1; // FIXME Make this more consistent across all files
             planeMarker.update();
         } else {
             planeMarker.setIcon(planeHollowIcon);
@@ -551,7 +674,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
         // Update waypointIndex in status
         status.setTitle('next-wpt: ' + waypointIndex);
-        
+
         // Update gpsFix message box
         if (gpsFix) {
             gpsFixMessagebox.hide();
@@ -569,9 +692,18 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
             Log.debug('Path Plane waypointIndex changed to ' + waypointIndex + ' (was ' + remotePath.getNextIndex() + ')');
 
-            Log.debug("Path passedPath: " + JSON.stringify({nextIndex: passedPath.getNextIndex(), latLngs: passedPath.getLatLngs()}));
-            Log.debug("Path remotePath: " + JSON.stringify({nextIndex: remotePath.getNextIndex(), latLngs: remotePath.getLatLngs()}));
-            Log.debug("Path localPath: " + JSON.stringify({nextIndex: localPath.getNextIndex(), latLngs: localPath.getLatLngs()}));
+            Log.debug("Path passedPath: " + JSON.stringify({
+                nextIndex: passedPath.getNextIndex(),
+                latLngs: passedPath.getLatLngs()
+            }));
+            Log.debug("Path remotePath: " + JSON.stringify({
+                nextIndex: remotePath.getNextIndex(),
+                latLngs: remotePath.getLatLngs()
+            }));
+            Log.debug("Path localPath: " + JSON.stringify({
+                nextIndex: localPath.getNextIndex(),
+                latLngs: localPath.getLatLngs()
+            }));
 
             remotePath.setNextIndex(waypointIndex);
 
@@ -581,10 +713,13 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             Log.debug('Path localPath.nextIndex set to ' + localPath.getNextIndex() + ' (first locally different waypoint index is ' + firstDifferentIndex + ')');
 
         }
-        
+
         // When plane moves, update line going from plane to next waypoint
         if (gpsFix) {
-            setLineEndpoints(planeToNextRemote, {lat: lat, lng: lon}, remotePath.getNextLatLng());
+            setLineEndpoints(planeToNextRemote, {
+                lat: lat,
+                lng: lon
+            }, remotePath.getNextLatLng());
         } else {
             planeToNextRemote.setLatLngs([]);
         }
@@ -628,6 +763,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
 
     // Initialize targetTooltip
     var targetTooltip = new Tooltip('target-tooltip');
+
     function addTarget(target) {
 
         var typeLabels = [undefined, 'F', 'S', 'D', 'C', 'P'];
@@ -637,7 +773,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             riseOnHover: true,
             icon: L.divIcon({
                 iconSize: [20, 20],
-                className: 'target-icon target-compid-'+target.comp,
+                className: 'target-icon target-compid-' + target.comp,
                 html: '<span>' + typeLabels[target.type] + '</span>',
             }),
         }).addTo(map);
