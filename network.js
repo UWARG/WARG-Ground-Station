@@ -33,12 +33,12 @@ var Network = (function (Data, Log, $, Mousetrap) {
 
     var dataRelay = new Connection({
         name: 'dataRelay',
-        host: '127.0.0.1',
+        host: '192.168.1.104',
         port: 1234,
     });
     var multiEcho = new Connection({
         name: 'multiEcho',
-        host: '127.0.0.1',
+        host: '192.168.1.104',
         port: 4321,
     });
 
