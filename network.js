@@ -33,12 +33,12 @@ var Network = (function (Data, Log, $, Mousetrap) {
 
     var dataRelay = new Connection({
         name: 'dataRelay',
-        host: '192.168.1.104',
+        host: '192.168.1.100',
         port: 1234,
     });
     var multiEcho = new Connection({
         name: 'multiEcho',
-        host: '192.168.1.104',
+        host: '192.168.1.100',
         port: 4321,
     });
 
@@ -182,7 +182,7 @@ var Network = (function (Data, Log, $, Mousetrap) {
     Mousetrap.bind(["mod+l"], function () {
         var connectionId;
         while (connectionId != "d" && connectionId != "m") {
-            connectionId = prompt("Connect to a server\n\nWhich connection?\n(d: dataRelay, m: multiEcho)");
+            connectionId = prompt("Connect to a server. Which connection? (d: dataRelay, m: multiEcho)");
             if (connectionId === null) return;
         }
         var connection = {
