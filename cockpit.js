@@ -285,6 +285,11 @@ var Cockpit = (function ($, Data, Log, Network) {
             dataRelay.write("unkill_plane:1234\r\n");
         });
 
+        $('#arm_plane').on('click', function () {
+            dataRelay.write("arm_vehicle:1234\r\n");
+        });
+
+
         $("#raw_command").keyup(function (event) {
             switch (event.keyCode) {
                 case 13 :   // enter
