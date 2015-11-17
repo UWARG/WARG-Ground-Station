@@ -49,6 +49,8 @@ var Cockpit = (function ($, Data, Log, Network) {
             var altitude_source = e.options[e.selectedIndex].text;
             var e = document.getElementById("throttle_source");
             var throttle_source = e.options[e.selectedIndex].text;
+            var e = document.getElementById("flap_source");
+            var flap_source = e.options[e.selectedIndex].text;
             var level = 0;
 
             if (pitch_control === "Rate") {
@@ -81,6 +83,13 @@ var Cockpit = (function ($, Data, Log, Network) {
                 level += 16;
             } else if (throttle_source === "Autopilot") {
                 level += 32;
+            }
+            if (flap_source === "Controller") {
+                level += 0;
+            } else if (flap_source === "Ground Station") {
+                level += 1024;
+            } else if (flap_source === "Autopilot") {
+                level += 2048;
             }
 
             if (altitude_source === "Ground Station") {
@@ -140,6 +149,11 @@ var Cockpit = (function ($, Data, Log, Network) {
             dataRelay.write("set_throttle:" + throttle_input + "\r\n");
         });
 
+        $('#send_flap').on('click', function () {
+            var flap_input = document.getElementById("flap_setpoint_input").value;
+            dataRelay.write("set_flap:" + flap_input + "\r\n");
+        });
+
         $('#send_kd').on('click', function () {
             var flightData = Data.state;
             var editing_gain = parseInt(flightData.editing_gain) % 16;
@@ -157,6 +171,8 @@ var Cockpit = (function ($, Data, Log, Network) {
                 dataRelay.write("set_altitudeKDGain:" + kdInput + "\r\n");
             } else if (editing_gain === 5) {
                 dataRelay.write("set_throttleKDGain:" + kdInput + "\r\n");
+            } else if (editing_gain === 6) {
+                dataRelay.write("set_flapKDGain:" + kdInput + "\r\n");
             } else {
                 Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
             }
@@ -179,6 +195,8 @@ var Cockpit = (function ($, Data, Log, Network) {
                 dataRelay.write("set_altitudeKPGain:" + kpInput + "\r\n");
             } else if (editing_gain === 5) {
                 dataRelay.write("set_throttleKPGain:" + kpInput + "\r\n");
+            } else if (editing_gain === 6) {
+                dataRelay.write("set_flapKPGain:" + kpInput + "\r\n");
             } else {
                 Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
             }
@@ -201,6 +219,8 @@ var Cockpit = (function ($, Data, Log, Network) {
                 dataRelay.write("set_altitudeKIGain:" + kiInput + "\r\n");
             } else if (editing_gain === 5) {
                 dataRelay.write("set_throttleKIGain:" + kiInput + "\r\n");
+            } else if (editing_gain === 6) {
+                dataRelay.write("set_flapKIGain:" + kiInput + "\r\n");
             } else {
                 Log.error("Cockpit Error sending gains: Plane not in autonomous mode");
             }
@@ -223,6 +243,8 @@ var Cockpit = (function ($, Data, Log, Network) {
                 command += "0x04";
             else if (selectedOpt === "Throttle")
                 command += "0x05";
+            else if (selectedOpt === "Flap")
+                command += "0x06";
 
             command += "\r\n";
             dataRelay.write(command);
@@ -242,7 +264,8 @@ var Cockpit = (function ($, Data, Log, Network) {
             wstream.write("New Input ====\r\n");
             var flightData = Data.state;
             wstream.write("currentTime: " + flightData.time + "\r\n");
-            //wstream.write("currentThrottle: " + flightData. + "\r\n");
+            wstream.write("currentThrottle: " + flightData.throttle_setpoint + "\r\n");
+            wstream.write("currentFlap: " + flightData.flap_setpoint + "\r\n");
             wstream.write("roll: " + flightData.roll * (Math.PI / 180) + "\r\n");
             wstream.write("pitch: " + flightData.pitch * (Math.PI / 180) + "\r\n");
             wstream.write("yaw: " + flightData.yaw * (Math.PI / 180) + "\r\n");
@@ -363,6 +386,12 @@ var Cockpit = (function ($, Data, Log, Network) {
         $("#throttle_setpoint_input").keyup(function (event) {
             if (event.keyCode == 13) {
                 $("#send_throttle").click();
+            }
+        });
+
+        $("#flap_setpoint_input").keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#send_flap").click();
             }
         });
     });
@@ -759,8 +788,10 @@ var Cockpit = (function ($, Data, Log, Network) {
         var pitch_rate = flightData.pitch_rate;
         var yaw = flightData.yaw;
         var yaw_rate = flightData.yaw_rate;
+        var flap_setpoint = flightData.flap_setpoint;
 
         writeToDiv('#throttle_setpoint_display', throttle_setpoint);
+        writeToDiv('#flap_setpoint_display', flap_setpoint);
         writeToDiv('#altitude_setpoint_display', altitude_setpoint);
         writeToDiv('#yaw_display', yaw);
         writeToDiv('#pitch_rate', parseFloat(pitch_rate).toFixed(7));
@@ -782,6 +813,8 @@ var Cockpit = (function ($, Data, Log, Network) {
             editing_gain = "Altitude";
         } else if (editing_gain === 5) {
             editing_gain = "Throttle";
+        } else if (editing_gain === 6) {
+            editing_gain = "Flap";
         } else {
             editing_gain = "N/A";
         }

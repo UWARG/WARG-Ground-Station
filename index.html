@@ -149,6 +149,16 @@
                                 <option>Autopilot</option>
                             </select>
                         </div>
+						<div>
+                            <div class="display">Flap Source</div>
+                        </div>
+                        <div>
+                            <select id="flap_source" class="dropdown">
+								<option>Controller</option>
+                                <option>Ground Station</option>
+                                <option>Autopilot</option>
+                            </select>
+                        </div>
                         <div class="button" id="send_autonomous">
                             Send Autonomous Level
                         </div>
@@ -232,17 +242,29 @@
                     <canvas id="speed" class="instrument"></canvas>
                 </div>
                 <div class="col-1-2">
+                    
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="col-1-1">
+                        <div id="flap_setpoint_display" class="display"></div>
 
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
+                    </div>
+                    <div class="col-1-1">
+                        <input type="number" id="flap_setpoint_input" class="input" value="0">
 
+                    </div>
+                    <div class="col-1-2">
+                        <div class="button" id="send_flap">
+                            Send Flap
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                     <div class="col-2-2">
                         <div id="throttle_setpoint_display" class="display"></div>
 
@@ -256,7 +278,6 @@
                             Send Throttle
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -271,6 +292,7 @@
                             <option value="heading">Heading</option>
                             <option value="altitude">Altitude</option>
                             <option value="throttle">Throttle</option>
+                            <option value="flap">Flap</option>
                         </select>
                         <div id="current_gain" class="display"></div>
                     </div>
