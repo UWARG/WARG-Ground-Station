@@ -266,7 +266,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     $(document).ready(function () {
 
         $('#loadWaypoints').on('click', function () {
-            var f = $('<input type="file" id="pathLoadFile" accept=".path">').click();
+            var f = $('<input type="file" id="pathLoadFile" accept=".setting,.path">').click();
             f.one('change', function () {
                 if (!f[0].files[0]) return;
                 var filepath = f[0].files[0].path;

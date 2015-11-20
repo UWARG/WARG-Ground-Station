@@ -3,7 +3,7 @@
 //
 // updateCockpit() is called whenever data is recieved
 
-var Cockpit = (function ($, Data, Log, Network) {
+var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
 
     var dataRelay = Network.dataRelay;
 
@@ -29,6 +29,35 @@ var Cockpit = (function ($, Data, Log, Network) {
             dataRelay.write(raw_command + "\r\n");
             document.getElementById("raw_command").value = "";
         });
+
+
+        function setSelectedIndex(s, i){
+            s.options[i-1].selected = true;
+            return;
+        }
+
+        $('#set_controller').on('click', function(){
+
+            //set all the select boxes to the first element
+            document.getElementById("pitch_source").options[0].selected = true;
+            document.getElementById("roll_source").options[0].selected = true;
+            document.getElementById("altitude_on").options[0].selected = true;
+            document.getElementById("heading_source").options[0].selected = true;
+            document.getElementById("heading_on").options[0].selected = true;
+            document.getElementById("pitch_control").options[0].selected = true;
+            document.getElementById("roll_control").options[0].selected = true;
+            document.getElementById("altitude_source").options[0].selected = true;
+            document.getElementById("throttle_source").options[0].selected = true;
+            document.getElementById("flap_source").options[0].selected = true;
+
+            dataRelay.write("set_autonomousLevel:0" + "\r\n");
+
+
+
+        });
+
+
+        
 
         $('#send_autonomous').on('click', function () {
             var e = document.getElementById("pitch_source");
@@ -394,6 +423,10 @@ var Cockpit = (function ($, Data, Log, Network) {
                 $("#send_flap").click();
             }
         });
+
+        Mousetrap.bind(["alt+v"], function (e) {
+            $("#arm_plane").click();
+    });
     });
 
     function drawHeading(heading, heading_setpoint) {
@@ -828,4 +861,4 @@ var Cockpit = (function ($, Data, Log, Network) {
     // Don't export anything
     return {};
 
-})($, Data, Log, Network);
+})($, Data, Log, Network, Mousetrap);
