@@ -6,6 +6,9 @@
 var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
 
     var dataRelay = Network.dataRelay;
+    var KD = [0,0,0,0,0,0,0];
+    var KP = [0,0,0,0,0,0,0];
+    var KI = [0,0,0,0,0,0,0];
 
     $(document).ready(function () {
         //Initialize instruments
@@ -188,6 +191,8 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
             var editing_gain = parseInt(flightData.editing_gain) % 16;
             var kdInput = document.getElementById("kdInput").value;
 
+            KD[editing_gain] = kdInput;
+
             if (editing_gain === 0) {
                 dataRelay.write("set_yawKDGain:" + kdInput + "\r\n");
             } else if (editing_gain === 1) {
@@ -212,6 +217,8 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
             var editing_gain = parseInt(flightData.editing_gain) % 16;
             var kpInput = document.getElementById("kpInput").value;
 
+            KP[editing_gain] = kpInput;
+
             if (editing_gain === 0) {
                 dataRelay.write("set_yawKPGain:" + kpInput + "\r\n");
             } else if (editing_gain === 1) {
@@ -235,6 +242,8 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
             var flightData = Data.state;
             var editing_gain = parseInt(flightData.editing_gain) % 16;
             var kiInput = document.getElementById("kiInput").value;
+
+            KI[editing_gain] = kiInput;
 
             if (editing_gain === 0) {
                 dataRelay.write("set_yawKIGain:" + kiInput + "\r\n");
@@ -277,6 +286,11 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
 
             command += "\r\n";
             dataRelay.write(command);
+
+            document.getElementById('kdInput').value = KD[e.selectedIndex];
+            document.getElementById('kpInput').value = KP[e.selectedIndex];
+            document.getElementById('kiInput').value = KI[e.selectedIndex];
+
         });
 
         $('#save_comment').on('click', function () {
@@ -317,6 +331,142 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
 
 
             Log.info("Cockpit Comment successfully written to " + fileName + ".txt");
+        });
+
+        $('#load_kValue').on('click', function () {
+            var f = $('<input type="file" id="pathLoadFile" accept=".setting,.kval">').click();
+            f.one('change', function () {
+                var fs = require('fs');
+                if (!f[0].files[0]) return;
+                var filepath = f[0].files[0].path;
+                var filename = f[0].files[0].name;
+                
+                var txt = fs.readFileSync(filepath);
+                var lines = txt.toString().split(';');
+                var KDValues = [0,0,0,0,0,0,0];
+                var KPValues = [0,0,0,0,0,0,0];
+                var KIValues = [0,0,0,0,0,0,0];
+
+                var i;
+                for (i = 0; i < lines.length; i++) {
+                    var splitLine = lines[i].toString().split('=', 2); //first element is var, second element value
+
+                    //switch variable
+                    switch(splitLine[0].trim()){
+                        case 'date':
+                        break;
+                        case 'time':
+                        break;
+                        case '':break;
+
+                        default: //assumed to be a K value
+                            //Log.info("line: " + i + " var: " +  splitLine[0] + " val: " + splitLine[1]);
+                            var splitVar = splitLine[0].toString().split('K', 2); //first element channel, second element K type
+                            var index;
+                            switch(splitVar[0].toString().trim()){
+                                case 'yaw':
+                                    index = 0;
+                                break;
+                                case 'pitch':
+                                    index = 1;
+                                break;
+                                case 'roll':
+                                    index = 2;
+                                break;
+                                case 'heading':
+                                    index = 3;
+                                break;
+                                case 'altitude':
+                                    index = 4;
+                                break;
+                                case 'throttle':
+                                    index = 5;
+                                break;
+                                case 'flap':
+                                    index = 6;
+                                break;
+                            }
+                            switch(splitVar[1].toString().trim()){
+                                case 'D':
+                                    KDValues[index] = splitLine[1].toString().trim();
+                                break;
+                                case 'P':
+                                    KPValues[index] = splitLine[1].toString().trim();
+                                break;
+                                case 'I':
+                                    KIValues[index] = splitLine[1].toString().trim();
+                                break;
+                            }
+                            //dataRelay.write("set_" + splitLine[0].toString().trim() + "Gain:" + splitLine[1].toString().trim());
+                            
+                        break;
+                    }                    
+                }
+                KD = KDValues;
+                KP = KPValues;
+                KI = KIValues;
+                dataRelay.write("set_KDValues:"+ KDValues +"\r\n");
+                dataRelay.write("set_KPValues:"+ KPValues +"\r\n");
+                dataRelay.write("set_KIValues:"+ KIValues +"\r\n");
+                Log.info("K values Loaded " + filename + ".kval");
+            });
+        });
+
+        $('#save_kValue').on('click', function () {
+            var fs = require('fs');
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1; //January is 0!
+            var yyyy = today.getFullYear();
+            var hh = today.getHours();
+            var MM = today.getMinutes();
+            var ss = today.getSeconds();
+            if(dd<10) {
+                dd='0'+dd
+            } 
+            if(mm<10) {
+                mm='0'+mm
+            } 
+            if(hh<10) {
+                hh='0'+hh
+            } 
+            if(MM<10) {
+                MM='0'+MM
+            } 
+            if(ss<10) {
+                ss='0'+ss
+            }
+
+            
+            var f = $('<input type="file" id="pathSaveFile" nwsaveas="K_Values.kval" accept=".kval">').click();
+            f.one('change', function () {
+                if (!f[0].files[0]) return;
+                var filepath = f[0].files[0].path;
+                var filename = f[0].files[0].name;
+
+                Log.info(filepath);
+
+                var txt = "date=" + mm+'/'+dd+'/'+yyyy + ";\r\n";
+                txt = txt +"time=" + hh + ":" + mm + ":" + ss + ";\r\n\r\n";
+
+                var i;
+                Log.info("Saving...");
+
+                var options = document.getElementById('gainSelect').options;
+
+                for(i=0; i<7; i++){
+                    
+                    txt = txt + options[i].value + "KD=" + KD[i] + ";\r\n";
+                    txt = txt + options[i].value + "KP=" + KP[i] + ";\r\n";
+                    txt = txt + options[i].value + "KI=" + KI[i] + ";\r\n\r\n";
+                }
+                
+
+                fs.writeFile(filepath, txt, function (err) {
+                    if (err) throw err;
+                    Log.info("File saved: " + filename);
+                });
+            });
         });
 
         $('#lock_gopro').on('click', function () {
