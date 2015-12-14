@@ -82,7 +82,7 @@
                 <br/>
                 <div id="tabs">
                     <ul>
-                        <li><a href="#command">Raw Command</a>
+                        <li><a href="#command">Commands</a>
                         </li>
                         <li><a href="#data_entry">Data Entry</a>
                         </li>
@@ -149,12 +149,12 @@
                                 <option>Autopilot</option>
                             </select>
                         </div>
-						<div>
+                        <div>
                             <div class="display">Flap Source</div>
                         </div>
                         <div>
                             <select id="flap_source" class="dropdown">
-								<option>Controller</option>
+                                <option>Controller</option>
                                 <option>Ground Station</option>
                                 <option>Autopilot</option>
                             </select>
@@ -183,6 +183,12 @@
                         <div class="button" id="load_kValue">
                             Load K Values
                         </div>
+                        <br/>
+                        <input id="toggle_map" type="checkbox" checked="true">Map
+                        <input id="toggle_buttons" type="checkbox" checked="true">Buttons
+                        <input id="toggle_rates_yaw" type="checkbox" checked="true">Rates/Yaw
+                        <input id="toggle_log" type="checkbox" checked="true">Log
+                        
                     </div>
 
                     <div id="command">
@@ -206,11 +212,11 @@
                     <div id="time" class="display"></div>
                     <div class="col-2-8">
                         <canvas id="gps_status" class="instrument"></canvas>
-                        <canvas id="battery" class="instrument"></canvas>
+                        <canvas id="battery" class="instrument" ></canvas>
+
                     </div>
                 </div>
             </div>
-
 
             <div class="col-1-2">
                 <div class="col-1-2">
@@ -219,15 +225,28 @@
                 <div class="col-1-2">
                     <div class="centered-div">
 
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
+                        <br>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="col-2-1">
+                        <div id="flap_setpoint_display" class="display"></div>
+
+                    </div>
+                    <div class="col-2-1">
+                        <input type="number" id="flap_setpoint_input" class="input" value="0">
+
+                    </div>
+                    <div class="col-2-2">
+                        <div class="button" id="send_flap">
+                            Send Flap
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
 
                         <div class="col-2-2">
                             <div id="altitude_setpoint_display" class="display"></div>
@@ -251,29 +270,37 @@
                     <canvas id="speed" class="instrument"></canvas>
                 </div>
                 <div class="col-1-2">
+                    <br>
+                    <div class="col-2-2">
+                        <b>Speed Type:</b>
+                    </div>
                     
                     <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="col-1-1">
-                        <div id="flap_setpoint_display" class="display"></div>
+                    <div class="col-2-2">
+
+                        <select id="speed_type" class="dropdown">
+                            <option>Air</option>
+                            <option>Ground</option>
+                        </select>
 
                     </div>
-                    <div class="col-1-1">
-                        <input type="number" id="flap_setpoint_input" class="input" value="0">
+                    <br>
+                    <br>
+                    <div class="col-2-2">
+                        <div id="throttle_setpoint_display" class="display"></div>
 
                     </div>
-                    <div class="col-1-2">
-                        <div class="button" id="send_flap">
-                            Send Flap
+                    <div class="col-2-2">
+                        <input type="number" id="throttle_setpoint_input" class="input" value="0">
+
+                    </div>
+                    <div class="col-2-2">
+                        <div class="button" id="send_airspeed">
+                            Send Airspeed
                         </div>
+                        <br>
+                        <br>
                     </div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
                     <div class="col-2-2">
                         <div id="throttle_setpoint_display" class="display"></div>
 
@@ -330,7 +357,7 @@
                         Send KI Gain
                     </div>
                 </div>
-                <div class="col-2-2">
+                <div class="col-2-2" id="setpoints2">
                     <div id="setpoints">
                         <h3 align="center"> Rates and Yaw </h3>
                         <div>
@@ -347,7 +374,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-2-2">
+                <div class="col-2-2" id="emergency_buttons">
                     <h3 align="center"> Emergency Buttons </h3>
                     <div>
                         <div class="button" id="lock_gopro">Lock GoPro</div>
@@ -387,6 +414,11 @@
                 </div><div class="button" id="cancel_go_home">
                     ⏎
                 </div>
+
+            </div>
+            <div class="button" id="toggle_fullscreen" title="Fullscreen map"> 
+                <img src="fullscreen_icon.png" id="fullscreen_icon">
+
             </div>
             <div style="padding: 3px; color: #ddd; font-size: 12px;">Ctrl+L: connect (<span id="display-connections-dataRelay" class="display-connections">dataRelay</span> <span id="display-connections-multiEcho" class="display-connections">multiEcho</span>) &nbsp; Alt+A: altitudes (<span id="display-altitudes"></span> m) &nbsp; Alt+R: radii (<span id="display-radii"></span> m) &nbsp; Alt+V: Arm Vehicle</div>
         </div>

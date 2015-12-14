@@ -180,6 +180,7 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
             var throttle_input = document.getElementById("throttle_setpoint_input").value;
             dataRelay.write("set_throttle:" + throttle_input + "\r\n");
         });
+        
 
         $('#send_flap').on('click', function () {
             var flap_input = document.getElementById("flap_setpoint_input").value;
@@ -467,6 +468,94 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
                     Log.info("File saved: " + filename);
                 });
             });
+        });
+
+        $('#toggle_map').on('click', function () {
+            var button = document.getElementById("toggle_map");
+            if(!button.checked){
+                document.getElementById("path").style.visibility = 'hidden';
+                document.getElementById("cockpit").style.width = '100%';
+                document.getElementById("log").style.width = '100%';
+            }else{
+                document.getElementById("path").style.visibility = 'visible';
+                document.getElementById("cockpit").style.width = '65%';
+                document.getElementById("log").style.width = '65%';
+            }
+            
+
+        });
+
+        $('#toggle_buttons').on('click', function () {
+            var button = document.getElementById("toggle_buttons");
+            if(!button.checked){
+                document.getElementById("emergency_buttons").style.visibility = 'hidden';
+                document.getElementById("emergency_buttons").style.width = '0px';
+                //document.getElementById("log").style.width = '100%';
+            }else{
+                document.getElementById("emergency_buttons").style.visibility = 'visible';
+                document.getElementById("emergency_buttons").style.width = '100%';
+                //document.getElementById("log").style.width = '65%';
+            }
+
+        });
+
+        $('#toggle_rates_yaw').on('click', function () {
+            var button = document.getElementById("toggle_rates_yaw");
+            if(!button.checked){
+                document.getElementById("setpoints2").style.visibility = 'hidden';
+                document.getElementById("setpoints2").style.height = '0px';
+                //document.getElementById("log").style.width = '100%';
+            }else{
+                document.getElementById("setpoints2").style.visibility = 'visible';
+                document.getElementById("setpoints2").style.height = '100%';
+            }
+
+        });
+
+        $('#toggle_log').on('click', function () {
+            var button = document.getElementById("toggle_log");
+            if(!button.checked){
+                document.getElementById("log").style.visibility = 'hidden';
+                document.getElementById("log").style.height = '0px';
+                document.getElementById("cockpit").style.height = '100%';
+                //document.getElementById("log").style.width = '100%';
+            }else{
+                document.getElementById("log").style.visibility = 'visible';
+                document.getElementById("log").style.height = '10%';
+                document.getElementById("cockpit").style.height = '90%';
+            }
+
+        });
+
+        $('#toggle_fullscreen').on('click', function () {
+            var button = document.getElementById("toggle_fullscreen");
+            var image = document.getElementById("fullscreen_icon");
+
+
+            if(image.src.toString().indexOf("fullscreen_icon") > -1){
+                document.getElementById("cockpit").style.visibility = 'hidden';
+                document.getElementById("cockpit").style.width = '0px';
+                document.getElementById("path").style.left = '0%';
+                document.getElementById("path").style.width = '100%';
+                document.getElementById("path").style.height = '90%';
+                document.getElementById("log").style.width = '100%';
+
+
+                image.src="minimize_icon.png";
+                //document.getElementById("cockpit").style.height = '100%';
+                //document.getElementById("log").style.width = '100%';
+            }else{
+                document.getElementById("cockpit").style.visibility = 'visible';
+                document.getElementById("cockpit").style.width = '65%';
+                document.getElementById("path").style.left = '65%%';
+                document.getElementById("path").style.width = '35%';
+                document.getElementById("path").style.height = '100%';
+                document.getElementById("log").style.width = '90%';
+
+
+                image.src="fullscreen_icon.png";
+            }
+
         });
 
         $('#lock_gopro').on('click', function () {
@@ -831,6 +920,14 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
         context.font = '15pt Calibri';
         context.fillText(title, 50, 20);
 
+        var selectList = document.createElement("select");
+        var option = document.createElement("option");
+	    option.text = "Ground";
+	    selectList.appendChild(option);
+	    option.text = "Air";
+	    selectList.appendChild(option);
+	    //context.add(selectList);
+
         //constants
         BOX_HEIGHT = 30;
         BOX_WIDTH = 80;
@@ -924,6 +1021,7 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
         var pitch = flightData.pitch * (Math.PI / 180);
         var pitch_setpoint = flightData.pitch_setpoint;
         var ground_speed = parseFloat(flightData.ground_speed);
+        var air_speed = parseFloat(flightData.airspeed);
         var batteryLevel = Math.round(parseFloat(flightData.batteryLevel));
         var editing_gain = parseInt(flightData.editing_gain);
         var gpsStatus = flightData.gpsStatus;
@@ -945,7 +1043,14 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
         displayControlStatus(editing_gain);
         displayGPSStatus(gpsStatus);
         drawScale(altitude, 250, "altimeter", "Altitude");
-        drawScale(ground_speed, 250, "speed", "Speed");
+
+        var speedType = document.getElementById("speed_type").options[e.selectedIndex].text;
+        if(speedType == "Ground"){
+        	drawScale(ground_speed, 250, "speed", "Ground Speed");
+        }else{
+        	drawScale(air_speed, 250, "speed", "Air Speed");
+        }
+        
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
         displaySetpointsAndRates();
 

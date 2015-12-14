@@ -93,6 +93,7 @@ body {
 
 #path {
     position: absolute;
+    overflow:hidden;
     top: 0;
     left: 65%;
     width: 35%;
@@ -133,10 +134,10 @@ body {
 
 #map {
     position: absolute;
-    width: 100%;
+    width: 2000px;
     /*bottom: 200px;*/
-
-    bottom: 0;
+    overflow: hidden;
+    bottom: 00px;
     top: 50px;
     margin: 0;
 }

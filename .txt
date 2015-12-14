@@ -1,0 +1,84 @@
+New Input ====
+currentTime: undefined
+currentThrottle: undefined
+currentFlap: undefined
+roll: NaN
+pitch: NaN
+yaw: NaN
+altitude: NaN
+heading: undefined
+ground speed: NaN
+battery level: NaN
+editing gain: NaN
+gps status: undefined
+kd gain: undefined
+kp gain: undefined
+ki gain: undefined
+roll setpoint: undefined
+pitch setpoint: undefined
+yaw setpoint: undefined
+Comment: 
+
+New Input ====
+currentTime: undefined
+currentThrottle: undefined
+currentFlap: undefined
+roll: NaN
+pitch: NaN
+yaw: NaN
+altitude: NaN
+heading: undefined
+ground speed: NaN
+battery level: NaN
+editing gain: NaN
+gps status: undefined
+kd gain: undefined
+kp gain: undefined
+ki gain: undefined
+roll setpoint: undefined
+pitch setpoint: undefined
+yaw setpoint: undefined
+Comment: 
+
+New Input ====
+currentTime: undefined
+currentThrottle: undefined
+currentFlap: undefined
+roll: NaN
+pitch: NaN
+yaw: NaN
+altitude: NaN
+heading: undefined
+ground speed: NaN
+battery level: NaN
+editing gain: NaN
+gps status: undefined
+kd gain: undefined
+kp gain: undefined
+ki gain: undefined
+roll setpoint: undefined
+pitch setpoint: undefined
+yaw setpoint: undefined
+Comment: 
+
+New Input ====
+currentTime: undefined
+currentThrottle: undefined
+currentFlap: undefined
+roll: NaN
+pitch: NaN
+yaw: NaN
+altitude: NaN
+heading: undefined
+ground speed: NaN
+battery level: NaN
+editing gain: NaN
+gps status: undefined
+kd gain: undefined
+kp gain: undefined
+ki gain: undefined
+roll setpoint: undefined
+pitch setpoint: undefined
+yaw setpoint: undefined
+Comment: 
+
