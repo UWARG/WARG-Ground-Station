@@ -310,6 +310,7 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
             wstream.write("currentTime: " + flightData.time + "\r\n");
             wstream.write("currentThrottle: " + flightData.throttle_setpoint + "\r\n");
             wstream.write("currentFlap: " + flightData.flap_setpoint + "\r\n");
+            wstream.write("currentAirspeed: " + flightData.airspeed + "\r\n");
             wstream.write("roll: " + flightData.roll * (Math.PI / 180) + "\r\n");
             wstream.write("pitch: " + flightData.pitch * (Math.PI / 180) + "\r\n");
             wstream.write("yaw: " + flightData.yaw * (Math.PI / 180) + "\r\n");
@@ -1030,7 +1031,6 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
         var ki_gain = flightData.ki_gain;
         var time = flightData.time;
         var errorCodes = flightData.errorCodes;
-
         //Used in path.js for some reason
         lat = flightData.lat;
         lon = flightData.lon;
@@ -1044,11 +1044,12 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
         displayGPSStatus(gpsStatus);
         drawScale(altitude, 250, "altimeter", "Altitude");
 
-        var speedType = document.getElementById("speed_type").options[e.selectedIndex].text;
+        var speedTypeElement = document.getElementById("speed_type")
+        var speedType = speedTypeElement.options[speedTypeElement.selectedIndex].text;
         if(speedType == "Ground"){
-        	drawScale(ground_speed, 250, "speed", "Ground Speed");
+        	drawScale(ground_speed, 250, "speed", "Ground");
         }else{
-        	drawScale(air_speed, 250, "speed", "Air Speed");
+        	drawScale(air_speed, 250, "speed", "Air");
         }
         
         displayCurrentGains(editing_gain, kd_gain, kp_gain, ki_gain);
