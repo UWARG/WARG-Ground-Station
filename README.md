@@ -1,4 +1,5 @@
-The ground station that displays received from the [data-relay-station](https://github.com/UWARG/data-relay-station)
+#WARG Ground Station V2
+#####The ground station that displays received from the [data-relay-station](https://github.com/UWARG/data-relay-station)
 
 Setup instructions:  
 1. Clone the repo  
@@ -18,3 +19,6 @@ Uses the following:
 -[GMapCatcher](https://code.google.com/p/gmapcatcher/downloads/list)  
 
 Map tiles are in OSM format. They can be downloaded and exported using GMapCatcher. Leaflet is the maps library used to display the tiles.
+
+#License
+[ISC](https://raw.githubusercontent.com/UWARG/WARG-Ground-Station-V2/FolderOrganization/LICENSE)
