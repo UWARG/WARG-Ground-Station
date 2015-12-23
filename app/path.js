@@ -25,7 +25,7 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
             map = L.map('map').setView(defaultLatLng, 17);
             map.attributionControl.setPrefix(false);
 
-            L.tileLayer('sat_tiles/{z}/{x}/{y}.png', {
+            L.tileLayer('assets/sat_tiles/{z}/{x}/{y}.png', {
                 maxZoom: 19
             }).addTo(map);
 
