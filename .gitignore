@@ -1,10 +1,10 @@
+node_modules/
+
 *.pak
 credits.html
 *.dll
 *.dat
-sat_tiles/*
 
-node_modules/
 
 *.exe
 jquery-2.1.1.min.js
