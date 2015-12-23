@@ -4,39 +4,45 @@
 <head>
     <title>WARG-Ground-Station-V2</title>
     <meta charset="utf-8">
+    
+    <!-- CSS Libraries (includig leaflet and jquery) -->
+    <link rel="stylesheet" href="styles/lib/leaflet.css">
+    <link rel="stylesheet" href="styles/lib/simplegrid.css">
+    <link rel="stylesheet" href="styles/lib/leaflet.altitudemarker.css">
+    <link rel="stylesheet" href="styles/lib/leaflet.messagebox.css">
+    <link rel="stylesheet" href="styles/lib/leaflet.plotter.css">
+    <link rel="stylesheet" href="styles/lib/jquery-ui.css">
+    <link rel="stylesheet" href="styles/lib/jquery-ui.theme.css">
+    
+    <!-- Our CSS files -->
+    <link rel="stylesheet" href="styles/style.css">
 
-    <link rel="stylesheet" href="leaflet.css">
-    <link rel="stylesheet" type="text/css" href="simplegrid.css">
-    <link rel="stylesheet" href="styles/leaflet.altitudemarker.css">
-    <link rel="stylesheet" href="styles/leaflet.messagebox.css">
-    <link rel="stylesheet" href="styles/leaflet.plotter.css">
-    <link rel="stylesheet" href="style.css">
+    <!-- Javascript Libraries (simplegrid, jquery, leaflet) -->
+    <script src="app/lib/jquery-2.1.1.min.js"></script>
+    <script src="app/lib/jquery-ui.js"></script>
+    <script src="app/lib/mousetrap.js"></script>
+    <script src="app/lib/simple-graph.js"></script>
 
-    <script src="jquery-2.1.1.min.js"></script>
-    <script src="jquery-ui.js"></script>
-    <link rel="stylesheet" href="jquery-ui.css">
-    <link rel="stylesheet" href="jquery-ui.theme.css">
+    <script src="app/lib/leaflet.js"></script>
+    <script src="app/lib/leaflet.messagebox.js"></script>
+    <script src="app/lib/leaflet.plotter.js"></script>
+    <script src="app/lib/leaflet.core-extensions.js"></script>
+    <script src="app/lib/leaflet.rotatedmarker.js"></script>
+    <script src="app/lib/leaflet.altitudemarker.js"></script>
+    <script src="app/lib/leaflet.control.button.js"></script>
+    <script src="app/lib/leaflet.control.text.js"></script>
 
-    <script src="mousetrap.js"></script>
-    <script src="nw-shortcuts.js"></script>
-    <script src="data.js"></script>
-    <script src="log.js"></script>
-    <script src="network.js"></script>
-    <script src="cockpit.js"></script>
-    <script src="leaflet.js"></script>
-    <script src="leaflet.core-extensions.js"></script>
-    <script src="leaflet.rotatedmarker.js"></script>
-    <script src="leaflet.altitudemarker.js"></script>
-    <script src="leaflet.control.button.js"></script>
-    <script src="leaflet.control.text.js"></script>
-    <script src="leaflet.messagebox.js"></script>
-    <script src="leaflet.plotter.js"></script>
-    <script src="tooltip.js"></script>
-    <script src="d3.js"></script>
-    <script src="simple-graph.js"></script>
-    <script src="height-graph.js"></script>
-    <script src="path.js"></script>
-    <script src="photomapper.js"></script>
+    <!-- Our application scripts -->
+    <script src="app/nw-shortcuts.js"></script>
+    <script src="app/data.js"></script>
+    <script src="app/log.js"></script>
+    <script src="app/network.js"></script>
+    <script src="app/cockpit.js"></script>
+    <script src="app/tooltip.js"></script>
+    <script src="app/d3.js"></script>
+    <script src="app/height-graph.js"></script>
+    <script src="app/path.js"></script>
+    <script src="app/photomapper.js"></script>
 </head>
 
 <body>
