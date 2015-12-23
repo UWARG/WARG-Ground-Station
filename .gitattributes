@@ -1,0 +1,4 @@
+*.png filter=lfs -crlf
+*.jpg filter=lfs -crlf
+./**/*.png filter=lfs -crlf
+./**/*.jpg filter=lfs -crlf
