@@ -24,7 +24,7 @@ nwjs.app/
 nwjs/
 nw.sh
 
-images/
+
 *.log
 *.7z
 jquery-ui.js
