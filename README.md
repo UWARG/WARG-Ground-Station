@@ -1,7 +1,7 @@
 The ground station that displays received from the [data-relay-station](https://github.com/UWARG/data-relay-station)
 
 Setup instructions:  
-1. Clone the repo
+1. Clone the repo  
 2. Download [Node.js](https://nodejs.org/en/) for your OS  
 3. Download git lfs (Git Large File Storage) [here](https://git-lfs.github.com/) otherwise you won't be able to download the images  
 4. Run `npm install` to install the app dependencies (including NW.js)  
