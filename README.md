@@ -6,6 +6,8 @@ Setup instructions:
 3. Run `npm install` to install the app dependencies (including NW.js) 
 4. Run `npm start` to start the app
 
+You can also start the app by running `nw` at the project root if you have NW.js globally installed by running `npm install -g nw`
+
 Note: This application is boring unless you have the data relay station running.
 
 Uses the following:  
