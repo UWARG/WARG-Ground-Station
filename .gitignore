@@ -1,5 +1,6 @@
 node_modules/
 
+Thumbs.db
 ./**/Thumbs.db
 
 *.pak
@@ -44,5 +45,4 @@ images/
 jquery-ui.js
 jquery-ui.css
 jquery-ui.theme.css
-*.png
 *.csv
