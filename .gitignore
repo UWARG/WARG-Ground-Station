@@ -3,11 +3,9 @@ credits.html
 *.dll
 *.dat
 sat_tiles/*
-node_modules/net/index.js
-node_modules/net/LICENSE
-node_modules/net/package.json
-node_modules/net/README.md
-node_modules/net/test.js
+
+node_modules/
+
 *.exe
 jquery-2.1.1.min.js
 leaflet.css
