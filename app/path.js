@@ -527,13 +527,13 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
         // Init icons for planeMarker if necessary
         if (!planeIcon) {
             planeIcon = L.icon({
-                iconUrl: 'plane.png',
+                iconUrl: 'assets/images/plane.png',
                 iconSize: [30, 30],
             });
         }
         if (!planeHollowIcon) {
             planeHollowIcon = L.icon({
-                iconUrl: 'plane-hollow.png',
+                iconUrl: 'assets/images/plane-hollow.png',
                 iconSize: [30, 30],
                 title: 'No GPS fix',
             });

@@ -712,7 +712,7 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
 
         //Indicator
         image = document.createElement('img');
-        image.src = "heading.png";
+        image.src = "assets/images/heading.png";
         context.translate(50, 50);
         context.translate(50, 50);
         context.rotate(heading * Math.PI / 180);
@@ -769,7 +769,7 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
 
         //Indicator
         image = document.createElement('img');
-        image.src = "roll.png";
+        image.src = "assets/images/roll.png";
         context.translate(36, 36);
         context.translate(64, 64);
         context.rotate(-roll);
@@ -825,7 +825,7 @@ var Cockpit = (function ($, Data, Log, Network, Mousetrap) {
 
         //Indicator
         image = document.createElement('img');
-        image.src = "pitch.png";
+        image.src = "assets/images/pitch.png";
         context.translate(36, 36);
         context.translate(64, 64);
         context.rotate(pitch);
