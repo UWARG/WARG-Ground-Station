@@ -1,6 +1,6 @@
 (function (Network, Log) {
 
-	var csvFilename = "photomapper-" + getDateTime().replace(/[\:\.]/g, "") + ".csv";
+	var csvFilename = "logs/photomapper/photomapper-" + getDateTime().replace(/[\:\.]/g, "") + ".csv";
 	var wstream = require('fs').createWriteStream(csvFilename, {
         "encoding": null,
         "mode": 0666

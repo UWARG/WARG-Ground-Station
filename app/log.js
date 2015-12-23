@@ -1,6 +1,6 @@
 var Log = (function ($) {
     var fs = require('fs');
-    var log_file = fs.createWriteStream("GCS-" + getDateTime().replace(/[\:\.]/g, "") + ".log");
+    var log_file = fs.createWriteStream("logs/GCS-" + getDateTime().replace(/[\:\.]/g, "") + ".log");
 
     function writeToWindow(text) {
         var logDiv = $('#log')
