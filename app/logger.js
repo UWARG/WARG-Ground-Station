@@ -4,6 +4,8 @@
 
 var fs=require('fs');
 var app_config=require('../config/application-config');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 
 var date=new Date();
 var string_date=date.toDateString() + ' ' + date.toLocaleTimeString(); //output format is like: "Thu Dec 24 2015 2:33:20 AM"
@@ -12,53 +14,46 @@ var all_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.repla
 var debug_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-debug' + ".log");
 var error_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-error' + ".log");
 
-var Logger={
-	getStringDate: function(){
+var Logger=function(){
+ 	// Initialize necessary properties from `EventEmitter` in this instance
+  	EventEmitter.call(this);
+  	var that=this;
+	var getStringDate=function(){
 		var date=new Date();
 		return date.toDateString() + ' ' + date.toLocaleTimeString();
-	},
-
-	writeToWindow:function(text) { //TODO: handle a way of transmitting the data better than this
-        // var logDiv = $('#log')
-        // var newItem = $('<div>' + text + '</div>');
-        // logDiv.append(newItem);
-        // var elem = document.getElementById('log');
-        // if (elem) {
-        //     elem.scrollTop = elem.scrollHeight;
-        // }
-    },
-    writeDebugFile:function(text) {
+	};
+	var writeDebugFile=function(text) {
         debug_log.write(text.trim() + "\r\n");
         all_log.write(text.trim() + "\r\n");
-    },
-    writeErrorFile:function(text) {
+    };
+    var writeErrorFile=function(text) {
         error_log.write(text.trim() + "\r\n");
         all_log.write(text.trim() + "\r\n");
-    },
-    debug:function(text) {
-    	var string_date=this.getStringDate();
-        this.writeDebugFile("[DEBUG] " +string_date+' '+ text);
-        this.writeToWindow("[DEBUG] " +string_date+' '+ text);
+    };
+    this.debug=function(text) {
+    	var string_date=getStringDate();
+        writeDebugFile("[DEBUG] " +string_date+' '+ text);
         console.log("[DEBUG] " +string_date+' '+ text);
-    },
-    info:function(text) {
-    	var string_date=this.getStringDate();
-        this.writeDebugFile("[INFO] " +string_date+' '+ text);
-        this.writeToWindow("[INFO] " +string_date+' '+ text);
+    };
+    this.info=function(text) {
+    	var string_date=getStringDate();
+        writeDebugFile("[INFO] " +string_date+' '+ text);
         console.log("[INFO] " +string_date+' '+ text);
-    },
-    warn:function(text) {
-    	var string_date=this.getStringDate();
-        this.writeErrorFile("[WARNING] " +string_date+' '+ text);
-        this.writeToWindow("[WARNING] " +string_date+' '+ text);
+    };
+    this.warn=function(text) {
+    	var string_date=getStringDate();
+        writeErrorFile("[WARNING] " +string_date+' '+ text);
         console.warn("[WARNING] " +string_date+' '+ text);
-    },
-    error:function(text) {
-    	var string_date=this.getStringDate();
-        this.writeErrorFile("[ERROR] " +string_date+' '+ text);
-        this.writeToWindow("[ERROR] " +string_date+' '+ text);
+    };
+    this.error=function(text) {
+    	var string_date=getStringDate();
+        writeErrorFile("[ERROR] " +string_date+' '+ text);
         console.error("[ERROR] " +string_date+' '+ text);
     }
 };
 
-module.exports=Logger;
+util.inherits(Logger,EventEmitter);
+
+var logger=new Logger();
+
+module.exports=logger;
