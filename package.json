@@ -14,14 +14,16 @@
     "height": 800
   },
   "single-instance": false,
-  "scripts":{
-    "start":"node node_modules/nw/bin/nw ./"
+  "scripts": {
+    "start": "node node_modules/nw/bin/nw ./",
+    "build": "node ./build.js" 
   },
-  
   "license": "ISC",
-  "private":true,
-
+  "private": true,
   "dependencies": {
-    "nw": "^0.12.3"
+    "nw": "0.12.3"
+  },
+  "devDependencies": {
+    "nw-builder": "^2.2.0"
   }
 }
