@@ -3,7 +3,7 @@
 //error and warning level are saved to the error log, debug and info are saved to the debug log, and everything is stored in the "all" log
 
 var fs=require('fs');
-var app_config=require('../config/application-config');
+var app_config=require('../../config/application-config');
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
