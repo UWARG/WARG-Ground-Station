@@ -21,7 +21,11 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "nw": "0.12.3"
+    "backbone": "^1.2.3",
+    "backbone.marionette": "^2.4.4",
+    "jquery": "^2.1.4",
+    "nw": "0.12.3",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
