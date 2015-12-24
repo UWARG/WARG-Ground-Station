@@ -9,14 +9,14 @@
   },
   "main": "index.html",
   "window": {
-    "toolbar": false,
+    "toolbar": true,
     "width": 1300,
     "height": 800
   },
-  "single-instance": false,
+  "single-instance": true,
   "scripts": {
     "start": "node node_modules/nw/bin/nw ./",
-    "build": "node ./build.js" 
+    "build": "node ./build.js"
   },
   "license": "ISC",
   "private": true,
@@ -24,6 +24,7 @@
     "nw": "0.12.3"
   },
   "devDependencies": {
+    "gulp": "^3.9.0",
     "nw-builder": "^2.2.0"
   }
 }
