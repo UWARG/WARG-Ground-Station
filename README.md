@@ -1,4 +1,4 @@
-#WARG Ground Station V2
+#WARG Ground Station
 #####The ground station that displays received from the [data-relay-station](https://github.com/UWARG/data-relay-station)
 
 #Installation 
