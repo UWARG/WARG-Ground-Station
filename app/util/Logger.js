@@ -5,7 +5,7 @@
 var fs=require('fs');
 var app_config=require('../../config/application-config');
 var util = require('util');
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require('events');
 
 var date=new Date();
 var string_date=date.toDateString() + ' ' + date.toLocaleTimeString(); //output format is like: "Thu Dec 24 2015 2:33:20 AM"
