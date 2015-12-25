@@ -18,46 +18,46 @@ var data_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.repl
 
 var Logger=function(){
  	// Initialize necessary properties from `EventEmitter` in this instance
-  	EventEmitter.call(this);
-  	var that=this;
+	EventEmitter.call(this);
+
 	var getStringDate=function(){
 		var date=new Date();
 		return date.toDateString() + ' ' + date.toLocaleTimeString();
 	};
 	var writeDebugFile=function(text) {
-        debug_log.write(text.trim() + "\r\n");
-        all_log.write(text.trim() + "\r\n");
+      debug_log.write(text.trim() + "\r\n");
+      all_log.write(text.trim() + "\r\n");
     };
     var writeErrorFile=function(text) {
-        error_log.write(text.trim() + "\r\n");
-        all_log.write(text.trim() + "\r\n");
+      error_log.write(text.trim() + "\r\n");
+      all_log.write(text.trim() + "\r\n");
     };
     var writeDataFile=function(text) {
-        data_log.write(text.trim() + "\r\n");
+      data_log.write(text.trim() + "\r\n");
     };
     this.data=function(text,label) {
-        var string_date=getStringDate();
-        writeDataFile("["+label+"] " +string_date+' '+ text);
+      var string_date=getStringDate();
+      writeDataFile("["+label+"] " +string_date+' '+ text);
     };
     this.debug=function(text) {
     	var string_date=getStringDate();
-        writeDebugFile("[DEBUG] " +string_date+' '+ text);
-        console.log("[DEBUG] " +string_date+' '+ text);
+      writeDebugFile("[DEBUG] " +string_date+' '+ text);
+      console.log("[DEBUG] " +string_date+' '+ text);
     };
     this.info=function(text) {
     	var string_date=getStringDate();
-        writeDebugFile("[INFO] " +string_date+' '+ text);
-        console.log("[INFO] " +string_date+' '+ text);
+      writeDebugFile("[INFO] " +string_date+' '+ text);
+      console.log("[INFO] " +string_date+' '+ text);
     };
     this.warn=function(text) {
     	var string_date=getStringDate();
-        writeErrorFile("[WARNING] " +string_date+' '+ text);
-        console.warn("[WARNING] " +string_date+' '+ text);
+      writeErrorFile("[WARNING] " +string_date+' '+ text);
+      console.warn("[WARNING] " +string_date+' '+ text);
     };
     this.error=function(text) {
     	var string_date=getStringDate();
-        writeErrorFile("[ERROR] " +string_date+' '+ text);
-        console.error("[ERROR] " +string_date+' '+ text);
+      writeErrorFile("[ERROR] " +string_date+' '+ text);
+      console.error("[ERROR] " +string_date+' '+ text);
     }
 };
 
