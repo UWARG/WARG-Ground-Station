@@ -8,16 +8,17 @@ module.exports=function(Marionette,_){
     className:'mainLayoutView',
 
     regions:{
-      console_region:"#bottom-left-region",
-      map_region: "#right-region",
-      dialog_region:"#top-left-region"
+      console:"#console-region",
+      status:"#console-region",
+      map: "#right-region",
+      telemetry:"#top-left-region"
     },
 
 		initialize: function(){
 
 		},
     onRender:function(){
-      this.getRegion('console_region').show(new ConsoleView());
+      this.getRegion('console').show(new ConsoleView());
     },
 		serializeData: function(){
 			return{

@@ -21,3 +21,15 @@
   width: 100%;
   
 }
+#status-region{
+  height: 100px;
+  width: 100%;
+  background-color: grey;
+}
+
+#console-region{
+  height: calc(100% - 100px);
+  width: 100%;
+  position: relative;
+  background-color: rgba(0,0,0,0.8);
+}
