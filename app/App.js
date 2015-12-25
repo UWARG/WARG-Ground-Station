@@ -19,6 +19,6 @@ $(document).ready(function(){
 
 //Start the live reload server if in development mode
 if(app_config.mode==='development'){
-  require('./app/util/livereload').start();
-  Logger.debug('Live reload server started!');
+  //require('./app/util/livereload').start();
+  //Logger.debug('Live reload server started!');
 }
