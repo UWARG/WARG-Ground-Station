@@ -32,9 +32,10 @@ var Connection = function (options) {
     };
 
     this.write=function(data){
-      this.socket.write(data);
-      this.emit('write',data);
-      Logger.info("Network "+this.name+" Sent: " + data);
+      this.socket.write(data,'utf8',function(){
+        this.emit('write',data);
+        Logger.info("Network "+this.name+" Sent: " + data);
+      }.bind(this));
     };
 
     this.socket = new net.Socket();
@@ -47,12 +48,12 @@ var Connection = function (options) {
     this.socket.on('error',function(error){ 
       Logger.error('Problem with '+this.name+' connection (host: '+this.host+',port:'+this.port+')\n'
         +error.toString());
-      this.emit('error', error); //NOTE: this will THROW an error if there is nothing listening to it!
+      this.emit('socket_error', error); //NOTE: named socket_error and not error so as to not throw an exception
     }.bind(this));
 
     this.socket.on('timeout',function(){
       this.emit('timeout');
-      this.socket.setTimeout(5000);
+      this.socket.setTimeout(5000); //NOTE: I dont think this is necessary -Serge Dec 25,2015
       Logger.error('Timed out for 5s for '+this.name+' connection (host: '+this.host+',port:'+this.port+')');
     }.bind(this));
 

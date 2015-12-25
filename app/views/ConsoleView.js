@@ -17,14 +17,16 @@ module.exports=function(Marionette,_){
     events:{
       'click #scroll-bottom-button':'enableScrollBottom',
       'click #send-command-button':'sendCommand',
-      'submit #commands-input-form':'sendCommand'
+      'submit #commands-input-form':'sendCommand',
+      'keyup #commands-input':'cycleCommandHistory'
     },
 
     className:'consoleView',
 
     initialize: function(){
       this.scroll_bottom=true;
-      console.log(Network);
+      this.command_history=[];
+      this.command_history_index=0;
     },
 
     onRender:function(){
@@ -52,12 +54,24 @@ module.exports=function(Marionette,_){
 
       this.detectScrollUp();
     },
+    cycleCommandHistory: function(e){
+      if(e.keyCode===38){ //keyup
+        this.ui.command_input.val(this.command_history[this.command_history.length-1-this.command_history_index]);
+        this.command_history.length-1-this.command_history_index>0 ? this.command_history_index++:this.command_history_index;
+      }
+      else if (e.keyCode===40){ //keydown
+        this.ui.command_input.val(this.command_history[this.command_history.length-1-this.command_history_index]);
+        this.command_history_index>0 ? this.command_history_index--:this.command_history_index;
+      }
+    },
     sendCommand: function(e){
       if(e) e.preventDefault();
       var command=this.ui.command_input.val();
       if(command && command.trim()){
         Network.connections['data_relay'].write(command.trim());
         this.ui.command_input.val('');
+        this.command_history.push(command.trim());
+        this.command_history_index=0;
       }
     },
     detectScrollUp:function(){
