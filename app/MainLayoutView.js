@@ -1,18 +1,28 @@
-module.exports=function(Marionette,_){
-	var Template=require('./util/Template');
+var Template=require('./util/Template');
 
-	var MainLayoutView=Marionette.LayoutView.extend({
+module.exports=function(Marionette,_){
+  var ConsoleView=require('./views/ConsoleView')(Marionette,_);
+
+	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
+    className:'mainLayoutView',
+
+    regions:{
+      console_region:"#bottom-left-region",
+      map_region: "#right-region",
+      dialog_region:"#top-left-region"
+    },
+
 		initialize: function(){
-			var Backbone=require('backbone');
 
 		},
+    onRender:function(){
+      this.getRegion('console_region').show(new ConsoleView());
+    },
 		serializeData: function(){
 			return{
 				hello:'wasup serge!'
 			}
 		}
 	});
-
-	return MainLayoutView;
 }
