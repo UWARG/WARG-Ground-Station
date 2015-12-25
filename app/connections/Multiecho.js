@@ -7,9 +7,11 @@ var TelemetryData=require('../models/TelemetryData');
 module.exports=function(){
   var data_relay=Network.connections['multi_echo'] || Network.addConnection('multi_echo',network_config.multiecho_host,network_config.multiecho_port);
 
+  //TODO: Implement the new multiecho protocol here
   data_relay.on('data',function(data){
     data = data.toString().trim();
-    console.log(data);
+      //NOTE: this is legacy code!
+      // console.log(data);
       // data = data.replace(/TA:/g, '\nTA:');
       // data = data.split('\n');
 
