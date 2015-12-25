@@ -4,10 +4,13 @@ var EventEmitter = require('events');
 var Logger=require('../util/Logger');
 
 var Connection = function (options) {
-    if(options){
-      this.name = options.name || throw "Connection name parameter is required!";
-      this.host = options.host || throw "Connection host parameter is required!";
-      this.port = options.port || throw "Connection port parameter is required!";  
+    if(options && options.name && options.host && options.port){
+      this.name = options.name;
+      this.host = options.host;
+      this.port = options.port;  
+    }
+    else{
+      throw new Error("Connection name,host, and port parameters are all required!")
     }
     
     // Initialize necessary properties from `EventEmitter` in this instance
