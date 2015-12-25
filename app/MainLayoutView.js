@@ -1,10 +1,10 @@
-
 module.exports=function(Marionette,_){
-	var template=require('./util/template');
+	var Template=require('./util/Template');
 
 	var MainLayoutView=Marionette.LayoutView.extend({
-		template:template('testview'),
+		template:Template('MainLayoutView'),
 		initialize: function(){
+			var Backbone=require('backbone');
 
 		},
 		serializeData: function(){
