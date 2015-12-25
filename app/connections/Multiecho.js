@@ -5,48 +5,37 @@ var Logger=require('../util/Logger');
 var TelemetryData=require('../models/TelemetryData');
 
 module.exports=function(){
-	var data_relay=Network.connections['data_relay'] || Network.addConnection('data_relay',network_config.multiecho_host,network_config.multiecho_port);
+  var data_relay=Network.connections['multi_echo'] || Network.addConnection('multi_echo',network_config.multiecho_host,network_config.multiecho_port);
 
-	data_relay.on('connect',function(){
-		data_relay.write("commander\r\n");
-	});
+  data_relay.on('data',function(data){
+    data = data.toString().trim();
+    console.log(data);
+      // data = data.replace(/TA:/g, '\nTA:');
+      // data = data.split('\n');
 
-	data_relay.on('close',function(had_error){
-		TelemetryData.headers=[];
-	});
+      // for (var i = 0; i < data.length; ++i) {
+      //   var parts = data[i].split(':');
+      //   if (parts[0] != "TA") continue;
 
-	data_relay.on('write',function(data){
-		TelemetryData.sent.push({
-			time: new Date(),
-			data: data
-		});
-	});
+      //   var arr = parts[1].split(',').map(function (str) {
+      //       return str.trim();
+      //   });
 
-	data_relay.on('data',function(data){
-		data = data.toString();
-		
-		TelemetryData.received.push({
-			time: new Date(),
-			data: data
-		});
+      //   var comp = Data.compIDs.indexOf(arr[3]);
+      //   if (comp == -1) {
+      //       comp = Data.compIDs.push(arr[3]) - 1;
+      //   }
 
-	    // First transmission is header columns
-	    if (TelemetryData.headers.length === 0) {
-	        Logger.debug('Network '+data_relay.name+' Received headers: ' + data);
-	        TelemetryData.headers = data.split(",").map(function (str) {
-	            return str.trim();
-	        });
-	        Logger.debug('Network '+data_relay.name+' Parsed headers: ' + JSON.stringify(TelemetryData.headers));
-        	Logger.data(TelemetryData.headers,'DATA_RELAY_HEADERS');       
-	    }
-	    else{ //if its the non-header columns(actual data)
-	        var split_data = data.split(",");
-	        for (var i = 0; i < split_data.length; i++) {
-	            TelemetryData.current_state[TelemetryData.headers[i]] = split_data[i].trim().toString().replace('(', '').replace(')', '');
-	        }
-	        TelemetryData.state_history.push(TelemetryData.current_state);
-	        TelemetryData.emit('data_received',TelemetryData.current_state);
-	        Logger.data(JSON.stringify(TelemetryData.current_state),'DATA_RELAY_DATA');       
-	    }
-	});
+      //   var target = {
+      //       lat: arr[0],
+      //       lon: arr[1],
+      //       type: arr[2],
+      //       comp: comp,
+      //   };
+      //   Data.targets.push(target);
+
+      //   Log.debug("Network (multiEcho) Parsed: " + JSON.stringify(target));
+
+      //   multiEcho.emitter.emit('data', target);
+  });
 };
