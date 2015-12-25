@@ -66,6 +66,7 @@ module.exports=function(Marionette,_){
         this.network_callbacks['info']=callback;
         Logger.addListener('info',callback);
         this.infoMessages=true;
+        this.scroll_bottom=true;
       }
       this.ui.info_toggle.prop('checked',this.infoMessages);
     },
@@ -80,6 +81,7 @@ module.exports=function(Marionette,_){
         this.network_callbacks['debug']=callback;
         Logger.addListener('debug',callback);
         this.debugMessages=true;
+        this.scroll_bottom=true;
       }
       this.ui.debug_toggle.prop('checked',this.debugMessages);
     },
@@ -94,6 +96,7 @@ module.exports=function(Marionette,_){
         this.network_callbacks['error-log']=callback;
         Logger.addListener('error-log',callback);
         this.errorMessages=true;
+        this.scroll_bottom=true;
       }
       this.ui.error_toggle.prop('checked',this.errorMessages);
     },
@@ -108,6 +111,7 @@ module.exports=function(Marionette,_){
         this.network_callbacks['warn']=callback;
         Logger.addListener('warn',callback);
         this.warnMessages=true;
+        this.scroll_bottom=true;
       }
       this.ui.warn_toggle.prop('checked',this.warnMessages);
     },
@@ -122,6 +126,7 @@ module.exports=function(Marionette,_){
         this.network_callbacks['data']=callback;
         Logger.addListener('data',callback);
         this.dataMessages=true;
+        this.scroll_bottom=true;
       }
       this.ui.data_toggle.prop('checked',this.dataMessages);
     },
