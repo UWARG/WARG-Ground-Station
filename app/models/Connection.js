@@ -5,9 +5,9 @@ var Logger=require('../util/Logger');
 
 var Connection = function (options) {
     if(options){
-      this.name = options.name || null;
-      this.host = options.host || null;
-      this.port = options.port || null;  
+      this.name = options.name || throw "Connection name parameter is required!";
+      this.host = options.host || throw "Connection host parameter is required!";
+      this.port = options.port || throw "Connection port parameter is required!";  
     }
     
     // Initialize necessary properties from `EventEmitter` in this instance
@@ -31,7 +31,7 @@ var Connection = function (options) {
     this.write=function(data){
       this.socket.write(data);
       this.emit('write',data);
-      Logger.info("Network (dataRelay) Sent: " + data);
+      Logger.info("Network "+this.name+" Sent: " + data);
     };
 
     this.socket = new net.Socket();
