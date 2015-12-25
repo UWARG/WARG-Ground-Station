@@ -3,3 +3,21 @@
   height: 100%;
   width: 100%;
 }
+
+.mainLayoutView #left-region{
+  height: 100%;
+  background-color: #FAFAFA;
+}
+.mainLayoutView #right-region{
+  height: 100%;
+  background-color: #FAFAFA;
+}
+.mainLayoutView #top-left-region{
+  width: 100%;
+  
+  background-color: #FAFAFA;
+}
+.mainLayoutView #bottom-left-region{
+  width: 100%;
+  
+}

@@ -1,1 +1,7 @@
-/*Universal styles go here*/
+/*/*Universal styles go here*/
+.vsplitter{
+  background: linear-gradient(to right, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 
+}
+.hsplitter{
+  background: linear-gradient(to bottom, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 
+}
