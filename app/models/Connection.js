@@ -32,9 +32,11 @@ var Connection = function (options) {
     };
 
     this.write=function(data){
-      this.socket.write(data,'utf8',function(){
-        this.emit('write',data);
-        Logger.info("Network "+this.name+" Sent: " + data);
+      this.socket.write(data,'utf8',function(error){
+        if(!error){
+          this.emit('write',data);
+          Logger.info("Network "+this.name+" Sent: " + data);
+        }
       }.bind(this));
     };
 
