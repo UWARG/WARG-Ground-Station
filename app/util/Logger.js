@@ -38,26 +38,31 @@ var Logger=function(){
     this.data=function(text,label) {
       var string_date=getStringDate();
       writeDataFile("["+label+"] " +string_date+' '+ text);
+      this.emit('data',string_date,text,label);
     };
     this.debug=function(text) {
     	var string_date=getStringDate();
       writeDebugFile("[DEBUG] " +string_date+' '+ text);
       console.log("[DEBUG] " +string_date+' '+ text);
+      this.emit('debug',string_date,text);
     };
     this.info=function(text) {
     	var string_date=getStringDate();
       writeDebugFile("[INFO] " +string_date+' '+ text);
       console.log("[INFO] " +string_date+' '+ text);
+      this.emit('info',string_date,text);
     };
     this.warn=function(text) {
     	var string_date=getStringDate();
       writeErrorFile("[WARNING] " +string_date+' '+ text);
       console.warn("[WARNING] " +string_date+' '+ text);
+      this.emit('warn',string_date,text);
     };
     this.error=function(text) {
     	var string_date=getStringDate();
       writeErrorFile("[ERROR] " +string_date+' '+ text);
       console.error("[ERROR] " +string_date+' '+ text);
+      this.emit('error-log',string_date,text); //cant be error because otherwise this would throw an error
     }
 };
 

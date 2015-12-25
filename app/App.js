@@ -18,9 +18,3 @@ var MainLayoutView=require('./app/MainLayoutView')(Marionette,_);
 $(document).ready(function(){
   $('body').append((new MainLayoutView()).render().$el);
 });
-
-//Start the live reload server if in development mode
-if(app_config.mode==='development'){
-  //require('./app/util/livereload').start();
-  //Logger.debug('Live reload server started!');
-}

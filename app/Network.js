@@ -10,7 +10,7 @@ var Network={
             host: host,
             port: port
         });
-        this.connections['name']=new_connection;
+        this.connections[name]=new_connection;
         new_connection.connect();
         return new_connection;
     }

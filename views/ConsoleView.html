@@ -1,15 +1,15 @@
- <div id="splitter">
-   <div> Left content goes here </div>
-   <div> Right content goes here </div>
- </div> 
-
-<!-- <div id="status">
+<div id="status-region">
   
-  Hello im the console!
-
 </div>
 
-<div id="console">
-  
+<div id="console-region">
+  <div id="console">
+    <!-- This is where the output goes -->
+  </div>
 
-</div> -->
+  <form class="form-group pure-form" id='commands-input-form'>
+    <input type="text" id="commands-input">
+    <button class="pure-button pure-button-primary" id="send-command-button">Enter</button>
+    <button class="pure-button" id="scroll-bottom-button">&#x25BC;</button>
+  </form>
+</div>
