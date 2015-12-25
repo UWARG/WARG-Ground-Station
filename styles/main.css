@@ -1,7 +1,43 @@
 /*/*Universal styles go here*/
+@font-face {
+    font-family: Ubuntu Mono;
+    font-weight: 400;
+    src: url(../assets/fonts/UbuntuMono-R.ttf);
+}
+@font-face {
+    font-family: Ubuntu Mono;
+    font-weight: 600;
+    src: url(../assets/fonts/UbuntuMono-B.ttf);
+}
+
 .vsplitter{
   background: linear-gradient(to right, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 
 }
 .hsplitter{
   background: linear-gradient(to bottom, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 
+}
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.button-success {
+    background: rgb(28, 184, 65); /* this is a green */
+}
+
+.button-error {
+    background: rgb(202, 60, 60); /* this is a maroon */
+}
+
+.button-warning {
+    background: rgb(223, 117, 20); /* this is an orange */
+}
+
+.button-secondary {
+    background: rgb(66, 184, 221); /* this is a light blue */
 }

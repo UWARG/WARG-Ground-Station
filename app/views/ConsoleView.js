@@ -4,11 +4,9 @@ var Network=require('../Network');
 
 module.exports=function(Marionette,_){
 
-  return Marionette.LayoutView.extend({
+  return Marionette.ItemView.extend({
     template:Template('ConsoleView'),
-    regions:{
-      status_region:"#status"
-    },
+
     ui:{
       console:"#console",
       command_input:"#commands-input"
@@ -89,6 +87,7 @@ module.exports=function(Marionette,_){
     enableScrollBottom:function(e){
       e.preventDefault();
       this.scroll_bottom=true;
+      this.scrollToBottom();
     },
     scrollToBottom: function(){
       if(this.scroll_bottom){

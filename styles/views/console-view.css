@@ -14,6 +14,9 @@
 #console-region #console{
   height: calc(100% - 43px);
   overflow: auto;
+  padding-left: 12px;
+  padding-left: 8px;
+  box-sizing: border-box;
 }
 
 #console-region .message{
@@ -22,11 +25,13 @@
   margin-bottom: 8px;
   white-space: pre;
   overflow-wrap: break-word;
+  font-family: Ubuntu Mono;
 }
 #console-region .message time{
   color: white;
   margin-right: 8px;
   background-color: green;
+  font-weight: 600;
 }
 #console-region .error-message{
   color: rgb(255, 101, 101);
