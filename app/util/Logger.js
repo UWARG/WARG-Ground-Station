@@ -13,6 +13,8 @@ var string_date=date.toDateString() + ' ' + date.toLocaleTimeString(); //output 
 var all_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-all' + ".log");
 var debug_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-debug' + ".log");
 var error_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-error' + ".log");
+var data_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-data' + ".log"); //writes whatever we received from the groundstation
+
 
 var Logger=function(){
  	// Initialize necessary properties from `EventEmitter` in this instance
@@ -29,6 +31,13 @@ var Logger=function(){
     var writeErrorFile=function(text) {
         error_log.write(text.trim() + "\r\n");
         all_log.write(text.trim() + "\r\n");
+    };
+    var writeDataFile=function(text) {
+        data_log.write(text.trim() + "\r\n");
+    };
+    this.data=function(text,label) {
+        var string_date=getStringDate();
+        writeDataFile("["+label+"] " +string_date+' '+ text);
     };
     this.debug=function(text) {
     	var string_date=getStringDate();

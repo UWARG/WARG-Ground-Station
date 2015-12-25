@@ -2,6 +2,8 @@ var gui = require('nw.gui');
 var app_config=require('./config/application-config');
 var Logger=require('./app/util/Logger');
 
+var DataRelay=require('./app/connections/DataRelay')(); //connect to the data relay station and start parsing data
+
 var app={};
 
 app.menu=require('./app/Menu')(gui);
@@ -9,7 +11,6 @@ app.windows=[]; //an array of all the windows open
 
 // Append Menu to Window
 gui.Window.get().menu = app.menu;
-
 
 var MainLayoutView=require('./app/MainLayoutView')(Marionette,_);
 

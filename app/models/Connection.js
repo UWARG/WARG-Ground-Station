@@ -60,7 +60,6 @@ var Connection = function (options) {
       } else {
           Logger.info('Connection to '+this.name+'closed: Not reconnecting');
       }
-      //Data.headers = []; SHOULD we still do this? --serge
     }.bind(this));
 
     this.socket.on('data',function(data){
