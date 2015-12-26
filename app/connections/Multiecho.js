@@ -9,10 +9,12 @@ module.exports=function(){
     Network.connections['multi_echo'].disconnect();
   }
 
-  var data_relay=Network.addConnection('multi_echo',network_config.multiecho_host,network_config.multiecho_port);
+  var multi_echo=Network.addConnection('multi_echo',network_config.multiecho_host,network_config.multiecho_port);
+
+  multi_echo.socket.setTimeout(network_config.multiecho_timeout);
 
   //TODO: Implement the new multiecho protocol here
-  data_relay.on('data',function(data){
+  multi_echo.on('data',function(data){
     data = data.toString().trim();
       //NOTE: this is legacy code!
       // console.log(data);

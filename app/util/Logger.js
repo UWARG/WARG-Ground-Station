@@ -1,6 +1,7 @@
 //A logger wrapper that handles logging to the groundstation, the console, and the filesystem
-//There are 4 levels of logs: error, warn, info, and debug
+//There are 5 levels of logs: error, warn, info, and debug, and data
 //error and warning level are saved to the error log, debug and info are saved to the debug log, and everything is stored in the "all" log
+//data is stored in its own data file so as not to spam the other logs
 
 var fs=require('fs');
 var app_config=require('../../config/application-config');

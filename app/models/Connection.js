@@ -28,7 +28,7 @@ var Connection = function (options) {
       this.socket.destroy();
     };
 
-    this.reconnect=function(timeout,attempts){
+    this.reconnect=function(){
       this.disconnect();      
       this.connect();
     };
@@ -43,8 +43,6 @@ var Connection = function (options) {
     };
 
     this.socket = new net.Socket();
-    
-    this.socket.setTimeout(3000);
 
     this.socket.on('connect',function(){
       this.emit('connect');
@@ -59,16 +57,15 @@ var Connection = function (options) {
 
     this.socket.on('timeout',function(){
       this.emit('timeout');
-      this.socket.setTimeout(3000);
       Logger.error('Timed out for 5s for '+this.name+' connection (host: '+this.host+',port:'+this.port+')');
     }.bind(this));
 
-    this.socket.on('closed',function(had_error){
-      this.emit('closed',had_error);
+    this.socket.on('close',function(had_error){
+      this.emit('close',had_error);
       if (had_error) {
-          Logger.error('Connection to  '+this.name+'closed due to an error: Not reconnecting');
+          Logger.error('Connection to  '+this.name+' closed due to an error: Not reconnecting');
       } else {
-          Logger.info('Connection to '+this.name+'closed: Not reconnecting');
+          Logger.warn('Connection to '+this.name+' closed: Not reconnecting');
       }
     }.bind(this));
 
