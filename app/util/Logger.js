@@ -6,6 +6,7 @@ var fs=require('fs');
 var app_config=require('../../config/application-config');
 var util = require('util');
 var EventEmitter = require('events');
+var advanced_config=require('../../config/advanced-config');
 
 var date=new Date();
 var string_date=date.toDateString() + ' ' + date.toLocaleTimeString(); //output format is like: "Thu Dec 24 2015 2:33:20 AM"
@@ -69,5 +70,7 @@ var Logger=function(){
 util.inherits(Logger,EventEmitter);
 
 var logger=new Logger();
+
+logger.setMaxListeners(advanced_config.logger_max_listeners);
 
 module.exports=logger;

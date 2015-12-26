@@ -2,6 +2,7 @@ var net = require('net');
 var util=require('util');
 var EventEmitter = require('events');
 var Logger=require('../util/Logger');
+var advanced_config=require('../../config/advanced-config');
 
 var Connection = function (options) {
     if(options && options.name && options.host && options.port){
@@ -15,6 +16,7 @@ var Connection = function (options) {
     
     // Initialize necessary properties from `EventEmitter` in this instance
     EventEmitter.call(this);
+    this.setMaxListeners(advanced_config.connection_max_listeners);
 
     this.connect = function () {
       Logger.info('Attempting to connect to '+this.name+' at '+this.host+':'+this.port);
@@ -23,7 +25,7 @@ var Connection = function (options) {
 
     this.disconnect=function(){
       Logger.info('Disconnecting from '+this.name+' at '+this.host+':'+this.port);
-      this.socket.close();
+      this.socket.destroy();
     };
 
     this.reconnect=function(timeout,attempts){
@@ -41,6 +43,7 @@ var Connection = function (options) {
     };
 
     this.socket = new net.Socket();
+    this.socket.setTimeout(5000);
 
     this.socket.on('connect',function(){
       this.emit('connect');
