@@ -5,7 +5,10 @@ var Logger=require('../util/Logger');
 var TelemetryData=require('../models/TelemetryData');
 
 module.exports=function(){
-	var data_relay=Network.connections['data_relay'] || Network.addConnection('data_relay',network_config.datarelay_host,network_config.datarelay_port);
+  if(Network.connections['data_relay']){ //if a connection has already been established (occurs on a page refresh), destroy it
+    Network.connections['data_relay'].disconnect();
+  }
+	var data_relay=Network.addConnection('data_relay',network_config.datarelay_host,network_config.datarelay_port);
 
 	data_relay.on('connect',function(){
 		data_relay.write("commander\r\n");

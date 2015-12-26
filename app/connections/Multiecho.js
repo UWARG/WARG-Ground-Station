@@ -5,7 +5,11 @@ var Logger=require('../util/Logger');
 var TelemetryData=require('../models/TelemetryData');
 
 module.exports=function(){
-  var data_relay=Network.connections['multi_echo'] || Network.addConnection('multi_echo',network_config.multiecho_host,network_config.multiecho_port);
+  if(Network.connections['multi_echo']){ //if a connection has already been established (occurs on a page refresh), destroy it
+    Network.connections['multi_echo'].disconnect();
+  }
+
+  var data_relay=Network.addConnection('multi_echo',network_config.multiecho_host,network_config.multiecho_port);
 
   //TODO: Implement the new multiecho protocol here
   data_relay.on('data',function(data){
