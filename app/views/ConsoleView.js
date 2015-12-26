@@ -32,21 +32,23 @@ module.exports=function(Marionette,_){
     className:'consoleView',
 
     initialize: function(){
-      this.scroll_bottom=true;
+      this.scroll_bottom=true; //whether the console will scroll down upon new message arrival
+
       this.command_history=[];
       this.command_history_index=0;
 
       //whats kinds of messages we want displayed in the console
-      this.infoMessages=!true;
+      this.infoMessages=!true; //the ! is there because we will call this.infoMessageToggle which will flip this to true in the render function
       this.debugMessages=!true;
       this.errorMessages=!true;
       this.warnMessages=!true;
       this.dataMessages=!false;
 
-      this.network_callbacks={}; //we need to keep a reference to these so that we can safely detach the network listener if we need to
+      this.logger_callbacks={}; //we need to keep a reference to the add message callbacks so that we can properly remove off the logger listener
     },
 
     onRender:function(){
+      //Turns on the logger listeners
       this.toggleInfoMessages();
       this.toggleDebugMessages();
       this.toggleErrorMessages();
@@ -55,16 +57,34 @@ module.exports=function(Marionette,_){
 
       this.detectScrollUp();
     },
+    onBeforeDestroy:function(){
+      //Remove any logger listeners
+      if(this.logger_callbacks['info']){
+        Logger.removeListener('info',this.logger_callbacks['info']);
+      }
+      if(this.logger_callbacks['debug']){
+        Logger.removeListener('debug',this.logger_callbacks['debug']);
+      }
+      if(this.logger_callbacks['error-log']){
+        Logger.removeListener('error-log',this.logger_callbacks['error-log']);
+      }
+      if(this.logger_callbacks['warn']){
+        Logger.removeListener('warn',this.logger_callbacks['warn']);
+      }
+      if(this.logger_callbacks['data']){
+        Logger.removeListener('data',this.logger_callbacks['data']);
+      }
+    },
     toggleInfoMessages:function(){
-      if(this.infoMessages){
-        if(this.network_callbacks['info']){
-          Logger.removeListener('info',this.network_callbacks['info']);
+      if(this.infoMessages){ //if we should stop listening to info level messages
+        if(this.logger_callbacks['info']){
+          Logger.removeListener('info',this.logger_callbacks['info']); //stop listening to info level messages from the Logger
         }
         this.infoMessages=false;
-      }else{
+      }else{ //if we should start listening to info level messages
         var callback=this.addInfoMessage.bind(this);
-        this.network_callbacks['info']=callback;
-        Logger.addListener('info',callback);
+        this.logger_callbacks['info']=callback;
+        Logger.addListener('info',callback); //call this.addInfoMessage every time an info level message comes in
         this.infoMessages=true;
         this.scroll_bottom=true;
       }
@@ -72,13 +92,13 @@ module.exports=function(Marionette,_){
     },
     toggleDebugMessages:function(){
       if(this.debugMessages){
-        if(this.network_callbacks['debug']){
-          Logger.removeListener('debug',this.network_callbacks['debug']);
+        if(this.logger_callbacks['debug']){
+          Logger.removeListener('debug',this.logger_callbacks['debug']);
         }
         this.debugMessages=false;
       }else{
         var callback=this.addDebugMessage.bind(this);
-        this.network_callbacks['debug']=callback;
+        this.logger_callbacks['debug']=callback;
         Logger.addListener('debug',callback);
         this.debugMessages=true;
         this.scroll_bottom=true;
@@ -87,13 +107,13 @@ module.exports=function(Marionette,_){
     },
     toggleErrorMessages:function(){
       if(this.errorMessages){
-        if(this.network_callbacks['error-log']){
-          Logger.removeListener('error-log',this.network_callbacks['error-log']);
+        if(this.logger_callbacks['error-log']){
+          Logger.removeListener('error-log',this.logger_callbacks['error-log']);
         }
         this.errorMessages=false;
       }else{
         var callback=this.addErrorMessage.bind(this);
-        this.network_callbacks['error-log']=callback;
+        this.logger_callbacks['error-log']=callback;
         Logger.addListener('error-log',callback);
         this.errorMessages=true;
         this.scroll_bottom=true;
@@ -102,13 +122,13 @@ module.exports=function(Marionette,_){
     },
     toggleWarnMessages:function(){
       if(this.warnMessages){
-        if(this.network_callbacks['warn']){
-          Logger.removeListener('warn',this.network_callbacks['warn']);
+        if(this.logger_callbacks['warn']){
+          Logger.removeListener('warn',this.logger_callbacks['warn']);
         }
         this.warnMessages=false;
       }else{
         var callback=this.addWarnMessage.bind(this);
-        this.network_callbacks['warn']=callback;
+        this.logger_callbacks['warn']=callback;
         Logger.addListener('warn',callback);
         this.warnMessages=true;
         this.scroll_bottom=true;
@@ -117,13 +137,13 @@ module.exports=function(Marionette,_){
     },
     toggleDataMessages:function(){
       if(this.dataMessages){
-        if(this.network_callbacks['data']){
-          Logger.removeListener('data',this.network_callbacks['data']);
+        if(this.logger_callbacks['data']){
+          Logger.removeListener('data',this.logger_callbacks['data']);
         }
         this.dataMessages=false;
       }else{
         var callback=this.addDataMessage.bind(this);
-        this.network_callbacks['data']=callback;
+        this.logger_callbacks['data']=callback;
         Logger.addListener('data',callback);
         this.dataMessages=true;
         this.scroll_bottom=true;
@@ -193,4 +213,4 @@ module.exports=function(Marionette,_){
       }
     }
   });
-}
+};
