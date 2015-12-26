@@ -43,7 +43,8 @@ var Connection = function (options) {
     };
 
     this.socket = new net.Socket();
-    this.socket.setTimeout(5000);
+    
+    this.socket.setTimeout(3000);
 
     this.socket.on('connect',function(){
       this.emit('connect');
@@ -58,7 +59,7 @@ var Connection = function (options) {
 
     this.socket.on('timeout',function(){
       this.emit('timeout');
-      this.socket.setTimeout(5000); //NOTE: I dont think this is necessary -Serge Dec 25,2015
+      this.socket.setTimeout(3000);
       Logger.error('Timed out for 5s for '+this.name+' connection (host: '+this.host+',port:'+this.port+')');
     }.bind(this));
 

@@ -10,6 +10,8 @@ module.exports=function(){
   }
 	var data_relay=Network.addConnection('data_relay',network_config.datarelay_host,network_config.datarelay_port);
 
+  //data_relay.socket.setTimeout(network_config.datarelay_timeout);
+
 	data_relay.on('connect',function(){
 		data_relay.write("commander\r\n");
 	});
