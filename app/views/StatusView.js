@@ -1,0 +1,107 @@
+//The view for the status bar
+//NOTE: this view should NEVER be rendered more than once (otherwise we're leaving unclosed listeners on the TelemetryData)
+var Template=require('../util/Template');
+var TelemetryData=require('../models/TelemetryData');
+var Logger=require('../util/Logger');
+var moment=require('moment');
+
+module.exports=function(Marionette){
+
+  return Marionette.ItemView.extend({
+    template:Template('StatusView'), //name of the file in the views folder at the project root
+    className:'statusView',
+
+    ui:{
+      statuses:".statuses",
+      vehicle_time:".time-view .vehicle-time",
+      elapsed_time:".time-view .elapsed-time",
+      battery_percent:".battery-percentage",
+      battery_message:".battery-message",
+      battery_picture:".battery-picture .battery-base .percentage"
+    },
+    events:{
+      'click #reset-elapsed-time':'resetElapsedTime'
+    },
+
+    initialize: function(){
+      this.starting_time=null;
+      this.current_battery_level=0;
+
+      this.data_callback=null; //so that we can get rid of the listener safely
+    },
+    onRender:function(){
+      //called right after a render is called on the view (view.render())
+      this.data_callback=this.onDataCallback.bind(this);
+      TelemetryData.addListener('data_received',this.data_callback);
+    },
+    onBeforeDestroy:function(){
+      //called just before destroy is called on the view
+      TelemetryData.removeListener('data_received',this.data_callback);
+    },
+    onDestroy:function(){
+      //called right after a destroy is called on the view
+    },
+    onDataCallback:function(data){
+      if(!this.starting_time && this.validTime(data.time)){
+        time=Number(data.time).toFixed(2);
+        this.starting_time=moment(time,'HHmmss.SS');
+      }
+      this.setTime(data.time);
+      //this.setBatteryLevel(data.batteryLevel);
+      this.setBatteryLevel(60); //NOTE: remove this!!!! and use the code above
+    },
+    setTime:function(time){
+      if(!this.validTime(time)){
+        Logger.warn('Got invalid value for the time! Time: '+time);
+        this.ui.vehicle_time.text('Invalid Time Received');
+        this.ui.elapsed_time.text('--');
+      }
+      else{
+        time=Number(time).toFixed(2);
+        var date=moment(time,'HHmmss.SS');
+        var elapsed_time=moment(date.diff(this.starting_time));
+        this.ui.vehicle_time.text(date.format('HH:mm:ss:SS'));
+        this.ui.elapsed_time.text(elapsed_time.minute()+' min '+elapsed_time.second()+' sec');
+      }
+    },
+    setBatteryLevel:function(battery_level){
+      if(!this.validBattery(battery_level)){
+        Logger.warn('Got an invalid value for the battery level! Battery Level: '+battery_level);
+        this.ui.battery_percent.text('Invalid Battery Level');
+      }
+      else if(Number(battery_level)!==this.current_battery_level){
+        var percent=Number(battery_level);
+        this.current_battery_level=percent;
+        this.ui.battery_percent.text(percent+'%');
+        this.ui.battery_picture.css('width',percent+'%');
+        if(percent>50 && percent <=100){
+          this.ui.battery_picture.css('background-color','green');
+          this.ui.battery_message.text('');
+        }else if (percent>=20 && percent<=50){
+          this.ui.battery_picture.css('background-color','orange');
+          this.ui.battery_message.text('Low');
+          this.ui.battery_message.css('color','orange');
+        }else{
+          this.ui.battery_picture.css('background-color','red');
+          this.ui.battery_message.text('Very Low');
+          this.ui.battery_message.css('color','red');
+        }
+      }
+    },
+    resetElapsedTime:function(){
+      this.starting_time=null;
+    },
+    validTime: function(timestring){
+      if(typeof timestring==='undefined' || timestring===null || !Number(timestring) || Number(timestring).toFixed(2)<=0){
+        return false;
+      }
+      return true;
+    },
+    validBattery: function(battery){
+      if(typeof battery!=='undefined' && battery!==null && Number(battery)!=='NaN' && Number(battery)>=0 && Number(battery)<=100){
+        return true;
+      }
+      return false;
+    }
+  });
+};

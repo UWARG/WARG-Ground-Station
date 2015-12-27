@@ -1,3 +1,5 @@
+//View for the console
+//NOTE: this view should never be re-rendered!
 var Template=require('../util/Template');
 var Logger=require('../util/Logger');
 var Network=require('../Network');

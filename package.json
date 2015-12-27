@@ -24,6 +24,7 @@
     "backbone": "^1.2.3",
     "backbone.marionette": "^2.4.4",
     "jquery": "^2.1.4",
+    "moment": "^2.10.6",
     "nw": "0.12.3",
     "underscore": "^1.8.3"
   },

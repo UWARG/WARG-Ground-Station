@@ -10,6 +10,12 @@
     src: url(../assets/fonts/UbuntuMono-B.ttf);
 }
 
+@font-face {
+    font-family: Akashi;
+    font-weight: 400;
+    src: url(../assets/fonts/Akashi.ttf);
+}
+
 .vsplitter{
   background: linear-gradient(to right, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 
 }
