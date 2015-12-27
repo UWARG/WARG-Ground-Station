@@ -15,13 +15,12 @@ module.exports=function(){
   data_relay.socket.setTimeout(network_config.datarelay_timeout);
 
 	data_relay.on('connect',function(){
-		data_relay.write("commander\r\n");
     StatusManager.addStatus('Connected to data_relay',1,0);
+		data_relay.write("commander\r\n");
 	});
 
 	data_relay.on('close',function(had_error){
 		TelemetryData.headers=[];
-    //StatusManager.removeStatusesByTimeout(0);
     StatusManager.addStatus('Disconnected from data_relay',1,0);
 	});
 
@@ -52,7 +51,8 @@ module.exports=function(){
 	        });
           Logger.debug('Network '+data_relay.name+' Received headers: ' + data);
 	        Logger.debug('Network '+data_relay.name+' Parsed headers: ' + JSON.stringify(TelemetryData.headers));
-        	Logger.data(TelemetryData.headers,'DATA_RELAY_HEADERS');     
+        	Logger.data(TelemetryData.headers,'DATA_RELAY_HEADERS');  
+          StatusManager.removeStatus('Disconnected from data_relay',1,0); //NOTE: this is a hack to remove the disconnected message when doing a page refresh (there is a timing issue).
           StatusManager.addStatus('Received headers from data_relay',3,3000);  
 	    }
 	    else{ //if its the non-header columns(actual data)
