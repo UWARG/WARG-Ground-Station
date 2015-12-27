@@ -2,10 +2,11 @@
 //NOTE: this view should NEVER be rendered more than once (otherwise we're leaving unclosed listeners on the TelemetryData)
 var Template=require('../util/Template');
 var TelemetryData=require('../models/TelemetryData');
+var StatusManager=require('../StatusManager');
 var Logger=require('../util/Logger');
 var moment=require('moment');
 
-module.exports=function(Marionette){
+module.exports=function(Marionette,$){
 
   return Marionette.ItemView.extend({
     template:Template('StatusView'), //name of the file in the views folder at the project root
@@ -20,7 +21,8 @@ module.exports=function(Marionette){
       battery_picture:".battery-picture .battery-base .percentage"
     },
     events:{
-      'click #reset-elapsed-time':'resetElapsedTime'
+      'click #reset-elapsed-time':'resetElapsedTime',
+      'click #clear-statuses-button':'clearStatuses'
     },
 
     initialize: function(){
@@ -28,18 +30,25 @@ module.exports=function(Marionette){
       this.current_battery_level=-1;
 
       this.data_callback=null; //so that we can get rid of the listener safely
+      this.new_status_callback=null;
+      this.remove_status_callback=null;
+
+      this.status_messages=[];
     },
     onRender:function(){
-      //called right after a render is called on the view (view.render())
       this.data_callback=this.onDataCallback.bind(this);
       TelemetryData.addListener('data_received',this.data_callback);
+
+      this.new_status_callback=this.onNewStatusCallback.bind(this);
+      StatusManager.addListener('new_status',this.new_status_callback);
+
+      this.remove_status_callback=this.onRemoveStatusCallback.bind(this);
+      StatusManager.addListener('remove_status',this.remove_status_callback);
     },
     onBeforeDestroy:function(){
-      //called just before destroy is called on the view
       TelemetryData.removeListener('data_received',this.data_callback);
-    },
-    onDestroy:function(){
-      //called right after a destroy is called on the view
+      StatusManager.removeListener('new_status',this.new_status_callback);
+      StatusManager.removeListener('remove_status',this.remove_status_callback);
     },
     onDataCallback:function(data){
       if(!this.starting_time && this.validTime(data.time)){
@@ -48,7 +57,35 @@ module.exports=function(Marionette){
       }
       this.setTime(data.time);
       //this.setBatteryLevel(data.batteryLevel);
-      this.setBatteryLevel(56.65984); //NOTE: remove this!!!! and use the code above
+      this.setBatteryLevel(47); //NOTE: remove this!!!! and use the code above
+    },
+    onNewStatusCallback: function(message, priority, timeout){
+      if(priority===1){
+        var element=$('<p class="status status-high">'+message+'</p>');
+      }
+      else if (priority===2){
+        var element=$('<p class="status status-medium">'+message+'</p>');
+      }
+      else{
+        var element=$('<p class="status status-low">'+message+'</p>');
+      }
+      this.status_messages.push({
+          element: element,
+          message: message,
+          priority: priority,
+          timeout: timeout
+        });
+      this.ui.statuses.append(element);
+      this.ui.statuses[0].scrollTop=0;
+    },
+    onRemoveStatusCallback: function(message, priority, timeout){
+      for(var i=0;i<this.status_messages.length;i++){
+        if(this.status_messages[i].message===message && this.status_messages[i].priority===priority &&this.status_messages[i].timeout===timeout){
+          this.status_messages[i].element.remove();
+          this.status_messages.splice(i,1);
+          return;
+        }
+      }
     },
     setTime:function(time){
       if(!this.validTime(time)){
@@ -90,6 +127,9 @@ module.exports=function(Marionette){
     },
     resetElapsedTime:function(){
       this.starting_time=null;
+    },
+    clearStatuses: function(){ //removes all persistent statuses
+      StatusManager.removeStatusesByTimeout(0);
     },
     validTime: function(timestring){
       if(typeof timestring==='undefined' || timestring===null || !Number(timestring) || Number(timestring).toFixed(2)<=0){

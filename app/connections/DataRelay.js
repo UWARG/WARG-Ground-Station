@@ -3,6 +3,7 @@ var network_config=require('../../config/network-config');
 var Network=require('../Network');
 var Logger=require('../util/Logger');
 var TelemetryData=require('../models/TelemetryData');
+var StatusManager=require('../StatusManager');
 
 module.exports=function(){
   if(Network.connections['data_relay']){ //if a connection has already been established (occurs on a page refresh), destroy it
@@ -15,13 +16,21 @@ module.exports=function(){
 
 	data_relay.on('connect',function(){
 		data_relay.write("commander\r\n");
+    StatusManager.addStatus('Connected to data_relay',1,0);
 	});
 
 	data_relay.on('close',function(had_error){
 		TelemetryData.headers=[];
+    //StatusManager.removeStatusesByTimeout(0);
+    StatusManager.addStatus('Disconnected from data_relay',1,0);
 	});
 
+  data_relay.on('timeout',function(){
+    StatusManager.addStatus('No data received or sent on data_relay (timeout)',2,5000);
+  });
+
 	data_relay.on('write',function(data){
+    StatusManager.addStatus('Sent command to data_relay',3,2000);
 		TelemetryData.sent.push({
 			time: new Date(),
 			data: data
@@ -30,7 +39,7 @@ module.exports=function(){
 
 	data_relay.on('data',function(data){
 		data = data.toString();
-		
+
 		TelemetryData.received.push({
 			time: new Date(),
 			data: data
@@ -38,12 +47,13 @@ module.exports=function(){
 
 	    // First transmission is header columns
 	    if (TelemetryData.headers.length === 0) {
-	        Logger.debug('Network '+data_relay.name+' Received headers: ' + data);
 	        TelemetryData.headers = data.split(",").map(function (str) {
 	            return str.trim();
 	        });
+          Logger.debug('Network '+data_relay.name+' Received headers: ' + data);
 	        Logger.debug('Network '+data_relay.name+' Parsed headers: ' + JSON.stringify(TelemetryData.headers));
-        	Logger.data(TelemetryData.headers,'DATA_RELAY_HEADERS');       
+        	Logger.data(TelemetryData.headers,'DATA_RELAY_HEADERS');     
+          StatusManager.addStatus('Received headers from data_relay',3,3000);  
 	    }
 	    else{ //if its the non-header columns(actual data)
 	        var split_data = data.split(",");

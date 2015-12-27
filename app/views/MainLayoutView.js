@@ -1,8 +1,8 @@
 var Template=require('../util/Template');
 
-module.exports=function(Marionette){
+module.exports=function(Marionette,$){
   var ConsoleView=require('./ConsoleView')(Marionette);
-  var StatusView=require('./StatusView')(Marionette);
+  var StatusView=require('./StatusView')(Marionette,$);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
