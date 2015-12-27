@@ -24,4 +24,5 @@ module.exports=function(Marionette){
     onDestroy:function(){
       //called right after a destroy is called on the view
     }
+  });
 };
