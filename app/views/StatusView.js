@@ -25,7 +25,7 @@ module.exports=function(Marionette){
 
     initialize: function(){
       this.starting_time=null;
-      this.current_battery_level=0;
+      this.current_battery_level=-1;
 
       this.data_callback=null; //so that we can get rid of the listener safely
     },
@@ -48,7 +48,7 @@ module.exports=function(Marionette){
       }
       this.setTime(data.time);
       //this.setBatteryLevel(data.batteryLevel);
-      this.setBatteryLevel(60); //NOTE: remove this!!!! and use the code above
+      this.setBatteryLevel(56.65984); //NOTE: remove this!!!! and use the code above
     },
     setTime:function(time){
       if(!this.validTime(time)){
@@ -70,7 +70,7 @@ module.exports=function(Marionette){
         this.ui.battery_percent.text('Invalid Battery Level');
       }
       else if(Number(battery_level)!==this.current_battery_level){
-        var percent=Number(battery_level);
+        var percent=Math.round(Number(battery_level));
         this.current_battery_level=percent;
         this.ui.battery_percent.text(percent+'%');
         this.ui.battery_picture.css('width',percent+'%');
