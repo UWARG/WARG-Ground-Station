@@ -1,0 +1,66 @@
+.cockpitView{
+  height: 100%;
+  width: 100%;
+}
+.cockpitView .attitude-region{
+  height: 80%;
+  font-size: 0;
+}
+.cockpitView .altitude-region{
+  height: 80%;
+}
+.cockpitView .throttle-region{
+  height: 20%;
+  width: 100%;
+}
+.cockpitView .attitude-region .left-region{
+  height: 100%;
+  font-size: 16px;
+}
+.cockpitView .attitude-region .right-region{
+  font-size: 16px;
+  height: 100%;
+}
+
+.cockpitView .attitude-dial{
+  height: 50%;
+  border-color: lightgray;
+  border-width: 2px;
+  border-style: inset;
+}
+
+.cockpitView .attitude-dial p{
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+/*NOTE:  this canvas is rezised in jquery after render */
+.cockpitView .attitude-dial canvas{
+  border-radius: 50%;
+  border: 1px solid red;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  display: block;
+}  
+.cockpitView .attitude-dial form{
+  margin: 0;
+  margin-top: 12px;
+  padding: 0 8px 0 8px;
+  height: 32px;
+  text-align: center;
+}
+.cockpitView .attitude-dial form input{
+  width: calc(100% - 58px);
+  height: 100%;
+  text-align: left;
+  max-width: 150px;
+}
+.cockpitView .attitude-dial form button{
+  height: 100%;
+  padding: 0 8px 0 8px;
+}

@@ -1,8 +1,9 @@
 var Template=require('../util/Template');
 
-module.exports=function(Marionette,$){
+module.exports=function(Marionette,$,fabric){
   var ConsoleView=require('./ConsoleView')(Marionette);
   var StatusView=require('./StatusView')(Marionette,$);
+  var CockpitView=require('./CockpitView')(Marionette,fabric);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
@@ -21,11 +22,7 @@ module.exports=function(Marionette,$){
     onRender:function(){
       this.getRegion('console').show(new ConsoleView());
       this.getRegion('status').show(new StatusView());
-    },
-		serializeData: function(){
-			return{
-				hello:'wasup serge!'
-			}
-		}
+      this.getRegion('telemetry').show(new CockpitView());
+    }
 	});
 }
