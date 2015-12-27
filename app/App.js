@@ -16,7 +16,7 @@ app.windows=[]; //an array of all the windows open
 // Append Menu to Window
 gui.Window.get().menu = app.menu;
 
-var MainLayoutView=require('./app/MainLayoutView')(Marionette,_);
+var MainLayoutView=require('./app/views/MainLayoutView')(Marionette);
 
 $(document).ready(function(){
   $('body').append((new MainLayoutView()).render().$el);

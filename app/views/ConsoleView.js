@@ -2,7 +2,7 @@ var Template=require('../util/Template');
 var Logger=require('../util/Logger');
 var Network=require('../Network');
 
-module.exports=function(Marionette,_){
+module.exports=function(Marionette){
 
   return Marionette.ItemView.extend({
     template:Template('ConsoleView'),

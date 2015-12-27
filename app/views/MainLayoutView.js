@@ -1,7 +1,7 @@
-var Template=require('./util/Template');
+var Template=require('../util/Template');
 
-module.exports=function(Marionette,_){
-  var ConsoleView=require('./views/ConsoleView')(Marionette,_);
+module.exports=function(Marionette){
+  var ConsoleView=require('./ConsoleView')(Marionette);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
