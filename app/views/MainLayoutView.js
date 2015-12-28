@@ -3,7 +3,7 @@ var Template=require('../util/Template');
 module.exports=function(Marionette,$,fabric){
   var ConsoleView=require('./ConsoleView')(Marionette);
   var StatusView=require('./StatusView')(Marionette,$);
-  var CockpitView=require('./CockpitView')(Marionette,fabric);
+  var CockpitLayoutView=require('./CockpitLayoutView')(Marionette,fabric);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
@@ -22,7 +22,7 @@ module.exports=function(Marionette,$,fabric){
     onRender:function(){
       this.getRegion('console').show(new ConsoleView());
       this.getRegion('status').show(new StatusView());
-      this.getRegion('telemetry').show(new CockpitView());
+      this.getRegion('telemetry').show(new CockpitLayoutView());
     }
 	});
 }

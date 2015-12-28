@@ -5,8 +5,8 @@ var Logger=require('../util/Logger');
 module.exports=function(Marionette,fabric){
 
   return Marionette.ItemView.extend({
-    template:Template('CockpitView'), 
-    className:'cockpitView', 
+    template:Template('CockpitLayoutView'), 
+    className:'cockpitLayoutView', 
 
     ui:{ 
      attitude_dials:'.dial-picture',

@@ -1,32 +1,32 @@
-.cockpitView{
+.cockpitLayoutView{
   height: 100%;
   width: 100%;
 }
-.cockpitView .attitude-region{
+.cockpitLayoutView .attitude-region{
   height: 80%;
   font-size: 0;
 }
-.cockpitView .altitude-region{
+.cockpitLayoutView .altitude-region{
   height: 80%;
 }
-.cockpitView .throttle-region{
+.cockpitLayoutView .throttle-region{
   height: 20%;
   width: 100%;
 }
-.cockpitView .attitude-region .left-region{
+.cockpitLayoutView .attitude-region .left-region{
   height: 100%;
   font-size: 16px;
 }
-.cockpitView .attitude-region .right-region{
+.cockpitLayoutView .attitude-region .right-region{
   font-size: 16px;
   height: 100%;
 }
 
-.cockpitView .attitude-dial{
+.cockpitLayoutView .attitude-dial{
   height: 50%;
 }
 
-.cockpitView .attitude-dial p{
+.cockpitLayoutView .attitude-dial p{
   text-align: center;
   font-weight: bold;
   font-size: 18px;
@@ -36,7 +36,7 @@
 }
 
 /*NOTE:  this element is rezised in jquery after render */
-.cockpitView .attitude-dial .dial-picture {
+.cockpitLayoutView .attitude-dial .dial-picture {
   border-radius: 50%;
   border: 3px inset grey;
   background: linear-gradient(to bottom, rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(125,185,232,1) 100%,rgba(32,124,202,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
@@ -48,7 +48,7 @@
   overflow: hidden;
   position: relative;
 }  
-.cockpitView .attitude-dial .dial-picture .overlay{
+.cockpitLayoutView .attitude-dial .dial-picture .overlay{
   margin: 0;
   z-index: 10;
   position: absolute;
@@ -64,7 +64,7 @@
   align-content: space-between;
   justify-content: space-between;
 }
-.cockpitView .attitude-dial .dial-picture .image-overlay{
+.cockpitLayoutView .attitude-dial .dial-picture .image-overlay{
   position: absolute;
   top: -50%;
   left: 0;
@@ -72,24 +72,24 @@
   margin: auto;
   width: 50%;
 }
-.cockpitView .attitude-dial .dial-picture p{
+.cockpitLayoutView .attitude-dial .dial-picture p{
   position: relative;
   z-index: 10;
 }
-.cockpitView .roll-dial .image-overlay{
+.cockpitLayoutView .roll-dial .image-overlay{
   top: -63% !important;
 }
-.cockpitView .heading-dial .image-overlay{
+.cockpitLayoutView .heading-dial .image-overlay{
   left: 0 !important;
   top: 12% !important;
   width: 75% !important;
   transform-origin: 50% 50% !important;
 }
-.cockpitView .attitude-dial .dial-picture .overlay li{
+.cockpitLayoutView .attitude-dial .dial-picture .overlay li{
   text-align: center;
 }
 
-.cockpitView .fluid {
+.cockpitLayoutView .fluid {
   width: 100%;
   height: 50%;
   background: brown;
@@ -98,20 +98,20 @@
   transform-origin: 50% 0%;
   transform: scale(2);
 }  
-.cockpitView .attitude-dial form{
+.cockpitLayoutView .attitude-dial form{
   margin: 0;
   margin-top: 12px;
   padding: 0 8px 0 8px;
   height: 32px;
   text-align: center;
 }
-.cockpitView .attitude-dial form input{
+.cockpitLayoutView .attitude-dial form input{
   width: calc(100% - 58px);
   height: 100%;
   text-align: left;
   max-width: 80px;
 }
-.cockpitView .attitude-dial form button{
+.cockpitLayoutView .attitude-dial form button{
   height: 100%;
   padding: 0 8px 0 8px;
 }
