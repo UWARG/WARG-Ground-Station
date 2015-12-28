@@ -12,15 +12,17 @@ var Validator={
     return false
   },
   isValidRoll: function(roll){
-    if(this.isValidNumber(pitch)){
+    if(this.isValidNumber(roll)){
       return true;
     }
     return false
   },
   isValidHeading: function(heading){
-    if(this.isValidNumber(pitch)){
+    if(this.isValidNumber(heading)){
       return true;
     }
     return false
   }
 };
+
+module.exports=Validator;
