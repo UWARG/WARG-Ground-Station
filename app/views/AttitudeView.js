@@ -54,7 +54,7 @@ module.exports=function(Marionette){
     telemetryCallback: function(data){
       this.setPitch(data.pitch);
       this.setRoll(data.roll);
-      this.setHeading(data.yaw);
+      this.setHeading(data.heading);
       this.setPitchSetpoint(data.pitch_setpoint);
       this.setRollSetpoint(data.roll_setpoint);
       this.setHeadingSetpoint(data.heading_setpoint);
