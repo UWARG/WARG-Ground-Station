@@ -1,6 +1,8 @@
 var Template=require('../util/Template');
 var TelemetryData=require('../models/TelemetryData');
 var Logger=require('../util/Logger');
+var Validator=require('../util/Validator');
+var Commands=require('../models/Commands');
 
 module.exports=function(Marionette){
 
@@ -19,12 +21,16 @@ module.exports=function(Marionette){
      heading_text:'.heading-dial .current-value',
      pitch_setpoint:'.pitch-dial .auto-pilot-setpoint',
      roll_setpoint:'.roll-dial .auto-pilot-setpoint',
-     heading_setpoint:'.heading-dial .auto-pilot-setpoint'
-
+     heading_setpoint:'.heading-dial .auto-pilot-setpoint',
+     roll_input:'.roll-dial form input',
+     pitch_input:'.pitch-dial form input',
+     heading_input:'.heading-dial form input'
     },
 
     events:{
-      
+      'submit .roll-dial form':'sendSetRoll',
+      'submit .pitch-dial form':'sendSetPitch',
+      'submit .heading-dial form':'sendSetHeading'
     },
 
     initialize: function(){
@@ -56,7 +62,7 @@ module.exports=function(Marionette){
       }
     },
     setPitch:function(pitch){
-      if(this.isValidNumber(pitch)){
+      if(Validator.isValidPitch(pitch)){
         this.ui.pitch_text.text(Number(pitch).toFixed(1));
         var int_pitch=Math.round(Number(pitch));
         if(int_pitch!==this.current_pitch){ //we only update the display if its something different
@@ -72,7 +78,7 @@ module.exports=function(Marionette){
       }
     },
     setRoll: function(roll){
-      if(this.isValidNumber(roll)){
+      if(Validator.isValidRoll(roll)){
         this.ui.roll_text.text(Number(roll).toFixed(1));
         var int_roll=Math.round(Number(roll));
         if(int_roll!==this.current_roll){ //we only update the display if its something different
@@ -86,7 +92,7 @@ module.exports=function(Marionette){
       }
     },
     setHeading:function(heading){
-      if(this.isValidNumber(heading)){
+      if(Validator.isValidHeading(heading)){
         this.ui.heading_text.text(Number(heading).toFixed(1));
         var int_heading=Math.round(Number(heading));
         if(int_heading!==this.current_heading){ //we only update the display if its something different
@@ -99,7 +105,7 @@ module.exports=function(Marionette){
       }
     },
     setRollSetpoint: function(roll){
-      if(this.isValidNumber(roll)){
+      if(Validator.isValidRoll(roll)){
         this.ui.roll_setpoint.text(Number(roll).toFixed(2));
       }
       else{
@@ -108,7 +114,7 @@ module.exports=function(Marionette){
       }
     },
     setPitchSetpoint: function(pitch){
-      if(this.isValidNumber(pitch)){
+      if(Validator.isValidPitch(pitch)){
         this.ui.pitch_setpoint.text(Number(pitch).toFixed(2));
       }
       else{
@@ -117,7 +123,7 @@ module.exports=function(Marionette){
       }
     },
     setHeadingSetpoint: function(heading){
-      if(this.isValidNumber(heading)){
+      if(Validator.isValidHeading(heading)){
         this.ui.heading_setpoint.text(Number(heading).toFixed(2));
       }
       else{
@@ -125,11 +131,20 @@ module.exports=function(Marionette){
         Logger.warn('Invalid setHeading value received!! Heading: '+heading);
       }
     },
-    isValidNumber: function(number){
-      if(typeof number !==undefined && number!==null && !isNaN(Number(number))){
-        return true;
-      }
-      return false;
+    sendSetPitch: function(e){
+      e.preventDefault();
+      Commands.sendPitch(this.ui.pitch_input.val());
+      this.ui.pitch_input.val('');
+    },
+    sendSetRoll: function(e){
+      e.preventDefault();
+      Commands.sendRoll(this.ui.roll_input.val());
+      this.ui.roll_input.val('');
+    },
+    sendSetHeading: function(e){
+      e.preventDefault();
+      Commands.sendHeading(this.ui.heading_input.val());
+      this.ui.heading_input.val('');
     }
   });
 };
