@@ -21,7 +21,6 @@ module.exports=function(Marionette){
 
     events:{
       'click #scroll-bottom-button':'enableScrollBottom',
-      'click #send-command-button':'sendCommand',
       'submit #commands-input-form':'sendCommand',
       'keyup #commands-input':'cycleCommandHistory',
       'change #console-info-toggle':'toggleInfoMessages',
