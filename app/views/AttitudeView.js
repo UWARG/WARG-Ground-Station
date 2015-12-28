@@ -1,3 +1,5 @@
+//Attitude view (the one with all the dials)
+//Note: this view should never be re-rendered
 var Template=require('../util/Template');
 var TelemetryData=require('../models/TelemetryData');
 var Logger=require('../util/Logger');
@@ -37,20 +39,25 @@ module.exports=function(Marionette){
       this.current_pitch=null;
       this.current_roll=null;
       this.current_heading=null;
+
+      this.telemetry_callback=null;
     },
     onRender:function(){
       this.ui.attitude_dials.parent().resize(this.setCanvasDimensions.bind(this));
-      TelemetryData.on('data_received',function(data){
-        this.setPitch(data.pitch);
-        this.setRoll(data.roll);
-        this.setHeading(data.yaw);
-        this.setPitchSetpoint(data.pitch_setpoint);
-        this.setRollSetpoint(data.roll_setpoint);
-        this.setHeadingSetpoint(data.heading_setpoint);
-      }.bind(this));
+
+      this.telemetry_callback=this.telemetryCallback.bind(this);
+      TelemetryData.addListener('data_received',this.telemetry_callback);
     },
     onBeforeDestroy:function(){
-      
+      TelemetryData.removeListener('data_received',this.telemetry_callback);
+    },
+    telemetryCallback: function(data){
+      this.setPitch(data.pitch);
+      this.setRoll(data.roll);
+      this.setHeading(data.yaw);
+      this.setPitchSetpoint(data.pitch_setpoint);
+      this.setRollSetpoint(data.roll_setpoint);
+      this.setHeadingSetpoint(data.heading_setpoint);
     },
     setCanvasDimensions: function(){
       var canvas_dimensions=Math.min(this.ui.attitude_dials.parent().width()-12,this.ui.attitude_dials.parent().height()-105);
