@@ -6,19 +6,19 @@ var Validator={
     }
   },
   isValidPitch: function(pitch){
-    if(this.isValidNumber(pitch)){
+    if(this.isValidNumber(pitch) && Number(pitch)>=-180 && Number(pitch)<=180){
       return true;
     }
     return false
   },
   isValidRoll: function(roll){
-    if(this.isValidNumber(roll)){
+    if(this.isValidNumber(roll) && Number(roll)>=-180 && Number(roll)<=180){
       return true;
     }
     return false
   },
   isValidHeading: function(heading){
-    if(this.isValidNumber(heading)){
+    if(this.isValidNumber(heading) && Number(heading)>=0 && Number(heading)<=360){
       return true;
     }
     return false
