@@ -22,6 +22,18 @@ var Validator={
       return true;
     }
     return false
+  },
+  isValidSpeed: function(speed){
+    if(this.isValidNumber(speed) && Number(speed)>=0){
+      return true;
+    }
+    return false;
+  },
+  isValidAltitude: function(altitude){
+    if(this.isValidNumber(altitude) && Number(altitude)>=0){
+      return true;
+    }
+    return false;
   }
 };
 

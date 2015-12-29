@@ -25,14 +25,14 @@ module.exports=function(Marionette,fabric){
     },
 
     initialize: function(){
-      
+
     },
     onRender:function(){
       this.getRegion('attitude_region').show(new AttitudeView());
       this.getRegion('altitude_region').show(new AltitudeView());
     },
     onBeforeDestroy:function(){
-      
+
     }
   });
 };

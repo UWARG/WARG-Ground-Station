@@ -112,7 +112,7 @@ module.exports=function(Marionette){
       }
     },
     setRollSetpoint: function(roll){
-      if(Validator.isValidRoll(roll)){
+      if(Validator.isValidNumber(roll)){
         this.ui.roll_setpoint.text(Number(roll).toFixed(2));
       }
       else{
@@ -121,7 +121,7 @@ module.exports=function(Marionette){
       }
     },
     setPitchSetpoint: function(pitch){
-      if(Validator.isValidPitch(pitch)){
+      if(Validator.isValidNumber(pitch)){
         this.ui.pitch_setpoint.text(Number(pitch).toFixed(2));
       }
       else{
@@ -130,7 +130,7 @@ module.exports=function(Marionette){
       }
     },
     setHeadingSetpoint: function(heading){
-      if(Validator.isValidHeading(heading)){
+      if(Validator.isValidNumber(heading)){
         this.ui.heading_setpoint.text(Number(heading).toFixed(2));
       }
       else{

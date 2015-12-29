@@ -49,6 +49,16 @@ var Commands={
         Logger.error('Command to not sent since invalid heading value detected! Heading:'+heading);
       }
     }
+  },
+  sendAltitude:function(altitude){
+    if(this.checkConnection()){
+      if(Validator.isValidAltitude(altitude)){
+        this.sendCommand('set_altitude',altitude);
+      }
+      else{
+        Logger.error('Command to not sent since invalid altitude value detected! Altitude:'+altitude);
+      }
+    }
   }
 }
 
