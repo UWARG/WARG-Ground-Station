@@ -70,7 +70,7 @@ module.exports=function(Marionette){
       }
       else{
         Logger.warn('Altitude received is not valid! Altitude:'+altitude);
-        this.ui.altitude_text.text('--');
+        this.ui.altitude_text.text('Invalid');
         this.ui.altitude_hand.css('transform','rotate(0deg)');
       }
     },
@@ -83,7 +83,7 @@ module.exports=function(Marionette){
       }
       else{
         Logger.warn('Groundspeed received is not valid! Groundspeed:'+speed);
-        this.ui.ground_speed_text.text('--');
+        this.ui.ground_speed_text.text('Invalid');
         this.ui.ground_speed_hand.css('transform','rotate(0deg)');
       }
     },
@@ -96,7 +96,7 @@ module.exports=function(Marionette){
       }
       else{
         Logger.warn('Airspeed received is not valid! Airspeed:'+speed);
-        this.ui.air_speed_text.text('--');
+        this.ui.air_speed_text.text('Invalid');
         this.ui.air_speed_hand.css('transform','rotate(0deg)');
       }
     },
@@ -106,7 +106,7 @@ module.exports=function(Marionette){
       }
       else{
         Logger.warn('Invalid setAltitudeText value received! Altitude:'+altitude);
-        this.ui.altitude_setpoint_text.text('--');
+        this.ui.altitude_setpoint_text.text('Invalid');
       }
     },
     sendAltitudeSetpointCommand: function(e){

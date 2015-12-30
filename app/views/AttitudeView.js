@@ -116,7 +116,7 @@ module.exports=function(Marionette){
         this.ui.roll_setpoint.text(Number(roll).toFixed(2));
       }
       else{
-        this.ui.roll_setpoint.text('--');
+        this.ui.roll_setpoint.text('Invalid');
         Logger.warn('Invalid setRoll value received!! Roll: '+roll);
       }
     },
@@ -125,7 +125,7 @@ module.exports=function(Marionette){
         this.ui.pitch_setpoint.text(Number(pitch).toFixed(2));
       }
       else{
-        this.ui.pitch_setpoint.text('--');
+        this.ui.pitch_setpoint.text('Invalid');
         Logger.warn('Invalid setPoll value received!! Pitch: '+pitch);
       }
     },
@@ -134,7 +134,7 @@ module.exports=function(Marionette){
         this.ui.heading_setpoint.text(Number(heading).toFixed(2));
       }
       else{
-        this.ui.heading_setpoint.text('--');
+        this.ui.heading_setpoint.text('Invalid');
         Logger.warn('Invalid setHeading value received!! Heading: '+heading);
       }
     },
