@@ -1,5 +1,6 @@
 //a singleton object that holds whatever the data relay station sends
 var util = require('util');
+var advanced_config=require('../../config/advanced-config');
 var EventEmitter = require('events');
 
 var TelemetryData = function(){
@@ -18,7 +19,10 @@ var TelemetryData = function(){
 
 util.inherits(TelemetryData,EventEmitter); //give TelemetryData events functionality
 
-module.exports=new TelemetryData();
+var td=new TelemetryData();
+td.setMaxListeners(advanced_config.telemetrydata_max_listeners);
+
+module.exports=td;
 
 /*
 Data Link Output Format Rev.4

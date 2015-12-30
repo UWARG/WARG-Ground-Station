@@ -5,6 +5,7 @@ var Logger=require('../util/Logger');
 module.exports=function(Marionette,fabric){
   var AttitudeView=require('./AttitudeView')(Marionette);
   var AltitudeView=require('./AltitudeView')(Marionette);
+  var ThrottleView=require('./ThrottleView')(Marionette);
 
   return Marionette.LayoutView.extend({
     template:Template('CockpitLayoutView'), 
@@ -16,20 +17,13 @@ module.exports=function(Marionette,fabric){
       throttle_region:'.throttle-region'
     },
 
-    ui:{ 
-
-    },
-
-    events:{
-      
-    },
-
     initialize: function(){
 
     },
     onRender:function(){
       this.getRegion('attitude_region').show(new AttitudeView());
       this.getRegion('altitude_region').show(new AltitudeView());
+      this.getRegion('throttle_region').show(new ThrottleView());
     },
     onBeforeDestroy:function(){
 

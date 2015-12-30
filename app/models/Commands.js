@@ -59,6 +59,26 @@ var Commands={
         Logger.error('Command to not sent since invalid altitude value detected! Altitude:'+altitude);
       }
     }
+  },
+  sendThrottle:function(throttle){
+    if(this.checkConnection()){
+      if(Validator.isValidThrottle(throttle)){
+        this.sendCommand('set_throttle',throttle);
+      }
+      else{
+        Logger.error('Command to not sent since invalid throttle value detected! Throttle:'+throttle);
+      }
+    }
+  },
+  sendFlap:function(flap){
+    if(this.checkConnection()){
+      if(Validator.isValidFlap(flap)){
+        this.sendCommand('set_flap',flap);
+      }
+      else{
+        Logger.error('Command to not sent since invalid flap value detected! Flap Setpoint:'+flap);
+      }
+    }
   }
 }
 

@@ -17,6 +17,12 @@ var Validator={
     }
     return false
   },
+  isValidYaw: function(yaw){
+    if(this.isValidNumber(yaw)){
+      return true;
+    }
+    return false;
+  },
   isValidHeading: function(heading){
     if(this.isValidNumber(heading) && Number(heading)>=0 && Number(heading)<=360){
       return true;
@@ -31,6 +37,18 @@ var Validator={
   },
   isValidAltitude: function(altitude){
     if(this.isValidNumber(altitude) && Number(altitude)>=0){
+      return true;
+    }
+    return false;
+  },
+  isValidThrottle: function(throttle){
+    if(this.isValidNumber(throttle) && Number(throttle)>=0 && Number(throttle)<=100){
+      return true;
+    }
+    return false;
+  },
+  isValidFlap: function(flap){
+    if(this.isValidNumber(flap)){
       return true;
     }
     return false;
