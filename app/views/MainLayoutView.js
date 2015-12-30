@@ -1,10 +1,10 @@
 var Template=require('../util/Template');
 
-module.exports=function(Marionette,$){
+module.exports=function(Marionette,$,L){
   var ConsoleView=require('./ConsoleView')(Marionette);
   var StatusView=require('./StatusView')(Marionette,$);
   var CockpitLayoutView=require('./CockpitLayoutView')(Marionette);
-  var MapView=require('./MapView')(Marionette);
+  var MapView=require('./MapView')(Marionette,L);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
