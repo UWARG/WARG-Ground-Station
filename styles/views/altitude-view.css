@@ -63,6 +63,7 @@
   padding: 0 8px 0 8px;
   height: 32px;
   text-align: center;
+  font-size: 14px;
 }
 .altitudeView .altitude-dial form input{
   width: calc(100% - 58px);
