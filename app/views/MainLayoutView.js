@@ -1,9 +1,10 @@
 var Template=require('../util/Template');
 
-module.exports=function(Marionette,$,fabric){
+module.exports=function(Marionette,$){
   var ConsoleView=require('./ConsoleView')(Marionette);
   var StatusView=require('./StatusView')(Marionette,$);
-  var CockpitLayoutView=require('./CockpitLayoutView')(Marionette,fabric);
+  var CockpitLayoutView=require('./CockpitLayoutView')(Marionette);
+  var MapView=require('./MapView')(Marionette);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
@@ -23,6 +24,7 @@ module.exports=function(Marionette,$,fabric){
       this.getRegion('console').show(new ConsoleView());
       this.getRegion('status').show(new StatusView());
       this.getRegion('telemetry').show(new CockpitLayoutView());
+      this.getRegion('map').show(new MapView());
     }
 	});
 }

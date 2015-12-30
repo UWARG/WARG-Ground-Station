@@ -2,7 +2,7 @@ var Template=require('../util/Template');
 var TelemetryData=require('../models/TelemetryData');
 var Logger=require('../util/Logger');
 
-module.exports=function(Marionette,fabric){
+module.exports=function(Marionette){
   var AttitudeView=require('./AttitudeView')(Marionette);
   var AltitudeView=require('./AltitudeView')(Marionette);
   var ThrottleView=require('./ThrottleView')(Marionette);
