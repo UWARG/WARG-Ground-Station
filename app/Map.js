@@ -67,6 +67,9 @@ var Map=function(L){
   this.expandPlaneTrail=function(lat,lng){
     overlay_layers['Plane Trail'].addLatLng([lat,lng]);
   };
+  this.clearPlaneTrail=function(){
+    overlay_layers['Plane Trail'].setLatLngs([]);
+  };
 };
 
 module.exports=Map;
