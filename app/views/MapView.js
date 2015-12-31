@@ -16,7 +16,7 @@ module.exports=function(Marionette,L){
       plane_location_lon:'.plane-longitude'
     },
     events:{
-      'click #clear-path-button': 'clearPlanePath'
+      'click #clear-plane-trail-button': 'clearPlaneTrail'
     },
 
     initialize: function(){
@@ -46,7 +46,7 @@ module.exports=function(Marionette,L){
         this.ui.plane_location_lon.text('Invalid');
       }
     },
-    clearPlanePath: function(e){
+    clearPlaneTrail: function(e){
       this.map.clearPlaneTrail();
     }
   });
