@@ -25,6 +25,17 @@ var Map=function(L){
     })
   });
 
+  var centerToPlane=leaflet.control.button({
+    name: 'recenter',
+    text: 'C',
+    title: 'Center on plane',
+    onclick: function () {
+        if (overlay_layers['Plane']) {
+            map.panTo(overlay_layers['Plane'].getLatLng());
+        }
+    }
+  });
+
   this.createMap=function(id){
     map = leaflet.map(id,{
       center: map_config.default_lat_lang,
@@ -37,6 +48,13 @@ var Map=function(L){
 
     //allow the user to turn on and off specific layers
     L.control.layers(base_layers, overlay_layers).addTo(map);
+    map.addControl(centerToPlane);
+  };
+
+  this.movePlane=function(lat,lng, heading){
+    overlay_layers['Plane'].setLatLng([lat,lng]);
+    overlay_layers['Plane'].angle = heading;
+    overlay_layers['Plane'].update();
   };
 };
 
