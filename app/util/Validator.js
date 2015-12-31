@@ -52,6 +52,18 @@ var Validator={
       return true;
     }
     return false;
+  },
+  isValidLatitude:function(lat){
+    if(this.isValidNumber(lat)){
+      return true;
+    }
+    return false;
+  },
+  isValidLongitude: function(lon){
+    if(this.isValidNumber(lon)){
+      return true;
+    }
+    return false;
   }
 };
 
