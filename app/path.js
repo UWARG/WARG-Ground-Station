@@ -16,31 +16,8 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
     var map, localPath, status;
     var clearHistoryPopup;
 
-    // Initialize map if necessary
-    // var defaultLatLng = [49.906576, -98.274078]; // Southport, Manitoba
-    // var defaultLatLng = [43.53086, -80.5772];   // Waterloo North field
-    var defaultLatLng = [48.508809, -71.638846]; // Alma, Quebec
     $(document).ready(function () {
         if (!map) {
-            map = L.map('map').setView(defaultLatLng, 17);
-            map.attributionControl.setPrefix(false);
-
-            L.tileLayer('assets/sat_tiles/{z}/{x}/{y}.png', {
-                maxZoom: 19
-            }).addTo(map);
-
-            var centerControl = L.control.button({
-                name: 'recenter',
-                text: '',
-                title: 'Center on plane',
-                onclick: function () {
-                    if (planeMarker) {
-                        map.panTo(planeMarker.getLatLng());
-                    }
-                }
-            });
-            map.addControl(centerControl);
-
             // Map measuring tool
             var measureTooltip = new Tooltip('measure-tooltip');
             var measureLine = L.polyline([], {
@@ -241,18 +218,6 @@ var Path = (function ($, Data, Log, Network, Mousetrap, HeightGraph) {
                 weight: 3,
                 clickable: false
             }).addTo(map);
-        }
-    });
-
-    // Initialize clear-history popup if necessary
-    $(document).ready(function () {
-        if (!clearHistoryPopup) {
-            var button = $('<div class="button" id="clearHistory">Clear plane trail</div>');
-            button.on('click', function () {
-                map.closePopup(clearHistoryPopup);
-                historyPolyline.setLatLngs([]);
-            });
-            clearHistoryPopup = L.popup().setContent(button[0]);
         }
     });
 

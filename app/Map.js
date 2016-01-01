@@ -32,6 +32,12 @@ var Map=function(L){
       clickable: true,
   });
 
+  var mouse_lat_lon = leaflet.control.text({
+    name: 'mouse_lat_lon',
+    title: 'Mouse Latitude and Longitude',
+    color:'#FFFFFF'
+  });
+                
   var centerToPlane=leaflet.control.button({
     name: 'recenter',
     text: 'C',
@@ -56,6 +62,15 @@ var Map=function(L){
     //allow the user to turn on and off specific layers
     L.control.layers(base_layers, overlay_layers).addTo(map);
     map.addControl(centerToPlane);
+
+    map.addControl(mouse_lat_lon);
+
+    map.on('mousemove', function (e) {
+        mouse_lat_lon.setText('(' + e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5) + ')');
+    });
+    map.on('mouseout', function (e) {
+        mouse_lat_lon.setText('');
+    });
   };
 
   this.movePlane=function(lat,lng, heading){

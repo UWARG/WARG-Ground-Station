@@ -8,6 +8,7 @@ L.Control.Text = L.Control.extend({
 		name: 'text',
 		text: '',
 		title: '',
+    color:'',
 		disabled: false,
 		onclick: function () {},
 	},
@@ -18,7 +19,14 @@ L.Control.Text = L.Control.extend({
 		var controlName = 'leaflet-control-' + this.options.name;
 		
 		this._container = L.DomUtil.create('div', controlName);
-		this._container.innerHTML = this.options.text;
+    if(this.options.color){
+      this._container.innerHTML = '<span style="color:'+this.options.color+'">'+this.options.text+'</span>';
+      console.log('<span style="color:'+this.options.color+'">'+this.options.text+'</span>');
+    }
+    else{
+     this._container.innerHTML = this.options.text; 
+    }
+		
 		this._container.title = this.options.title;
 
 		this._map = map;
@@ -32,7 +40,13 @@ L.Control.Text = L.Control.extend({
 
 	setText: function (text) {
 		this.options.text = text;
-		this._container.innerHTML = text;
+    if(this.options.color){
+      this._container.innerHTML = '<span style="color:'+this.options.color+'">'+this.options.text+'</span>';
+      console.log('<span style="color:'+this.options.color+'">'+this.options.text+'</span>');
+    }
+    else{
+     this._container.innerHTML = this.options.text; 
+    }
 	},
 
 	getTitle: function () {
