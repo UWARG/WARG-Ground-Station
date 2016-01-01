@@ -31,15 +31,10 @@ var Map=function(L){
       weight: 5,
       clickable: true,
   });
- 
-  var centerToPlaneButton=leaflet.control.button({
-    name: 'recenter',
-    text: 'C',
-    title: 'Center on plane',
-    onclick: function () {
-      if (overlay_layers['Plane']) {
-        map.panTo(overlay_layers['Plane'].getLatLng());
-      }
+
+  var centerToPlaneButton=L.easyButton( 'icon ion-pinpoint', function(){
+    if (overlay_layers['Plane']) {
+      map.panTo(overlay_layers['Plane'].getLatLng());
     }
   });
 

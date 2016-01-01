@@ -21,3 +21,7 @@
   align-items: center;
   justify-content: space-around;
 }
+.mapView .easy-button-button{
+  font-size: 20px;
+  padding: 3px 0 0 0;
+}
