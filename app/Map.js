@@ -43,12 +43,27 @@ var Map=function(L){
     }
   });
 
+  var measureControl = new L.Control.Measure({
+    primaryLengthUnit: 'meters', 
+    secondaryLengthUnit: 'kilometers',
+    primaryAreaUnit: 'sqkilometers', 
+    secondaryAreaUnit: 'sqmeters',
+    activeColor: '#ABE67E',
+    completedColor: '#C8F2BE',
+    units:{
+      sqkilometers: {
+        factor: 1e-6, // Required. Factor to apply when converting to this unit. Length in meters or area in sq meters will be multiplied by this factor.
+        display: 'Sq. Kilometers', // Required. How to display in results, like.. "300 Meters (0.3 My New Unit)".
+        decimals: 2 // Number of decimals to round results when using this unit. `0` is the default value if not specified.
+      }
+    }
+  });
+
   this.createMap=function(id){
     map = leaflet.map(id,{
       center: map_config.default_lat_lang,
       zoom: 17,
       attributionControl: false,
-      measureControl: true, //this is done through the map plugin
       layers: [base_layers['Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
     });
 
@@ -56,6 +71,7 @@ var Map=function(L){
     leaflet.control.layers(base_layers, overlay_layers).addTo(map);
     leaflet.control.mousePosition().addTo(map);
     map.addControl(centerToPlaneButton);
+    map.addControl(measureControl);
 
   };
 
