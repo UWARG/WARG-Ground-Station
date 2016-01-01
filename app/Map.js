@@ -31,21 +31,15 @@ var Map=function(L){
       weight: 5,
       clickable: true,
   });
-
-  var mouse_lat_lon = leaflet.control.text({
-    name: 'mouse_lat_lon',
-    title: 'Mouse Latitude and Longitude',
-    color:'#FFFFFF'
-  });
-                
-  var centerToPlane=leaflet.control.button({
+ 
+  var centerToPlaneButton=leaflet.control.button({
     name: 'recenter',
     text: 'C',
     title: 'Center on plane',
     onclick: function () {
-        if (overlay_layers['Plane']) {
-            map.panTo(overlay_layers['Plane'].getLatLng());
-        }
+      if (overlay_layers['Plane']) {
+        map.panTo(overlay_layers['Plane'].getLatLng());
+      }
     }
   });
 
@@ -53,24 +47,16 @@ var Map=function(L){
     map = leaflet.map(id,{
       center: map_config.default_lat_lang,
       zoom: 17,
+      attributionControl: false,
+      measureControl: true, //this is done through the map plugin
       layers: [base_layers['Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
     });
 
-    map.setView(map_config.default_lat_lang, 17);
-    map.attributionControl.setPrefix(false);
-
     //allow the user to turn on and off specific layers
-    L.control.layers(base_layers, overlay_layers).addTo(map);
-    map.addControl(centerToPlane);
+    leaflet.control.layers(base_layers, overlay_layers).addTo(map);
+    leaflet.control.mousePosition().addTo(map);
+    map.addControl(centerToPlaneButton);
 
-    map.addControl(mouse_lat_lon);
-
-    map.on('mousemove', function (e) {
-        mouse_lat_lon.setText('(' + e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5) + ')');
-    });
-    map.on('mouseout', function (e) {
-        mouse_lat_lon.setText('');
-    });
   };
 
   this.movePlane=function(lat,lng, heading){
@@ -82,9 +68,11 @@ var Map=function(L){
   this.expandPlaneTrail=function(lat,lng){
     overlay_layers['Plane Trail'].addLatLng([lat,lng]);
   };
+
   this.clearPlaneTrail=function(){
     overlay_layers['Plane Trail'].setLatLngs([]);
   };
+
 };
 
 module.exports=Map;
