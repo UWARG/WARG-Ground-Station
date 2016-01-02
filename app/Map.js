@@ -21,7 +21,8 @@ var Map=function(L){
   base_layers['Streets']=leaflet.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   });
-  
+
+  base_layers['Google Satellite']=new leaflet.Google();
 
   overlay_layers['Plane']=new leaflet.RotatedMarker(map_config.default_lat_lang, {
     icon: leaflet.icon({
