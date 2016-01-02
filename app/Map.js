@@ -3,10 +3,12 @@ var map_config=require('../config/map-config');
 var path=require('path');
 var MapDraw=require('./models/MapDraw');
 var MapMeasure=require('./models/MapMeasure');
+var MapPath=require('./models/MapPath');
 
 var Map=function(L){
   var leaflet=L;//reference to the window leaflet object
   var map=null;
+  var mapPath= new MapPath(leaflet);
 
   //Set up paths
   var tiles_path=path.join(__dirname,'../assets/sat_tiles');
@@ -58,6 +60,7 @@ var Map=function(L){
     leaflet.control.mousePosition().addTo(map); //displays lat and lon coordinates at bottom left of the map
     map.addControl(centerToPlaneButton);
 
+    mapPath.addTo(map);
     MapMeasure(leaflet).addTo(map);
     new MapDraw(leaflet).addTo(map); //adds draw controls to map
   };
