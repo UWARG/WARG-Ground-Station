@@ -1,5 +1,6 @@
 node_modules/
 cache/
+assets/sat_tiles/
 
 Thumbs.db
 ./**/Thumbs.db

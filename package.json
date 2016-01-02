@@ -1,6 +1,6 @@
 {
   "name": "WARG-Ground-Station",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "The WARG ground station written in NW.js",
   "author": "Univeristy of Waterloo Arial Robotics Group- www.uwarg.com",
   "repository": {
