@@ -3,33 +3,6 @@ cache/
 assets/sat_tiles/
 
 Thumbs.db
-./**/Thumbs.db
-
-*.pak
-credits.html
-*.dll
-*.dat
-
-*.exe
-jquery-2.1.1.min.js
-leaflet.css
-leaflet.js
-
-*.so
-*.TTF*.nib
-
-nwjs.app/
-
-
-*.plist
-
-nwjs/
-nw.sh
-
 
 *.log
-*.7z
-jquery-ui.js
-jquery-ui.css
-jquery-ui.theme.css
 *.csv
