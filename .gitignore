@@ -1,48 +1,34 @@
+node_modules/
+cache/
+
+Thumbs.db
+./**/Thumbs.db
+
 *.pak
 credits.html
 *.dll
 *.dat
-sat_tiles/*
-node_modules/net/index.js
-node_modules/net/LICENSE
-node_modules/net/package.json
-node_modules/net/README.md
-node_modules/net/test.js
+
 *.exe
 jquery-2.1.1.min.js
 leaflet.css
 leaflet.js
-images/marker-shadow.png
-images/marker-icon.png
-images/marker-icon-2x.png
-images/layers.png
-images/layers-2x.png
-nwjs.app/Contents/Frameworks/crash_inspector
+
 *.so
-nwjs.app/Contents/Frameworks/nwjs Framework.framework/nwjs Framework
-*.TTF
-*.nib
-nwjs.app/Contents/Frameworks/nwjs Framework.framework/Resources/missingImage.png
-nwjs.app/Contents/Frameworks/nwjs Framework.framework/Resources/textAreaResizeCorner.png
+*.TTF*.nib
+
+nwjs.app/
+
+
 *.plist
-nwjs.app/Contents/PkgInfo
-nwjs.app/Contents/Frameworks/nwjs Helper EH.app/Contents/MacOS/nwjs Helper EH
-nwjs.app/Contents/Frameworks/nwjs Helper EH.app/Contents/PkgInfo
-nwjs.app/Contents/Frameworks/nwjs Helper NP.app/Contents/MacOS/nwjs Helper NP
-nwjs.app/Contents/Frameworks/nwjs Helper NP.app/Contents/PkgInfo
-nwjs.app/Contents/Frameworks/nwjs Helper.app/Contents/MacOS/nwjs Helper
-nwjs.app/Contents/Frameworks/nwjs Helper.app/Contents/PkgInfo
-nwjs.app/Contents/MacOS/nwjs
-nwjs.app/Contents/Resources/missingImage.png
-nwjs.app/Contents/Resources/nw.icns
-nwjs.app/Contents/Resources/textAreaResizeCorner.png
-nwjs/*
+
+nwjs/
 nw.sh
-images/Thumbs.db
+
+
 *.log
 *.7z
 jquery-ui.js
 jquery-ui.css
 jquery-ui.theme.css
-*.png
 *.csv

@@ -1,0 +1,32 @@
+<div id="console-display-options">
+    <label for="console-info-toggle" class="pure-checkbox" style="color: rgb(164, 255, 245);">
+        <input id="console-info-toggle" type="checkbox" value="">
+        Info
+    </label>
+    <label for="console-debug-toggle" class="pure-checkbox" style="color: rgb(118, 118, 118);">
+        <input id="console-debug-toggle" type="checkbox" value="">
+        Debug
+    </label>
+    <label for="console-warn-toggle" class="pure-checkbox" style="color: rgb(255, 136, 84);">
+        <input id="console-warn-toggle" type="checkbox" value="">
+        Warn
+    </label>
+    <label for="console-error-toggle" class="pure-checkbox" style="color: rgb(255, 101, 101);">
+        <input id="console-error-toggle" type="checkbox" value="">
+        Error
+    </label>
+    <label for="console-data-toggle" class="pure-checkbox" style="color: rgb(84, 255, 86);">
+        <input id="console-data-toggle" type="checkbox" value="">
+        Data
+    </label>
+  
+</div>
+<div id="console">
+  <!-- This is where the output goes -->
+</div>
+
+<form class="form-group pure-form" id='commands-input-form'>
+  <input placeholder="Enter a command..." autocomplete="off" type="text" id="commands-input">
+  <button class="pure-button button-success" id="send-command-button">Send</button>
+  <button class="pure-button pure-button-primary" id="scroll-bottom-button">&#x25BC;</button>
+</form>

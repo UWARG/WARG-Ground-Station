@@ -1,0 +1,168 @@
+.altitudeView{
+  height: 100%;
+  width: 100%;
+  font-size: 0;
+}
+.altitudeView .altitude-dial{
+  height: 50%;
+  width: 50%;
+  font-size: 16px;
+  display: inline-block;
+  text-align: center;
+}
+
+.altitudeView .altitude-dial>p{
+  font-size: 18px;
+  color: lightgrey;
+  font-weight: 600;
+  margin: 4px 0 6px 0;
+  text-align: center;
+}
+.altitudeView .dial-picture{
+  width: 486px;
+  height: 486px;
+  border: 3px inset grey;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.49) 0%, rgba(18,18,18,1) 94%, rgba(18,18,18,1) 100%);
+  margin: auto;
+}
+
+.altitudeView .hand{
+  background-color: darkred;
+  width: 5px;
+  height: 48%;
+  position: absolute;
+  left: 0;
+  top: 2%;
+  right: 0;
+  transform-origin: 50% 100%;
+  margin: auto;
+  border-top-right-radius: 100%;
+  border-top-left-radius: 100%;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+} 
+
+.altitudeView .dial-picture >p{
+  position: absolute;
+  bottom: 29%;
+  font-weight: 600;
+  color: white;
+  left: 0;
+  font-size: 18px;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  border-radius: 5px;
+  z-index: 10;
+}
+.altitudeView .altitude-dial form{
+  margin: 0;
+  margin-top: 12px;
+  padding: 0 8px 0 8px;
+  height: 32px;
+  text-align: center;
+  font-size: 14px;
+}
+.altitudeView .altitude-dial form input{
+  width: calc(100% - 58px);
+  height: 100%;
+  text-align: left;
+  max-width: 80px;
+}
+.altitudeView .altitude-dial form button{
+  height: 100%;
+  padding: 0 8px 0 8px;
+}
+.altitudeView .labels{
+  color: white;
+  list-style-type: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+} 
+.altitudeView .labels .tick{
+  background: transparent;
+  border-radius: 0;
+  top: 0;
+  height: 50%;
+  font-size: 16px;
+}
+.altitudeView .labels .tick div{
+  height: 10%;
+  width: 2px;
+  background: #898989;
+}
+.altitudeView .labels .long-tick div{
+  height: 20%;
+  background: white;
+}
+.altitudeView .labels .text-tick div{
+  background: transparent;
+}
+
+.altitudeView .labels .tick:nth-child(1){
+  transform: rotate(0);
+}
+.altitudeView .labels .tick:nth-child(2){
+  transform: rotate(22.5deg);
+} 
+.altitudeView .labels .tick:nth-child(3){
+  transform: rotate(45deg);
+}
+.altitudeView .labels .tick:nth-child(4){
+  transform: rotate(67.5deg);
+} 
+.altitudeView .labels .tick:nth-child(5){
+  transform: rotate(90deg);
+} 
+.altitudeView .labels .tick:nth-child(6){
+  transform: rotate(112.5deg);
+} 
+.altitudeView .labels .tick:nth-child(7){
+  transform: rotate(135deg);
+} 
+.altitudeView .labels .tick:nth-child(8){
+  transform: rotate(157.5deg);
+} 
+.altitudeView .labels .tick:nth-child(9){
+  transform: rotate(180deg);
+}
+.altitudeView .labels .tick:nth-child(10){
+  transform: rotate(202.5deg);
+} 
+.altitudeView .labels .tick:nth-child(11){
+  transform: rotate(225deg);
+}
+.altitudeView .labels .tick:nth-child(12){
+  transform: rotate(247.5deg);
+} 
+.altitudeView .labels .tick:nth-child(13){
+  transform: rotate(270deg);
+} 
+.altitudeView .labels .tick:nth-child(14){
+  transform: rotate(292.5deg);
+} 
+.altitudeView .labels .tick:nth-child(15){
+  transform: rotate(315deg);
+} 
+.altitudeView .labels .tick:nth-child(16){
+  transform: rotate(337.5deg);
+} 
+.altitudeView .labels .tick:nth-child(5) div{
+  transform: rotate(-90deg);
+  top: 15px;
+  position: absolute;
+}  
+.altitudeView .labels .tick:nth-child(9) div{
+  transform: rotate(180deg);
+  position: absolute;
+  right: -7px;
+  top: 10px;
+}
+.altitudeView .labels .tick:nth-child(13) div{
+  transform: rotate(90deg);
+}

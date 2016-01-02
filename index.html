@@ -1,435 +1,51 @@
-<!DOCTYPE html>
 <html>
-
 <head>
-    <title>WARG-Ground-Station-V2</title>
-    <meta charset="utf-8">
+  <title>WARG Groundstation</title>
+  <!-- CSS libraries -->
+  <link rel="stylesheet" href="styles/lib/jquery.splitter.css">
+  <link rel="stylesheet" href="styles/lib/pure.css">
+  <link rel="stylesheet" href="styles/lib/leaflet.css">
+  <link rel="stylesheet" href="styles/lib/L.Control.MousePosition.css">
+  <link rel="stylesheet" href="styles/lib/leaflet-measure.css">
+  <link rel="stylesheet" href="styles/lib/leaflet.easybutton.css">
+  <link rel="stylesheet" href="styles/lib/leaflet.draw.css">
+  <link rel="stylesheet" href="styles/lib/leaflet.plotter.css">
+  <link rel="stylesheet" href="styles/lib/ionicons.css">
 
-    <link rel="stylesheet" href="leaflet.css">
-    <link rel="stylesheet" type="text/css" href="simplegrid.css">
-    <link rel="stylesheet" href="styles/leaflet.altitudemarker.css">
-    <link rel="stylesheet" href="styles/leaflet.messagebox.css">
-    <link rel="stylesheet" href="styles/leaflet.plotter.css">
-    <link rel="stylesheet" href="style.css">
+  <!-- Our CSS Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/views/main-layout-view.css">
+  <link rel="stylesheet" href="styles/views/console-view.css">
+  <link rel="stylesheet" href="styles/views/status-view.css">
+  <link rel="stylesheet" href="styles/views/cockpit-layout-view.css">
+  <link rel="stylesheet" href="styles/views/attitude-view.css">
+  <link rel="stylesheet" href="styles/views/altitude-view.css">
+  <link rel="stylesheet" href="styles/views/throttle-view.css">
+  <link rel="stylesheet" href="styles/views/map-view.css">
 
-    <script src="jquery-2.1.1.min.js"></script>
-    <script src="jquery-ui.js"></script>
-    <link rel="stylesheet" href="jquery-ui.css">
-    <link rel="stylesheet" href="jquery-ui.theme.css">
+  <!-- Document related libraries -->
+  <script src="app/lib/jquery-2.1.4.js"></script>
+  <script src="app/lib/jquery.splitter.js"></script>
+  <script src="app/lib/jquery.resize.js"></script><!-- Used for detect resize events on cockpit view -->
+  <script src="app/lib/underscore.js"></script>
+  <script src="app/lib/backbone.js"></script>
+  <script src="app/lib/backbone.marionette.js"></script>
+  <script src="app/lib/leaflet-0.7.7.js"></script>
 
-    <script src="mousetrap.js"></script>
-    <script src="nw-shortcuts.js"></script>
-    <script src="data.js"></script>
-    <script src="log.js"></script>
-    <script src="network.js"></script>
-    <script src="cockpit.js"></script>
-    <script src="leaflet.js"></script>
-    <script src="leaflet.core-extensions.js"></script>
-    <script src="leaflet.rotatedmarker.js"></script>
-    <script src="leaflet.altitudemarker.js"></script>
-    <script src="leaflet.control.button.js"></script>
-    <script src="leaflet.control.text.js"></script>
-    <script src="leaflet.messagebox.js"></script>
-    <script src="leaflet.plotter.js"></script>
-    <script src="tooltip.js"></script>
-    <script src="d3.js"></script>
-    <script src="simple-graph.js"></script>
-    <script src="height-graph.js"></script>
-    <script src="path.js"></script>
-    <script src="photomapper.js"></script>
+  <!-- Leaflet Plugins -->
+  <script src="app/lib/leaflet-plugins/leaflet.rotatedmarker.js"></script>
+  <script src="app/lib/leaflet-plugins/L.Control.MousePosition.js"></script>
+  <script src="app/lib/leaflet-plugins/leaflet-measure.js"></script>
+  <script src="app/lib/leaflet-plugins/leaflet.easybutton.js"></script>
+  <script src="app/lib/leaflet-plugins/leaflet.draw.js"></script>
+  <script src="http://maps.google.com/maps/api/js?v=3"></script> 
+  <script src="app/lib/leaflet-plugins/leaflet.google.js"></script>
+  <script src="app/lib/leaflet-plugins/leaflet.altitudemarker.js"></script>
+  <script src="app/lib/leaflet-plugins/leaflet.plotter.js"></script>
+
+  <!-- Application entry point -->
+  <script src="app/App.js"></script>
 </head>
-
 <body>
-    <div id="cockpit" class="grid-pad">
-        <!-- COL 1  -->
-        <div class="col-6-12">
-            <div class="col-1-2">
-                <div>
-                    <canvas id="pitch" class="instrument"></canvas>
-                    <input type="number" id="pitch_setpoint" class="input" value="0">
-                    <div class="button" id="send_pitch">
-                        Send Pitch
-                    </div>
-                </div>
-            </div>
-            <div class="col-1-2">
-                <div>
-                    <canvas id="roll" class="instrument"></canvas>
-                    <input type="number" id="roll_setpoint" class="input" value="0">
-                    <div class="button" id="send_roll">
-                        Send Roll
-                    </div>
-                </div>
-            </div>
-            <div class="col-1-2">
-                <div>
-                    <canvas id="heading" class="instrument"></canvas>
-                    <input type="number" id="heading_setpoint" class="input" value="0">
-                    <div class="button" id="send_heading">
-                        Send Heading
-                    </div>
-                </div>
-            </div>
-            <div class="col-1-2">
-                <div>
-                    <canvas id="horizon" class="instrument"></canvas>
-                    <div id="control_status" class="display-bold"></div>
-                </div>
-            </div>
-
-
-            <div class="col-2-2">
-                <br/>
-                <div id="tabs">
-                    <ul>
-                        <li><a href="#command">Commands</a>
-                        </li>
-                        <li><a href="#data_entry">Data Entry</a>
-                        </li>
-                        <li><a href="#autonomous_level">Autonomous Lvl</a>
-                        </li>
-                    </ul>
-
-                    <div id="autonomous_level">
-                        <div>
-                            <div class="display">Pitch Control</div>
-                            <div class="display">Roll Control</div>
-                            <div class="display">Altitude Source</div>
-                        </div>
-                        <div>
-                            <select id="pitch_control" class="dropdown">
-                                <option>Rate</option>
-                                <option>Angle</option>
-                            </select>
-                            <select id="roll_control" class="dropdown">
-                                <option>Rate</option>
-                                <option>Angle</option>
-                            </select>
-                            <select id="altitude_source" class="dropdown">
-                                <option>Ground Station</option>
-                                <option>Autopilot</option>
-                            </select>
-                        </div>
-                        <div>
-                            <div class="display">Pitch Source</div>
-                            <div class="display">Roll Source</div>
-                            <div class="display">Altitude On/Off</div>
-                        </div>
-                        <div>
-                            <select id="pitch_source" class="dropdown">
-                                <option>Controller</option>
-                                <option>Ground Station</option>
-                            </select>
-                            <select id="roll_source" class="dropdown">
-                                <option>Controller</option>
-                                <option>Ground Station</option>
-                            </select>
-                            <select id="altitude_on" class="dropdown">
-                                <option>Off</option>
-                                <option>On</option>
-                            </select>
-                        </div>
-                        <div>
-                            <div class="display">Heading Source</div>
-                            <div class="display">Heading On/Off</div>
-                            <div class="display">Throttle Source</div>
-                        </div>
-                        <div>
-                            <select id="heading_source" class="dropdown">
-                                <option>Ground Station</option>
-                                <option>Autopilot</option>
-                            </select>
-                            <select id="heading_on" class="dropdown">
-                                <option>Off</option>
-                                <option>On</option>
-                            </select>
-                            <select id="throttle_source" class="dropdown">
-                                <option>Controller</option>
-                                <option>Ground Station</option>
-                                <option>Autopilot</option>
-                            </select>
-                        </div>
-                        <div>
-                            <div class="display">Flap Source</div>
-                        </div>
-                        <div>
-                            <select id="flap_source" class="dropdown">
-                                <option>Controller</option>
-                                <option>Ground Station</option>
-                                <option>Autopilot</option>
-                            </select>
-                        </div>
-                        <div class="button" id="send_autonomous">
-                            Send Autonomous Level
-                        </div>
-                        <div class="button" id="set_controller">
-                            Full RC Control
-                        </div>
-                    </div>
-
-                    <div id="data_entry">
-                        <div class="display">File Name</div>
-                        <input type="text" id="send_file" class="input">
-                        <br/>
-                        <div class="display">Comment</div>
-                        <input type="text" id="send_comment" class="input">
-                        <br/>
-                        <div class="button" id="save_comment">
-                            Save Comment
-                        </div>
-                        <div class="button" id="save_kValue">
-                            Save K Values
-                        </div>
-                        <div class="button" id="load_kValue">
-                            Load K Values
-                        </div>
-                        <br/>
-                        <input id="toggle_map" type="checkbox" checked="true">Map
-                        <input id="toggle_buttons" type="checkbox" checked="true">Buttons
-                        <input id="toggle_rates_yaw" type="checkbox" checked="true">Rates/Yaw
-                        <input id="toggle_log" type="checkbox" checked="true">Log
-                        
-                    </div>
-
-                    <div id="command">
-                        <input type="text" id="raw_command" class="input">
-                        <div class="button" id="send_command">
-                            Send Command
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- COL 2  -->
-        <div class="col-6-12">
-            <div class="col-2-2">
-                <div class="col-2-2">
-                    <b>UHF</b>
-                    <div id="uhf" class="display"></div>
-                    <b>Time</b>
-                    <div id="time" class="display"></div>
-                    <div class="col-2-8">
-                        <canvas id="gps_status" class="instrument"></canvas>
-                        <canvas id="battery" class="instrument" ></canvas>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-1-2">
-                <div class="col-1-2">
-                    <canvas id="altimeter" class="instrument"></canvas>
-                </div>
-                <div class="col-1-2">
-                    <div class="centered-div">
-
-                        <br>
-                    <br>
-                    <br>
-                    <br>
-                    <div class="col-2-1">
-                        <div id="flap_setpoint_display" class="display"></div>
-
-                    </div>
-                    <div class="col-2-1">
-                        <input type="number" id="flap_setpoint_input" class="input" value="0">
-
-                    </div>
-                    <div class="col-2-2">
-                        <div class="button" id="send_flap">
-                            Send Flap
-                        </div>
-                    </div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-
-                        <div class="col-2-2">
-                            <div id="altitude_setpoint_display" class="display"></div>
-                        </div>
-                        <div class="col-2-2">
-                            <input type="number" id="altitude_setpoint_input" class="input" value="0">
-
-                        </div>
-                        <div class="col-2-2">
-                            <div class="button" id="send_altitude">
-                                Send Altitude
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-1-2">
-                <div class="col-1-2">
-                    <canvas id="speed" class="instrument"></canvas>
-                </div>
-                <div class="col-1-2">
-                    <br>
-                    <div class="col-2-2">
-                        <b>Speed Type:</b>
-                    </div>
-                    
-                    <br>
-                    <div class="col-2-2">
-
-                        <select id="speed_type" class="dropdown">
-                            <option>Air</option>
-                            <option>Ground</option>
-                        </select>
-
-                    </div>
-                    <br>
-                    <br>
-                    <div class="col-2-2">
-                        <div id="airspeed_setpoint_display" class="display"></div>
-
-                    </div>
-                    <div class="col-2-2">
-                        <input type="number" id="airspeed_setpoint_input" class="input" value="0">
-
-                    </div>
-                    <div class="col-2-2">
-                        <div class="button" id="send_airspeed">
-                            Send Airspeed
-                        </div>
-                        <br>
-                        <br>
-                    </div>
-                    <div class="col-2-2">
-                        <div id="throttle_setpoint_display" class="display"></div>
-
-                    </div>
-                    <div class="col-2-2">
-                        <input type="number" id="throttle_setpoint_input" class="input" value="0">
-
-                    </div>
-                    <div class="col-2-2">
-                        <div class="button" id="send_throttle">
-                            Send Throttle
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-2-2">
-                <h3 align="center"> Gains </h3>
-                <div id="gains">
-                    <div>
-                        <select id="gainSelect" class="dropdown">
-                            <option value="yaw">Yaw</option>
-                            <option value="pitch">Pitch</option>
-                            <option value="roll">Roll</option>
-                            <option value="heading">Heading</option>
-                            <option value="altitude">Altitude</option>
-                            <option value="throttle">Throttle</option>
-                            <option value="flap">Flap</option>
-                        </select>
-                        <div id="current_gain" class="display"></div>
-                    </div>
-                    <div>
-                        <div class="display">KD Gain</div>
-                        <div class="display">KP Gain</div>
-                        <div class="display">KI Gain</div>
-                    </div>
-                    <div>
-                        <div id="current_kd" class="display"></div>
-                        <div id="current_kp" class="display"></div>
-                        <div id="current_ki" class="display"></div>
-                    </div>
-                    <div>
-                        <input type="number" id="kdInput" class="input" value="0">
-                        <input type="number" id="kpInput" class="input" value="0">
-                        <input type="number" id="kiInput" class="input" value="0">
-                    </div>
-                    <div class="button" id="send_kd">
-                        Send KD Gain
-                    </div>
-                    <div class="button" id="send_kp">
-                        Send KP Gain
-                    </div>
-                    <div class="button" id="send_ki">
-                        Send KI Gain
-                    </div>
-                </div>
-                <div class="col-2-2" id="setpoints2">
-                    <div id="setpoints">
-                        <h3 align="center"> Rates and Yaw </h3>
-                        <div>
-                            <div class="display">Yaw</div>
-                            <div class="display">Pitch Rate</div>
-                            <div class="display">Roll Rate</div>
-                            <div class="display">Yaw Rate</div>
-                        </div>
-                        <div>
-                            <div id="yaw_display" class="display"></div>
-                            <div id="pitch_rate" class="display"></div>
-                            <div id="roll_rate" class="display"></div>
-                            <div id="yaw_rate" class="display"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2-2" id="emergency_buttons">
-                    <h3 align="center"> Emergency Buttons </h3>
-                    <div>
-                        <div class="button" id="lock_gopro">Lock GoPro</div>
-                        <div class="button" id="unlock_gopro">Unlock GoPro</div>
-                        <div class="button" id="unkill_plane">Unkill Plane</div>
-                        <div class="button" id="kill_plane">Kill Plane</div>
-                        <div class="button" id="arm_plane">Arm Plane</div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div id="log"></div>
-
-    <div id="path">
-        <div id="buttonContainer">
-            <div class="button" id="loadWaypoints" title="Load waypoints from a file (and add them to the local path)">
-                Load
-            </div>
-            <div class="button" id="saveWaypoints" title="Save local waypoints to a file">
-                Save
-            </div>
-            <div class="button" id="clearWaypoints" title="Clear all local waypoints
-
-(To clear all waypoints on the plane, click &quot;Clear Waypoints&quot;, then &quot;Send Waypoints&quot;.)">
-                Clear
-            </div>
-            <div class="button button-transmits" id="sendWaypoints" title="Send all local waypoints to the plane">
-                Send
-            </div>
-            <div class="button-group">
-                <div class="button" id="go_home">
-                    ⌂
-                </div><div class="button" id="cancel_go_home">
-                    ⏎
-                </div>
-
-            </div>
-            <div class="button" id="toggle_fullscreen" title="Fullscreen map"> 
-                <img src="fullscreen_icon.png" id="fullscreen_icon">
-
-            </div>
-            <div style="padding: 3px; color: #ddd; font-size: 12px;">Ctrl+L: connect (<span id="display-connections-dataRelay" class="display-connections">dataRelay</span> <span id="display-connections-multiEcho" class="display-connections">multiEcho</span>) &nbsp; Alt+A: altitudes (<span id="display-altitudes"></span> m) &nbsp; Alt+R: radii (<span id="display-radii"></span> m) &nbsp; Alt+V: Arm Vehicle</div>
-        </div>
-        <div id="map"></div>
-        <div id="height-graph-div">
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" id="height-graph">
-            </svg>
-        </div>
-    </div>
-
-
 </body>
-
 </html>
