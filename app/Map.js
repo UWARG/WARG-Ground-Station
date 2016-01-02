@@ -64,6 +64,7 @@ var Map=function(L){
       center: map_config.default_lat_lang,
       zoom: 17,
       attributionControl: false,
+      drawControl: true,
       layers: [base_layers['Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
     });
 
