@@ -22,7 +22,7 @@ var Map=function(L){
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   });
 
-  base_layers['Google Satellite']=new leaflet.Google();
+  base_layers['Google Satellite']=new leaflet.Google('SATELLITE');
 
   overlay_layers['Plane']=new leaflet.RotatedMarker(map_config.default_lat_lang, {
     icon: leaflet.icon({
