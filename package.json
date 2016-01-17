@@ -9,7 +9,7 @@
   },
   "main": "index.html",
   "window": {
-    "toolbar": true,
+    "toolbar": false,
     "width": 1600,
     "height": 900,
     "fullscreen":false,

@@ -62,7 +62,8 @@ module.exports=function(gui){
        focus: true,
        position: 'center',
        width: 900,
-       height: 450
+       height: 400,
+       toolbar: false
       });
       Logger.debug('Opening gains adjust window');
     },
