@@ -11,6 +11,9 @@ var Multiecho=require('./app/connections/Multiecho')(); //initialize multiecho c
 
 var app={};
 
+var WindowShortcuts=require('./app/util/WindowShortcuts');
+WindowShortcuts(Mousetrap,gui);
+
 app.menu=require('./app/Menu')(gui);
 app.windows=[]; //an array of all the windows open
 
