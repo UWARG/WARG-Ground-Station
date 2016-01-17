@@ -55,8 +55,19 @@ module.exports=function(gui){
 	  type:'checkbox'
 	}));
 	window_submenu.append(new gui.MenuItem({
-	  label:'Gains',
-	  type:'checkbox'
+	  label:'Gains Adjust',
+	  type:'checkbox',
+    click: function(){
+      gui.Window.open('./windows/gainsAdjust.html',{
+       focus: true,
+       position: 'center',
+       width: 900,
+       height: 450
+      });
+      Logger.debug('Opening gains adjust window');
+    },
+    modifiers: 'ctrl-shift',
+    key: 'g'
 	}));
 	window_submenu.append(new gui.MenuItem({
 	  label:'Data Entry',

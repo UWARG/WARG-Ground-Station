@@ -1,3 +1,45 @@
 .gainsAdjustView{
-  background: red;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding: 12px;
+  box-sizing: border-box;
+  background-color: rgba(0,0,0,0.8);
+}
+.gainsAdjustView h1{
+  margin-top: 4px;
+  color: #FAFAFA;
+}
+
+.gainsAdjustView th{
+  color: #FAFAFA;
+  background: rgba(0,0,0,0.86);
+}
+.gainsAdjustView td{
+  color: #FAFAFA;
+}
+.gainsAdjustView td, .gainsAdjustView th{
+  border: none;
+}
+.gainsAdjustView table{
+  border: 1px solid rgba(0,0,0,0.86);
+}
+.gainsAdjustView input{
+  width: 100%;
+}
+.gainsAdjustView input[type=text]{
+  padding-left: 4px;
+  padding-right: 4px;
+  color: black;
+}
+.gainsAdjustView table button{
+  width: 100%;
+}
+.gainsAdjustView table{
+  width: 100%;
+  box-sizing: border-box;
+}
+.gainsAdjustView th{
+  min-width: 50px;
+  text-align: center;
 }

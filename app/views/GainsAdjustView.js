@@ -6,7 +6,6 @@ module.exports=function(Marionette){
     template:Template('GainsAdjustView'), 
     className:'gainsAdjustView', 
 
-
     initialize: function(){
       
     },

@@ -15,7 +15,10 @@
     font-weight: 400;
     src: url(../assets/fonts/Akashi.ttf);
 }
-
+html, body{
+  height: 100%;
+  width: 100%;
+}
 .vsplitter{
   background: linear-gradient(to right, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 
 }
