@@ -50,6 +50,24 @@ module.exports=function(gui){
 	  label:'Console',
 	  type:'checkbox'
 	}));
+
+	window_submenu.append(new gui.MenuItem({
+	  label:'3D View',
+	  type:'checkbox',
+    click: function(){
+      gui.Window.open('./windows/3dView.html',{
+       focus: true,
+       position: 'center',
+       width: 900,
+       height: 400,
+       toolbar: true
+      });
+      Logger.debug('Opening 3D View window');
+    },
+    modifiers: 'ctrl-shift',
+    key: 'v'
+	}));
+
 	window_submenu.append(new gui.MenuItem({
 	  label:'Autonomous Level',
 	  type:'checkbox'
