@@ -7,7 +7,7 @@ var ThreeDView=function(THREE,window){
   var default_height=300;
 
   var camera = new THREE.PerspectiveCamera(
-      45, //view angle
+      25, //fov
       default_width / default_height, //aspect ratio
       0.1, //near distance
       10000); //far distance
@@ -18,21 +18,25 @@ var ThreeDView=function(THREE,window){
   scene.add(camera);
 
   // the camera starts at 0,0,0 so pull it back 
-  camera.position.z = 5000;
-
+  camera.position.z = 10.5;
+  camera.rotation.x=70*Math.PI/180;
+  camera.translateY(-10);
+  
   // start the renderer
   this.renderer.setSize(default_width, default_height);
 
-  var loader = new THREE.STLLoader();
-  loader.load( 'C:\\Users\\serjb\\Desktop\\WARG-SPIKE4.stl', function ( geometry ) {
+  var stl_loader = new THREE.STLLoader();
+  stl_loader.load( 'C:\\Users\\serjb\\Desktop\\WARG-SPIKE5.stl', function (geometry) {
+    geometry.scale(0.001,0.001,0.001);
+    geometry.rotateZ(90/180*Math.PI);
     this.aircraft=new THREE.Mesh(geometry);
+
     scene.add(this.aircraft);
     this.renderOnce();
   }.bind(this));
 
-  // Create a light, set its position, and add it to the scene.
-  var light = new THREE.AmbientLight( 0x404040 ); // soft white light
-  scene.add(light);
+  var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+  scene.add( light );
 
   this.renderOnce=function(){
     this.renderer.render(scene, camera);  
@@ -42,6 +46,11 @@ var ThreeDView=function(THREE,window){
   //Note: telemetry data comes in at a much slower rate so should really only do it when necessary
   this.render=function(){
     this.renderer.render(scene, camera);  
+    if(this.aircraft){
+      //this.aircraft.rotation.x += 0.1;
+      this.aircraft.rotation.z += 0.1;
+    }
+    
     window.requestAnimationFrame(this.render);
   }.bind(this);
 
