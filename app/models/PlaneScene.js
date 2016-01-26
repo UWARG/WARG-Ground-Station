@@ -1,10 +1,11 @@
 //Initializes and configures the Three.js airplane view
 var ThreeDView=function(THREE,window){
   this.renderer = new THREE.WebGLRenderer();
+  this.renderer.setClearColor( 0x97C1FF );
   this.aircraft=null;
 
-  var default_width=400;
-  var default_height=300;
+  var default_width=600;
+  var default_height=500;
 
   var camera = new THREE.PerspectiveCamera(
       25, //fov
@@ -29,8 +30,13 @@ var ThreeDView=function(THREE,window){
   stl_loader.load( 'C:\\Users\\serjb\\Desktop\\WARG-SPIKE5.stl', function (geometry) {
     geometry.scale(0.001,0.001,0.001);
     geometry.rotateZ(90/180*Math.PI);
-    this.aircraft=new THREE.Mesh(geometry);
-
+    
+var sphereMaterial =
+  new THREE.MeshLambertMaterial(
+    {
+      color: 0x9C9797
+    });
+  this.aircraft=new THREE.Mesh(geometry,sphereMaterial);
     scene.add(this.aircraft);
     this.renderOnce();
   }.bind(this));
@@ -46,11 +52,6 @@ var ThreeDView=function(THREE,window){
   //Note: telemetry data comes in at a much slower rate so should really only do it when necessary
   this.render=function(){
     this.renderer.render(scene, camera);  
-    if(this.aircraft){
-      //this.aircraft.rotation.x += 0.1;
-      this.aircraft.rotation.z += 0.1;
-    }
-    
     window.requestAnimationFrame(this.render);
   }.bind(this);
 
