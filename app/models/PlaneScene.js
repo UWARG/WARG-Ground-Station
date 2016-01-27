@@ -26,7 +26,7 @@ var ThreeDView=function(THREE,window){
 
   //load the aircraft stl file
   var stl_loader = new THREE.STLLoader();
-  stl_loader.load( 'C:\\Users\\serjb\\Desktop\\WARG-SPIKE5.stl', function (geometry) {
+  stl_loader.load( '../assets/stl/WARG-Plane-model.stl', function (geometry) {
     //scale and rotate our stl file
     geometry.scale(0.001,0.001,0.001);
     geometry.rotateZ(90/180*Math.PI);
