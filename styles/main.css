@@ -18,6 +18,8 @@
 html, body{
   height: 100%;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 .vsplitter{
   background: linear-gradient(to right, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 

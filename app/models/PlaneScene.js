@@ -20,20 +20,19 @@ var ThreeDView=function(THREE,window){
 
   // the camera starts at 0,0,0 so pull it back 
   camera.position.z = 2;
-
- // camera.rotation.x=90*Math.PI/180;
-  //camera.translateY(-16.2);
-
   
   // start the renderer
   this.renderer.setSize(default_width, default_height);
 
+  //load the aircraft stl file
   var stl_loader = new THREE.STLLoader();
   stl_loader.load( 'C:\\Users\\serjb\\Desktop\\WARG-SPIKE5.stl', function (geometry) {
+    //scale and rotate our stl file
     geometry.scale(0.001,0.001,0.001);
     geometry.rotateZ(90/180*Math.PI);
     geometry.rotateX(-90/180*Math.PI);
     
+    //give our aircraft a grey material
     var planeMaterial = new THREE.MeshLambertMaterial({
       color: 0x9C9797
     });
@@ -58,6 +57,13 @@ var ThreeDView=function(THREE,window){
     this.aircraft.rotation.y=-y/180*Math.PI;
     this.aircraft.rotation.z=-z/180*Math.PI; //note there is a negative here
     this.renderOnce();
+  };
+
+  //resizes the view
+  this.resize=function(width, height){
+    this.renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
   };
 
   //should make it render 60 times a second

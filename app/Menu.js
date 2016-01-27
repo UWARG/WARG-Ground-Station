@@ -59,8 +59,8 @@ module.exports=function(gui){
        focus: true,
        position: 'center',
        width: 900,
-       height: 400,
-       toolbar: true
+       height: 500,
+       toolbar: false
       });
       Logger.debug('Opening 3D View window');
     },
