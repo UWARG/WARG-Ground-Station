@@ -12,8 +12,8 @@
     "toolbar": false,
     "width": 1600,
     "height": 900,
-    "fullscreen":false,
-    "frame":true
+    "fullscreen": false,
+    "frame": true
   },
   "single-instance": true,
   "scripts": {
@@ -27,6 +27,7 @@
     "backbone.marionette": "^2.4.4",
     "jquery": "^2.1.4",
     "moment": "^2.10.6",
+    "node-localstorage": "^1.1.2",
     "nw": "0.12.3",
     "underscore": "^1.8.3"
   },
