@@ -39,7 +39,6 @@ var ThreeDView=function(THREE,window){
     this.aircraft=new THREE.Mesh(geometry,planeMaterial);
 
     scene.add(this.aircraft);
-    this.renderOnce();
   }.bind(this));
 
   var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
@@ -53,10 +52,7 @@ var ThreeDView=function(THREE,window){
   //x, y, and z are in degrees
   //x would be pitch (positive points up), y is heading (positive means left), and z is roll (positive rolls left)
   this.rotateAircraft=function(x,y,z){
-    this.aircraft.rotation.x=x/180*Math.PI;
-    this.aircraft.rotation.y=-y/180*Math.PI;
-    this.aircraft.rotation.z=-z/180*Math.PI; //note there is a negative here
-    this.renderOnce();
+    this.aircraft.rotation.set(x/180*Math.PI,-y/180*Math.PI,-z/180*Math.PI,'YXZ');
   };
 
   //resizes the view
@@ -73,7 +69,7 @@ var ThreeDView=function(THREE,window){
     window.requestAnimationFrame(this.render);
   }.bind(this);
 
-  //window.requestAnimationFrame(this.render);
+  window.requestAnimationFrame(this.render);
 }
 
 module.exports=ThreeDView;
