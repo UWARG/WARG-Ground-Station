@@ -1,19 +1,83 @@
-<h1>Autonomous Level Adjust</h1>
-<table class="pure-table">
+<h1 style="text-align: center">Autonomous Level Adjust</h1>
+<table class="pure-table" style="margin-left: 20px" >
     <thead>
         <tr>
-            <th>Type</th>
-            <th>Yaw</th>
-            <th>Pitch</th>
-            <th>Roll</th>
-            <th>Heading</th>
-            <th>Altitude</th>
-            <th>Throttle</th>
-            <th>Flap</th>
+            <th>Pitch Source</th>
+            <th>Roll Source</th>
+            <th>Heading Source</th>
+            <th>Altitude Source</th>
+            <th>Throttle Source</th>
+            <th>Flaps Source</th>
+
         </tr>
     </thead>
+    <tbody> 
+        <tr>
+            <td>
+                
+                <select>
+                 <option value="Controller">Controller</option>
+                 <option value="Ground Station">Ground Station</option>
+                </select> 
+                
+            </td>
+    <td>
+                <select>
+                 <option value="Controller">Controller</option>
+                 <option value="Ground Station">Ground Station</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="Autopilot">Autopilot</option>
+                 <option value="Ground Station">Ground Station</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="Autopilot">Autopilot</option>
+                 <option value="Ground Station">Ground Station</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="Controller">Controller</option>
+                 <option value="Ground Station">Ground Station</option>
+                 <option value="Autopilot">Autopilot</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="Controller">Controller</option>
+                 <option value="Ground Station">Ground Station</option>
+                 <option value="Autopilot">Autopilot</option>
+                </select> 
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <button class="pure-button button-secondary">Send Pitch</button>    
+            </td>
+            <td>
+            <button class="pure-button button-secondary">Send Roll</button>    
+            </td>
+            <td>
+            <button class="pure-button button-secondary">Send Heading</button>    
+            </td>
+            <td>
+            <button class="pure-button button-secondary">Send Alt</button>    
+            </td>
+            <td>
+            <button class="pure-button button-secondary">Send Throttle</button>    
+            </td>
+            <td>
+            <button class="pure-button button-secondary">Send Flaps</button>   
+            </td> 
+            
+        </tr>
+</tbody>
 </table>
 
-<form class="pure-form" style="margin-top: 12px">
-    <button class="pure-button button-secondary">Send All</button>
-</form>
+<div class="wrapper">
+    <button class="pure-button button-secondary" style="margin-top: 50px" >Send All</button>
+</div>

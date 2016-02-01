@@ -11,7 +11,7 @@ module.exports=function(Marionette){
 
   return Marionette.ItemView.extend({
     template:Template('AutoAdjustView'), //name of the file in the views folder at the project root
-    className:'autoAdjustView', //this is the class name the injected div will have (refer to this class in your style sheets)
+    className:'gainsAdjustView', //this is the class name the injected div will have (refer to this class in your style sheets)
 
     ui:{ //any ui elements in the view that you would like to reference within your view logic
       an_element:"#an-example-element" //you can now refer to the jquery wrapped element within the view with this.ui.an_element

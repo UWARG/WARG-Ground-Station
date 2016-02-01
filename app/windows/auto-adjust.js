@@ -1,6 +1,6 @@
-//our new-window.js file (the window entry point)
-var windowView=require('./app/views/AutoAdjustView')(Marionette);
-
-$(document).ready(function(){
-  $('body').append((new windowView()).render().$el);
+var gui = require('nw.gui');
+var windowView = require('./app/views/AutoAdjustView')(Marionette);
+var WindowShortcuts = require('./app/util/WindowShortcuts')(Mousetrap, gui);
+$(document).ready(function () {
+    $('body').append((new windowView()).render().$el);
 });

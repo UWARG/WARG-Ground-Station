@@ -73,7 +73,11 @@ module.exports = function (gui) {
         type: 'checkbox',
         click: function () {
             gui.Window.open('windows/autoAdjust.html', {
-                focus: true
+                focus: true,
+                position: 'center',
+                width: 1100,
+                height: 400,
+                toolbar: false
             });
         },
         key: "k",
