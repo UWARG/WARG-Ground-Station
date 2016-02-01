@@ -1,7 +1,8 @@
 <h1 style="text-align: center">Autonomous Level Adjust</h1>
-<table class="pure-table" style="margin-left: 20px" >
+<table class="pure-table" style="margin-left: -10px" >
     <thead>
         <tr>
+            <th></th>
             <th>Pitch Source</th>
             <th>Roll Source</th>
             <th>Heading Source</th>
@@ -13,48 +14,67 @@
     </thead>
     <tbody> 
         <tr>
+            <td>Control <br> Type </td>
             <td>
-                
-                <select>
-                 <option value="Controller">Controller</option>
-                 <option value="Ground Station">Ground Station</option>
-                </select> 
-                
-            </td>
-    <td>
-                <select>
-                 <option value="Controller">Controller</option>
-                 <option value="Ground Station">Ground Station</option>
+            <select>
+                 <option value="PitchRate">Rate</option>
+                 <option value="PitchAngle">Angle</option>
                 </select> 
             </td>
-    <td>
+            <td>
                 <select>
-                 <option value="Autopilot">Autopilot</option>
-                 <option value="Ground Station">Ground Station</option>
-                </select> 
-            </td>
-    <td>
-                <select>
-                 <option value="Autopilot">Autopilot</option>
-                 <option value="Ground Station">Ground Station</option>
-                </select> 
-            </td>
-    <td>
-                <select>
-                 <option value="Controller">Controller</option>
-                 <option value="Ground Station">Ground Station</option>
-                 <option value="Autopilot">Autopilot</option>
-                </select> 
-            </td>
-    <td>
-                <select>
-                 <option value="Controller">Controller</option>
-                 <option value="Ground Station">Ground Station</option>
-                 <option value="Autopilot">Autopilot</option>
+                 <option value="RollRate">Rate</option>
+                 <option value="RollAngle">Angle</option>
                 </select> 
             </td>
         </tr>
         <tr>
+            <td>Control <br> Source </td>
+            <td>
+                
+                <select>
+                 <option value="PitchController">Controller</option>
+                 <option value="PitchGroundStation">Ground Station</option>
+                </select> 
+                
+            </td>
+    <td>
+                <select>
+                 <option value="RollController">Controller</option>
+                 <option value="RollGround Station">Ground Station</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="HeadGround Station">Off</option>
+                 <option value="HeadAutopilot">Autopilot</option>
+                 <option value="HeadGround Station">Ground Station</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="AltGroundStation">Off</option>
+                 <option value="AltAutopilot">Autopilot</option>
+                 <option value="AltGroundStation">Ground Station</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="ThrottleController">Controller</option>
+                 <option value="ThrottleGroundStation">Ground Station</option>
+                 <option value="ThrottleAutopilot">Autopilot</option>
+                </select> 
+            </td>
+    <td>
+                <select>
+                 <option value="FlapsController">Controller</option>
+                 <option value="FlapsGroundStation">Ground Station</option>
+                 <option value="FlapsAutopilot">Autopilot</option>
+                </select> 
+            </td>
+        </tr>
+        <tr>
+            <td></td>
             <td>
             <button class="pure-button button-secondary">Send Pitch</button>    
             </td>
@@ -80,4 +100,5 @@
 
 <div class="wrapper">
     <button class="pure-button button-secondary" style="margin-top: 50px" >Send All</button>
+    <button class="pure-button button-secondary" style="margin-top: 50px" >Full RC Control</button>
 </div>
