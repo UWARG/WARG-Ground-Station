@@ -79,8 +79,25 @@ module.exports = function (gui) {
                 height: 400,
                 toolbar: false
             });
+            Logger.debug('Opening Autonomous Level Adjust window');
         },
         key: "k",
+        modifiers: "ctrl-shift"
+    }));
+    window_submenu.append(new gui.MenuItem({
+        label: 'Data Entry',
+        type: 'checkbox',
+        click: function () {
+            gui.Window.open('windows/dataEntry.html', {
+                focus: true,
+                position: 'center',
+                width: 500,
+                height: 250,
+                toolbar: false
+            });
+            Logger.debug('Opening Data Entry window');
+        },
+        key: "l",
         modifiers: "ctrl-shift"
     }));
     window_submenu.append(new gui.MenuItem({
@@ -99,10 +116,7 @@ module.exports = function (gui) {
         modifiers: 'ctrl-shift',
         key: 'g'
     }));
-    window_submenu.append(new gui.MenuItem({
-        label: 'Data Entry',
-        type: 'checkbox'
-    }));
+    
     window_submenu.append(new gui.MenuItem({
         label: 'Altitude Graph Entry',
         type: 'checkbox'

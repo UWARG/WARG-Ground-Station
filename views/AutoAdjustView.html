@@ -16,13 +16,13 @@
         <tr>
             <td>Control <br> Type </td>
             <td>
-            <select>
+            <select id="pitchtype">
                  <option value="PitchRate">Rate</option>
                  <option value="PitchAngle">Angle</option>
                 </select> 
             </td>
             <td>
-                <select>
+                <select id="rolltype">
                  <option value="RollRate">Rate</option>
                  <option value="RollAngle">Angle</option>
                 </select> 
@@ -32,41 +32,41 @@
             <td>Control <br> Source </td>
             <td>
                 
-                <select>
+                <select id="pitchsource">
                  <option value="PitchController">Controller</option>
                  <option value="PitchGroundStation">Ground Station</option>
                 </select> 
                 
             </td>
     <td>
-                <select>
+                <select id="rollsource">
                  <option value="RollController">Controller</option>
                  <option value="RollGround Station">Ground Station</option>
                 </select> 
             </td>
     <td>
-                <select>
+                <select id="headsource">
                  <option value="HeadGround Station">Off</option>
                  <option value="HeadAutopilot">Autopilot</option>
                  <option value="HeadGround Station">Ground Station</option>
                 </select> 
             </td>
     <td>
-                <select>
+                <select id="altsource">
                  <option value="AltGroundStation">Off</option>
                  <option value="AltAutopilot">Autopilot</option>
                  <option value="AltGroundStation">Ground Station</option>
                 </select> 
             </td>
     <td>
-                <select>
+                <select id="throttlesource">
                  <option value="ThrottleController">Controller</option>
                  <option value="ThrottleGroundStation">Ground Station</option>
                  <option value="ThrottleAutopilot">Autopilot</option>
                 </select> 
             </td>
     <td>
-                <select>
+                <select id="flapssource">
                  <option value="FlapsController">Controller</option>
                  <option value="FlapsGroundStation">Ground Station</option>
                  <option value="FlapsAutopilot">Autopilot</option>
@@ -76,22 +76,22 @@
         <tr>
             <td></td>
             <td>
-            <button class="pure-button button-secondary">Send Pitch</button>    
+            <button id="pitchsend" class="pure-button button-secondary">Send Pitch</button>    
             </td>
             <td>
-            <button class="pure-button button-secondary">Send Roll</button>    
+            <button id="rollsend" class="pure-button button-secondary">Send Roll</button>    
             </td>
             <td>
-            <button class="pure-button button-secondary">Send Heading</button>    
+            <button id="headsend" class="pure-button button-secondary">Send Heading</button>    
             </td>
             <td>
-            <button class="pure-button button-secondary">Send Alt</button>    
+            <button id="altsend" class="pure-button button-secondary">Send Alt</button>    
             </td>
             <td>
-            <button class="pure-button button-secondary">Send Throttle</button>    
+            <button id="throttlesend" class="pure-button button-secondary">Send Throttle</button>    
             </td>
             <td>
-            <button class="pure-button button-secondary">Send Flaps</button>   
+            <button id="flapssend" class="pure-button button-secondary">Send Flaps</button>   
             </td> 
             
         </tr>
@@ -99,6 +99,6 @@
 </table>
 
 <div class="wrapper">
-    <button class="pure-button button-secondary" style="margin-top: 50px" >Send All</button>
-    <button class="pure-button button-secondary" style="margin-top: 50px" >Full RC Control</button>
+    <button id="sendall" class="pure-button button-secondary" style="margin-top: 50px" >Send All</button>
+    <button id="fullRC" class="pure-button button-secondary" style="margin-top: 50px" >Full RC Control</button>
 </div>
