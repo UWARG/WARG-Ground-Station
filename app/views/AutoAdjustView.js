@@ -14,13 +14,13 @@ module.exports=function(Marionette){
     className:'gainsAdjustView', //this is the class name the injected div will have (refer to this class in your style sheets)
 
     ui:{ //any ui elements in the view that you would like to reference within your view logic
-      an_element:"#an-example-element" //you can now refer to the jquery wrapped element within the view with this.ui.an_element
+      an_element:"#pitchsend" //you can now refer to the jquery wrapped element within the view with this.ui.an_element
     },
 
     //your custom jquery events
     //selector then the name of the callback function
     events:{
-      "click #sendall": "clickCallback"
+      "click #pitchsend": "sendpitch"
     },
 
     initialize: function(){
@@ -38,6 +38,9 @@ module.exports=function(Marionette){
 
     clickCallback:function(event){ //will be fired when a user clicks on #an-example-element
 
+    },
+    sendpitch:function(event){ //will be fired when a user clicks on #an-example-element
+    this.ui.an_element.text('yyhy');
     }
   });
 };
