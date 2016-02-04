@@ -4,6 +4,7 @@
 //data is stored in its own data file so as not to spam the other logs
 
 var fs=require('fs');
+var mkdirp = require('mkdirp');
 var app_config=require('../../config/application-config');
 var util = require('util');
 var EventEmitter = require('events');
@@ -11,6 +12,9 @@ var advanced_config=require('../../config/advanced-config');
 
 var date=new Date();
 var string_date=date.toDateString() + ' ' + date.toLocaleTimeString(); //output format is like: "Thu Dec 24 2015 2:33:20 AM"
+
+//create the logs directory if it doesnt yet exist
+mkdirp.sync(app_config.get('log_dir'));
 
 var all_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-all' + ".log");
 var debug_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-debug' + ".log");
