@@ -1,11 +1,8 @@
-//This is an example Marionette view
-//NOTE: you should not require jquery in your views, as you should only reference the elements inside the view which you can do with the ui property of the view
 var Template=require('../util/Template');
-/*
-call your other dependencies here (for example if you need to listen to network events, call this)
-var Network=require('../Netowrk'); 
-then use the Network object inside your view
-*/
+var advanced_config=require('../../config/advanced-config');
+var app_config=require('../../config/application-config');
+var map_config=require('../../config/map-config');
+var picpilot_config=require('../../config/picpilot-config');
 
 module.exports=function(Marionette){
 
@@ -14,7 +11,7 @@ module.exports=function(Marionette){
     className:'appSettingsView', //this is the class name the injected div will have (refer to this class in your style sheets)
 
     ui:{ //any ui elements in the view that you would like to reference within your view logic
-      an_element:"#an-example-element" //you can now refer to the jquery wrapped element within the view with this.ui.an_element
+      app_settings:'.app-settings'
     },
 
     //your custom jquery events
@@ -23,11 +20,31 @@ module.exports=function(Marionette){
       "click #an-example-element": "clickCallback"
     },
 
+    addSettings: function(settings){
+      this.settings[settings.file_name]={};
+      for(var key in settings.default_settings){
+        if(settings.default_settings.hasOwnProperty(key)){
+          this.settings[settings.file_name][key]={
+            element: null,
+            val: settings.get(key)
+          };
+          this.settings[settings.file_name][key].element=this.ui.app_settings.append('<div>'+key+'<input type="text"></div>');
+          console.log(this.settings[settings.file_name][key].element);
+        }
+      }
+    },
+
     initialize: function(){
       //called when the view is first initialized (ie new ExampleView())
+      this.settings={}; //stores all the settings files so that we can dynamically display and modify them for the user
+      
     },
     onRender:function(){
       //called right after a render is called on the view (view.render())
+      this.addSettings(advanced_config);
+      this.addSettings(app_config);
+      this.addSettings(map_config);
+      this.addSettings(picpilot_config);
     },
     onBeforeDestroy:function(){
       //called just before destroy is called on the view

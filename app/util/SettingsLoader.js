@@ -3,6 +3,7 @@ var LocalStorage=require('./LocalStorage');
 //Loads in configuration from config files into local storage if they dont exist. Subsequent
 var SettingsLoader=function(file_name, settings){
   this.file_name=file_name;
+  this.default_settings=settings;
 
   for(var key in settings){
     if(settings.hasOwnProperty(key)){
