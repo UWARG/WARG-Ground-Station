@@ -20,7 +20,7 @@ var TelemetryData = function(){
 util.inherits(TelemetryData,EventEmitter); //give TelemetryData events functionality
 
 var td=new TelemetryData();
-td.setMaxListeners(advanced_config.telemetrydata_max_listeners);
+td.setMaxListeners(advanced_config.get('telemetrydata_max_listeners'));
 
 module.exports=td;
 

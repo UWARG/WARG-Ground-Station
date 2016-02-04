@@ -12,10 +12,10 @@ var advanced_config=require('../../config/advanced-config');
 var date=new Date();
 var string_date=date.toDateString() + ' ' + date.toLocaleTimeString(); //output format is like: "Thu Dec 24 2015 2:33:20 AM"
 
-var all_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-all' + ".log");
-var debug_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-debug' + ".log");
-var error_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-error' + ".log");
-var data_log = fs.createWriteStream(app_config.log_dir+"GCS-" + string_date.replace(/\s/g, "-")+'-data' + ".log"); //writes whatever we received from the groundstation
+var all_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-all' + ".log");
+var debug_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-debug' + ".log");
+var error_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-error' + ".log");
+var data_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-data' + ".log"); //writes whatever we received from the groundstation
 
 
 var Logger=function(){
@@ -72,6 +72,6 @@ util.inherits(Logger,EventEmitter);
 
 var logger=new Logger();
 
-logger.setMaxListeners(advanced_config.logger_max_listeners);
+logger.setMaxListeners(advanced_config.get('logger_max_listeners'));
 
 module.exports=logger;

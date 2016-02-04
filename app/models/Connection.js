@@ -16,7 +16,7 @@ var Connection = function (options) {
     
     // Initialize necessary properties from `EventEmitter` in this instance
     EventEmitter.call(this);
-    this.setMaxListeners(advanced_config.connection_max_listeners);
+    this.setMaxListeners(advanced_config.get('connection_max_listeners'));
 
     this.connect = function () {
       Logger.info('Attempting to connect to '+this.name+' at '+this.host+':'+this.port);
