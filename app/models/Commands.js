@@ -15,7 +15,7 @@ var Commands={
     }
   },
   sendProtectedCommand:function(command){
-    Network.connections['data_relay'].write(command+':'+picpilot_config.command_password+'\r\n');
+    Network.connections['data_relay'].write(command+':'+picpilot_config.get('command_password')+'\r\n');
   },
   sendCommand: function(command, value){
     Network.connections['data_relay'].write(command+':'+value+'\r\n');
