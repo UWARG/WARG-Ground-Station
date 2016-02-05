@@ -79,7 +79,23 @@ var Commands={
         Logger.error('Command to not sent since invalid flap value detected! Flap Setpoint:'+flap);
       }
     }
+  },
+  sendPitchAutoLevel: function(level){
+      
+  },
+  sendRollAutoLevel: function(level){
+      
+  },
+  sendAltAutoLevel: function(level){
+      
+  },
+  sendThrottleAutoLevel: function(level){
+      
+  },
+  sendFlapAutoLevel: function(level){
+      
   }
+  
 }
 
 module.exports=Commands;
