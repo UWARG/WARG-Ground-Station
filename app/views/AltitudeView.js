@@ -82,7 +82,7 @@ module.exports=function(Marionette){
         var degrees=(int_speed/this.max_ground_speed)*360;
         this.ui.ground_speed_hand.css('transform','rotate('+degrees+'deg)');
         this.ui.ground_speed_text.text(int_speed.toFixed(1));
-        this.ui.ground_speed_text_kmh.text(int_speed.toFixed(1)*3.6);
+        this.ui.ground_speed_text_kmh.text((int_speed*3.6).toFixed(1));
       }
       else{
         Logger.warn('Groundspeed received is not valid! Groundspeed:'+speed);
@@ -96,7 +96,7 @@ module.exports=function(Marionette){
         var degrees=(int_speed/this.max_ground_speed)*360;
         this.ui.air_speed_hand.css('transform','rotate('+degrees+'deg)');
         this.ui.air_speed_text.text(int_speed.toFixed(1));
-        this.ui.air_speed_text_kmh.text(int_speed.toFixed(1)*3.6);
+        this.ui.air_speed_text_kmh.text((int_speed*3.6).toFixed(1));
       }
       else{
         Logger.warn('Airspeed received is not valid! Airspeed:'+speed);
