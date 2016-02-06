@@ -7,8 +7,8 @@ var SettingsLoader=function(file_name, settings){
 
   for(var key in settings){
     if(settings.hasOwnProperty(key)){
-      if(LocalStorage.getItem(file_name+'_'+key)===undefined){ //if it doesnt exist in local storage yet
-        LocalStorage.setItem(file_name+'_'+key,JSON.stringify(settings[key]));
+      if(!LocalStorage.getItem(this.file_name+'_'+key){ //if it doesnt exist in local storage yet
+        LocalStorage.setItem(this.file_name+'_'+key,JSON.stringify(settings[key]));
       }
     }
   }
