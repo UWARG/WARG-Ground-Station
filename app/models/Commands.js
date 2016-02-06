@@ -80,21 +80,14 @@ var Commands={
       }
     }
   },
-  sendPitchAutoLevel: function(level){
-      
-  },
-  sendRollAutoLevel: function(level){
-      
-  },
-  sendAltAutoLevel: function(level){
-      
-  },
-  sendThrottleAutoLevel: function(level){
-      
-  },
-  sendFlapAutoLevel: function(level){
-      
+  sendAutoLevel: function(level){
+  if(this.checkConnection()){
+  this.sendCommand('set_autonomousLevel', level);
+  Logger.debug('set new autonomus level');
+  }    
   }
+  
+  
   
 }
 
