@@ -15,7 +15,7 @@ var Commands={
     }
   },
   sendProtectedCommand:function(command){
-    Network.connections['data_relay'].write(command+':'+picpilot_config.command_password+'\r\n');
+    Network.connections['data_relay'].write(command+':'+picpilot_config.get('command_password')+'\r\n');
   },
   sendCommand: function(command, value){
     Network.connections['data_relay'].write(command+':'+value+'\r\n');
@@ -79,16 +79,7 @@ var Commands={
         Logger.error('Command to not sent since invalid flap value detected! Flap Setpoint:'+flap);
       }
     }
-  },
-  sendAutoLevel: function(level){
-  if(this.checkConnection()){
-  this.sendCommand('set_autonomousLevel', level);
-  Logger.debug('set new autonomus level');
-  }    
   }
-  
-  
-  
 }
 
 module.exports=Commands;
