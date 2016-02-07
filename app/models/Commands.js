@@ -82,13 +82,18 @@ var Commands={
   },
   sendAutoLevel: function(level){
   if(this.checkConnection()){
+      if(Validator.isValidNumber(level))
+      {
   this.sendCommand('set_autonomousLevel', level);
-  Logger.debug('set new autonomus level');
+  
+  
+      }
+      Logger.debug('set new autonomus level');
   }    
   }
   
   
   
-}
+};
 
 module.exports=Commands;
