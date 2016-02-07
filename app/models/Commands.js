@@ -84,16 +84,12 @@ var Commands={
   if(this.checkConnection()){
       if(Validator.isValidNumber(level))
       {
+          Logger.debug("set new autonomus level "+level);
   this.sendCommand('set_autonomousLevel', level);
   
-  
       }
-      Logger.debug('set new autonomus level');
+      
   }    
   }
-  
-  
-  
 };
-
 module.exports=Commands;
