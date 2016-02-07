@@ -79,16 +79,7 @@ var Commands={
         Logger.error('Command to not sent since invalid flap value detected! Flap Setpoint:'+flap);
       }
     }
-  },
-  sendAutoLevel: function(level){
-  if(this.checkConnection()){
-  this.sendCommand('set_autonomousLevel', level);
-  Logger.debug('set new autonomus level');
-  }    
   }
-  
-  
-  
 }
 
 module.exports=Commands;

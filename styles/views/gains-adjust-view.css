@@ -24,7 +24,6 @@
 .gainsAdjustView table{
   border: 1px solid rgba(0,0,0,0.86);
   background-color: #484646;
-  
 }
 .gainsAdjustView input{
   width: 100%;
@@ -44,11 +43,4 @@
 .gainsAdjustView th{
   min-width: 50px;
   text-align: center;
-}
-.gainsAdjustView table select {
-    color: black;
-}
-
-.wrapper {
-    text-align: center;
 }
