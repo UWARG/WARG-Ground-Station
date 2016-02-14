@@ -4,7 +4,7 @@ var app_config=require('../../config/application-config');
 var map_config=require('../../config/map-config');
 var picpilot_config=require('../../config/picpilot-config');
 
-module.exports=function(Marionette){
+module.exports=function(Marionette,$){
 
   return Marionette.ItemView.extend({
     template:Template('AppSettingsView'), //name of the file in the views folder at the project root
@@ -28,8 +28,13 @@ module.exports=function(Marionette){
             element: null,
             val: settings.get(key)
           };
-          this.settings[settings.file_name][key].element=this.ui.app_settings.append('<div>'+key+'<input type="text"></div>');
-          console.log(this.settings[settings.file_name][key].element);
+          var container=$('<div>'+key+'</div>');
+          var input=$('<input type="text">');
+          input.val(this.settings[settings.file_name][key].val);
+          container.append(input);
+          this.ui.app_settings.append(container);
+          this.settings[settings.file_name][key].element=input;
+          
         }
       }
     },
@@ -45,6 +50,7 @@ module.exports=function(Marionette){
       this.addSettings(app_config);
       this.addSettings(map_config);
       this.addSettings(picpilot_config);
+      console.log(this.settings);
     },
     onBeforeDestroy:function(){
       //called just before destroy is called on the view
