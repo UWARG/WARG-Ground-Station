@@ -11,14 +11,18 @@ module.exports=function(Marionette,$){
     className:'appSettingsView',
 
     ui:{
-      app_settings:'.app-settings'
+      app_settings:'.app-settings',
+      save_button:'.save-button',
+      discard_button:'discard_button'
     },
 
     events:{
-      "click .save-button": "saveSettings"
+      "click .save-button": 'saveSettings',
+      "click .discard-button":'discardChanges',
+      "click .reset-default-button":'resetSettingsToDefault'
     },
 
-    //adds the current settings to the settings object and maps an input box to each one on the screen
+    //adds the current settings to the settings object and adds an input for the setting to the screen
     addSettings: function(settings){
       this.settings[settings.file_name]={};
       for(var key in settings.default_settings){
@@ -38,8 +42,7 @@ module.exports=function(Marionette,$){
     },
 
     initialize: function(){
-      //called when the view is first initialized (ie new ExampleView())
-      this.settings={}; //stores all the settings files so that we can dynamically display and modify them for the user
+      this.settings={}; //where all of the settings and newly modified settings will be stored
     },
     onRender:function(){
       //called right after a render is called on the view (view.render())
@@ -53,6 +56,12 @@ module.exports=function(Marionette,$){
       this.addSettings(picpilot_config);
     },
     saveSettings: function(){
+
+    },
+    discardChanges:function(){
+
+    },
+    resetSettingsToDefault: function(){
 
     }
   });
