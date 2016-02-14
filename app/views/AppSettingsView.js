@@ -24,7 +24,9 @@ module.exports=function(Marionette,$){
 
     //adds the current settings to the settings object and adds an input for the setting to the screen
     addSettings: function(settings){
-      this.settings[settings.file_name]={};
+      this.settings[settings.file_name]={
+      };
+      this.original_settings[settings.file_name]=settings;
       for(var key in settings.default_settings){
         if(settings.default_settings.hasOwnProperty(key)){
           this.settings[settings.file_name][key]={
@@ -43,6 +45,7 @@ module.exports=function(Marionette,$){
 
     initialize: function(){
       this.settings={}; //where all of the settings and newly modified settings will be stored
+      this.original_settings={};
     },
     onRender:function(){
       //called right after a render is called on the view (view.render())
@@ -56,7 +59,18 @@ module.exports=function(Marionette,$){
       this.addSettings(picpilot_config);
     },
     saveSettings: function(){
-
+      for(var filename in this.settings){
+        if(this.settings.hasOwnProperty(filename)){ //go to the setting file
+          for(var setting_key in this.settings[filename]){
+            if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
+              console.log(this.settings[filename][setting_key].element);
+              console.log(setting_key);
+              console.log(this.settings[filename][setting_key].element.val());
+              this.original_settings[filename].set(setting_key,this.settings[filename][setting_key].element.val());
+            }
+          }
+        }
+      }
     },
     discardChanges:function(){
 
