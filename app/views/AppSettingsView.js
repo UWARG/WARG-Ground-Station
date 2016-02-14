@@ -7,19 +7,18 @@ var picpilot_config=require('../../config/picpilot-config');
 module.exports=function(Marionette,$){
 
   return Marionette.ItemView.extend({
-    template:Template('AppSettingsView'), //name of the file in the views folder at the project root
-    className:'appSettingsView', //this is the class name the injected div will have (refer to this class in your style sheets)
+    template:Template('AppSettingsView'), 
+    className:'appSettingsView',
 
-    ui:{ //any ui elements in the view that you would like to reference within your view logic
+    ui:{
       app_settings:'.app-settings'
     },
 
-    //your custom jquery events
-    //selector then the name of the callback function
     events:{
-      "click #an-example-element": "clickCallback"
+      "click .save-button": "saveSettings"
     },
 
+    //adds the current settings to the settings object and maps an input box to each one on the screen
     addSettings: function(settings){
       this.settings[settings.file_name]={};
       for(var key in settings.default_settings){
@@ -34,7 +33,6 @@ module.exports=function(Marionette,$){
           container.append(input);
           this.ui.app_settings.append(container);
           this.settings[settings.file_name][key].element=input;
-          
         }
       }
     },
@@ -42,24 +40,19 @@ module.exports=function(Marionette,$){
     initialize: function(){
       //called when the view is first initialized (ie new ExampleView())
       this.settings={}; //stores all the settings files so that we can dynamically display and modify them for the user
-      
     },
     onRender:function(){
       //called right after a render is called on the view (view.render())
+      this.ui.app_settings.append('<h2>Advanced Settings</h2>');
       this.addSettings(advanced_config);
+      this.ui.app_settings.append('<h2>Application Settings</h2>');
       this.addSettings(app_config);
+      this.ui.app_settings.append('<h2>Map Settings</h2>');
       this.addSettings(map_config);
+      this.ui.app_settings.append('<h2>Picpilot Settings</h2>');
       this.addSettings(picpilot_config);
-      console.log(this.settings);
     },
-    onBeforeDestroy:function(){
-      //called just before destroy is called on the view
-    },
-    onDestroy:function(){
-      //called right after a destroy is called on the view
-    },
-
-    clickCallback:function(event){ //will be fired when a user clicks on #an-example-element
+    saveSettings: function(){
 
     }
   });
