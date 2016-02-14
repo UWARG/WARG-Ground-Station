@@ -20,6 +20,7 @@ html, body{
   width: 100%;
   margin: 0;
   padding: 0;
+  background-color: #323232;
 }
 .vsplitter{
   background: linear-gradient(to right, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 

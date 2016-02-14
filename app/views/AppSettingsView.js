@@ -31,7 +31,7 @@ module.exports=function(Marionette,$){
             element: null,
             val: settings.get(key)
           };
-          var container=$('<div>'+key+'</div>');
+          var container=$('<div class="setting"><p>'+key+'</p></div>');
           var input=$('<input type="text">');
           input.val(this.settings[settings.file_name][key].val);
           container.append(input);
