@@ -1,6 +1,8 @@
 var _=require('underscore');
 var Template=require('../util/Template');
 var Validator=require('../util/Validator');
+
+//the setting files from which to display
 var advanced_config=require('../../config/advanced-config');
 var app_config=require('../../config/application-config');
 var map_config=require('../../config/map-config');
@@ -26,12 +28,11 @@ module.exports=function(Marionette,$){
     },
 
     initialize: function(){
-      this.settings={}; //where all of the settings and newly modified settings will be stored
-      this.original_settings={};
+      this.displayed_settings={}; //stores the currently modified settings
+      this.original_settings={};//reference to the original imported setting files
     },
 
     onRender:function(){
-      //called right after a render is called on the view (view.render())
       this.ui.app_settings.append('<h2>Advanced Settings</h2>');
       this.addSettings(advanced_config);
       this.ui.app_settings.append('<h2>Application Settings</h2>');
@@ -42,43 +43,42 @@ module.exports=function(Marionette,$){
       this.addSettings(picpilot_config);
     },
 
-    //adds the current settings to the settings object and adds an input for the setting to the screen
+    //displays the setting file on screens and adds an entry to it in the this.displayed_settings object
     addSettings: function(settings){
-      this.settings[settings.file_name]={};
-      this.original_settings[settings.file_name]=settings;
+      this.displayed_settings[settings.file_name]={};
+      this.original_settings[settings.file_name]=settings; //create a reference to the original settings
       for(var key in settings.default_settings){
         if(settings.default_settings.hasOwnProperty(key)){
-          this.settings[settings.file_name][key]={
-            element: null,
-            val: settings.get(key)
-          };
-          var container=$('<div class="setting"><p>'+key+'</p></div>');
+          this.displayed_settings[settings.file_name][key]=null;  //the reference to the displayed input box
+          var container=$('<div class="setting"><p>'+key+'</p></div>'); //create the input box and container for it
           var input=$('<input type="text">');
-          var setting_val=this.settings[settings.file_name][key].val;
+          var setting_val=settings.get(key);
           if(_.isObject(setting_val)){
-            input.val(JSON.stringify(setting_val));
+            input.val(JSON.stringify(setting_val)); //stringify the value if its an object or array
           }
           else{
-            input.val(setting_val);
+            input.val(setting_val); //otherwise if its a string or number just store it
           }
           container.append(input);
           this.ui.app_settings.append(container);
-          this.settings[settings.file_name][key].element=input;
+          this.displayed_settings[settings.file_name][key]=input;
         }
       }
     },
+
+    //saves the displayed settings to local storage if they are valid (ie the type of the original setting is the type of the new setting)
     saveSettings: function(){
       var saving_error=false;
-      for(var filename in this.settings){
-        if(this.settings.hasOwnProperty(filename)){ //go to the setting file
-          for(var setting_key in this.settings[filename]){
-            if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
-              var original=this.original_settings[filename].default_settings[setting_key];
-              var new_value=this.settings[filename][setting_key].element.val();
-              if (Validator.isValidObject(original)){ //do a json.parse to store it back as an object
+      for(var filename in this.displayed_settings){
+        if(this.displayed_settings.hasOwnProperty(filename)){ //go to the setting file
+          for(var setting_key in this.displayed_settings[filename]){
+            if(this.displayed_settings[filename].hasOwnProperty(setting_key)){ //go to the setting
+              var original_value=this.original_settings[filename].default_settings[setting_key];
+              var new_value=this.displayed_settings[filename][setting_key].val();
+              if (Validator.isValidObject(original_value)){ //if the original value is an object or array, try to do a json.parse and store it as an object
                 var parsed_object=null;
                 try{
-                  parsed_object=JSON.parse(this.settings[filename][setting_key].element.val());
+                  parsed_object=JSON.parse(this.displayed_settings[filename][setting_key].val());
                 }catch(e){
                   this.showErrorMessage('The value for '+setting_key+' is not an object. Did not save the value');
                   saving_error=true;
@@ -87,17 +87,17 @@ module.exports=function(Marionette,$){
                   this.original_settings[filename].set(setting_key,parsed_object);
                 }
               }
-              else if (_.isNumber(original)){ //if the original setting is a number store it as a number
+              else if (_.isNumber(original_value)){ //if the original value is a number store the new value as a number
                 if(Validator.isValidNumber(new_value)){     
                   var number=Number(new_value);
-                  this.original_settings[filename].set(setting_key,Number(this.settings[filename][setting_key].element.val()));
+                  this.original_settings[filename].set(setting_key,number);
                 }else{
                   this.showErrorMessage('The value for '+setting_key+' is not a number. Did not save the value');
                   saving_error=true;
                 }
               }
               else { //otherwise just store it as a string
-                this.original_settings[filename].set(setting_key,this.settings[filename][setting_key].element.val());
+                this.original_settings[filename].set(setting_key,new_value);
               }
             }
           }
@@ -109,38 +109,43 @@ module.exports=function(Marionette,$){
       }
     },
 
+    //discards the current displayed setting changes on the window with the ones in local storage
     discardChanges:function(){
-      for(var filename in this.settings){
-        if(this.settings.hasOwnProperty(filename)){ //go to the setting file
-          for(var setting_key in this.settings[filename]){
-            if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
+      for(var filename in this.displayed_settings){
+        if(this.displayed_settings.hasOwnProperty(filename)){ //go to the setting file
+          for(var setting_key in this.displayed_settings[filename]){
+            if(this.displayed_settings[filename].hasOwnProperty(setting_key)){ //go to the setting
               var original_setting=this.original_settings[filename].get(setting_key);
               //reset the display of the input box to whatever the setting is currently stored as
               if(_.isObject(original_setting)){
-                this.settings[filename][setting_key].element.val(JSON.stringify(original_setting));
+                this.displayed_settings[filename][setting_key].val(JSON.stringify(original_setting));
               }
               else{
-                this.settings[filename][setting_key].element.val(original_setting);
+                this.displayed_settings[filename][setting_key].val(original_setting);
               }
             }
           }
         }
       }
       this.disableSaveDiscardButton();
+      this.hideErrorMessage();
     },
 
+    //reset the local storage and the displayed setting to the one that is in the original config file
     resetSettingsToDefault: function(){
-      for(var filename in this.settings){
-        if(this.settings.hasOwnProperty(filename)){ //go to the setting file
-          for(var setting_key in this.settings[filename]){
-            if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
+      for(var filename in this.displayed_settings){
+        if(this.displayed_settings.hasOwnProperty(filename)){ //go to the setting file
+          for(var setting_key in this.displayed_settings[filename]){
+            if(this.displayed_settings[filename].hasOwnProperty(setting_key)){ //go to the setting
               var original_value=this.original_settings[filename].default_settings[setting_key];
-              var original_setting=this.original_settings[filename].set(setting_key,original_value);
+              this.original_settings[filename].set(setting_key,original_value); //set the local storage value to the original
+
+              //set the display to the original value
               if(_.isObject(original_value)){
-                this.settings[filename][setting_key].element.val(JSON.stringify(original_value));
+                this.displayed_settings[filename][setting_key].val(JSON.stringify(original_value));
               }
               else{
-                this.settings[filename][setting_key].element.val(original_value);
+                this.displayed_settings[filename][setting_key].val(original_value);
               }
             }
           }
