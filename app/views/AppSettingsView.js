@@ -14,14 +14,15 @@ module.exports=function(Marionette,$){
     ui:{
       app_settings:'.app-settings',
       save_button:'.save-button',
-      discard_button:'discard_button',
+      discard_button:'.discard-button',
       error_message: '.error-message-box'
     },
 
     events:{
       "click .save-button": 'saveSettings',
       "click .discard-button":'discardChanges',
-      "click .reset-default-button":'resetSettingsToDefault'
+      "click .reset-default-button":'resetSettingsToDefault',
+      "change .app-settings input":'enableSaveDiscardButton'
     },
 
     initialize: function(){
@@ -87,10 +88,8 @@ module.exports=function(Marionette,$){
                 }
               }
               else if (_.isNumber(original)){ //if the original setting is a number store it as a number
-                if(Validator.isValidNumber(new_value)){
-                  
+                if(Validator.isValidNumber(new_value)){     
                   var number=Number(new_value);
-                  console.log(number+' is valid');
                   this.original_settings[filename].set(setting_key,Number(this.settings[filename][setting_key].element.val()));
                 }else{
                   this.showErrorMessage('The value for '+setting_key+' is not a number. Did not save the value');
@@ -106,6 +105,7 @@ module.exports=function(Marionette,$){
       }
       if(!saving_error){
         this.hideErrorMessage();
+        this.disableSaveDiscardButton();
       }
     },
 
@@ -126,6 +126,7 @@ module.exports=function(Marionette,$){
           }
         }
       }
+      this.disableSaveDiscardButton();
     },
 
     resetSettingsToDefault: function(){
@@ -145,6 +146,7 @@ module.exports=function(Marionette,$){
           }
         }
       }
+      this.disableSaveDiscardButton();
     },
 
     showErrorMessage: function(message){
@@ -160,6 +162,14 @@ module.exports=function(Marionette,$){
 
     hideErrorMessage: function(){
       this.ui.error_message.hide();
+    },
+    enableSaveDiscardButton: function(){
+      this.ui.save_button.prop('disabled',false);
+      this.ui.discard_button.prop('disabled',false);
+    },
+    disableSaveDiscardButton: function(){
+      this.ui.save_button.prop('disabled',true);
+      this.ui.discard_button.prop('disabled',true);
     }
   });
 };
