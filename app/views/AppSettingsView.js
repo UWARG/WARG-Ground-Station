@@ -4,6 +4,8 @@ var app_config=require('../../config/application-config');
 var map_config=require('../../config/map-config');
 var picpilot_config=require('../../config/picpilot-config');
 
+var _=require('underscore');
+
 module.exports=function(Marionette,$){
 
   return Marionette.ItemView.extend({
@@ -24,8 +26,7 @@ module.exports=function(Marionette,$){
 
     //adds the current settings to the settings object and adds an input for the setting to the screen
     addSettings: function(settings){
-      this.settings[settings.file_name]={
-      };
+      this.settings[settings.file_name]={};
       this.original_settings[settings.file_name]=settings;
       for(var key in settings.default_settings){
         if(settings.default_settings.hasOwnProperty(key)){
@@ -35,7 +36,13 @@ module.exports=function(Marionette,$){
           };
           var container=$('<div class="setting"><p>'+key+'</p></div>');
           var input=$('<input type="text">');
-          input.val(this.settings[settings.file_name][key].val);
+          var setting_val=this.settings[settings.file_name][key].val;
+          if(_.isObject(setting_val)){
+            input.val(JSON.stringify(setting_val));
+          }
+          else{
+            input.val(setting_val);
+          }
           container.append(input);
           this.ui.app_settings.append(container);
           this.settings[settings.file_name][key].element=input;
@@ -63,10 +70,16 @@ module.exports=function(Marionette,$){
         if(this.settings.hasOwnProperty(filename)){ //go to the setting file
           for(var setting_key in this.settings[filename]){
             if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
-              console.log(this.settings[filename][setting_key].element);
-              console.log(setting_key);
-              console.log(this.settings[filename][setting_key].element.val());
-              this.original_settings[filename].set(setting_key,this.settings[filename][setting_key].element.val());
+              var original=this.original_settings[filename].default_settings[setting_key];
+              if (_.isObject(original)){ //do a json.parse to store it back as an object
+                this.original_settings[filename].set(setting_key,JSON.parse(this.settings[filename][setting_key].element.val()));
+              }
+              else if (_.isNumber(original)){ //if the original setting is a number store it as a number
+                this.original_settings[filename].set(setting_key,Number(this.settings[filename][setting_key].element.val()));
+              }
+              else { //otherwise just store it as a string
+                this.original_settings[filename].set(setting_key,this.settings[filename][setting_key].element.val());
+              }
             }
           }
         }
