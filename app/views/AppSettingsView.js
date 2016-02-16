@@ -15,7 +15,8 @@ module.exports=function(Marionette,$){
     ui:{
       app_settings:'.app-settings',
       save_button:'.save-button',
-      discard_button:'discard_button'
+      discard_button:'discard_button',
+      error_message: '.error-message-box'
     },
 
     events:{
@@ -53,6 +54,7 @@ module.exports=function(Marionette,$){
     initialize: function(){
       this.settings={}; //where all of the settings and newly modified settings will be stored
       this.original_settings={};
+
     },
     onRender:function(){
       //called right after a render is called on the view (view.render())
@@ -64,18 +66,40 @@ module.exports=function(Marionette,$){
       this.addSettings(map_config);
       this.ui.app_settings.append('<h2>Picpilot Settings</h2>');
       this.addSettings(picpilot_config);
+
+      this.ui.error_message.hide();
+      this.showErrorMessage('this is a test error message');
+      setTimeout(function(){
+        this.hideErrorMessage();
+      }.bind(this),3000)
     },
     saveSettings: function(){
+      var saving_error=false;
       for(var filename in this.settings){
         if(this.settings.hasOwnProperty(filename)){ //go to the setting file
           for(var setting_key in this.settings[filename]){
             if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
               var original=this.original_settings[filename].default_settings[setting_key];
               if (_.isObject(original)){ //do a json.parse to store it back as an object
-                this.original_settings[filename].set(setting_key,JSON.parse(this.settings[filename][setting_key].element.val()));
+                var parsed_object=null;
+                try{
+                  parsed_object=JSON.parse(this.settings[filename][setting_key].element.val());
+                }catch(e){
+                  this.showErrorMessage('The value for '+setting_key+' is not an object. Did not save the value');
+                  saving_error=true;
+                }
+                if(parsed_object){
+                  this.original_settings[filename].set(setting_key,parsed_object);
+                }
               }
               else if (_.isNumber(original)){ //if the original setting is a number store it as a number
-                this.original_settings[filename].set(setting_key,Number(this.settings[filename][setting_key].element.val()));
+                var number=Number(this.settings[filename][setting_key].element.val());
+                if(number!==null){
+                  this.original_settings[filename].set(setting_key,Number(this.settings[filename][setting_key].element.val()));
+                }else{
+                  this.showErrorMessage('The value for '+setting_key+' is not a number. Did not save the value');
+                  saving_error=true;
+                }
               }
               else { //otherwise just store it as a string
                 this.original_settings[filename].set(setting_key,this.settings[filename][setting_key].element.val());
@@ -84,12 +108,28 @@ module.exports=function(Marionette,$){
           }
         }
       }
+      if(!saving_error){
+        this.hideErrorMessage();
+      }
     },
     discardChanges:function(){
 
     },
     resetSettingsToDefault: function(){
 
+    },
+    showErrorMessage: function(message){
+      if(message){
+        this.ui.error_message.text(message);
+      }
+      else{
+        this.ui.error_message.text('An error occured.');
+      }
+      this.ui.error_message.show();
+      this.ui.app_settings.scrollTop();
+    },
+    hideErrorMessage: function(){
+      this.ui.error_message.hide();
     }
   });
 };
