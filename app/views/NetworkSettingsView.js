@@ -3,7 +3,9 @@ var ParentSettingsView=require('./ParentSettingsView');//the parent item view fr
 
 //the setting files from which to display
 var network_config=require('../../config/network-config');
-var Network=require('../Network');
+var DataRelay=require('../connections/DataRelay');
+var Multiecho=require('../connections/Multiecho');
+
 
 module.exports=function(Marionette,$){
   return ParentSettingsView(Marionette,$).extend({
@@ -29,7 +31,8 @@ module.exports=function(Marionette,$){
     },
 
     reconnectAll: function(){
-      Network.reconnectAll();
+      DataRelay();//restart the data relay connection
+      Multiecho(); //restart the multiecho connection
     }
   });
 };
