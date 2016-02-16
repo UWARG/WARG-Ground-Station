@@ -13,6 +13,15 @@ var Network={
         this.connections[name]=new_connection;
         new_connection.connect();
         return new_connection;
+    },
+
+    //reconnects all of the connections in the network
+    reconnectAll: function(){
+      for(var connection in this.connections){
+        if(this.connections.hasOwnProperty(connection)){
+          this.connections[connection].reconnect();
+        }
+      }
     }
 };
 

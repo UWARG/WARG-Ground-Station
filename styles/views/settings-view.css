@@ -29,3 +29,7 @@
   justify-content: space-between;
   margin: 20px auto 12px auto;
 }
+.settingsView .error-message-box{
+  max-width: 440px;
+  display: none;
+}
