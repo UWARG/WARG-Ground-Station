@@ -23,9 +23,6 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "backbone": "^1.2.3",
-    "backbone.marionette": "^2.4.4",
-    "jquery": "^2.1.4",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
     "node-localstorage": "^1.1.2",
