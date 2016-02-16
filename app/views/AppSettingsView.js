@@ -1,5 +1,6 @@
 var _=require('underscore');
 var Template=require('../util/Template');
+var Validator=require('../util/Validator');
 var advanced_config=require('../../config/advanced-config');
 var app_config=require('../../config/application-config');
 var map_config=require('../../config/map-config');
@@ -72,7 +73,8 @@ module.exports=function(Marionette,$){
           for(var setting_key in this.settings[filename]){
             if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
               var original=this.original_settings[filename].default_settings[setting_key];
-              if (_.isObject(original)){ //do a json.parse to store it back as an object
+              var new_value=this.settings[filename][setting_key].element.val();
+              if (Validator.isValidObject(original)){ //do a json.parse to store it back as an object
                 var parsed_object=null;
                 try{
                   parsed_object=JSON.parse(this.settings[filename][setting_key].element.val());
@@ -85,8 +87,10 @@ module.exports=function(Marionette,$){
                 }
               }
               else if (_.isNumber(original)){ //if the original setting is a number store it as a number
-                var number=Number(this.settings[filename][setting_key].element.val());
-                if(number!==null){
+                if(Validator.isValidNumber(new_value)){
+                  
+                  var number=Number(new_value);
+                  console.log(number+' is valid');
                   this.original_settings[filename].set(setting_key,Number(this.settings[filename][setting_key].element.val()));
                 }else{
                   this.showErrorMessage('The value for '+setting_key+' is not a number. Did not save the value');
