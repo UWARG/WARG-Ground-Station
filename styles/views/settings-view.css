@@ -1,12 +1,12 @@
-.appSettingsView{
+.settingsView{
   height: 100%;
   width: 100%;
 }
-.appSettingsView h1, .appSettingsView h2,.appSettingsView p{
+.settingsView h1, .settingsView h2,.settingsView p{
   text-align: center;
   color: #FAFAFA;
 }
-.appSettingsView .setting{
+.settingsView .setting{
   margin: 12px auto 0 auto;
   max-width: 448px;
   display: flex;
@@ -14,16 +14,16 @@
   height: 36px;
 }
 }
-.appSettingsView .setting p{
+.settingsView .setting p{
   display: inline-block;
   margin: 0 12px 0 0;
   float: left;
 }
-.appSettingsView .setting input{
+.settingsView .setting input{
   float: right;
 }
 
-.appSettingsView .button-wrapper{
+.settingsView .button-wrapper{
   display: flex;
   max-width: 448px;
   justify-content: space-between;
