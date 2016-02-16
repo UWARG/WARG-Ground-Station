@@ -1,13 +1,11 @@
+var _=require('underscore');
 var Template=require('../util/Template');
 var advanced_config=require('../../config/advanced-config');
 var app_config=require('../../config/application-config');
 var map_config=require('../../config/map-config');
 var picpilot_config=require('../../config/picpilot-config');
 
-var _=require('underscore');
-
 module.exports=function(Marionette,$){
-
   return Marionette.ItemView.extend({
     template:Template('AppSettingsView'), 
     className:'appSettingsView',
@@ -23,6 +21,23 @@ module.exports=function(Marionette,$){
       "click .save-button": 'saveSettings',
       "click .discard-button":'discardChanges',
       "click .reset-default-button":'resetSettingsToDefault'
+    },
+
+    initialize: function(){
+      this.settings={}; //where all of the settings and newly modified settings will be stored
+      this.original_settings={};
+    },
+
+    onRender:function(){
+      //called right after a render is called on the view (view.render())
+      this.ui.app_settings.append('<h2>Advanced Settings</h2>');
+      this.addSettings(advanced_config);
+      this.ui.app_settings.append('<h2>Application Settings</h2>');
+      this.addSettings(app_config);
+      this.ui.app_settings.append('<h2>Map Settings</h2>');
+      this.addSettings(map_config);
+      this.ui.app_settings.append('<h2>Picpilot Settings</h2>');
+      this.addSettings(picpilot_config);
     },
 
     //adds the current settings to the settings object and adds an input for the setting to the screen
@@ -49,29 +64,6 @@ module.exports=function(Marionette,$){
           this.settings[settings.file_name][key].element=input;
         }
       }
-    },
-
-    initialize: function(){
-      this.settings={}; //where all of the settings and newly modified settings will be stored
-      this.original_settings={};
-
-    },
-    onRender:function(){
-      //called right after a render is called on the view (view.render())
-      this.ui.app_settings.append('<h2>Advanced Settings</h2>');
-      this.addSettings(advanced_config);
-      this.ui.app_settings.append('<h2>Application Settings</h2>');
-      this.addSettings(app_config);
-      this.ui.app_settings.append('<h2>Map Settings</h2>');
-      this.addSettings(map_config);
-      this.ui.app_settings.append('<h2>Picpilot Settings</h2>');
-      this.addSettings(picpilot_config);
-
-      this.ui.error_message.hide();
-      this.showErrorMessage('this is a test error message');
-      setTimeout(function(){
-        this.hideErrorMessage();
-      }.bind(this),3000)
     },
     saveSettings: function(){
       var saving_error=false;
@@ -112,12 +104,45 @@ module.exports=function(Marionette,$){
         this.hideErrorMessage();
       }
     },
+
     discardChanges:function(){
-
+      for(var filename in this.settings){
+        if(this.settings.hasOwnProperty(filename)){ //go to the setting file
+          for(var setting_key in this.settings[filename]){
+            if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
+              var original_setting=this.original_settings[filename].get(setting_key);
+              //reset the display of the input box to whatever the setting is currently stored as
+              if(_.isObject(original_setting)){
+                this.settings[filename][setting_key].element.val(JSON.stringify(original_setting));
+              }
+              else{
+                this.settings[filename][setting_key].element.val(original_setting);
+              }
+            }
+          }
+        }
+      }
     },
+
     resetSettingsToDefault: function(){
-
+      for(var filename in this.settings){
+        if(this.settings.hasOwnProperty(filename)){ //go to the setting file
+          for(var setting_key in this.settings[filename]){
+            if(this.settings[filename].hasOwnProperty(setting_key)){ //go to the setting
+              var original_value=this.original_settings[filename].default_settings[setting_key];
+              var original_setting=this.original_settings[filename].set(setting_key,original_value);
+              if(_.isObject(original_value)){
+                this.settings[filename][setting_key].element.val(JSON.stringify(original_value));
+              }
+              else{
+                this.settings[filename][setting_key].element.val(original_value);
+              }
+            }
+          }
+        }
+      }
     },
+
     showErrorMessage: function(message){
       if(message){
         this.ui.error_message.text(message);
@@ -128,6 +153,7 @@ module.exports=function(Marionette,$){
       this.ui.error_message.show();
       this.ui.app_settings.scrollTop();
     },
+
     hideErrorMessage: function(){
       this.ui.error_message.hide();
     }
