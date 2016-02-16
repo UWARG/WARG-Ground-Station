@@ -109,7 +109,20 @@ module.exports=function(gui){
 	var settings_submenu=new gui.Menu();
 
 	settings_submenu.append(new gui.MenuItem({
-	  label:'Network Settings'
+	  label:'Network Settings',
+    type: 'checkbox',
+    click: function(){
+      gui.Window.open('./windows/networkSettings.html',{
+       focus: true,
+       position: 'center',
+       width: 600,
+       height: 500,
+       toolbar: false
+      });
+      Logger.debug('Opening network settings window');
+    },
+    modifiers: 'ctrl-shift',
+    key: 'n'
 	}));
 	settings_submenu.append(new gui.MenuItem({
 	  label:'App Settings',
