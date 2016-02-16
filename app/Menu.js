@@ -118,9 +118,9 @@ module.exports=function(gui){
       gui.Window.open('./windows/appSettings.html',{
        focus: true,
        position: 'center',
-       width: 900,
-       height: 400,
-       toolbar: true
+       width: 600,
+       height: 700,
+       toolbar: false
       });
       Logger.debug('Opening app settings window');
     },

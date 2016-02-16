@@ -15,8 +15,10 @@
     font-weight: 400;
     src: url(../assets/fonts/Akashi.ttf);
 }
-html, body{
+html{
   height: 100%;
+}
+html, body{
   width: 100%;
   margin: 0;
   padding: 0;
