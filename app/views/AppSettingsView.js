@@ -157,7 +157,7 @@ module.exports=function(Marionette,$){
         this.ui.error_message.text('An error occured.');
       }
       this.ui.error_message.show();
-      this.ui.app_settings.scrollTop();
+      $('body')[0].scrollTop=0;
     },
 
     hideErrorMessage: function(){
