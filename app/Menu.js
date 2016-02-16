@@ -112,7 +112,20 @@ module.exports=function(gui){
 	  label:'Network Settings'
 	}));
 	settings_submenu.append(new gui.MenuItem({
-	  label:'App Settings'
+	  label:'App Settings',
+    type: 'checkbox',
+    click: function(){
+      gui.Window.open('./windows/appSettings.html',{
+       focus: true,
+       position: 'center',
+       width: 600,
+       height: 700,
+       toolbar: false
+      });
+      Logger.debug('Opening app settings window');
+    },
+    modifiers: 'ctrl-shift',
+    key: 's'
 	}));
 	
 	// Append settings menu as a Submenu

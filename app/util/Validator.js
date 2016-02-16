@@ -1,9 +1,17 @@
 //Useful and commonly used validation functions used throughout the app
+var _=require('underscore');
+
 var Validator={
   isValidNumber:function(number){
     if(typeof number!=='undefined' && number!==null && !isNaN(number)){
       return true;
     }
+  },
+  isValidObject: function(object){
+    if(_.isObject(object)){
+      return true;
+    }
+    return false;
   },
   isValidPitch: function(pitch){
     if(this.isValidNumber(pitch) && Number(pitch)>=-180 && Number(pitch)<=180){
