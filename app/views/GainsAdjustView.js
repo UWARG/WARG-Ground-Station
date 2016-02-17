@@ -57,6 +57,7 @@ module.exports=function(Marionette){
     },
 
     events:{
+      'click #send-all-gains-button':'sendAllGains',
       'click #send-yaw-gain-button':'sendYawGains',
       'click #send-pitch-gain-button':'sendPitchGains',
       'click #send-roll-gain-button':'sendRollGains',
@@ -64,25 +65,34 @@ module.exports=function(Marionette){
       'click #send-altitude-gain-button':'sendAltitudeGains',
       'click #send-throttle-gain-button':'sendThrottleGains',
       'click #send-flap-gain-button':'sendFlapGains',
-      'click #send-orbit-gain-button':'sendOrbitGains',
+      'click #send-orbit-gain-button':'sendOrbitalGains',
       'click #send-path-gain-button':'sendPathGains'
     },
 
     initialize: function(){
       this.verification_quoue=[];//verifies that the gain value sent is the one thats being used
+      this.data_callback=null;
     },
+    
     onRender:function(){
-      TelemetryData.addListener('data_received',function(data){
-        if(this.verification_quoue.length>0 && data.editing_gain===this.verification_quoue[0].type && data.kd_gain===this.verification_quoue[0].kd
-            && data.kp_gain===this.verification_quoue[0].kp && data.ki_gain===this.verification_quoue[0].ki){
-          this.verification_quoue[0].button.text('Send');
-          this.verification_quoue.shift();
-          Commands.showGain(this.verification_quoue[0].type);
-        }
-      });
+      this.data_callback=this.dataCallback.bind(this);
+      TelemetryData.addListener('data_received',this.data_callback);
     },
+
     onBeforeDestroy:function(){
-      
+      TelemetryData.removeListener('data_received',this.data_callback);
+    },
+
+    dataCallback: function(data){
+      console.log('Receiviung dataa!!');
+      console.log(this.verification_quoue);
+
+      if(this.verification_quoue.length>0 && data.editing_gain===this.verification_quoue[0].type && data.kd_gain===this.verification_quoue[0].kd
+          && data.kp_gain===this.verification_quoue[0].kp && data.ki_gain===this.verification_quoue[0].ki){
+        this.verification_quoue[0].button.text('Send');
+        this.verification_quoue.shift();
+        Commands.showGain(this.verification_quoue[0].type);
+      }
     },
 
     addToVerificationQuoue: function(object){
@@ -217,8 +227,8 @@ module.exports=function(Marionette){
     sendAllGains: function(){
       this.sendYawGains();
       this.sendPitchGains();
-      this.sendROllGains();
-      this.sendHeadinGains();
+      this.sendRollGains();
+      this.sendHeadingGains();
       this.sendAltitudeGains();
       this.sendThrottleGains();
       this.sendFlapGains();
