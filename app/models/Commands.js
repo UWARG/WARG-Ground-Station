@@ -69,6 +69,46 @@ var Commands={
     else{
       Logger.error('Command to not sent since invalid flap value detected! Flap Setpoint:'+flap);
     }
+  },
+  sendKPGain: function(type,gain){
+    if(Validator.isValidNumber(gain)){
+      this.sendCommand('set_'+type+'KPGain',gain);
+    }
+    else{
+      Logger.error('Command to not sent since invalid gain value detected! Gain value:'+gain);
+    }
+  },
+  sendKIGain: function(type, gain){
+    if(Validator.isValidNumber(gain)){
+      this.sendCommand('set_'+type+'KIGain',gain);
+    }
+    else{
+      Logger.error('Command to not sent since invalid gain value detected! Gain value:'+gain);
+    }
+  },
+  sendKDGain: function(type, gain){
+    if(Validator.isValidNumber(gain)){
+      this.sendCommand('set_'+type+'KDGain',gain);
+    }
+    else{
+      Logger.error('Command to not sent since invalid gain value detected! Gain value:'+gain);
+    }
+  },
+  sendPathGain: function(gain){
+    if(Validator.isValidNumber(gain)){
+      this.sendCommand('set_pathGain',gain);
+    }
+    else{
+      Logger.error('Command to not sent since invalid path gain value detected! Gain value:'+gain);
+    }
+  },
+  sendOrbitGain: function(gain){
+    if(Validator.isValidNumber(gain)){
+      this.sendCommand('set_orbitGain',gain);
+    }
+    else{
+      Logger.error('Command to not sent since invalid orbit gain value detected! Gain value:'+gain);
+    }
   }
 }
 
