@@ -30,8 +30,8 @@ module.exports = function(Marionette) {
 
     saveData: function(event) {
       var d = new Date();
-      var loc = write_location + this.ui.name_field.val() + "_" + d.getDate() + ".txt";
-      var content = "Comment: " + this.ui.comment_field.val() + "\r\nData Stream: " + JSON.stringify(TelemetryData.current_state);
+      var loc = write_location + this.ui.name_field.val() + "_" + d.toDateString() + ' ' + d.toLocaleTimeString() + ".txt";
+      var content = "Comment: " + this.ui.comment_field.val() + "\r\nData Stream: " + JSON.stringify(TelemetryData.current_state,null,2);
 
       fs.writeFile(loc, content, 'utf8', function(err) {
         if(err){
