@@ -79,8 +79,8 @@ module.exports=function(gui){
       gui.Window.open('./windows/gainsAdjust.html',{
        focus: true,
        position: 'center',
-       width: 900,
-       height: 400,
+       width: 1100,
+       height: 550,
        toolbar: false
       });
       Logger.debug('Opening gains adjust window');

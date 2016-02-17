@@ -60,7 +60,32 @@
     </tbody>
 </table>
 
-<form class="pure-form" style="margin-top: 12px">
+<table class="pure-table" style="margin-top: 12px;">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Orbit</th>
+            <th>Path</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>KP</td>
+            <td><form class="pure-form"><input id="orbit-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="path-kp" type="text"></form></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button id="send-orbit-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-path-gain-button" class="pure-button button-success">Send</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="pure-form" style="margin-top: 12px">
     <button id="send-all-gains-button" class="pure-button button-secondary">Send All</button>
+    <button id="save-all-gains-button" class="pure-button button-success">Save All</button>
+    <button id="discard-all-gains-button" class="pure-button button-warning">Discard Changes</button>
     <button id="reset-default-gains-button" class="pure-button button-error">Reset to Default</button>
-</form>
+</div>
