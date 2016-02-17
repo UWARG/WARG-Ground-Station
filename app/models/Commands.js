@@ -119,15 +119,12 @@ var Commands={
     }
   },
   sendAutoLevel: function(level){
-  if(this.checkConnection()){
-      if(Validator.isValidNumber(level))
-      {
-          Logger.debug("set new autonomus level "+level);
-  this.sendCommand('set_autonomousLevel', level);
-  
-      }
-      
-  }    
+    if(Validator.isValidNumber(level)){
+      this.sendCommand('set_autonomousLevel', level);
+    }
+    else{
+      Logger.error('Command not sent since invalid autonomous level value detected! Value: '+level);
+    }
   }
 };
 module.exports=Commands;
