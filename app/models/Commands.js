@@ -109,6 +109,14 @@ var Commands={
     else{
       Logger.error('Command to not sent since invalid orbit gain value detected! Gain value:'+gain);
     }
+  },
+  showGain: function(value){
+    if(Validator.isValidNumber(value)){
+      this.sendCommand('set_showGain',value);
+    }
+    else{
+      Logger.error('Command to not sent since invalid show gain value detected! Value:'+value);
+    }
   }
 }
 

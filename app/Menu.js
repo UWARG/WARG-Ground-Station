@@ -80,8 +80,8 @@ module.exports=function(gui){
        focus: true,
        position: 'center',
        width: 900,
-       height: 400,
-       toolbar: false
+       height: 570,
+       toolbar: true
       });
       Logger.debug('Opening gains adjust window');
     },
