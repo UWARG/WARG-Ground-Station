@@ -48,7 +48,19 @@ module.exports=function(gui){
 
 	window_submenu.append(new gui.MenuItem({
 	  label:'Console',
-	  type:'checkbox'
+	  type:'checkbox',
+    click: function(){
+      gui.Window.open('./windows/console.html',{
+       focus: true,
+       position: 'center',
+       width: 900,
+       height: 500,
+       toolbar: false
+      });
+      Logger.debug('Opening Console window');
+    },
+    modifiers: 'ctrl-shift',
+    key: 'c'
 	}));
 
 	window_submenu.append(new gui.MenuItem({
