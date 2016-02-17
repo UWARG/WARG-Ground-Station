@@ -73,7 +73,7 @@ module.exports=function(Marionette){
       this.verification_quoue=[];//verifies that the gain value sent is the one thats being used
       this.data_callback=null;
     },
-    
+
     onRender:function(){
       this.data_callback=this.dataCallback.bind(this);
       TelemetryData.addListener('data_received',this.data_callback);
@@ -84,9 +84,6 @@ module.exports=function(Marionette){
     },
 
     dataCallback: function(data){
-      console.log('Receiviung dataa!!');
-      console.log(this.verification_quoue);
-
       if(this.verification_quoue.length>0 && data.editing_gain===this.verification_quoue[0].type && data.kd_gain===this.verification_quoue[0].kd
           && data.kp_gain===this.verification_quoue[0].kp && data.ki_gain===this.verification_quoue[0].ki){
         this.verification_quoue[0].button.text('Send');
