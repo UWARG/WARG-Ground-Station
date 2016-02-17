@@ -87,8 +87,8 @@ module.exports=function(gui){
       gui.Window.open('windows/autoAdjust.html', {
         focus: true,
         position: 'center',
-        width: 1100,
-        height: 400,
+        width: 1250,
+        height: 350,
         toolbar: false
       });
       Logger.debug('Opening Autonomous Level Adjust window');
