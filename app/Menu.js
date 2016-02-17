@@ -84,14 +84,14 @@ module.exports=function(gui){
     label: 'Autonomus Level Adjust',
     type: 'checkbox',
     click: function () {
-        gui.Window.open('windows/autoAdjust.html', {
-            focus: true,
-            position: 'center',
-            width: 1100,
-            height: 400,
-            toolbar: false
-        });
-        Logger.debug('Opening Autonomous Level Adjust window');
+      gui.Window.open('windows/autoAdjust.html', {
+        focus: true,
+        position: 'center',
+        width: 1100,
+        height: 400,
+        toolbar: false
+      });
+      Logger.debug('Opening Autonomous Level Adjust window');
     },
     key: "a",
     modifiers: "ctrl-shift"
@@ -101,14 +101,14 @@ module.exports=function(gui){
     label: 'Data Entry',
     type: 'checkbox',
     click: function () {
-        gui.Window.open('windows/dataEntry.html', {
-            focus: true,
-            position: 'center',
-            width: 500,
-            height: 250,
-            toolbar: false
-        });
-        Logger.debug('Opening Data Entry window');
+      gui.Window.open('windows/dataEntry.html', {
+        focus: true,
+        position: 'center',
+        width: 500,
+        height: 250,
+        toolbar: false
+      });
+      Logger.debug('Opening Data Entry window');
     },
     key: "d",
     modifiers: "ctrl-shift"
@@ -130,6 +130,7 @@ module.exports=function(gui){
     modifiers: 'ctrl-shift',
     key: 'g'
 	}));
+
 	window_submenu.append(new gui.MenuItem({
 	  label:'Data Entry',
 	  type:'checkbox'
@@ -141,10 +142,10 @@ module.exports=function(gui){
 
 	// Append window menu as a Submenu
 	main_menu.append(
-	    new gui.MenuItem({
-	        label: 'Window',
-	        submenu: window_submenu
-	    })
+    new gui.MenuItem({
+      label: 'Window',
+      submenu: window_submenu
+    })
 	);
 
 	// ===Settings Submenu ===
@@ -155,11 +156,11 @@ module.exports=function(gui){
     type: 'checkbox',
     click: function(){
       gui.Window.open('./windows/networkSettings.html',{
-       focus: true,
-       position: 'center',
-       width: 600,
-       height: 500,
-       toolbar: false
+        focus: true,
+        position: 'center',
+        width: 600,
+        height: 500,
+        toolbar: false
       });
       Logger.debug('Opening network settings window');
     },
@@ -172,11 +173,11 @@ module.exports=function(gui){
     type: 'checkbox',
     click: function(){
       gui.Window.open('./windows/appSettings.html',{
-       focus: true,
-       position: 'center',
-       width: 600,
-       height: 700,
-       toolbar: false
+        focus: true,
+        position: 'center',
+        width: 600,
+        height: 700,
+        toolbar: false
       });
       Logger.debug('Opening app settings window');
     },
@@ -186,10 +187,10 @@ module.exports=function(gui){
 	
 	// Append settings menu as a Submenu
 	main_menu.append(
-	    new gui.MenuItem({
-	        label: 'Settings',
-	        submenu: settings_submenu
-	    })
+    new gui.MenuItem({
+      label: 'Settings',
+      submenu: settings_submenu
+    })
 	);
 
 	// ===Help Submenu ===
@@ -216,10 +217,10 @@ module.exports=function(gui){
 	
 	// Append settings menu as a Submenu
 	main_menu.append(
-	    new gui.MenuItem({
-	        label: 'Help',
-	        submenu: help_submenu
-	    })
+    new gui.MenuItem({
+      label: 'Help',
+      submenu: help_submenu
+    })
 	);
 
 	return main_menu;
