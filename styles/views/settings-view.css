@@ -1,0 +1,35 @@
+.settingsView{
+  height: 100%;
+  width: 100%;
+}
+.settingsView h1, .settingsView h2,.settingsView p{
+  text-align: center;
+  color: #FAFAFA;
+}
+.settingsView .setting{
+  margin: 12px auto 0 auto;
+  max-width: 448px;
+  display: flex;
+  justify-content: space-between;
+  height: 36px;
+}
+}
+.settingsView .setting p{
+  display: inline-block;
+  margin: 0 12px 0 0;
+  float: left;
+}
+.settingsView .setting input{
+  float: right;
+}
+
+.settingsView .button-wrapper{
+  display: flex;
+  max-width: 448px;
+  justify-content: space-between;
+  margin: 20px auto 12px auto;
+}
+.settingsView .error-message-box{
+  max-width: 440px;
+  display: none;
+}

@@ -28,7 +28,7 @@ var Map=function(L){
 
   base_layers['Google Satellite']=new leaflet.Google('SATELLITE');
 
-  overlay_layers['Plane']=new leaflet.RotatedMarker(map_config.default_lat_lang, {
+  overlay_layers['Plane']=new leaflet.RotatedMarker(map_config.get('default_lat_lang'), {
     icon: leaflet.icon({
       iconUrl: images_path+'/plane.png',
       iconSize: [30, 30]
@@ -50,7 +50,7 @@ var Map=function(L){
   
   this.createMap=function(id){
     map = leaflet.map(id,{
-      center: map_config.default_lat_lang,
+      center: map_config.get('default_lat_lang'),
       zoom: 17,
       layers: [base_layers['Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
     });

@@ -17,50 +17,75 @@
     <tbody>
         <tr>
             <td>KP</td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
+            <td><form class="pure-form"><input id="yaw-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="pitch-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="roll-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="heading-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="altitude-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="throttle-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="flap-kp" type="text"></form></td>
         </tr>
 
         <tr>
             <td>KD</td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
+            <td><form class="pure-form"><input id="yaw-kd" type="text"></form></td>
+            <td><form class="pure-form"><input id="pitch-kd" type="text"></form></td>
+            <td><form class="pure-form"><input id="roll-kd" type="text"></form></td>
+            <td><form class="pure-form"><input id="heading-kd" type="text"></form></td>
+            <td><form class="pure-form"><input id="altitude-kd" type="text"></form></td>
+            <td><form class="pure-form"><input id="throttle-kd" type="text"></form></td>
+            <td><form class="pure-form"><input id="flap-kd" type="text"></form></td>
         </tr>
 
         <tr>
             <td>KI</td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
-            <td><form class="pure-form"><input type="text"></form></td>
+            <td><form class="pure-form"><input id="yaw-ki" type="text"></form></td>
+            <td><form class="pure-form"><input id="pitch-ki" type="text"></form></td>
+            <td><form class="pure-form"><input id="roll-ki" type="text"></form></td>
+            <td><form class="pure-form"><input id="heading-ki" type="text"></form></td>
+            <td><form class="pure-form"><input id="altitude-ki" type="text"></form></td>
+            <td><form class="pure-form"><input id="throttle-ki" type="text"></form></td>
+            <td><form class="pure-form"><input id="flap-ki" type="text"></form></td>
         </tr>
         <tr>
           <td></td>
-          <td><button class="pure-button button-success">Send</button></td>
-          <td><button class="pure-button button-success">Send</button></td>
-          <td><button class="pure-button button-success">Send</button></td>
-          <td><button class="pure-button button-success">Send</button></td>
-          <td><button class="pure-button button-success">Send</button></td>
-          <td><button class="pure-button button-success">Send</button></td>
-          <td><button class="pure-button button-success">Send</button></td>
+          <td><button id="send-yaw-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-pitch-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-roll-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-heading-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-altitude-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-throttle-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-flap-gain-button" class="pure-button button-success">Send</button></td>
         </tr>
     </tbody>
 </table>
 
-<form class="pure-form" style="margin-top: 12px">
-    <button class="pure-button button-secondary">Send All</button>
-    <button class="pure-button button-error">Reset to Default</button>
-</form>
+<table class="pure-table" style="margin-top: 12px;">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Orbit</th>
+            <th>Path</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>KP</td>
+            <td><form class="pure-form"><input id="orbit-kp" type="text"></form></td>
+            <td><form class="pure-form"><input id="path-kp" type="text"></form></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button id="send-orbit-gain-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-path-gain-button" class="pure-button button-success">Send</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="pure-form" style="margin-top: 12px">
+    <button id="send-all-gains-button" class="pure-button button-secondary">Send All</button>
+    <button id="save-all-gains-button" class="pure-button button-success">Save All</button>
+    <button id="discard-all-gains-button" class="pure-button button-warning">Discard Changes</button>
+    <button id="reset-default-gains-button" class="pure-button button-error">Reset to Default</button>
+</div>

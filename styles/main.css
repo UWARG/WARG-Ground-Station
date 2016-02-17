@@ -15,11 +15,14 @@
     font-weight: 400;
     src: url(../assets/fonts/Akashi.ttf);
 }
-html, body{
+html{
   height: 100%;
+}
+html, body{
   width: 100%;
   margin: 0;
   padding: 0;
+  background-color: #323232;
 }
 .vsplitter{
   background: linear-gradient(to right, #ffffff 0%,#f1f1f1 50%,#f6f6f6 100%); 
@@ -58,4 +61,13 @@ html, body{
 }
 .align-right{
   text-align: right;
+}
+.error-message-box{
+  border-radius: 5px;
+  background-color: #EE3333;
+  padding: 8px;
+  margin: 12px auto 12px auto;
+  text-align: center;
+  color: white;
+  box-sizing: border-box;
 }

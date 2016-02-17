@@ -9,9 +9,9 @@ module.exports=function(){
     Network.connections['multi_echo'].disconnect();
   }
 
-  var multi_echo=Network.addConnection('multi_echo',network_config.multiecho_host,network_config.multiecho_port);
+  var multi_echo=Network.addConnection('multi_echo',network_config.get('multiecho_host'),network_config.get('multiecho_port'));
 
-  multi_echo.socket.setTimeout(network_config.multiecho_timeout);
+  multi_echo.socket.setTimeout(network_config.get('multiecho_timeout'));
 
   //TODO: Implement the new multiecho protocol here
   multi_echo.on('data',function(data){

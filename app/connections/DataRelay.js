@@ -10,9 +10,9 @@ module.exports=function(){
     Network.connections['data_relay'].disconnect();
   }
 
-	var data_relay=Network.addConnection('data_relay',network_config.datarelay_host,network_config.datarelay_port);
+	var data_relay=Network.addConnection('data_relay',network_config.get('datarelay_host'),network_config.get('datarelay_port'));
 
-  data_relay.socket.setTimeout(network_config.datarelay_timeout);
+  data_relay.socket.setTimeout(network_config.get('datarelay_timeout'));
 
 	data_relay.on('connect',function(){
     StatusManager.addStatus('Connected to data_relay',1,0);
