@@ -1,6 +1,9 @@
 var Template=require('../util/Template');
 var TelemetryData=require('../models/TelemetryData');
 var Commands=require('../models/Commands');
+var Validator=require('../util/Validator');
+
+var gains_config=require('../../config/gains-config');
 
 var GAINS={
   YAW: 0x00,
@@ -58,6 +61,9 @@ module.exports=function(Marionette){
 
     events:{
       'click #send-all-gains-button':'sendAllGains',
+      'click #save-all-gains-button':'saveChanges',
+      'click #discard-all-gains-button':'discardChanges',
+      'click #reset-default-gains-button':'resetToDefault',
       'click #send-yaw-gain-button':'sendYawGains',
       'click #send-pitch-gain-button':'sendPitchGains',
       'click #send-roll-gain-button':'sendRollGains',
@@ -77,6 +83,7 @@ module.exports=function(Marionette){
     onRender:function(){
       this.data_callback=this.dataCallback.bind(this);
       TelemetryData.addListener('data_received',this.data_callback);
+      this.discardChanges(); //fills in the values from the settings
     },
 
     onBeforeDestroy:function(){
@@ -231,6 +238,93 @@ module.exports=function(Marionette){
       this.sendFlapGains();
       this.sendOrbitalGains();
       this.sendPathGains();
+    },
+    //saves the gain if its a valid number
+    checkAndSaveGain: function(id,value){
+      if(Validator.isValidNumber(value)){
+        gains_config.set(id,Number(value));
+      } 
+      else{ 
+        Logger.error('Did not save '+id+' gain as its not a valid number');
+      }
+    },
+
+    saveChanges: function(){
+      this.checkAndSaveGain('yaw_kd',this.ui.yaw_kd.val());
+      this.checkAndSaveGain('yaw_ki',this.ui.yaw_ki.val());
+      this.checkAndSaveGain('yaw_kp',this.ui.yaw_kp.val());
+      this.checkAndSaveGain('pitch_kd',this.ui.pitch_kd.val());
+      this.checkAndSaveGain('pitch_ki',this.ui.pitch_ki.val());
+      this.checkAndSaveGain('pitch_kp',this.ui.pitch_kp.val());
+      this.checkAndSaveGain('roll_kd',this.ui.roll_kd.val());
+      this.checkAndSaveGain('roll_ki',this.ui.roll_ki.val());
+      this.checkAndSaveGain('roll_kp',this.ui.roll_kp.val());
+      this.checkAndSaveGain('heading_kd',this.ui.heading_kd.val());
+      this.checkAndSaveGain('heading_ki',this.ui.heading_ki.val());
+      this.checkAndSaveGain('heading_kp',this.ui.heading_kp.val());
+      this.checkAndSaveGain('altitude_kd',this.ui.altitude_kd.val());
+      this.checkAndSaveGain('altitude_ki',this.ui.altitude_ki.val());
+      this.checkAndSaveGain('altitude_kp',this.ui.altitude_kp.val());
+      this.checkAndSaveGain('throttle_kd',this.ui.throttle_kd.val());
+      this.checkAndSaveGain('throttle_ki',this.ui.throttle_ki.val());
+      this.checkAndSaveGain('throttle_kp',this.ui.throttle_kp.val());
+      this.checkAndSaveGain('flap_kd',this.ui.flap_kd.val());
+      this.checkAndSaveGain('flap_ki',this.ui.flap_ki.val());
+      this.checkAndSaveGain('flap_kp',this.ui.flap_kp.val());
+      this.checkAndSaveGain('orbit_kp',this.ui.orbit_kp.val());
+      this.checkAndSaveGain('path_kp',this.ui.path_kp.val());
+    },
+    discardChanges: function(){
+      this.ui.yaw_kd.val(gains_config.get('yaw_kd'));
+      this.ui.yaw_ki.val(gains_config.get('yaw_ki'));
+      this.ui.yaw_kp.val(gains_config.get('yaw_kp'));
+      this.ui.pitch_kd.val(gains_config.get('pitch_kd'));
+      this.ui.pitch_ki.val(gains_config.get('pitch_ki'));
+      this.ui.pitch_kp.val(gains_config.get('pitch_kp'));
+      this.ui.roll_kd.val(gains_config.get('roll_kd'));
+      this.ui.roll_ki.val(gains_config.get('roll_ki'));
+      this.ui.roll_kp.val(gains_config.get('roll_kp'));
+      this.ui.heading_kd.val(gains_config.get('heading_kd'));
+      this.ui.heading_ki.val(gains_config.get('heading_ki'));
+      this.ui.heading_kp.val(gains_config.get('heading_kp'));
+      this.ui.altitude_kd.val(gains_config.get('altitude_kd'));
+      this.ui.altitude_ki.val(gains_config.get('altitude_ki'));
+      this.ui.altitude_kp.val(gains_config.get('altitude_kp'));
+      this.ui.throttle_kd.val(gains_config.get('throttle_kd'));
+      this.ui.throttle_ki.val(gains_config.get('throttle_ki'));
+      this.ui.throttle_kp.val(gains_config.get('throttle_kp'));
+      this.ui.flap_kd.val(gains_config.get('flap_kd'));
+      this.ui.flap_ki.val(gains_config.get('flap_ki'));
+      this.ui.flap_kp.val(gains_config.get('flap_kp'));
+      this.ui.orbit_kp.val(gains_config.get('orbit_kp'));
+      this.ui.path_kp.val(gains_config.get('path_kp'));
+    },
+    resetToDefault:function(){
+      this.ui.yaw_kd.val(gains_config.default_settings['yaw_kd']);
+      this.ui.yaw_ki.val(gains_config.default_settings['yaw_ki']);
+      this.ui.yaw_kp.val(gains_config.default_settings['yaw_kp']);
+      this.ui.pitch_kd.val(gains_config.default_settings['pitch_kd']);
+      this.ui.pitch_ki.val(gains_config.default_settings['pitch_ki']);
+      this.ui.pitch_kp.val(gains_config.default_settings['pitch_kp']);
+      this.ui.roll_kd.val(gains_config.default_settings['roll_kd']);
+      this.ui.roll_ki.val(gains_config.default_settings['roll_ki']);
+      this.ui.roll_kp.val(gains_config.default_settings['roll_kp']);
+      this.ui.heading_kd.val(gains_config.default_settings['heading_kd']);
+      this.ui.heading_ki.val(gains_config.default_settings['heading_ki']);
+      this.ui.heading_kp.val(gains_config.default_settings['heading_kp']);
+      this.ui.altitude_kd.val(gains_config.default_settings['altitude_kd']);
+      this.ui.altitude_ki.val(gains_config.default_settings['altitude_ki']);
+      this.ui.altitude_kp.val(gains_config.default_settings['altitude_kp']);
+      this.ui.throttle_kd.val(gains_config.default_settings['throttle_kd']);
+      this.ui.throttle_ki.val(gains_config.default_settings['throttle_ki']);
+      this.ui.throttle_kp.val(gains_config.default_settings['throttle_kp']);
+      this.ui.flap_kd.val(gains_config.default_settings['flap_kd']);
+      this.ui.flap_ki.val(gains_config.default_settings['flap_ki']);
+      this.ui.flap_kp.val(gains_config.default_settings['flap_kp']);
+      this.ui.orbit_kp.val(gains_config.default_settings['orbit_kp']);
+      this.ui.path_kp.val(gains_config.default_settings['path_kp']);
+
+      this.saveChanges();
     }
   });
 };
