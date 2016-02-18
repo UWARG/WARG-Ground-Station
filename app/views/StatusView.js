@@ -56,8 +56,7 @@ module.exports=function(Marionette,$){
         this.starting_time=moment(time,'HHmmss.SS');
       }
       this.setTime(data.time);
-      //this.setBatteryLevel(data.batteryLevel);
-      this.setBatteryLevel(47); //NOTE: remove this!!!! and use the code above
+      this.setBatteryLevel(data.batteryLevel);
     },
     onNewStatusCallback: function(message, priority, timeout){
       if(priority===1){
