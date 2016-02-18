@@ -3,12 +3,12 @@
   <thead>
     <tr>
       <th></th>
-      <th>Pitch Source</th>
-      <th>Roll Source</th>
-      <th>Heading Source</th>
-      <th>Altitude Source</th>
-      <th>Throttle Source</th>
-      <th>Flaps Source</th>
+      <th>Pitch</th>
+      <th>Roll</th>
+      <th>Heading</th>
+      <th>Altitude</th>
+      <th>Throttle</th>
+      <th>Flaps</th>
     </tr>
   </thead>
   <tbody>
@@ -24,6 +24,18 @@
         <select id="rolltype">
           <option value="Rate">Rate</option>
           <option value="Angle">Angle</option>
+        </select>
+      </td>
+      <td>
+        <select id="headingtype">
+          <option value="Off">Off</option>
+          <option value="On">On</option>
+        </select>
+      </td>
+      <td>
+        <select id="altitudetype">
+          <option value="Off">Off</option>
+          <option value="On">On</option>
         </select>
       </td>
     </tr>
@@ -45,14 +57,12 @@
       </td>
       <td>
         <select id="headsource">
-          <option value="Off">Off</option>
           <option value="Autopilot">Autopilot</option>
           <option value="Ground Station">Ground Station</option>
         </select>
       </td>
       <td>
         <select id="altsource">
-          <option value="Off">Off</option>
           <option value="Autopilot">Autopilot</option>
           <option value="Ground Station">Ground Station</option>
         </select>

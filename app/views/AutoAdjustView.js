@@ -20,7 +20,9 @@ module.exports = function(Marionette) {
       throttle_select: "#throttlesource",
       flap_select: "#flapssource",
       rolltype_select: "#rolltype",
-      pitchtype_select: "#pitchtype"
+      pitchtype_select: "#pitchtype",
+      alttype_select: '#altitudetype',
+      headingtype_select: '#headingtype'
     },
 
     events: {
@@ -32,28 +34,29 @@ module.exports = function(Marionette) {
 
     sendall: function(event) {
       var autolevel = 0;
-
-      if (this.ui.head_select.val() === "Off") {
-
-      } else {
+      if (this.ui.flap_select.val() === "Autopilot") {
+        autolevel = autolevel + Math.pow(2, 11);
+      }
+      else if (this.ui.flap_select.val() === "Ground Station") {
+        autolevel = autolevel + Math.pow(2, 10);
+      }
+      if (this.ui.headingtype_select.val() === "On") {
         autolevel = autolevel + Math.pow(2, 9);
       }
       if (this.ui.head_select.val() === "Autopilot") {
         autolevel = autolevel + Math.pow(2, 8);
       }
-      if (this.ui.alt_select.val() === "Off") {
-
-      } else {
+      if (this.ui.alttype_select.val() === "On") {
         autolevel = autolevel + Math.pow(2, 7);
       }
       if (this.ui.alt_select.val() === "Autopilot") {
         autolevel = autolevel + Math.pow(2, 6);
       }
-
-      if (this.ui.throttle_select.val() === "Ground Station") {
-        autolevel = autolevel + Math.pow(2, 4);
-      } else if (this.ui.throttle_select.val() === "Autopilot") {
+      if (this.ui.throttle_select.val() === "Autopilot") {
         autolevel = autolevel + Math.pow(2, 5);
+      }
+      else if (this.ui.throttle_select.val() === "Ground Station") { //we dont add anything if its a controller
+        autolevel = autolevel + Math.pow(2, 4);
       }
       if (this.ui.roll_select.val() === "Ground Station") {
         autolevel = autolevel + Math.pow(2, 3);
@@ -77,9 +80,22 @@ module.exports = function(Marionette) {
     fullAuto: function(event) { //full autopilot and groundstation (defaults to angle)
       Commands.sendAutoLevel(1007);
     },
-    
+
     fullGround: function(event) { //full groundstation (defaults to angle)
       Commands.sendAutoLevel(671);
     }
   });
 };
+//this is copied from the data link documentation
+/*
+0b0000000000 = Full manual control (default)
+0b0000000001 = Set Pitch Rate(0), Pitch Angle(1)
+0b0000000010 = Pitch Control Source: Controller(0), Ground Station(1) 
+0b0000000100 = Roll Control Type: Roll Rate(0), Roll Angle(1)
+0b0000001000 = Roll Control Sources: Controller(0), Ground Station(1)
+0b0000110000 = Throttle control source: Controller(0), Ground Station(1), Autopilot(2)
+0b0001000000 = Altitude Source: Ground Station(0), Autopilot(1)
+0b0010000000 = Altitude Control On(1) or Off(0)
+0b0100000000 = Heading control source: Ground Station(0), Autopilot(1)
+0b1000000000= To fly with Ground Station Control of the Pitch Rate and Roll Angle:
+*/
