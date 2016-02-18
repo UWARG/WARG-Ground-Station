@@ -26,13 +26,13 @@ module.exports = function(Marionette) {
     },
 
     events: {
-      "click #sendall": "sendall",
+      "click #sendall": "sendAll",
       "click #fullRC": "fullRC",
       "click #fullAuto": "fullAuto",
       "click #fullGround": "fullGround"
     },
 
-    sendall: function(event) {
+    sendAll: function(event) {
       var autolevel = 0;
       if (this.ui.flap_select.val() === "Autopilot") {
         autolevel = autolevel + Math.pow(2, 11);
@@ -74,15 +74,45 @@ module.exports = function(Marionette) {
     },
 
     fullRC: function(event) {
-      Commands.sendAutoLevel(0);
+      this.ui.flap_select.val('Controller');
+      this.ui.throttle_select.val('Controller');
+      this.ui.alt_select.val('Ground Station');
+      this.ui.head_select.val('Ground Station');
+      this.ui.roll_select.val('Controller');
+      this.ui.pitch_select.val('Controller');
+      this.ui.pitchtype_select.val('Rate');
+      this.ui.rolltype_select.val('Rate');
+      this.ui.headingtype_select.val('Off');
+      this.ui.alttype_select.val('Off');
+      this.sendAll();
     },
 
     fullAuto: function(event) { //full autopilot and groundstation (defaults to angle)
-      Commands.sendAutoLevel(1007);
+      this.ui.flap_select.val('Autopilot');
+      this.ui.throttle_select.val('Autopilot');
+      this.ui.alt_select.val('Autopilot');
+      this.ui.head_select.val('Autopilot');
+      this.ui.roll_select.val('Ground Station');
+      this.ui.pitch_select.val('Ground Station');
+      this.ui.pitchtype_select.val('Angle');
+      this.ui.rolltype_select.val('Angle');
+      this.ui.headingtype_select.val('On');
+      this.ui.alttype_select.val('On');
+      this.sendAll();
     },
 
     fullGround: function(event) { //full groundstation (defaults to angle)
-      Commands.sendAutoLevel(671);
+      this.ui.flap_select.val('Ground Station');
+      this.ui.throttle_select.val('Ground Station');
+      this.ui.alt_select.val('Ground Station');
+      this.ui.head_select.val('Ground Station');
+      this.ui.roll_select.val('Ground Station');
+      this.ui.pitch_select.val('Ground Station');
+      this.ui.pitchtype_select.val('Angle');
+      this.ui.rolltype_select.val('Angle');
+      this.ui.headingtype_select.val('On');
+      this.ui.alttype_select.val('On');
+      this.sendAll();
     }
   });
 };
