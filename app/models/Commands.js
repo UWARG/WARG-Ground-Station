@@ -117,7 +117,14 @@ var Commands={
     else{
       Logger.error('Command to not sent since invalid show gain value detected! Value:'+value);
     }
+  },
+  sendAutoLevel: function(level){
+    if(Validator.isValidNumber(level)){
+      this.sendCommand('set_autonomousLevel', level);
+    }
+    else{
+      Logger.error('Command not sent since invalid autonomous level value detected! Value: '+level);
+    }
   }
-}
-
+};
 module.exports=Commands;

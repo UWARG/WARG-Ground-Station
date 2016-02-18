@@ -1,0 +1,93 @@
+<h1 style="text-align: center">Autonomous Level Adjust</h1>
+<table class="pure-table pure-form">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Pitch</th>
+      <th>Roll</th>
+      <th>Heading</th>
+      <th>Altitude</th>
+      <th>Throttle</th>
+      <th>Flaps</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Control <br> Type </td>
+      <td>
+        <select id="pitchtype">
+          <option value="Rate">Rate</option>
+          <option value="Angle">Angle</option>
+        </select>
+      </td>
+      <td>
+        <select id="rolltype">
+          <option value="Rate">Rate</option>
+          <option value="Angle">Angle</option>
+        </select>
+      </td>
+      <td>
+        <select id="headingtype">
+          <option value="Off">Off</option>
+          <option value="On">On</option>
+        </select>
+      </td>
+      <td>
+        <select id="altitudetype">
+          <option value="Off">Off</option>
+          <option value="On">On</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Control <br> Source </td>
+      <td>
+        
+        <select id="pitchsource">
+          <option value="Controller">Controller</option>
+          <option value="Ground Station">Ground Station</option>
+        </select>
+        
+      </td>
+      <td>
+        <select id="rollsource">
+          <option value="Controller">Controller</option>
+          <option value="Ground Station">Ground Station</option>
+        </select>
+      </td>
+      <td>
+        <select id="headsource">
+          <option value="Ground Station">Ground Station</option>
+          <option value="Autopilot">Autopilot</option>
+        </select>
+      </td>
+      <td>
+        <select id="altsource">
+          <option value="Ground Station">Ground Station</option>
+          <option value="Autopilot">Autopilot</option>
+        </select>
+      </td>
+      <td>
+        <select id="throttlesource">
+          <option value="Controller">Controller</option>
+          <option value="Ground Station">Ground Station</option>
+          <option value="Autopilot">Autopilot</option>
+        </select>
+      </td>
+      <td>
+        <select id="flapssource">
+          <option value="Controller">Controller</option>
+          <option value="Ground Station">Ground Station</option>
+          <option value="Autopilot">Autopilot</option>
+        </select>
+      </td>
+    </tr>
+    
+  </tbody>
+</table>
+<div class="wrapper" style="margin-top: 50px">
+  <button id="sendall" class="pure-button button-success">Send All</button>
+  <button id="fullRC" class="pure-button button-error" >Full RC Control</button>
+  <button id="fullGround" class="pure-button button-secondary" >Full Ground Control</button>
+  <button id="fullAuto" class="pure-button button-secondary" >Full Autopilot</button>
+</div>

@@ -1,4 +1,0 @@
-#Ignore all files but the git ignore file
-*
-!.gitignore
-!photomapper/
