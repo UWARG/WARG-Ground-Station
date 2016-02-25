@@ -175,7 +175,7 @@ module.exports=function(Marionette){
       if(e) e.preventDefault();
       var command=this.ui.command_input.val();
       if(command && command.trim()){
-        Network.connections['data_relay'].write(command.trim());
+        Network.connections['data_relay'].write(command.trim()+'\r\n');
         this.ui.command_input.val('');
         this.command_history.push(command.trim());
         this.command_history_index=0;
