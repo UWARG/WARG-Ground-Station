@@ -18,7 +18,8 @@ module.exports=function(Marionette,$){
       elapsed_time:".time-view .elapsed-time",
       battery_percent:".battery-percentage",
       battery_message:".battery-message",
-      battery_picture:".battery-picture .battery-base .percentage"
+      battery_picture:".battery-picture .battery-base .percentage",
+      gps_message:".gps-status .gps-message"
     },
     events:{
       'click #reset-elapsed-time':'resetElapsedTime',
@@ -57,6 +58,7 @@ module.exports=function(Marionette,$){
       }
       this.setTime(data.time);
       this.setBatteryLevel(data.batteryLevel);
+      this.setGpsLevel(data.Gps_status);
     },
     onNewStatusCallback: function(message, priority, timeout){
       if(priority===1){
@@ -124,6 +126,26 @@ module.exports=function(Marionette,$){
         }
       }
     },
+    setGpsLevel:function(gps_level)
+    {
+      if(!this.validGPS(gps_level))
+      {
+        Logger.warn('Got an invalid value for the GPS level! GPS Level: '+gps_level);
+        this.ui.gps_message.css('color','orange');
+        this.ui.gps_message.text('Invalid GPS Level');
+      }
+      else if(gps_level===0)
+      {
+        Logger.warn('no GPS connection');
+        this.ui.gps_message.css('color','red');
+        this.ui.gps_message.text('NOT CONNECTED'); 
+      }
+      else
+      {
+        this.ui.gps_message.css('color','green');
+        this.ui.gps_message.text('Connected to '+ (gps_level & 0x0f) + ' satelites'); 
+      }
+    },
     resetElapsedTime:function(){
       this.starting_time=null;
     },
@@ -141,6 +163,13 @@ module.exports=function(Marionette,$){
         return true;
       }
       return false;
+    },
+    validGPS:function(gps)
+    {
+      if(typeof gps!=='undefined' && gps!==null && Number(gps)!=='NaN'){
+        return true;
+      }
+      return false;  
     }
   });
 };

@@ -1,6 +1,7 @@
 //The reason we are injecting gui and not calling require on nw.gui is because this script is executed within a node context and thus doesnt have access to nw.gui
 var Logger=require('./util/Logger');
-
+var GainsManip=require('./util/GainsManip');
+var TelemetryData=require('./models/TelemetryData');
 module.exports=function(gui){
 	// Create the main application menu
 	var main_menu = new gui.Menu({ type: 'menubar' });
@@ -9,7 +10,11 @@ module.exports=function(gui){
 	var file_submenu = new gui.Menu();
 
 	file_submenu.append(new gui.MenuItem({ 
-	  label: 'Import PID Gains'
+	  label: 'Import PID Gains',
+          tooltip:"import PID Gains that were previously saved",
+          click: function(){
+	    GainsManip.GainsImport();
+	  }
 	}));
 	file_submenu.append(new gui.MenuItem({ 
 	  label: 'Import Path'
@@ -18,7 +23,12 @@ module.exports=function(gui){
 	  label: 'Import Settings'
 	}));
 	file_submenu.append(new gui.MenuItem({ 
-	  label: 'Export PID Gains'
+	  label: 'Export PID Gains',
+          tooltip:"Saves the PID values to a file of your choice",
+	  click: function(){
+              
+	    GainsManip.GainsExport();
+	  }
 	}));
 	file_submenu.append(new gui.MenuItem({ 
 	  label: 'Export Path'
@@ -131,10 +141,7 @@ module.exports=function(gui){
     key: 'g'
 	}));
 
-	window_submenu.append(new gui.MenuItem({
-	  label:'Data Entry',
-	  type:'checkbox'
-	}));
+	
 	window_submenu.append(new gui.MenuItem({
 	  label:'Altitude Graph Entry',
 	  type:'checkbox'
