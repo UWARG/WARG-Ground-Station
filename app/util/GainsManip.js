@@ -29,16 +29,16 @@ var GainsManip = {
             var keys = Object.keys(gains_config.default_settings);
             try {
                 var object = JSON.parse(content, 2);
-            } catch (e)
-            {
-                Logger.info("could not save, bad file format" + e);
-            }
-            for (var i = 0; i < keys.length; i++)
+                for (var i = 0; i < keys.length; i++)
             {
                 if (keys[i] in object)
                 {
                     gains_config.set(keys[i], object[keys[i]]);
                 }
+            }
+            } catch (e)
+            {
+                Logger.info("could not save, bad file format" + e);
             }
         });
     }
