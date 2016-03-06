@@ -5,6 +5,7 @@ var TelemetryData=require('../models/TelemetryData');
 var StatusManager=require('../StatusManager');
 var Logger=require('../util/Logger');
 var moment=require('moment');
+var Validator=require('../util/Validator');
 
 module.exports=function(Marionette,$){
 
@@ -52,7 +53,7 @@ module.exports=function(Marionette,$){
       StatusManager.removeListener('remove_status',this.remove_status_callback);
     },
     onDataCallback:function(data){
-      if(!this.starting_time && this.validTime(data.time)){
+      if(!this.starting_time && Validator.isValidTime(data.time)){
         time=Number(data.time).toFixed(2);
         this.starting_time=moment(time,'HHmmss.SS');
       }
@@ -89,7 +90,7 @@ module.exports=function(Marionette,$){
       }
     },
     setTime:function(time){
-      if(!this.validTime(time)){
+      if(!Validator.isValidTime(time)){
         Logger.warn('Got invalid value for the time! Time: '+time);
         this.ui.vehicle_time.text('Invalid Time Received');
         this.ui.elapsed_time.text('--');
@@ -103,7 +104,7 @@ module.exports=function(Marionette,$){
       }
     },
     setBatteryLevel:function(battery_level){
-      if(!this.validBattery(battery_level)){
+      if(!Validator.isValidBattery(battery_level)){
         Logger.warn('Got an invalid value for the battery level! Battery Level: '+battery_level);
         this.ui.battery_percent.text('Invalid Battery Level');
       }
@@ -128,7 +129,7 @@ module.exports=function(Marionette,$){
     },
     setGpsLevel:function(gps_level)
     {
-      if(!this.validGPS(gps_level))
+      if(!Validator.isValidGPS(gps_level))
       {
         Logger.warn('Got an invalid value for the GPS level! GPS Level: '+gps_level);
         this.ui.gps_message.css('color','orange');
@@ -151,25 +152,7 @@ module.exports=function(Marionette,$){
     },
     clearStatuses: function(){ //removes all persistent statuses
       StatusManager.removeStatusesByTimeout(0);
-    },
-    validTime: function(timestring){
-      if(typeof timestring==='undefined' || timestring===null || !Number(timestring) || Number(timestring).toFixed(2)<=0){
-        return false;
-      }
-      return true;
-    },
-    validBattery: function(battery){
-      if(typeof battery!=='undefined' && battery!==null && Number(battery)!=='NaN' && Number(battery)>=0 && Number(battery)<=100){
-        return true;
-      }
-      return false;
-    },
-    validGPS:function(gps)
-    {
-      if(typeof gps!=='undefined' && gps!==null && Number(gps)!=='NaN'){
-        return true;
-      }
-      return false;  
     }
+    
   });
 };
