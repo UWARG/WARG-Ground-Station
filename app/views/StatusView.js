@@ -58,7 +58,7 @@ module.exports=function(Marionette,$){
       }
       this.setTime(data.time);
       this.setBatteryLevel(data.batteryLevel);
-      this.setGpsLevel(data.Gps_status);
+      this.setGpsLevel(data.gpsStatus);
     },
     onNewStatusCallback: function(message, priority, timeout){
       if(priority===1){
