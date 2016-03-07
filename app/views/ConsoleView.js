@@ -2,7 +2,7 @@
 //NOTE: this view should never be re-rendered!
 var Template=require('../util/Template');
 var Logger=require('../util/Logger');
-var Network=require('../Network');
+var Commands=require('../models/Commands');
 
 module.exports=function(Marionette){
 
@@ -175,7 +175,7 @@ module.exports=function(Marionette){
       if(e) e.preventDefault();
       var command=this.ui.command_input.val();
       if(command && command.trim()){
-        Network.connections['data_relay'].write(command.trim()+'\r\n');
+        Commands.sendRawCommand(command.trim());
         this.ui.command_input.val('');
         this.command_history.push(command.trim());
         this.command_history_index=0;

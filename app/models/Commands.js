@@ -22,6 +22,11 @@ var Commands={
       Network.connections['data_relay'].write(command+':'+value+'\r\n');
     }
   },
+  sendRawCommand: function(command){
+    if(this.checkConnection()){
+      Network.connections['data_relay'].write(command+'\r\n');
+    }
+  },
   sendRoll: function(roll){
     if(Validator.isValidRoll(roll)){
       this.sendCommand('set_rollAngle',roll);
