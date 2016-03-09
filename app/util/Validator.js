@@ -35,7 +35,7 @@ var Validator={
     if(this.isValidNumber(heading) && Number(heading)>=0 && Number(heading)<=360){
       return true;
     }
-    return false
+    return false;
   },
   isValidSpeed: function(speed){
     if(this.isValidNumber(speed) && Number(speed)>=0){
@@ -72,7 +72,26 @@ var Validator={
       return true;
     }
     return false;
-  }
+  },
+  isValidTime: function(timestring){
+      if(typeof timestring==='undefined' || timestring===null || !Number(timestring) || Number(timestring).toFixed(2)<=0){
+        return false;
+      }
+      return true;
+    },
+    isValidBattery: function(battery){
+      if(typeof battery!=='undefined' && battery!==null && Number(battery)!=='NaN' && Number(battery)>=0 && Number(battery)<=100){
+        return true;
+      }
+      return false;
+    },
+    isValidGPS:function(gps)
+    {
+      if(typeof gps!=='undefined' && gps!==null && Number(gps)!=='NaN'){
+        return true;
+      }
+      return false;  
+    }
 };
 
 module.exports=Validator;
