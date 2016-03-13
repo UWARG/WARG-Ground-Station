@@ -139,22 +139,6 @@ module.exports = function (gui) {
         modifiers: 'ctrl-shift',
         key: 'g'
     }));
-    window_submenu.append(new gui.MenuItem({
-        label: 'RC Controller Input',
-        type: 'checkbox',
-        click: function () {
-            gui.Window.open('./windows/rcControllerInput.html', {
-                focus: true,
-                position: 'center',
-                width: 1100,
-                height: 550,
-                toolbar: false
-            });
-            Logger.debug('Opening RC Controller Input window');
-        },
-        modifiers: 'ctrl-shift',
-        key: 'r'
-    }));
 
     window_submenu.append(new gui.MenuItem({
         label: 'Altitude Graph Entry',
