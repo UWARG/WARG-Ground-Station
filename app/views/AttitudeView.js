@@ -90,7 +90,7 @@ module.exports=function(Marionette){
         var int_roll=Math.round(Number(roll));
         if(int_roll!==this.current_roll){ //we only update the display if its something different
           this.current_roll=int_roll;
-          this.ui.horizon_dial.css('transform','rotate('+int_roll+'deg) scale(2)');
+          this.ui.horizon_dial.css('transform','rotate('+-1*int_roll+'deg) scale(2)'); //multiply by negative 1 because thats how roll works on a horizon dial
           this.ui.roll_dial.css('transform','rotate('+int_roll+'deg) scale(2)');
         }  
       }else{
