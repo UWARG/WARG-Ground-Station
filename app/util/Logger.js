@@ -16,11 +16,10 @@ var string_date=date.toDateString() + ' ' + date.toLocaleTimeString(); //output 
 //create the logs directory if it doesnt yet exist
 mkdirp.sync(app_config.get('log_dir'));
 
-var all_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-all' + ".log");
-var debug_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-debug' + ".log");
-var error_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-error' + ".log");
-var data_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s/g, "-")+'-data' + ".log"); //writes whatever we received from the groundstation
-
+var all_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s|:/g, "-")+'-all' + ".log");
+var debug_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s|:/g, "-")+'-debug' + ".log");
+var error_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s|:/g, "-")+'-error' + ".log");
+var data_log = fs.createWriteStream(app_config.get('log_dir')+"GCS-" + string_date.replace(/\s|:/g, "-")+'-data' + ".log"); //writes whatever we received from the groundstation
 
 var Logger=function(){
  	// Initialize necessary properties from `EventEmitter` in this instance
