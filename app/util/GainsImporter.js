@@ -32,19 +32,21 @@ var GainsImporter = {
             path: '~/Documents'
         });
         dialog.readFile(function (err, content, path) {
-            var keys = Object.keys(gains_config.default_settings);
-            try {
-                var object = JSON.parse(content, 2);
-                for (var i = 0; i < keys.length; i++)
-            {
-                if (keys[i] in object)
-                {
-                    gains_config.set(keys[i], object[keys[i]]);
-                }
+            if(err){
+                Logger.error('There was an error in reading the gains file. Error: '+err);
             }
-            } catch (e)
-            {
-                Logger.info("Could not save, bad file format" + e);
+            else{
+              var keys = Object.keys(gains_config.default_settings);
+                try {
+                    var object = JSON.parse(content, 2);
+                    for (var i = 0; i < keys.length; i++){
+                        if (keys[i] in object){
+                            gains_config.set(keys[i], object[keys[i]]);
+                        }
+                    }
+                } catch (e){
+                    Logger.info("Could not save, bad file format: " + e);
+                }  
             }
         });
     }
