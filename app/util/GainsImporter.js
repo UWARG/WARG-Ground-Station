@@ -17,16 +17,21 @@ var GainsImporter = {
         str = JSON.stringify(exported_settings, null, 2);
         buf = new Buffer(str);
         fdialogs.saveFile(buf, function (err, path) {
-            Logger.debug("File saved succesfully to " + path);
+            if(err){
+                Logger.error('There was an error saving the file to : '+path+' Error: '+err);
+            }
+            else{
+                Logger.debug("File saved succesfully to " + path);
+            }
         });
     },
     import: function () {
-        var Dialog = new fdialogs.FDialog({
+        var dialog = new fdialogs.FDialog({
             type: 'open',
             accept: ['.txt'],
             path: '~/Documents'
         });
-        fdialogs.readFile(function (err, content, path) {
+        dialog.readFile(function (err, content, path) {
             var keys = Object.keys(gains_config.default_settings);
             try {
                 var object = JSON.parse(content, 2);
