@@ -62,8 +62,8 @@ module.exports = function (gui) {
             gui.Window.open('./windows/simulationMode.html', {
                 focus: true,
                 position: 'center',
-                width: 900,
-                height: 500,
+                width: 600,
+                height: 300,
                 toolbar: true
             });
             Logger.debug('Opening Simulation window');
