@@ -1,6 +1,6 @@
 //The reason we are injecting gui and not calling require on nw.gui is because this script is executed within a node context and thus doesnt have access to nw.gui
 var Logger = require('./util/Logger');
-var GainsManip = require('./util/GainsManip');
+var GainsImporter = require('./util/GainsImporter');
 var TelemetryData = require('./models/TelemetryData');
 module.exports = function (gui) {
     // Create the main application menu
@@ -13,7 +13,7 @@ module.exports = function (gui) {
         label: 'Import PID Gains',
         tooltip: "import PID Gains that were previously saved",
         click: function () {
-            GainsManip.GainsImport();
+            GainsImporter.import();
         }
     }));
     file_submenu.append(new gui.MenuItem({
@@ -26,7 +26,7 @@ module.exports = function (gui) {
         label: 'Export PID Gains',
         tooltip: "Saves the PID values to a file of your choice",
         click: function () {
-            GainsManip.GainsExport();
+            GainsImporter.export();
         }
     }));
     file_submenu.append(new gui.MenuItem({

@@ -1,10 +1,11 @@
 var LocalStorage = require('./LocalStorage');
-var fdialogs = require('node-webkit-fdialogs');
+var fdialogs = require('node-webkit-fdialogs'); //https://www.npmjs.com/package/node-webkit-fdialogs
 var Logger = require('../util/Logger');
 var Commands = require('../models/Commands');
 var gains_config = require('../../config/gains-config');
-var GainsManip = {
-    GainsExport: function () {
+
+var GainsImporter = {
+    export: function () {
         var keys = Object.keys(gains_config.default_settings);
         var str;
         var buf;
@@ -16,10 +17,10 @@ var GainsManip = {
         str = JSON.stringify(exported_settings, null, 2);
         buf = new Buffer(str);
         fdialogs.saveFile(buf, function (err, path) {
-            Logger.debug("file saved succesfully to " + path);
+            Logger.debug("File saved succesfully to " + path);
         });
     },
-    GainsImport: function () {
+    import: function () {
         var Dialog = new fdialogs.FDialog({
             type: 'open',
             accept: ['.txt'],
@@ -38,10 +39,9 @@ var GainsManip = {
             }
             } catch (e)
             {
-                Logger.info("could not save, bad file format" + e);
+                Logger.info("Could not save, bad file format" + e);
             }
         });
     }
 };
-module.exports = GainsManip;
-//https://www.npmjs.com/package/node-webkit-fdialogs
+module.exports = GainsImporter;
