@@ -56,6 +56,21 @@ module.exports = function (gui) {
     var window_submenu = new gui.Menu();
 
     window_submenu.append(new gui.MenuItem({
+        label: 'Simulation Mode',
+        type: 'checkbox',
+        click: function () {
+            gui.Window.open('./windows/simulationMode.html', {
+                focus: true,
+                position: 'center',
+                width: 900,
+                height: 500,
+                toolbar: true
+            });
+            Logger.debug('Opening Simulation window');
+        }
+    }));
+
+    window_submenu.append(new gui.MenuItem({
         label: 'Console',
         type: 'checkbox',
         click: function () {
