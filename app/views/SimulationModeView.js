@@ -35,6 +35,20 @@ module.exports=function(Marionette){
       else{
         this.changeToStartButton();
       }
+
+      csv.fromPath(SimulationManager.default_simulation_path, {
+        headers: true, //Set to true if you expect the first line of your CSV to contain headers, alternatly you can specify an array of headers to use.
+        ignoreEmpty: true, //If you wish to ignore empty rows.
+        discardUnmappedColumns: true, //If you want to discard columns that do not map to a header.
+        delimiter: ',',
+        trim: true //If you want to trim all values parsed set to true.
+      })
+      .on('data-invalid', function(){
+          Logger.warn('Invalid data detected in simulation file');
+       })
+     .on("data", function(data){
+        SimulationManager.addDataEntry(data);
+     });
     },
 
     toggleSimulation: function(){
