@@ -6,6 +6,7 @@ var Template=require('../util/Template');
 var Logger=require('../util/Logger');
 var SimulationManager=require('../SimulationManager');
 
+
 module.exports=function(Marionette){
 
   return Marionette.ItemView.extend({
