@@ -6,7 +6,6 @@ var Template=require('../util/Template');
 var Logger=require('../util/Logger');
 var SimulationManager=require('../SimulationManager');
 
-
 module.exports=function(Marionette){
 
   return Marionette.ItemView.extend({
@@ -26,9 +25,6 @@ module.exports=function(Marionette){
       'change #change-speed-slider': 'changeTransmissionSpeed'
     },
 
-    initialize: function(){
-
-    },
     onRender:function(){
       this.ui.file_path.text(SimulationManager.default_simulation_path);
       this.ui.transmission_speed.text(SimulationManager.transmission_frequency);
@@ -39,10 +35,6 @@ module.exports=function(Marionette){
       else{
         this.changeToStartButton();
       }
-    },
-
-    onBeforeDestroy:function(){
-      
     },
 
     toggleSimulation: function(){
@@ -67,7 +59,7 @@ module.exports=function(Marionette){
           Logger.error('There was an error reading the simulation file. Error: '+err);
         }
         else{
-          this.ui.file_path.text('Loading simulation file...');
+          this.ui.file_path.text(path);
 
           SimulationManager.clearData();
 
@@ -78,15 +70,11 @@ module.exports=function(Marionette){
               delimiter: ',',
               trim: true //If you want to trim all values parsed set to true.
             })
+            .on('data-invalid', function(){
+                Logger.warn('Invalid data detected in simulation file');
+             })
            .on("data", function(data){
               SimulationManager.addDataEntry(data);
-           })
-           .on("end", function(){
-              Logger.log('Finished loading simulation file');
-              this.ui.file_path.text(path);
-           }.bind(this))
-           .on('data-invalid', function(){
-              Logger.warn('Invalid data detected in simulation file');
            });
         }
       }.bind(this));

@@ -64,7 +64,7 @@ module.exports = function (gui) {
                 position: 'center',
                 width: 600,
                 height: 300,
-                toolbar: true
+                toolbar: false
             });
             Logger.debug('Opening Simulation window');
         }
