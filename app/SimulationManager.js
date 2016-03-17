@@ -19,15 +19,28 @@ var SimulationManager={
 
 	//emits the data to the telemetry data
 	emitData: function(){
-		if(this.current_index+1>this.simulated_data.length){
-			this.current_index=0;
-		}
 		if(this.simulated_data.length>0){
 			TelemetryData.current_state=this.simulated_data[this.current_index];
 			TelemetryData.state_history.push(TelemetryData.current_state);
 	        TelemetryData.emit('data_received',TelemetryData.current_state);
-	        Logger.data(JSON.stringify(TelemetryData.current_state),'DATA_RELAY_DATA'); 
-			this.current_index++;
+	        Logger.data(JSON.stringify(TelemetryData.current_state),'DATA_RELAY_DATA');
+
+	        if(this.transmission_frequency<0){ //if transmission frequency is negative
+	        	if(this.current_index-1<0){
+	        		this.current_index=this.simulated_data.length-1;
+	        	}
+	        	else{
+	        		this.current_index--;
+	        	}
+	        }
+	        else{
+	        	if(this.current_index+1>this.simulated_data.length){
+	        		this.current_index=0;
+	        	}
+	        	else{
+	        		this.current_index++;
+	        	}
+	        }
 		}
 	},
 
@@ -48,7 +61,7 @@ var SimulationManager={
 		if(!this.simulationActive){ //begin the simulation
 			this.intervalID=setInterval(function(){
 				this.emitData();
-			}.bind(this),1000/this.transmission_frequency);
+			}.bind(this),1000/Math.abs(this.transmission_frequency));
 			this.simulationActive=true;
 			StatusManager.addStatus('Simulation Mode',1,0);
 		}
