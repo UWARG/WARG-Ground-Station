@@ -36,6 +36,11 @@ var SimulationManager={
 			TelemetryData.headers=Object.keys(data);
 			Logger.debug('Headers from simulation file: ' + TelemetryData.headers);
 		}
+		//get rid of any stupid brackets because old versions of the flight data files may have them
+		var keys=Object.keys(data);
+		for(var i=0;i<keys.length;i++){
+			data[keys[i]]=data[keys[i]].replace('(','').replace(')','');
+		}
 		this.simulated_data.push(data);
 	},
 
