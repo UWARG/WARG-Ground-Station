@@ -3,9 +3,14 @@ var picpilot_config=require('../../config/picpilot-config');
 var Network=require('../Network');
 var Logger=require('../util/Logger');
 var Validator=require('../util/Validator');
+var SimulationManager=require("../SimulationManager");
 
 var Commands={
   checkConnection: function(){ //to make sure the data relay connection exists first (otherwise we'll prob get weird errors)
+    if(SimulationManager.simulationActive){ //just return false if the simulation is active
+      return false;
+    }
+
     if(Network.connections['data_relay']){
       return true;
     }
@@ -21,10 +26,16 @@ var Commands={
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+':'+value+'\r\n');
     }
+    if(SimulationManager.simulationActive){
+      Logger.info('[Simulation] Successfully sent command '+command+':'+value+'\r\n')
+    }
   },
   sendRawCommand: function(command){
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+'\r\n');
+    }
+    if(SimulationManager.simulationActive){
+      Logger.info('[Simulation] Successfully sent command: '+command)
     }
   },
   sendRoll: function(roll){
