@@ -15,12 +15,14 @@ module.exports=function(Marionette){
     ui:{
       file_path: '#selected-file-path',
       transmission_speed: '#selected_speed',
-      start_button: '#toggle-simulation-button'
+      start_button: '#toggle-simulation-button',
+      change_speed_slider: '#change-speed-slider'
     },
 
     events: {
       'click #toggle-simulation-button': 'toggleSimulation',
-      'click #select-new-file-button': 'openSimulationFile'
+      'click #select-new-file-button': 'openSimulationFile',
+      'change #change-speed-slider': 'changeTransmissionSpeed'
     },
 
     initialize: function(){
@@ -28,6 +30,8 @@ module.exports=function(Marionette){
     },
     onRender:function(){
       this.ui.file_path.text(SimulationManager.default_simulation_path);
+      this.ui.transmission_speed.text(SimulationManager.transmission_frequency);
+
       if(SimulationManager.simulationActive){
         this.changeToStopButton();
       }
@@ -86,6 +90,12 @@ module.exports=function(Marionette){
         }
       }.bind(this));
     },
+
+    changeTransmissionSpeed: function(){
+      SimulationManager.changeTransmissionFrequency(this.ui.change_speed_slider.val());
+      this.ui.transmission_speed.text(SimulationManager.transmission_frequency);
+    },
+
     changeToStartButton: function(){
       this.ui.start_button.text('Start Simulation');
       this.ui.start_button.removeClass('button-error');

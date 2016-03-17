@@ -53,8 +53,10 @@ var SimulationManager={
 		var new_f=parseInt(new_frequency);
 		if(parseInt(new_frequency)){
 			this.transmission_frequency=new_f;
-			this.toggleSimulation();
-			this.toggleSimulation();
+			if(this.simulationActive){
+				this.toggleSimulation();
+				this.toggleSimulation();
+			}
 		}
 	},
 };
