@@ -8,6 +8,7 @@ Thumbs.db
 
 *.log
 *.csv
+!assets/simulation/*.csv
 
 #due to some git file
 warggroundstation
