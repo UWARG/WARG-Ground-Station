@@ -1,7 +1,8 @@
 var Template=require('../util/Template');
 var Commands=require('../models/Commands');
 
-module.exports=function(Marionette){
+//Note this view requires the global window object for the alert boxes (at least for now)
+module.exports=function(Marionette, window){
 
   return Marionette.ItemView.extend({
     template:Template('EmergencyButtonsView'), 
@@ -34,7 +35,9 @@ module.exports=function(Marionette){
     },
 
     killPlane: function(){
-      Commands.killPlane();
+      if(window.confirm('Are you sure you want to kill the plane? This WILL crash the plane.')){
+        Commands.killPlane();
+      }
     },
 
     unkillPlane: function(){

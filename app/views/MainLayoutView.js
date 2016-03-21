@@ -1,11 +1,11 @@
 var Template=require('../util/Template');
 
-module.exports=function(Marionette,$,L){
+module.exports=function(Marionette,$,L,window){
   var ConsoleView=require('./ConsoleView')(Marionette);
   var StatusView=require('./StatusView')(Marionette,$);
   var CockpitLayoutView=require('./CockpitLayoutView')(Marionette);
   var MapView=require('./MapView')(Marionette,L);
-  var EmergencyButtonsView=require('./EmergencyButtonsView')(Marionette);
+  var EmergencyButtonsView=require('./EmergencyButtonsView')(Marionette,window);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
