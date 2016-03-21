@@ -1,6 +1,13 @@
 .emergencyButtonsView{
-	height: 60px;
+	height: 40px;
 	width: 100%;
 	box-sizing:border-box;
-	background: red;
+	display: flex;
+	align-content: center;
+	justify-content: flex-start;
+}
+.emergencyButtonsView button{
+	height: 35px;
+	margin-top: 2px;
+	margin-left: 5px;
 }
