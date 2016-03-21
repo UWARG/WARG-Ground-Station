@@ -5,6 +5,7 @@ module.exports=function(Marionette,$,L){
   var StatusView=require('./StatusView')(Marionette,$);
   var CockpitLayoutView=require('./CockpitLayoutView')(Marionette);
   var MapView=require('./MapView')(Marionette,L);
+  var EmergencyButtonsView=require('./EmergencyButtonsView')(Marionette);
 
 	return Marionette.LayoutView.extend({
 		template:Template('MainLayoutView'),
@@ -14,7 +15,8 @@ module.exports=function(Marionette,$,L){
       console:"#console-region",
       status:"#status-region",
       map: "#right-region",
-      telemetry:"#top-left-region"
+      telemetry:"#top-left-region",
+      buttons: "#emergency-button-region"
     },
 
 		initialize: function(){
@@ -25,6 +27,7 @@ module.exports=function(Marionette,$,L){
       this.getRegion('status').show(new StatusView());
       this.getRegion('telemetry').show(new CockpitLayoutView());
       this.getRegion('map').show(new MapView());
+      this.getRegion('buttons').show(new EmergencyButtonsView());
     }
 	});
 }

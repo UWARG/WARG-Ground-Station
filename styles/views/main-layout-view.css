@@ -1,35 +1,33 @@
 .mainLayoutView{
-  background-color: #FAFAFA;
   height: 100%;
   width: 100%;
 }
 
 .mainLayoutView #left-region{
-  height: 100%;
-  background-color: #FAFAFA;
+  height: calc(100% - 40px);
 }
 .mainLayoutView #right-region{
   height: 100%;
-  background-color: #FAFAFA;
 }
 .mainLayoutView #top-left-region{
   width: 100%;
-  background-color: rgba(0,0,0,0.8);
+  height: calc(100% - 60px);
+}
+.mainLayoutView #emergency-button-region{
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(71,71,71,1) 39%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(17,17,17,1) 99%,rgba(44,44,44,1) 100%,rgba(0,0,0,1) 100%,rgba(19,19,19,1) 100%,rgba(44,44,44,1) 101%);
 }
 .mainLayoutView #bottom-left-region{
   width: 100%;
-  
 }
 #status-region{
   height: 100px;
   width: 100%;
-   background-color: rgba(0,0,0,0.85);
-  //background: linear-gradient(to bottom, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(71,71,71,1) 39%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(17,17,17,1) 99%,rgba(44,44,44,1) 100%,rgba(0,0,0,1) 100%,rgba(19,19,19,1) 100%,rgba(44,44,44,1) 101%);
+  background: linear-gradient(to bottom, rgba(76,76,76,1) 0%,rgba(89,89,89,1) 12%,rgba(71,71,71,1) 39%,rgba(43,43,43,1) 76%,rgba(28,28,28,1) 91%,rgba(17,17,17,1) 99%,rgba(44,44,44,1) 100%,rgba(0,0,0,1) 100%,rgba(19,19,19,1) 100%,rgba(44,44,44,1) 101%);
 }
 
 #console-region{
   height: calc(100% - 100px);
   width: 100%;
   position: relative;
-  background-color: rgba(0,0,0,0.8);
 }
