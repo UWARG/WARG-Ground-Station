@@ -27,7 +27,9 @@ module.exports=function(Marionette, window){
     },
 
     armPlane: function(){
-      Commands.armPlane();
+      if(window.confirm('This command arms the plane. Is everyone away from the propeller?')){
+        Commands.armPlane();
+      }
     },
 
     disarmPlane: function(){
@@ -35,7 +37,7 @@ module.exports=function(Marionette, window){
     },
 
     killPlane: function(){
-      if(window.confirm('Are you sure you want to kill the plane? This WILL crash the plane.')){
+      if(window.confirm('Are you sure you want to kill the plane? This WILL crash the plane. (1/2)') && window.confirm('Are you ABSOLUTELY SURE you want to do this? (2/2)')){
         Commands.killPlane();
       }
     },
