@@ -61,7 +61,7 @@ module.exports=function(Marionette){
     },
     setCanvasDimensions: function(){
       var canvas_dimensions=Math.min(this.ui.attitude_dials.parent().width()-12,this.ui.attitude_dials.parent().height()-105);
-      if(canvas_dimensions){
+      if(canvas_dimensions && canvas_dimensions>100){
         this.ui.attitude_dials.css({
         width:canvas_dimensions,
         height:canvas_dimensions

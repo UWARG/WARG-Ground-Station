@@ -37,6 +37,7 @@ module.exports=function(Marionette){
       this.max_altitude=200;
 
       this.telemetry_callback=null;
+      this.first_resize=true;
     },
     onRender:function(){
       this.ui.altitude_dials.parent().resize(this.setCanvasDimensions.bind(this));
@@ -56,11 +57,12 @@ module.exports=function(Marionette){
     },
     setCanvasDimensions: function(){
       var canvas_dimensions=Math.min(this.ui.altitude_dials.parent().width()-12,this.ui.altitude_dials.parent().height()-105);
-      if(canvas_dimensions){
+      if((canvas_dimensions && canvas_dimensions>100) || this.first_resize){
         this.ui.altitude_dials.css({
         width:canvas_dimensions,
         height:canvas_dimensions
        });
+        this.first_resize=false;
       }
     },
     setAltitude: function(altitude){
