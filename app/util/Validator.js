@@ -91,6 +91,14 @@ var Validator={
         return true;
       }
       return false;  
+    },
+    isValidInput: function(input)
+    {
+    if(Math.abs(input)>1024)
+    {
+        return false;
+    }
+    return true;
     }
 };
 

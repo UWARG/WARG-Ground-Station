@@ -103,7 +103,22 @@ module.exports = function (gui) {
         modifiers: 'ctrl-shift',
         key: 'v'
     }));
-
+    window_submenu.append(new gui.MenuItem({
+        label: 'Controller Inputs',
+        type: 'checkbox',
+        click: function () {
+            gui.Window.open('windows/radioInput.html', {
+                focus: true,
+                position: 'center',
+                width: 744,
+                height: 449,
+                toolbar: false
+            });
+            Logger.debug('Opening Radio Input Window');
+        },
+        key: "u",
+        modifiers: "ctrl-shift"
+    }));
     window_submenu.append(new gui.MenuItem({
         label: 'Autonomus Level Adjust',
         type: 'checkbox',
