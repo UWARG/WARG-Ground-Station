@@ -21,8 +21,13 @@
   flex-shrink: 0;
 }
 .statusView .statuses .status.status-high{
-  color: rgb(255, 101, 101);
   font-size: 20px;
+}
+.statusView .statuses .green{
+  color: rgb(0, 191, 19);
+}
+.statusView .statuses .red{
+  color: rgb(255, 101, 101);
 }
 .statusView .statuses .status.status-medium{
   color: orange;

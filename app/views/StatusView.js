@@ -62,8 +62,11 @@ module.exports=function(Marionette,$){
       this.setGpsLevel(data.gpsStatus);
     },
     onNewStatusCallback: function(message, priority, timeout){
-      if(priority===1){
-        var element=$('<p class="status status-high">'+message+'</p>');
+      if(priority===0){
+        var element=$('<p class="status status-high red">'+message+'</p>');
+      }
+      else if(priority===1){
+        var element=$('<p class="status status-high green">'+message+'</p>');
       }
       else if (priority===2){
         var element=$('<p class="status status-medium">'+message+'</p>');
