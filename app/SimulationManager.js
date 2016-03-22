@@ -63,12 +63,12 @@ var SimulationManager={
 				this.emitData();
 			}.bind(this),1000/Math.abs(this.transmission_frequency));
 			this.simulationActive=true;
-			StatusManager.addStatus('Simulation Mode',1,0);
+			StatusManager.setStatusCode('SIMULATION_ACTIVE',true);
 		}
 		else{//end the simulation
 			clearInterval(this.intervalID);
 			this.simulationActive=false;
-			StatusManager.removeStatus('Simulation Mode',1,0);
+			StatusManager.setStatusCode('SIMULATION_ACTIVE',false);
 		}
 	},
 

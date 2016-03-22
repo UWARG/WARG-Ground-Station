@@ -29,7 +29,7 @@ module.exports=function(){
 	  });
 
 	data_relay.on('write',function(data){
-    StatusManager.addStatus('Sent command to data_relay',3,2000);
+    	StatusManager.addStatus('Sent command to data_relay',3,2000);
 		TelemetryData.sent.push({
 			time: new Date(),
 			data: data
