@@ -10,14 +10,14 @@ module.exports={
   },
   'DISCONNECTED_DATA_RELAY':{
     status: false,
-    message: 'Disconnected from data_relay',
+    message: 'Disconnected from Data Relay',
     turn_on: [],
     turn_off: ['CONNECTED_DATA_RELAY','TIMEOUT_DATA_RELAY'],
     priority: 0
   },
   'TIMEOUT_DATA_RELAY':{
     status: false,
-    message:'No data received or sent on data_relay (timeout)',
+    message:'No data received or sent on Data Relay (timeout)',
     turn_on: [],
     turn_off: [],
     priority: 0
@@ -31,14 +31,14 @@ module.exports={
   },
   'DISCONNECTED_MULTI_ECHO':{
     status: false,
-    message: 'Disconnected from multi_echo',
+    message: 'Disconnected from Multiecho',
     turn_on: [],
     turn_off: ['CONNECTED_DATA_RELAY','TIMEOUT_DATA_RELAY'],
     priority: 0
   },
   'TIMEOUT_MULTI_ECHO':{
     status: false,
-    message:'No data received or sent on multi_echo (timeout)',
+    message:'No data received or sent on Multiecho (timeout)',
     turn_on: [],
     turn_off: [],
     priority: 0
