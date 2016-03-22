@@ -1,9 +1,9 @@
 //a wrapper around leaflet that configures it as well
 var map_config=require('../config/map-config');
 var path=require('path');
-var MapDraw=require('./models/MapDraw');
-var MapMeasure=require('./models/MapMeasure');
-var MapPath=require('./models/MapPath');
+var MapDraw=require('./map/MapDraw');
+var MapMeasure=require('./map/MapMeasure');
+var MapPath=require('./map/MapPath');
 
 var Map=function(L){
   var leaflet=L;//reference to the window leaflet object
@@ -15,6 +15,7 @@ var Map=function(L){
   var images_path=path.join(__dirname,'../assets/images');
   leaflet.Icon.Default.imagePath = path.join(__dirname,'../assets/leaflet');
 
+  //draw the map layers
   var base_layers={};
   var overlay_layers={};
  
@@ -41,7 +42,11 @@ var Map=function(L){
       weight: 5,
       clickable: true,
   });
-
+  var coords=map_config.get('default_lat_lang');
+  coords.push(100);
+  var waypoint=new leaflet.waypoint(coords);
+  var icon=new L.divIcon({className: 'waypointIcon',html:'<h1>12d</h1>'});
+  waypoint.icon=icon;
   var centerToPlaneButton=L.easyButton( 'icon ion-pinpoint', function(){
     if (overlay_layers['Plane']) {
       map.panTo(overlay_layers['Plane'].getLatLng());
@@ -52,7 +57,7 @@ var Map=function(L){
     map = leaflet.map(id,{
       center: map_config.get('default_lat_lang'),
       zoom: 17,
-      layers: [base_layers['Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
+      layers: [base_layers['Google Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
     });
 
     //allow the user to turn on and off specific layers
@@ -62,6 +67,7 @@ var Map=function(L){
 
     mapPath.addTo(map);
     MapMeasure(leaflet).addTo(map);
+    waypoint.addTo(map);
     new MapDraw(leaflet).addTo(map); //adds draw controls to map
   };
 
