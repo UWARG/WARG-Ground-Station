@@ -23,6 +23,7 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
+    "bit-mask": "0.0.2-alpha",
     "fast-csv": "^1.0.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
