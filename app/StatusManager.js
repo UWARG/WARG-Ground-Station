@@ -14,34 +14,34 @@ var StatusManager=function(){
     if(STATUS_MAP[code]!==undefined && STATUS_MAP[code].status!==status){ //if the status code exists and its a different status then before
       if(STATUS_MAP[code].status===true){ //if the status was initially true, turn it off
         STATUS_MAP[code].status=false;
-        this.removeStatus(STATUS_MAP[code].message,STATUS_MAP[code].priority,0);
+        this.removeStatus(STATUS_MAP[code].message,STATUS_MAP[code].priority,STATUS_MAP[code].timeout);
 
         //turn on or turn off respectective status codes
         for(var i=0;i<STATUS_MAP[code].turn_on_onfalse.length;i++){
           var selected_code=STATUS_MAP[STATUS_MAP[code].turn_on_onfalse[i]];
           selected_code.status=true;
-          this.addStatus(selected_code.message,selected_code.priority,0);
+          this.addStatus(selected_code.message,selected_code.priority,selected_code.timeout);
         }
         for(var i=0;i<STATUS_MAP[code].turn_off_onfalse.length;i++){
           var selected_code=STATUS_MAP[STATUS_MAP[code].turn_off_onfalse[i]];
           selected_code.status=false;
-          this.removeStatus(selected_code.message,selected_code.priority,0);
+          this.removeStatus(selected_code.message,selected_code.priority,selected_code.timeout);
         }
       }
       else{ //if the status code was initially false, make it true
         STATUS_MAP[code].status=true;
-        this.addStatus(STATUS_MAP[code].message,STATUS_MAP[code].priority,0);
+        this.addStatus(STATUS_MAP[code].message,STATUS_MAP[code].priority,STATUS_MAP[code].timeout);
 
         //turn off and on other respective status codes
         for(var i=0;i<STATUS_MAP[code].turn_on_ontrue.length;i++){
           var selected_code=STATUS_MAP[STATUS_MAP[code].turn_on_ontrue[i]];
           selected_code.status=true;
-          this.addStatus(selected_code.message,selected_code.priority,0);
+          this.addStatus(selected_code.message,selected_code.priority,selected_code.timeout);
         }
         for(var i=0;i<STATUS_MAP[code].turn_off_ontrue.length;i++){
           var selected_code=STATUS_MAP[STATUS_MAP[code].turn_off_ontrue[i]];
           selected_code.status=false;
-          this.removeStatus(selected_code.message,selected_code.priority,0);
+          this.removeStatus(selected_code.message,selected_code.priority,selected_code.timeout);
         }
       }
     }
