@@ -12,13 +12,14 @@ var Bitmask=function(decimal_value){
     	return !!(this.decimal_value & (1<<position));
     }
     this.setBit=function(position, value){
+    	value=!!value;
     	if(this.getBit(position)){ //it's set
             if(!value){//clear
-                this.value = (1 << position) ^ this.value;
+                this.decimal_value = (1 << position) ^ this.decimal_value;
             }// else it's already set!
         }else{ //not set
             if(value){
-                this.value = (1 << position) | this.value;
+                this.decimal_value = (1 << position) | this.decimal_value;
             }// it's already not set!
         }
     }
