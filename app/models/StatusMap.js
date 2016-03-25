@@ -131,7 +131,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_BROWN_OUT_RESET':{
   	status: false,
@@ -141,7 +141,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_IDLE_MODE_RESET':{
   	status: false,
@@ -151,7 +151,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_SLEEP_MODE_RESET':{
   	status: false,
@@ -161,7 +161,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_SOFTWARE_WATCH_DOG_RESET':{
   	status: false,
@@ -171,7 +171,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_SOFTWARE_RESET':{
   	status: false,
@@ -181,7 +181,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_EXTERNAL_RESET':{
   	status: false,
@@ -191,7 +191,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_VOLTAGE_REGULATOR_RESET':{
   	status: false,
@@ -201,7 +201,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_ILLEGAL_OPCODE_RESET':{
   	status: false,
@@ -211,7 +211,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_TRAP_RESET':{
   	status: false,
@@ -221,6 +221,6 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 10000
   }
 };
