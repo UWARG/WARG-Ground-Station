@@ -83,6 +83,16 @@ module.exports={
   	priority: 0,
     timeout: 0
   },
+  'GPS_LOST':{
+    status: false,
+    message: 'GPS Fix Lost',
+    turn_on_ontrue: [],
+    turn_off_ontrue:[],
+    turn_on_onfalse:[],
+    turn_off_onfalse:[],
+    priority: 0,
+    timeout: 0
+  },
   'AIRCRAFT_KILL_MODE':{
   	status: false,
   	message: 'Aircraft is in KILL MODE',

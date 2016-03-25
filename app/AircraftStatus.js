@@ -36,7 +36,26 @@ var AircraftStatus=function(){
 	
 	TelemetryData.on('data_received',function(data){//what happens when the data stream is corrupted?
     this.checkErrorCodes(data.errorCodes);
+    this.checkGPS(data.gpsStatus);
 	}.bind(this));
+
+  this.checkGPS=function(data){
+    var number=Number(data);
+    if(!Validator.isInteger(number)){
+      Logger.warn('Invalid GPS status received. Status: '+data);
+    }
+    var connection_status=((number & 0xf0) >> 4)>0; // if theres at least 1 fix
+    if (connection_status !== this.gps.status){ //if its a different status
+      this.gps.status=connection_status;
+      StatusManager.setStatusCode('GPS_LOST',!this.gps.status);
+      if(this.gps.status===false){ //if it was set to false, start the timer
+        this.gps.timeSinceLost=Date.now();
+      }
+      else{
+        this.gps.timeSinceLost=null;
+      }
+    } 
+  };
 
   this.checkErrorCodes=function(data){
     var dataNumber=Number(data);
