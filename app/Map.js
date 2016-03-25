@@ -52,7 +52,7 @@ var Map=function(L){
     map = leaflet.map(id,{
       center: map_config.get('default_lat_lang'),
       zoom: 17,
-      layers: [base_layers['Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
+      layers: [base_layers['Google Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
     });
 
     //allow the user to turn on and off specific layers
