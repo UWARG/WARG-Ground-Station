@@ -1,10 +1,15 @@
 //Small utility library to manipulate bit masks
 //Only works with integer, positive, inputs!
+var Validator=require('./Validator');
+
 var Bitmask=function(decimal_value){
-	if(isNaN(decimal_value) || decimal_value==null || Number(decimal_value)<0){
+	var integer=parseInt(decimal_value);
+	if(!Validator.isInteger(decimal_value) || integer<0){
 		throw Error('Error: Bitmask takes a positive number as a parameter');
 	}
-	this.decimal_value=parseInt(decimal_value);
+	
+	this.decimal_value=integer;
+	
     this.toBit=function(){
       return this.decimal_value.toString(2);
     }
