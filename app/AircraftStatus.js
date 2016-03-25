@@ -1,13 +1,13 @@
 var TelemetryData=require('./models/TelemetryData');
 var StatusManager=require('./StatusManager');
-
 var Bitmask=require('./util/Bitmask');
 var Validator=require('./util/Validator');
+var Logger=require('./util/Logger');
 
 var AircraftStatus=function(){
 	this.killModeActive=false;
 	this.manualMode=false;
-  this.xbee={//has not been implemented yet
+  this.xbee={//has not been implemented yet from the picpilots side
     status:false,
     timeSinceLost:null
   };
@@ -37,7 +37,19 @@ var AircraftStatus=function(){
 	TelemetryData.on('data_received',function(data){//what happens when the data stream is corrupted?
     this.checkErrorCodes(data.errorCodes);
     this.checkGPS(data.gpsStatus);
+    this.checkManualMode(data.editing_gain);
 	}.bind(this));
+
+  this.checkManualMode=function(data){
+    var number=Number(data);
+    if(!Validator.isInteger(number)){
+      Logger.warn('Invalid value for editing_gain received. Value: '+data);
+    }
+    else{
+      this.manualMode= (number===0);
+      StatusManager.setStatusCode('MANUAL_MODE',this.manualMode);
+    }
+  };
 
   this.checkGPS=function(data){
     var number=Number(data);
