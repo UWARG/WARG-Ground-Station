@@ -5,8 +5,8 @@ var Validator=require('./util/Validator');
 var Logger=require('./util/Logger');
 
 var AircraftStatus=function(){
-	this.killModeActive=false;
-	this.manualMode=false;
+  this.killModeActive=false;
+  tis.manualMode=false;
   this.xbee={//has not been implemented yet from the picpilots side
     status:false,
     timeSinceLost:null
@@ -21,24 +21,24 @@ var AircraftStatus=function(){
   };
 
   this.pastErrorCode=null;
-	this.startup_errors={
-		POWER_ON_RESET: false,
-		BROWN_OUT_RESET: false,
-		IDLE_MODE_RESET: false,
-		SLEEP_MODE_RESET: false,
-		SOFTWARE_WATCH_DOG_RESET: false,
-		SOFTWARE_RESET: false,
-		EXTERNAL_RESET: false,
-		VOLTAGE_REGULATOR_RESET: false,
-		ILLEGAL_OPCODE_RESET: false,
-		TRAP_RESET: false
-	};
-	
-	TelemetryData.on('data_received',function(data){
+  this.startup_errors={
+    POWER_ON_RESET: false,
+    BROWN_OUT_RESET: false,
+    IDLE_MODE_RESET: false,
+    SLEEP_MODE_RESET: false,
+    SOFTWARE_WATCH_DOG_RESET: false,
+    SOFTWARE_RESET: false,
+    EXTERNAL_RESET: false,
+    VOLTAGE_REGULATOR_RESET: false,
+    ILLEGAL_OPCODE_RESET: false,
+    TRAP_RESET: false
+  };
+  
+  TelemetryData.on('data_received',function(data){
     this.checkErrorCodes(data.errorCodes);
     this.checkGPS(data.gpsStatus);
     this.checkManualMode(data.editing_gain);
-	}.bind(this));
+  }.bind(this));
 
   this.setKillModeStatus=function(status){ //can be true or false
     this.killModeActive=status;
