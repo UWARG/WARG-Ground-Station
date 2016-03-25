@@ -9,11 +9,11 @@ var Bitmask=function(decimal_value){
 	}
 	
 	this.decimal_value=integer;
-	
+
     this.toBit=function(){
       return this.decimal_value.toString(2);
     }
-    this.getBit=function(position){
+    this.getBit=function(position){ //will return a true if the bit is a 1, and a false if its a 0
     	return !!(this.decimal_value & (1<<position));
     }
     this.setBit=function(position, value){
