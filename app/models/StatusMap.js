@@ -20,7 +20,8 @@ module.exports={
     turn_off_ontrue: ['DISCONNECTED_DATA_RELAY','TIMEOUT_MULTI_ECHO'],
     turn_on_onfalse:[],
     turn_off_onfalse:[],
-    priority: 1
+    priority: 1,
+    timeout: 0
   },
   'DISCONNECTED_DATA_RELAY':{
     status: false,
@@ -29,7 +30,8 @@ module.exports={
     turn_off_ontrue: ['CONNECTED_DATA_RELAY','TIMEOUT_DATA_RELAY'],
     turn_on_onfalse:[],
     turn_off_onfalse:[],
-    priority: 0
+    priority: 0,
+    timeout: 0
   },
   'TIMEOUT_DATA_RELAY':{
     status: false,
@@ -38,7 +40,8 @@ module.exports={
     turn_off_ontrue: [],
     turn_on_onfalse:[],
     turn_off_onfalse:[],
-    priority: 0
+    priority: 0,
+    timeout: 0
   },
   'CONNECTED_MULTI_ECHO':{
     status: false,
@@ -47,7 +50,8 @@ module.exports={
     turn_off_ontrue: ['DISCONNECTED_MULTI_ECHO','TIMEOUT_MULTI_ECHO'],
     turn_on_onfalse:[],
     turn_off_onfalse:[],
-    priority: 1
+    priority: 1,
+    timeout: 0
   },
   'DISCONNECTED_MULTI_ECHO':{
     status: false,
@@ -56,7 +60,8 @@ module.exports={
     turn_off_ontrue: ['CONNECTED_DATA_RELAY','TIMEOUT_DATA_RELAY'],
     turn_on_onfalse:[],
     turn_off_onfalse:[],
-    priority: 0
+    priority: 0,
+    timeout: 0
   },
   'TIMEOUT_MULTI_ECHO':{
     status: false,
@@ -65,7 +70,8 @@ module.exports={
     turn_off_ontrue: [],
     turn_on_onfalse:[],
     turn_off_onfalse:[],
-    priority: 0
+    priority: 0,
+    timeout: 0
   },
   'UHF_LOST':{
   	status: false,
@@ -74,7 +80,18 @@ module.exports={
   	turn_off_ontrue:[],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority: 0
+  	priority: 0,
+    timeout: 0
+  },
+  'GPS_LOST':{
+    status: false,
+    message: 'GPS Fix Lost',
+    turn_on_ontrue: [],
+    turn_off_ontrue:[],
+    turn_on_onfalse:[],
+    turn_off_onfalse:[],
+    priority: 0,
+    timeout: 0
   },
   'AIRCRAFT_KILL_MODE':{
   	status: false,
@@ -83,7 +100,8 @@ module.exports={
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority: 0
+  	priority: 0,
+    timeout: 0
   },
   'SIMULATION_ACTIVE':{
   	status: false,
@@ -92,7 +110,8 @@ module.exports={
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority: 1
+  	priority: 1,
+    timeout: 0
   },
   'MANUAL_MODE':{
   	status: false,
@@ -101,96 +120,107 @@ module.exports={
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:1
+  	priority:1,
+    timeout: 0
   },
   'AIRCRAFT_ERROR_POWER_ON_RESET':{
   	status: false,
-  	message: 'Error: Power on Reset',
+  	message: 'Startup Error: Power on Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_BROWN_OUT_RESET':{
   	status: false,
-  	message: 'Error: Brown Out Reset',
+  	message: 'Startup Error: Brown Out Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_IDLE_MODE_RESET':{
   	status: false,
-  	message: 'Error: Idle Mode Reset',
+  	message: 'Startup Error: Idle Mode Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
-  'AIRCRAFT_ERROR_SLEEP_MODE':{
+  'AIRCRAFT_ERROR_SLEEP_MODE_RESET':{
   	status: false,
-  	message: 'Error: Sleep Mode Reset',
+  	message: 'Startup Error: Sleep Mode Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_SOFTWARE_WATCH_DOG_RESET':{
   	status: false,
-  	message: 'Error: Software Watch Dog Timer Reset',
+  	message: 'Startup Error: Software Watch Dog Timer Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_SOFTWARE_RESET':{
   	status: false,
-  	message: 'Error: Software Reset',
+  	message: 'Startup Error: Software Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_EXTERNAL_RESET':{
   	status: false,
-  	message: 'Error: External Reset',
+  	message: 'Startup Error: External Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_VOLTAGE_REGULATOR_RESET':{
   	status: false,
-  	message: 'Error: Voltage Regulator Reset',
+  	message: 'Startup Error: Voltage Regulator Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_ILLEGAL_OPCODE_RESET':{
   	status: false,
-  	message: 'Error: Illegal Opcode Reset',
+  	message: 'Startup Error: Illegal Opcode Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   },
   'AIRCRAFT_ERROR_TRAP_RESET':{
   	status: false,
-  	message: 'Error: Trap Reset',
+  	message: 'Startup Error: Trap Reset',
   	turn_on_ontrue:[],
   	turn_off_ontrue: [],
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
-  	priority:0
+  	priority:0,
+    timeout: 10000
   }
 };

@@ -7,6 +7,12 @@ var Validator={
       return true;
     }
   },
+  isFloat: function(n) {  //returns true if the number is a float only
+    return n === +n && n !== (n|0);
+  },
+  isInteger: function(n) { //returns true if the number is an integer only
+    return n === +n && n === (n|0);
+  },
   isValidObject: function(object){
     if(_.isObject(object)){
       return true;
