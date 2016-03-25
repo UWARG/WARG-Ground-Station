@@ -30,6 +30,7 @@ module.exports=function(Marionette,$){
     initialize: function(){
       this.starting_time=null;
       this.current_battery_level=-1;
+      this.current_gps_status=null;
 
       this.data_callback=null; //so that we can get rid of the listener safely
       this.new_status_callback=null;
@@ -132,22 +133,26 @@ module.exports=function(Marionette,$){
     },
     setGpsLevel:function(gps_level)
     {
-      if(!Validator.isValidGPS(gps_level))
-      {
+      if(!Validator.isValidGPS(gps_level)){
         Logger.warn('Got an invalid value for the GPS level! GPS Level: '+gps_level);
         this.ui.gps_message.css('color','orange');
         this.ui.gps_message.text('Invalid GPS Level');
       }
-      else if(gps_level===0)
-      {
-        Logger.warn('no GPS connection');
-        this.ui.gps_message.css('color','red');
-        this.ui.gps_message.text('NOT CONNECTED'); 
-      }
-      else
-      {
-        this.ui.gps_message.css('color','green');
-        this.ui.gps_message.text('Connected to '+ (gps_level & 0x0f) + ' satelites'); 
+      else{
+        var level=Number(gps_level);
+        if(level!==this.current_gps_status){ //check if the gps status is different than last time
+          this.current_gps_status=level;
+
+          if(gps_level===0){
+            Logger.warn('no GPS connection');
+            this.ui.gps_message.css('color','red');
+            this.ui.gps_message.text('NOT CONNECTED'); 
+          }
+          else{
+            this.ui.gps_message.css('color','green');
+            this.ui.gps_message.text('Connected to '+ (gps_level & 0x0f) + ' satelites'); 
+          }
+        }
       }
     },
     resetElapsedTime:function(){

@@ -4,6 +4,7 @@ var Network=require('../Network');
 var Logger=require('../util/Logger');
 var Validator=require('../util/Validator');
 var SimulationManager=require("../SimulationManager");
+var AircraftStatus=require('../AircraftStatus');
 
 var Commands={
   checkConnection: function(){ //to make sure the data relay connection exists first (otherwise we'll prob get weird errors)
@@ -155,9 +156,11 @@ var Commands={
   },
   killPlane: function(){
     this.sendProtectedCommand('kill_plane');
+    AircraftStatus.setKillModeStatus(true);
   },
   unkillPlane: function(){
     this.sendProtectedCommand('unkill_plane');
+    AircraftStatus.setKillModeStatus(false);
   },
   dropProbe: function(){
     this.sendCommand('drop_probe',1);
