@@ -6,8 +6,19 @@ var Validator=require('./util/Validator');
 
 var AircraftStatus=function(){
 	this.killModeActive=false;
-	this.uhfStatus=false;
 	this.manualMode=false;
+  this.xbee={//has not been implemented yet
+    status:false,
+    timeSinceLost:null
+  };
+  this.gps={
+    status: false,
+    timeSinceLost: null
+  };
+  this.uhf={
+    status: false,
+    timeSinceLost: null
+  };
 
   this.pastErrorCode=null;
 	this.startup_errors={
@@ -24,9 +35,13 @@ var AircraftStatus=function(){
 	};
 	
 	TelemetryData.on('data_received',function(data){//what happens when the data stream is corrupted?
-    var dataNumber=Number(data.errorCodes);
+    this.checkErrorCodes(data.errorCodes);
+	}.bind(this));
+
+  this.checkErrorCodes=function(data){
+    var dataNumber=Number(data);
     if(!Validator.isInteger(dataNumber)){
-      Logger.warn('Invalid data value for errorCodes received. Value : '+data.errorCodes);
+      Logger.warn('Invalid data value for errorCodes received. Value : '+data);
     }
     else if(this.pastErrorCode!==dataNumber){ //if we got an error code value thats different from last time
       var error_codes=new Bitmask(dataNumber,10);
@@ -42,7 +57,16 @@ var AircraftStatus=function(){
       this.startup_errors.VOLTAGE_REGULATOR_RESET=error_codes.getBit(7);
       this.startup_errors.ILLEGAL_OPCODE_RESET=error_codes.getBit(8);
       this.startup_errors.TRAP_RESET=error_codes.getBit(9);
-      this.uhfStatus=error_codes.getBit(16);
+
+      if(this.uhf.status!==error_codes.getBit(16)){
+        this.uhf.status=error_codes.getBit(16);
+        if(this.uhf.status){ //has been turned to true
+          this.uhf.timeSinceLost=null;
+        }
+        else{ //has been turned to false
+          this.uhf.timeSinceLost=Date.now();
+        }
+      }
 
       StatusManager.setStatusCode('AIRCRAFT_ERROR_POWER_ON_RESET',this.startup_errors.POWER_ON_RESET);
       StatusManager.setStatusCode('AIRCRAFT_ERROR_BROWN_OUT_RESET',this.startup_errors.BROWN_OUT_RESET);
@@ -56,7 +80,7 @@ var AircraftStatus=function(){
       StatusManager.setStatusCode('AIRCRAFT_ERROR_TRAP_RESET',this.startup_errors.TRAP_RESET);
       StatusManager.setStatusCode('UHF_LOST',!this.uhfStatus);
     }
-	}.bind(this));
+  }
 };
 
 module.exports=new AircraftStatus();
