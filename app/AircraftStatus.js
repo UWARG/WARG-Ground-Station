@@ -34,12 +34,17 @@ var AircraftStatus=function(){
 		TRAP_RESET: false
 	};
 	
-	TelemetryData.on('data_received',function(data){//what happens when the data stream is corrupted?
+	TelemetryData.on('data_received',function(data){
     this.checkErrorCodes(data.errorCodes);
     this.checkGPS(data.gpsStatus);
     this.checkManualMode(data.editing_gain);
 	}.bind(this));
 
+  this.setKillModeStatus=function(status){ //can be true or false
+    this.killModeActive=status;
+    StatusManager.setStatusCode('AIRCRAFT_KILL_MODE',status);
+  }
+  
   this.checkManualMode=function(data){
     var number=Number(data);
     if(!Validator.isInteger(number)){
