@@ -6,7 +6,7 @@ var Logger=require('./util/Logger');
 
 var AircraftStatus=function(){
   this.killModeActive=false;
-  tis.manualMode=false;
+  this.manualMode=false;
   this.xbee={//has not been implemented yet from the picpilots side
     status:false,
     timeSinceLost:null
@@ -33,7 +33,7 @@ var AircraftStatus=function(){
     ILLEGAL_OPCODE_RESET: false,
     TRAP_RESET: false
   };
-  
+
   TelemetryData.on('data_received',function(data){
     this.checkErrorCodes(data.errorCodes);
     this.checkGPS(data.gpsStatus);
