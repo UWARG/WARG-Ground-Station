@@ -2,6 +2,7 @@ var path=require('path');
 var TelemetryData=require('./models/TelemetryData');
 var Logger=require('./util/Logger');
 var StatusManager=require('./StatusManager');
+var Network=require('./Network');
 
 //this simulation manager fakes the data relay station by inputting data straight into the telemetryData module
 var SimulationManager={
@@ -64,6 +65,7 @@ var SimulationManager={
 			}.bind(this),1000/Math.abs(this.transmission_frequency));
 			this.simulationActive=true;
 			StatusManager.setStatusCode('SIMULATION_ACTIVE',true);
+			Network.disconnectAll();
 		}
 		else{//end the simulation
 			clearInterval(this.intervalID);
