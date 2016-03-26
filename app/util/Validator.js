@@ -3,9 +3,7 @@ var _=require('underscore');
 
 var Validator={
   isValidNumber:function(number){
-    if(typeof number!=='undefined' && number!==null && !isNaN(number)){
-      return true;
-    }
+    return !isNaN(parseFloat(n)) && isFinite(n);
   },
   isFloat: function(n) {  //returns true if the number is a float only. Note this will return false if you pass a number string (eg. '34')
     return n === +n && n !== (n|0);
