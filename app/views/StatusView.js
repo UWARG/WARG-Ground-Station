@@ -20,7 +20,8 @@ module.exports=function(Marionette,$){
       battery_percent:".battery-percentage",
       battery_message:".battery-message",
       battery_picture:".battery-picture .battery-base .percentage",
-      gps_message:".gps-status .gps-message"
+      gps_message:".gps-status .gps-message",
+      transmission_speed:'.transition-rate'
     },
     events:{
       'click #reset-elapsed-time':'resetElapsedTime',
@@ -31,6 +32,8 @@ module.exports=function(Marionette,$){
       this.starting_time=null;
       this.current_battery_level=-1;
       this.current_gps_status=null;
+      this.messagesReceived=0;//for keeping track of the transmission rate
+      this.transmissionInterval=null;
 
       this.data_callback=null; //so that we can get rid of the listener safely
       this.new_status_callback=null;
@@ -47,11 +50,17 @@ module.exports=function(Marionette,$){
 
       this.remove_status_callback=this.onRemoveStatusCallback.bind(this);
       StatusManager.addListener('remove_status',this.remove_status_callback);
+
+      this.transmissionInterval=setInterval(function(){
+        this.ui.transmission_speed.text(this.messagesReceived+'/s');
+        this.messagesReceived=0;
+      }.bind(this),1000);
     },
     onBeforeDestroy:function(){
       TelemetryData.removeListener('data_received',this.data_callback);
       StatusManager.removeListener('new_status',this.new_status_callback);
       StatusManager.removeListener('remove_status',this.remove_status_callback);
+      clearInterval(this.transmissionInterval);
     },
     onDataCallback:function(data){
       if(!this.starting_time && Validator.isValidTime(data.time)){
@@ -61,6 +70,7 @@ module.exports=function(Marionette,$){
       this.setTime(data.time);
       this.setBatteryLevel(data.batteryLevel);
       this.setGpsLevel(data.gpsStatus);
+      this.messagesReceived++; 
     },
     onNewStatusCallback: function(message, priority, timeout){
       if(priority===0){
