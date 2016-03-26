@@ -128,9 +128,19 @@
 .statusView  .gps-status{
   font-size: 16px;
   color: white;
-  width: 120px;
+  width: 140px;
 }
 .statusView  .gps-status .gps-message{
   font-size: 14px;
   margin-top :4px;
+}
+
+.statusView .transmission-rate-view{
+  width: 120px;
+  margin-left: 5px;
+}
+.statusView .transmission-rate-view .transition-rate{
+  font-weight: bold;
+  font-size: 16px;
+  color: green;
 }
