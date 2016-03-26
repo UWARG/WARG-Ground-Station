@@ -32,6 +32,9 @@ module.exports=function(Marionette,L){
       this.ui.map.ready(function(){
        this.map.createMap('leaflet-map');
       }.bind(this));
+      this.ui.map.resize(function(){
+        this.map.resize();
+      }.bind(this));
     },
     onBeforeDestroy:function(){
       
