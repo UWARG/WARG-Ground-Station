@@ -14,7 +14,8 @@ module.exports=function(Marionette, window){
       'click #kill-plane-button':'killPlane',
       'click #unkill-plane-button':'unkillPlane',
       'click #drop-probe-button':'dropProbe',
-      'click #reset-probe-button':'resetProbe'
+      'click #reset-probe-button':'resetProbe',
+      'click #write-mode-button':'writeMode'
     },
 
 
@@ -24,6 +25,12 @@ module.exports=function(Marionette, window){
 
     onRender:function(){
       
+    },
+
+    writeMode: function(){
+      if(window.confirm('This will convert the groundstation from READ ONLY mode to WRITE mode. Are you sure you want to do this?')){
+        Commands.activateWriteMode();
+      }
     },
 
     armPlane: function(){

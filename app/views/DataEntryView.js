@@ -28,19 +28,23 @@ module.exports = function(Marionette) {
       "click #saveComment": "saveData",
     },
 
-    saveData: function(event) {
-      var d = new Date();
-      var loc = write_location + this.ui.name_field.val() + "_" + d.toDateString() + ' ' + d.toLocaleTimeString() + ".txt";
-      var content = "Comment: " + this.ui.comment_field.val() + "\r\nData Stream: " + JSON.stringify(TelemetryData.current_state,null,2);
+    onRender: function(){
+      this.ui.name_field.val('Data Entry Name');
+    },
 
-      fs.writeFile(loc, content, 'utf8', function(err) {
+    saveData: function(event) {
+      var date = new Date();
+      var loc = write_location + this.ui.name_field.val() + "_" + date.toDateString() +' ' + date.toLocaleTimeString().replace(/:/g,'-') + ".txt";
+      var content = "Comment: " + this.ui.comment_field.val() + "\r\nData Stream: " + JSON.stringify(TelemetryData.current_state,null,2)+'\r\n';
+
+      fs.appendFile(loc, content, 'utf8', function(err) {
         if(err){
           Logger.error('Error writing data entry to file: '+err);
         }
         else{
           Logger.debug("file " + this.ui.name_field.val() + " written to " + loc);
         }
-      }); 
+      }.bind(this)); 
     }
   });
 };

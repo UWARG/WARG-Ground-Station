@@ -44,6 +44,9 @@ var Commands={
       Logger.info('[Simulation] Successfully sent command: '+command)
     }
   },
+  activateWriteMode: function(){
+    this.sendRawCommand('commander');
+  },
   sendRoll: function(roll){
     if(Validator.isValidRoll(roll)){
       this.sendCommand('set_rollAngle',roll);

@@ -16,7 +16,6 @@ module.exports=function(){
 
 	data_relay.on('connect',function(){
     	StatusManager.setStatusCode('CONNECTED_DATA_RELAY',true);
-		data_relay.write("commander\r\n");//note: this should be optional ideally
 	});
 
 	data_relay.on('close',function(had_error){
