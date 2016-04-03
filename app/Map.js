@@ -85,6 +85,10 @@ var Map=function(L){
     overlay_layers['Plane Trail'].setLatLngs([]);
   };
 
+  this.resize=function(){
+    map.invalidateSize(true);
+  };
+
 };
 
 module.exports=Map;

@@ -2,14 +2,20 @@
   height: 100%;
   width: 100%;
 }
+.cockpitLayoutView .pure-g{
+	height: 100%;
+}
 .cockpitLayoutView .attitude-region{
   height: 80%;
+  min-height: 444px;
   font-size: 0;
 }
 .cockpitLayoutView .altitude-region{
   height: 80%;
+  min-height: 444px;
 }
 .cockpitLayoutView .throttle-region{
   height: 20%;
+  min-height: 126px;
   width: 100%;
 }

@@ -1,0 +1,23 @@
+.simulationView{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 12px;
+	box-sizing: border-box;
+}
+
+.simulationView{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 12px;
+	box-sizing: border-box;
+}
+
+.simulationView input[type="range"]{
+	width: 100%;
+}
+
+.simulationView #selected-file-path{
+	color: yellow;
+}

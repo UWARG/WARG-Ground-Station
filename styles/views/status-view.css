@@ -10,19 +10,26 @@
   width: 60%;
   display: flex;
   flex-direction: column-reverse;
-  justify-content: center;
   text-align: center;
   padding: 8px;
   box-sizing: border-box;
   overflow: auto;
 }
 .statusView .statuses .status{
-  margin: 5px 0 10px 0;
+  margin: 2px 0 2px 0;
   flex-shrink: 0;
 }
+.statusView .statuses .status:last-child{
+  padding-top: 5px;
+}
 .statusView .statuses .status.status-high{
-  color: rgb(255, 101, 101);
   font-size: 20px;
+}
+.statusView .statuses .green{
+  color: rgb(0, 191, 19);
+}
+.statusView .statuses .red{
+  color: rgb(255, 101, 101);
 }
 .statusView .statuses .status.status-medium{
   color: orange;
@@ -121,8 +128,19 @@
 .statusView  .gps-status{
   font-size: 16px;
   color: white;
+  width: 140px;
 }
 .statusView  .gps-status .gps-message{
   font-size: 14px;
   margin-top :4px;
+}
+
+.statusView .transmission-rate-view{
+  width: 120px;
+  margin-left: 5px;
+}
+.statusView .transmission-rate-view .transition-rate{
+  font-weight: bold;
+  font-size: 16px;
+  color: green;
 }

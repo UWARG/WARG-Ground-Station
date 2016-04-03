@@ -5,6 +5,7 @@ var Logger=require('./app/util/Logger');
 var Network=require('./app/Network');
 var StatusManager=require('./app/StatusManager');
 var TelemetryData=require('./app/models/TelemetryData');
+var AircraftStatus=require('./app/AircraftStatus'); //initialize aircraft status manager
 
 var DataRelay=require('./app/connections/DataRelay')(); //connect to the data relay station and start parsing data
 var Multiecho=require('./app/connections/Multiecho')(); //initialize multiecho connection and start parsing data
@@ -20,7 +21,7 @@ app.windows=[]; //an array of all the windows open
 // Append Menu to Window
 gui.Window.get().menu = app.menu;
 
-var MainLayoutView=require('./app/views/MainLayoutView')(Marionette,$,L);
+var MainLayoutView=require('./app/views/MainLayoutView')(Marionette,$,L,window);
 
 $(document).ready(function(){
   $('body').append((new MainLayoutView()).render().$el);

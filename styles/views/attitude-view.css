@@ -9,6 +9,7 @@
 
 .attitudeView .attitude-dial{
   height: 50%;
+  min-height: 210px;
 }
 
 .attitudeView .attitude-dial p{

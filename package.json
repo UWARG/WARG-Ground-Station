@@ -23,6 +23,7 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
+    "fast-csv": "^1.0.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
     "node-localstorage": "^1.1.2",

@@ -20,6 +20,8 @@ html{
 }
 html, body{
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   background-color: #323232;
@@ -70,4 +72,12 @@ html, body{
   text-align: center;
   color: white;
   box-sizing: border-box;
+}
+
+h1{
+  text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6, p, li{
+  color: #FAFAFA;
 }

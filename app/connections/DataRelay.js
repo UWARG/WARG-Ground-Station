@@ -15,21 +15,20 @@ module.exports=function(){
   data_relay.socket.setTimeout(network_config.get('datarelay_timeout'));
 
 	data_relay.on('connect',function(){
-    StatusManager.addStatus('Connected to data_relay',1,0);
-		data_relay.write("commander\r\n");
+    	StatusManager.setStatusCode('CONNECTED_DATA_RELAY',true);
 	});
 
 	data_relay.on('close',function(had_error){
 		TelemetryData.headers=[];
-    StatusManager.addStatus('Disconnected from data_relay',1,0);
+    	StatusManager.setStatusCode('DISCONNECTED_DATA_RELAY',true);
 	});
 
-  data_relay.on('timeout',function(){
-    StatusManager.addStatus('No data received or sent on data_relay (timeout)',2,5000);
-  });
+	  data_relay.on('timeout',function(){
+	    StatusManager.setStatusCode('TIMEOUT_DATA_RELAY',true);
+	  });
 
 	data_relay.on('write',function(data){
-    StatusManager.addStatus('Sent command to data_relay',3,2000);
+    	StatusManager.addStatus('Sent command to data_relay',3,2000);
 		TelemetryData.sent.push({
 			time: new Date(),
 			data: data
@@ -51,18 +50,18 @@ module.exports=function(){
 	        });
           Logger.debug('Network '+data_relay.name+' Received headers: ' + data);
 	        Logger.debug('Network '+data_relay.name+' Parsed headers: ' + JSON.stringify(TelemetryData.headers));
-        	Logger.data(TelemetryData.headers,'DATA_RELAY_HEADERS');  
-          StatusManager.removeStatus('Disconnected from data_relay',1,0); //NOTE: this is a hack to remove the disconnected message when doing a page refresh (there is a timing issue).
+	    	Logger.data(TelemetryData.headers,'DATA_RELAY_HEADERS');  
           StatusManager.addStatus('Received headers from data_relay',3,3000);  
 	    }
 	    else{ //if its the non-header columns(actual data)
 	        var split_data = data.split(",");
 	        for (var i = 0; i < split_data.length; i++) {
-	            TelemetryData.current_state[TelemetryData.headers[i]] = split_data[i].trim().toString().replace('(', '').replace(')', '');
+	            TelemetryData.current_state[TelemetryData.headers[i]] = split_data[i].trim().toString().replace('(', '').replace(')', ''); //the replace is required because theres a chance of random brackets being in the values
 	        }
 	        TelemetryData.state_history.push(TelemetryData.current_state);
 	        TelemetryData.emit('data_received',TelemetryData.current_state);
-	        Logger.data(JSON.stringify(TelemetryData.current_state),'DATA_RELAY_DATA');       
+	        Logger.data(JSON.stringify(TelemetryData.current_state),'DATA_RELAY_DATA'); 
+	        StatusManager.setStatusCode('TIMEOUT_DATA_RELAY',false);      
 	    }
 	});
 };

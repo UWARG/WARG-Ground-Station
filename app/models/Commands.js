@@ -3,9 +3,15 @@ var picpilot_config=require('../../config/picpilot-config');
 var Network=require('../Network');
 var Logger=require('../util/Logger');
 var Validator=require('../util/Validator');
+var SimulationManager=require("../SimulationManager");
+var AircraftStatus=require('../AircraftStatus');
 
 var Commands={
   checkConnection: function(){ //to make sure the data relay connection exists first (otherwise we'll prob get weird errors)
+    if(SimulationManager.simulationActive){ //just return false if the simulation is active
+      return false;
+    }
+
     if(Network.connections['data_relay']){
       return true;
     }
@@ -15,17 +21,31 @@ var Commands={
     }
   },
   sendProtectedCommand:function(command){
-    Network.connections['data_relay'].write(command+':'+picpilot_config.get('command_password')+'\r\n');
+    if(this.checkConnection()){
+      Network.connections['data_relay'].write(command+':'+picpilot_config.get('command_password')+'\r\n');
+    }
+    if(SimulationManager.simulationActive){
+      Logger.info('[Simulation] Successfully sent command '+command+':'+picpilot_config.get('command_password')+'\r\n')
+    }
   },
   sendCommand: function(command, value){
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+':'+value+'\r\n');
+    }
+    if(SimulationManager.simulationActive){
+      Logger.info('[Simulation] Successfully sent command '+command+':'+value+'\r\n')
     }
   },
   sendRawCommand: function(command){
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+'\r\n');
     }
+    if(SimulationManager.simulationActive){
+      Logger.info('[Simulation] Successfully sent command: '+command)
+    }
+  },
+  activateWriteMode: function(){
+    this.sendRawCommand('commander');
   },
   sendRoll: function(roll){
     if(Validator.isValidRoll(roll)){
@@ -130,6 +150,26 @@ var Commands={
     else{
       Logger.error('Command not sent since invalid autonomous level value detected! Value: '+level);
     }
+  },
+  armPlane: function(){
+    this.sendProtectedCommand('arm_vehicle');
+  },
+  disarmPlane: function(){
+    this.sendProtectedCommand('disarm_vehicle');
+  },
+  killPlane: function(){
+    this.sendProtectedCommand('kill_plane');
+    AircraftStatus.setKillModeStatus(true);
+  },
+  unkillPlane: function(){
+    this.sendProtectedCommand('unkill_plane');
+    AircraftStatus.setKillModeStatus(false);
+  },
+  dropProbe: function(){
+    this.sendCommand('drop_probe',1);
+  },
+  resetProbe: function(){
+    this.sendCommand('reset_probe',1);
   }
 };
 module.exports=Commands;

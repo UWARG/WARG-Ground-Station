@@ -3,9 +3,13 @@ var _=require('underscore');
 
 var Validator={
   isValidNumber:function(number){
-    if(typeof number!=='undefined' && number!==null && !isNaN(number)){
-      return true;
-    }
+    return !isNaN(parseFloat(number)) && isFinite(number);
+  },
+  isFloat: function(n) {  //returns true if the number is a float only. Note this will return false if you pass a number string (eg. '34')
+    return n === +n && n !== (n|0);
+  },
+  isInteger: function(n) { //returns true if the number is an integer only. Note this will return false if you pass a number string (eg. '34.6')
+    return n === +n && n === (n|0);
   },
   isValidObject: function(object){
     if(_.isObject(object)){
@@ -74,24 +78,24 @@ var Validator={
     return false;
   },
   isValidTime: function(timestring){
-      if(typeof timestring==='undefined' || timestring===null || !Number(timestring) || Number(timestring).toFixed(2)<=0){
-        return false;
-      }
-      return true;
-    },
-    isValidBattery: function(battery){
-      if(typeof battery!=='undefined' && battery!==null && Number(battery)!=='NaN' && Number(battery)>=0 && Number(battery)<=100){
-        return true;
-      }
+    if(this.isValidNumber(timestring) && Number(timestring).toFixed(2)<=0){
       return false;
-    },
-    isValidGPS:function(gps)
-    {
-      if(typeof gps!=='undefined' && gps!==null && Number(gps)!=='NaN'){
-        return true;
-      }
-      return false;  
     }
+    return true;
+  },
+  isValidBattery: function(battery){
+    if(this.isValidNumber(battery) && Number(battery)>=0 && Number(battery)<=100){
+      return true;
+    }
+    return false;
+  },
+  isValidGPS:function(gps)
+  {
+    if(this.isInteger(Number(gps))){
+      return true;
+    }
+    return false;  
+  }
 };
 
 module.exports=Validator;
