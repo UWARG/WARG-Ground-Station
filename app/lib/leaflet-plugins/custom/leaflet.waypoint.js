@@ -1,12 +1,14 @@
 //created by Serj Babayan for the Waterloo Aerial Robotics Group on March 19, 2016
 //This file contains the waypoint class used within the MapView
 
-var waypointIcon = L.divIcon({className: 'waypointIcon',html:'<h1>12d</h1>'});
+var waypointIcon = L.divIcon({className: 'waypointIcon',html:'<div class="inner-circle"><p>#1</p><p>100m</p></div>'});
 
 L.waypoint= L.Marker.extend({
-  icon: waypointIcon,
+  
 
 	initialize: function (latlngalt, options) { //latlngalt is an array of size 3 in this manner: [lat, lon, alt]
+      options=options || {};
+      options.icon=waypointIcon; //give it the proper icon
     	if (!(L.Util.isArray(latlngalt) && latlngalt.length === 3)) {
     		throw new Error("L.AltitudeMarker must be initialized with an array latitude, longitude, and altitude [lat,lon,alt]");
     	}

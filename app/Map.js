@@ -42,11 +42,11 @@ var Map=function(L){
       weight: 5,
       clickable: true,
   });
+
   var coords=map_config.get('default_lat_lang');
   coords.push(100);
   var waypoint=new leaflet.waypoint(coords);
-  var icon=new L.divIcon({className: 'waypointIcon',html:'<h1>12d</h1>'});
-  waypoint.icon=icon;
+
   var centerToPlaneButton=L.easyButton( 'icon ion-pinpoint', function(){
     if (overlay_layers['Plane']) {
       map.panTo(overlay_layers['Plane'].getLatLng());
