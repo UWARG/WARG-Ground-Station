@@ -23,6 +23,9 @@ var PathManager={
 
 	moveWaypoint: function(){
 
+	},
+	sendWaypoint: function(){
+		
 	}
 };
 

@@ -89,6 +89,17 @@ var Map=function(L){
     map.invalidateSize(true);
   };
 
+  this.addWaypointMode=function(status){
+    map.on('click', function(e) {
+      //alert(e.latlng);
+      var coords=e.latlng;
+      coords.alt=100;
+      //coords.push(100);
+      var waypoint=new leaflet.waypoint(coords);
+      waypoint.addTo(map);
+    });
+  };
+
 };
 
 module.exports=Map;

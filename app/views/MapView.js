@@ -16,7 +16,8 @@ module.exports=function(Marionette,L){
       plane_location_lon:'.plane-longitude'
     },
     events:{
-      'click #clear-plane-trail-button': 'clearPlaneTrail'
+      'click #clear-plane-trail-button': 'clearPlaneTrail',
+      'click #add-waypoint-button':'addWaypointToggle'
     },
 
     initialize: function(){
@@ -51,6 +52,9 @@ module.exports=function(Marionette,L){
     },
     clearPlaneTrail: function(e){
       this.map.clearPlaneTrail();
+    },
+    addWaypointToggle: function(e){
+      this.map.addWaypointMode(true);
     }
   });
 };
