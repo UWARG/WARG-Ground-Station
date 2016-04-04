@@ -22,7 +22,7 @@ module.exports=function(Marionette,L){
 
     initialize: function(){
       this.map=new Map(L);
-
+      this.add_waypoint_mode=false;
     },
     onRender:function(){
       TelemetryData.addListener('data_received',function(data){
@@ -54,7 +54,8 @@ module.exports=function(Marionette,L){
       this.map.clearPlaneTrail();
     },
     addWaypointToggle: function(e){
-      this.map.addWaypointMode(true);
+      this.map.addWaypointMode(!this.add_waypoint_mode);
+      this.add_waypoint_mode=!this.add_waypoint_mode;
     }
   });
 };

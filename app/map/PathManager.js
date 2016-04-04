@@ -3,14 +3,14 @@ var PathManager={
 	plane_trail_coordinates: [],
 	local_waypoints: [],
 	remove_waypoints: [],
-	current_waypoit: null, //the waypoint the plane is currently heading to
+	current_waypoint: 0, //the waypoint the plane is currently heading to
 
 	clearTrail: function(){
 		this.plane_trail_coordinates=[];
 	},
 
-	addWaypoint: function(){
-
+	addWaypoint: function(coordinates){
+		this.local_waypoints.push(coordinates);
 	},
 
 	removeWaypoint: function(){

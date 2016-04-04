@@ -4,10 +4,40 @@ var path=require('path');
 var MapDraw=require('./map/MapDraw');
 var MapMeasure=require('./map/MapMeasure');
 var MapPath=require('./map/MapPath');
+var PathManager=require("./map/PathManager");
+
+var map_states=Object.freeze({ //freeze keeps anything else from changing these values
+  MOVE: 1,
+  ADD_WAYPOINT:2,
+  DELETE_WAYPOINT: 3
+});
 
 var Map=function(L){
   var leaflet=L;//reference to the window leaflet object
   var map=null;
+  var waypointLine = leaflet.polyline([[0,0]], {color: 'red'});
+
+  this.state=map_states.MOVE;
+
+  this.eventListeners={
+    add_waypoint_click: function(e){
+      var coords=e.latlng;
+      coords.alt=100;
+      PathManager.addWaypoint(coords);
+      waypointLine.setLatLngs(PathManager.local_waypoints);
+      var waypoint=new leaflet.waypoint(coords,{
+        waypointCount: PathManager.current_waypoint
+      });
+      PathManager.current_waypoint++;
+      waypoint.addTo(map);
+      waypoint.on('drag',eventListeners.drag_waypoint.bind(waypoint));
+    },
+    drag_waypoint: function(){
+      PathManager.local_waypoints[this.waypointCount]=this._latlng;
+      waypointLine.setLatLngs(PathManager.local_waypoints);
+    }
+  };
+var eventListeners=this.eventListeners;
   var mapPath= new MapPath(leaflet);
 
   //Set up paths
@@ -43,9 +73,7 @@ var Map=function(L){
       clickable: true,
   });
 
-  var coords=map_config.get('default_lat_lang');
-  coords.push(100);
-  var waypoint=new leaflet.waypoint(coords);
+  
 
   var centerToPlaneButton=L.easyButton( 'icon ion-pinpoint', function(){
     if (overlay_layers['Plane']) {
@@ -67,7 +95,7 @@ var Map=function(L){
 
     mapPath.addTo(map);
     MapMeasure(leaflet).addTo(map);
-    waypoint.addTo(map);
+    waypointLine.addTo(map);
     new MapDraw(leaflet).addTo(map); //adds draw controls to map
   };
 
@@ -90,15 +118,17 @@ var Map=function(L){
   };
 
   this.addWaypointMode=function(status){
-    map.on('click', function(e) {
-      //alert(e.latlng);
-      var coords=e.latlng;
-      coords.alt=100;
-      //coords.push(100);
-      var waypoint=new leaflet.waypoint(coords);
-      waypoint.addTo(map);
-    });
+    if(!status){ //if in add waypoint already, turn it off
+      this.state=map_states.MOVE;
+      map.off('click', this.eventListeners.add_waypoint_click); //get rid of the event listener
+    }
+    else{
+      this.state=map_states.ADD_WAYPOINT;
+      map.on('click', this.eventListeners.add_waypoint_click);
+    }
   };
+
+  
 
 };
 

@@ -1,8 +1,7 @@
 //created by Serj Babayan for the Waterloo Aerial Robotics Group on March 19, 2016
 //This file contains the waypoint class used within the MapView
 
-var waypointIcon = L.divIcon({className: 'waypointIcon',html:'<div class="inner-circle"><p>#1</p><p>100m</p></div>'});
-var counter=0;
+var waypointIcon = L.divIcon({className: 'waypointIcon',html:''});
 
 L.waypoint= L.Marker.extend({
 	initialize: function (latlngalt, options) { //latlngalt is an array of size 3 in this manner: [lat, lon, alt]
@@ -16,6 +15,7 @@ L.waypoint= L.Marker.extend({
         throw new Error('L.waypoint must be with an object that contains lat,lng, and alt properties');
       }
     }
+    console.log(options)
     options=options || {};
     options.icon=waypointIcon; //give it the proper icon
     options.draggable=true;
@@ -23,14 +23,14 @@ L.waypoint= L.Marker.extend({
     this.waypointCount=options.waypointCount;
     L.Marker.prototype.initialize.call(this, latlngalt, options);
     this.updateIcon();
-    this.changeWaypointCount(6)
   },
 
   changeAltitude: function(new_alt){
     if(!isNaN(new_alt)){
       this._latlng.alt=new_alt;
       this.updateIcon();
-    }else{
+    }
+    else{
       console.error('L.waypoint.changeAltitude takes in a number parameter. Received: '+new_alt);
     }
   },
@@ -39,6 +39,9 @@ L.waypoint= L.Marker.extend({
     if(!isNaN(new_number)){
       this.waypointCount=new_number;
       this.updateIcon();
+    }
+    else{
+      console.error('L.waypoint.changeWaypointCount takes in a number parameter. Received: '+new_number);
     }
   },
 
