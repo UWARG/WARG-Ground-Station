@@ -15,8 +15,9 @@ var PathManager={
 		var currently_synced=false;
 		var next_synced=false;
 		for(var i=0;i<this.waypoints.length-1;i++){
-			currently_synced=this.waypoints[i].action===Waypoint.SYNC_STATUS.NOTHING;
-			next_synced=this.waypoints[i+1].action===Waypoint.SYNC_STATUS.NOTHING;
+			debugger
+			currently_synced=this.waypoints[i].sync_status===Waypoint.SYNC_STATUS.NOTHING;
+			next_synced=this.waypoints[i+1].sync_status===Waypoint.SYNC_STATUS.NOTHING;
 
 			if(currently_synced && next_synced){
 				synced_polylines.push([this.waypoints[i],this.waypoints[i+1]]);
@@ -43,7 +44,7 @@ var PathManager={
 				lng: coordinates.lng, 
 				alt: coordinates.alt}, 
 				map_config.get('default_waypoint_radius'),
-				Waypoint.SYNC_STATUS.APPEND)
+				Waypoint.SYNC_STATUS.NOTHING)
 			);
 		}
 		else{

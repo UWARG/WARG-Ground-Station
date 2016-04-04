@@ -35,11 +35,10 @@ var Map=function(L){
       waypoint.addTo(map);
       waypoint.on('drag',events.drag_waypoint.bind(waypoint));
       waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
-      PathManager.getMultiPolylineCoords();
     },
     drag_waypoint: function(){
       PathManager.waypoints[this.waypointCount].updateCoordinates(this._latlng);
-      PathManager.waypoints[this.waypointCount].action=Waypoint.SYNC_STATUS.NOTHING;
+      PathManager.waypoints[this.waypointCount].sync_status=Waypoint.SYNC_STATUS.UPDATE;
       unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
       syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
       console.log(PathManager.getMultiPolylineCoords())
