@@ -1,5 +1,6 @@
 var map_config=require('../../config/map-config');
-var Coordinates=require('../util/Coordinates');
+var Coordinates=require('../models/Coordinates');
+var Waypoint=require('../models/Waypoint');
 
 var ACTIONS={
 	APPEND: 1,
@@ -8,34 +9,6 @@ var ACTIONS={
 	NOTHING: 4, //meaning the waypont is synced with the remote 
 	UPDATE: 5
 }
-var Waypoint=function(lat,lng,alt,radius, action){
-	if(!lat || !lng || !alt || !radius){
-		throw new Error('Waypoint in pathmanager must be inialized with a latitude, longitude, altitude, and radius');
-	}
-	this.lat=lat;
-	this.lng=lng;
-	this.alt=alt;
-	this.orbit_radius=radius;
-	this.action=action || ACTIONS.APPEND; //what to do with the waypoint during the next sync
-
-	this.updateCoordinates=function(coordinates){
-		var coords=Coordinates(coordinates);
-		if(coords){
-			if(coords.lat){
-			this.lat=coords.lat;
-			}
-			if(coords.lng){
-				this.lng=coords.lng;
-			}
-			if(coords.alt){
-				this.alt=coords.alt;
-			}
-		}
-		else{
-			console.error('Invalid argument passed into Waypoint.updateCoordinates function. '+coordinates);
-		}
-	}
-};
 
 var PathManager={
 	plane_trail_coordinates: [],
@@ -75,7 +48,13 @@ var PathManager={
 	},
 
 	appendWaypoint: function(coordinates){
-		this.local_waypoints.push(new Waypoint(coordinates.lat, coordinates.lng, coordinates.alt, map_config.get('default_waypoint_radius'),ACTIONS.NOTHING));
+		var coords=Coordinates(coordinates);
+		if(coords){
+			this.local_waypoints.push(new Waypoint(coordinates.lat, coordinates.lng, coordinates.alt, map_config.get('default_waypoint_radius'),ACTIONS.NOTHING));
+		}
+		else{
+			console.error('Invalid parameter in PathManager.appendWaypoit: '+coordinates);
+		}
 	},
 
 	removeWaypoint: function(){
