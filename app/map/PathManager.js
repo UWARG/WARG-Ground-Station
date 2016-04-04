@@ -1,4 +1,5 @@
 var map_config=require('../../config/map-config');
+var Coordinates=require('../util/Coordinates');
 
 var ACTIONS={
 	APPEND: 1,
@@ -16,6 +17,24 @@ var Waypoint=function(lat,lng,alt,radius, action){
 	this.alt=alt;
 	this.orbit_radius=radius;
 	this.action=action || ACTIONS.APPEND; //what to do with the waypoint during the next sync
+
+	this.updateCoordinates=function(coordinates){
+		var coords=Coordinates(coordinates);
+		if(coords){
+			if(coords.lat){
+			this.lat=coords.lat;
+			}
+			if(coords.lng){
+				this.lng=coords.lng;
+			}
+			if(coords.alt){
+				this.alt=coords.alt;
+			}
+		}
+		else{
+			console.error('Invalid argument passed into Waypoint.updateCoordinates function. '+coordinates);
+		}
+	}
 };
 
 var PathManager={

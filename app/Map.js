@@ -19,10 +19,10 @@ var Map=function(L){
 
   this.state=map_states.MOVE;
 
-  this.eventListeners={
+  this.events={
     add_waypoint_click: function(e){
       var coords=e.latlng;
-      coords.alt=100;
+      coords.alt=map_config.get('default_waypoint_altitude'); //set the default altitude
       PathManager.appendWaypoint(coords);
       waypointLine.setLatLngs(PathManager.local_waypoints);
       var waypoint=new leaflet.waypoint(coords,{
@@ -30,15 +30,15 @@ var Map=function(L){
       });
       PathManager.current_waypoint++;
       waypoint.addTo(map);
-      waypoint.on('drag',eventListeners.drag_waypoint.bind(waypoint));
+      waypoint.on('drag',events.drag_waypoint.bind(waypoint));
       waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
     },
     drag_waypoint: function(){
-      PathManager.local_waypoints[this.waypointCount]=this._latlng;
+      PathManager.local_waypoints[this.waypointCount].updateCoordinates(this._latlng);
       waypointLine.setLatLngs(PathManager.local_waypoints);
     }
   };
-var eventListeners=this.eventListeners;
+var events=this.events;
   var mapPath= new MapPath(leaflet);
 
   //Set up paths
@@ -121,11 +121,11 @@ var eventListeners=this.eventListeners;
   this.addWaypointMode=function(status){
     if(!status){ //if in add waypoint already, turn it off
       this.state=map_states.MOVE;
-      map.off('click', this.eventListeners.add_waypoint_click); //get rid of the event listener
+      map.off('click', this.events.add_waypoint_click); //get rid of the event listener
     }
     else{
       this.state=map_states.ADD_WAYPOINT;
-      map.on('click', this.eventListeners.add_waypoint_click);
+      map.on('click', this.events.add_waypoint_click);
     }
   };
 
