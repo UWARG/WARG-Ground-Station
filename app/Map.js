@@ -15,7 +15,8 @@ var map_states=Object.freeze({ //freeze keeps anything else from changing these 
 var Map=function(L){
   var leaflet=L;//reference to the window leaflet object
   var map=null;
-  var waypointLine = leaflet.polyline([[0,0]], {color: 'red'});
+  var unsyncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'red'});
+  var syncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'blue'});
 
   this.state=map_states.MOVE;
 
@@ -24,7 +25,8 @@ var Map=function(L){
       var coords=e.latlng;
       coords.alt=map_config.get('default_waypoint_altitude'); //set the default altitude
       PathManager.appendWaypoint(coords);
-      waypointLine.setLatLngs(PathManager.local_waypoints);
+      unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
+      syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
       var waypoint=new leaflet.waypoint(coords,{
         waypointCount: PathManager.current_waypoint
       });
@@ -32,10 +34,13 @@ var Map=function(L){
       waypoint.addTo(map);
       waypoint.on('drag',events.drag_waypoint.bind(waypoint));
       waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
+      PathManager.getMultiPolylineCoords();
     },
     drag_waypoint: function(){
       PathManager.local_waypoints[this.waypointCount].updateCoordinates(this._latlng);
-      waypointLine.setLatLngs(PathManager.local_waypoints);
+      PathManager.local_waypoints[this.waypointCount].action=5;
+      unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
+      syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
     }
   };
 var events=this.events;
@@ -96,7 +101,9 @@ var events=this.events;
 
     mapPath.addTo(map);
     MapMeasure(leaflet).addTo(map);
-    waypointLine.addTo(map);
+    unsyncedWaypointLine.addTo(map);
+    syncedWaypointLine.addTo(map);
+
     new MapDraw(leaflet).addTo(map); //adds draw controls to map
   };
 
