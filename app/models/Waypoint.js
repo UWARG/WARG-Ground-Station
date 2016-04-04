@@ -1,13 +1,14 @@
 var Coordinates=require('./Coordinates');
 
 //Waypoint class used in the PathManager
-var Waypoint=function(lat,lng,alt,radius, action){
-	if(!lat || !lng || !alt || !radius){
+var Waypoint=function(coordinates, radius, action){
+	var coords=Coordinates(coordinates);
+	if(!coords){
 		throw new Error('Waypoint in pathmanager must be inialized with a latitude, longitude, altitude, and radius');
 	}
-	this.lat=lat;
-	this.lng=lng;
-	this.alt=alt;
+	this.lat=coords.lat;
+	this.lng=coords.lng;
+	this.alt=coords.alt;
 	this.orbit_radius=radius;
 	this.action=action || ACTIONS.APPEND; //what to do with the waypoint during the next sync
 
