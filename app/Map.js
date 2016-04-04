@@ -23,7 +23,7 @@ var Map=function(L){
     add_waypoint_click: function(e){
       var coords=e.latlng;
       coords.alt=100;
-      PathManager.addWaypoint(coords);
+      PathManager.appendWaypoint(coords);
       waypointLine.setLatLngs(PathManager.local_waypoints);
       var waypoint=new leaflet.waypoint(coords,{
         waypointCount: PathManager.current_waypoint
@@ -31,6 +31,7 @@ var Map=function(L){
       PathManager.current_waypoint++;
       waypoint.addTo(map);
       waypoint.on('drag',eventListeners.drag_waypoint.bind(waypoint));
+      waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
     },
     drag_waypoint: function(){
       PathManager.local_waypoints[this.waypointCount]=this._latlng;
