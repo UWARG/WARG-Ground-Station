@@ -5,6 +5,7 @@ var MapDraw=require('./map/MapDraw');
 var MapMeasure=require('./map/MapMeasure');
 var MapPath=require('./map/MapPath');
 var PathManager=require("./map/PathManager");
+var Waypoint=require('./models/Waypoint');
 
 var map_states=Object.freeze({ //freeze keeps anything else from changing these values
   MOVE: 1,
@@ -37,10 +38,11 @@ var Map=function(L){
       PathManager.getMultiPolylineCoords();
     },
     drag_waypoint: function(){
-      PathManager.local_waypoints[this.waypointCount].updateCoordinates(this._latlng);
-      PathManager.local_waypoints[this.waypointCount].action=5;
+      PathManager.waypoints[this.waypointCount].updateCoordinates(this._latlng);
+      PathManager.waypoints[this.waypointCount].action=Waypoint.SYNC_STATUS.NOTHING;
       unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
       syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
+      console.log(PathManager.getMultiPolylineCoords())
     }
   };
 var events=this.events;

@@ -1,16 +1,16 @@
+//Waypoint class used in the PathManager
 var Coordinates=require('./Coordinates');
 
-//Waypoint class used in the PathManager
-var Waypoint=function(coordinates, radius, action){
+var Waypoint=function(coordinates, radius, sync_status){
 	var coords=Coordinates(coordinates);
-	if(!coords){
+	if(!coords || !radius){
 		throw new Error('Waypoint in pathmanager must be inialized with a latitude, longitude, altitude, and radius');
 	}
 	this.lat=coords.lat;
 	this.lng=coords.lng;
 	this.alt=coords.alt;
 	this.orbit_radius=radius;
-	this.action=action || ACTIONS.APPEND; //what to do with the waypoint during the next sync
+	this.sync_status=sync_status || this.SYNC_STATUS.APPEND; //what to do with the waypoint during the next remote sync
 
 	this.updateCoordinates=function(coordinates){
 		var coords=Coordinates(coordinates);
@@ -30,5 +30,14 @@ var Waypoint=function(coordinates, radius, action){
 		}
 	}
 };
+
+//when a sync happens with the picpilot, this is the status of the waypoint and what needs to be done to it (ie upload, dont upload, etc)
+Waypoint.SYNC_STATUS={
+	APPEND: 1,
+	DELETE: 2,
+	INSERT: 3, 
+	NOTHING: 4, //meaning the waypont is synced with the remote 
+	UPDATE: 5
+}
 
 module.exports=Waypoint;
