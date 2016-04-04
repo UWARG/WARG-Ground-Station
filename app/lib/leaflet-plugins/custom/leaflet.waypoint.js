@@ -15,7 +15,6 @@ L.waypoint= L.Marker.extend({
         throw new Error('L.waypoint must be with an object that contains lat,lng, and alt properties');
       }
     }
-    console.log(options)
     options=options || {};
     options.icon=waypointIcon; //give it the proper icon
     options.draggable=true;

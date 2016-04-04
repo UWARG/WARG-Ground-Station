@@ -15,7 +15,6 @@ var PathManager={
 		var currently_synced=false;
 		var next_synced=false;
 		for(var i=0;i<this.waypoints.length-1;i++){
-			debugger
 			currently_synced=this.waypoints[i].sync_status===Waypoint.SYNC_STATUS.NOTHING;
 			next_synced=this.waypoints[i+1].sync_status===Waypoint.SYNC_STATUS.NOTHING;
 

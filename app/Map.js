@@ -41,7 +41,6 @@ var Map=function(L){
       PathManager.waypoints[this.waypointCount].sync_status=Waypoint.SYNC_STATUS.UPDATE;
       unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
       syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
-      console.log(PathManager.getMultiPolylineCoords())
     }
   };
 var events=this.events;
