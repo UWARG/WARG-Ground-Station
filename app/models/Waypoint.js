@@ -32,12 +32,12 @@ var Waypoint=function(coordinates, radius, sync_status){
 };
 
 //when a sync happens with the picpilot, this is the status of the waypoint and what needs to be done to it (ie upload, dont upload, etc)
-Waypoint.SYNC_STATUS={
+Waypoint.SYNC_STATUS=Object.freeze({
 	APPEND: 1,
 	DELETE: 2,
 	INSERT: 3, 
 	NOTHING: 4, //meaning the waypont is synced with the remote 
 	UPDATE: 5
-}
+});
 
 module.exports=Waypoint;
