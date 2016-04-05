@@ -6,6 +6,14 @@
   width: 18px !important;
   height: 18px !important;
 }
+.waypointIconFlashing{
+  background-color: orange !important;
+
+}
+.waypointIconFlashing .inner-circle{
+  background-color: blue !important;
+  
+}
 .waypointIcon .inner-circle{
   width: 70%;
   height: 70%;
@@ -20,7 +28,7 @@
 }
 
 .waypointIconRemove .inner-circle{
-  background-color: red !important;
+  background-color: purple !important;
 }
 
 .waypointIcon .inner-circle p{

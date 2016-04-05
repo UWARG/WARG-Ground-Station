@@ -55,10 +55,21 @@ L.waypoint= L.Marker.extend({
 
   setFlashing: function(status){
     if(status){
-
+      this.flashing=false;
+      this.flashingInterval=setInterval(function(){
+        debugger
+        if(this.flashing){
+          this._icon.className=this._icon.className.replace(' waypointIconFlashing','');
+          this.flashing=false;
+        }
+        else{
+          this._icon.className+=' waypointIconFlashing';
+          this.flashing=true;
+        }
+      }.bind(this),200);
     }
     else{
-      
+      clearInterval(this.flashingInterval);
     }
   },
 
