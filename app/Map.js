@@ -1,13 +1,13 @@
-//a wrapper around leaflet that configures it as well
-var map_config=require('../config/map-config');
-var path=require('path');
+//a wrapper around leaflet that configures the map
 var MapDraw=require('./map/MapDraw');
 var MapMeasure=require('./map/MapMeasure');
-var MapPath=require('./map/MapPath');
 var PathManager=require("./map/PathManager");
 var Waypoint=require('./models/Waypoint');
 
-var map_states=Object.freeze({ //freeze keeps anything else from changing these values
+var map_config=require('../config/map-config');
+var path=require('path');
+
+var MAP_STATE=Object.freeze({
   MOVE: 1,
   ADD_WAYPOINT:2,
   DELETE_WAYPOINT: 3,
@@ -16,12 +16,16 @@ var map_states=Object.freeze({ //freeze keeps anything else from changing these 
 
 var Map=function(L){
   var leaflet=L;//reference to the window leaflet object
-  var map=null;
+  var map=null; //reference to the window context map
+  var current_state=MAP_STATE.MOVE; //current map state
 
-  var pathLayer=L.layerGroup();
+  var waypoints=[]; //contains all the leaflet waypoint objects
+
+  //Set up of all the layers
   var waypointsLayer=L.featureGroup();
   var waypointsConnectionsLayer=L.featureGroup();
-
+  var pathLayer=L.layerGroup();
+  
   var unsyncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'red'});
   var syncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'blue'});
 
@@ -30,71 +34,109 @@ var Map=function(L){
   pathLayer.addLayer(waypointsConnectionsLayer);
   pathLayer.addLayer(waypointsLayer);
 
-  this.state=map_states.MOVE;
+  current_state=MAP_STATE.MOVE; //default state of the map
+
+  PathManager.on('update_trail', function(){
+
+  });
+
+  PathManager.on('append_waypoint', function(coords){
+    this.appendWaypoint(coords);
+  }.bind(this));
+
+  PathManager.on('set_deleted_waypoint', function(index){
+    this.setDeletedWaypoint(index);
+  }.bind(this));
+
+  PathManager.on('insert_waypoint', function(index, coords){
+    this.insertWaypoint(index, coords);
+  }.bind(this));
+
+  PathManager.on('update_waypoint', function(index, coords){
+    this.updateWaypoint(index, coords);
+  }.bind(this));
+
+  this.updateWaypointConnectionLines=function(){
+    var new_coords=PathManager.getMultiPolylineCoords();
+    unsyncedWaypointLine.setLatLngs(new_coords.unsynced_polylines);
+    syncedWaypointLine.setLatLngs(new_coords.synced_polylines);
+  };
+
+  this.appendWaypoint=function(coords){
+    var waypoint=new leaflet.waypoint(coords,{
+      waypointCount: PathManager.waypoints.length-1
+    });
+    waypointsLayer.addLayer(waypoint);
+    waypoints.push(waypoint);
+    waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
+    this.updateWaypointConnectionLines();
+    //waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
+  };
+
+  this.updateWaypoint=function(index, coords){
+    waypoints[index].setLatLng(coords);
+    this.updateWaypointConnectionLines();
+  };
+
+  this.setDeletedWaypoint=function(index){
+    waypoints[index].setDeleted(true);
+    this.updateWaypointConnectionLines();
+  };
+
+  this.removeWaypoint=function(index){
+    map.removeLayer(waypoints[index]);
+    waypoints.splice(index, 1);
+    this.updateWaypointConnectionLines();
+  };
+
+  this.insertWaypoint=function(index, coords){
+    var waypoint=new leaflet.waypoint(coords,{
+      waypointCount: index
+    });
+    waypointsLayer.addLayer(waypoint);
+    waypoints.splice(index, 0, waypoint);
+    waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
+    this.updateWaypointConnectionLines();
+    for(var i=index+1;i<waypoints.length;i++){
+      debugger
+      waypoints[i].changeWaypointCount(i);
+    }
+  };
 
   this.events={
     add_waypoint_click: function(e){
       var coords=e.latlng;
       coords.alt=map_config.get('default_waypoint_altitude'); //set the default altitude
       PathManager.appendWaypoint(coords);
-      unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
-      syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
-      var waypoint=new leaflet.waypoint(coords,{
-        waypointCount: PathManager.current_waypoint
-      });
-      waypointsLayer.addLayer(waypoint);
-      PathManager.current_waypoint++;
-      waypoint.addTo(map);
-      waypoint.on('drag',events.drag_waypoint.bind(waypoint));
-      waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
     },
-    drag_waypoint: function(){
-      PathManager.waypoints[this.waypointCount].updateCoordinates(this._latlng);
-      PathManager.waypoints[this.waypointCount].sync_status=Waypoint.SYNC_STATUS.UPDATE;
-      unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
-      syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
+
+    drag_waypoint: function(e){
+      PathManager.updateWaypoint(e.target.waypointCount,e.target._latlng);
     },
 
     remove_waypoint_click: function(e){
       var waypoint=e.layer;
       PathManager.removeWaypoint(waypoint.waypointCount);
-      waypoint.setDeleted(true);
-      unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
-      syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
     },
 
     insert_waypoint_click: function(e){
       var coords=e.latlng;
       coords.alt=map_config.get('default_waypoint_altitude'); //set the default altitude
+      
       var insert_index=0;
       var found_waypoint=false;
-      
       //find the index of where to insert the new waypoint
       for(insert_index=0;insert_index<PathManager.waypoints.length;insert_index++){
         if(PathManager.waypoints[insert_index].lat===e.layer._latlngs[0].lat && PathManager.waypoints[insert_index].lng===e.layer._latlngs[0].lng){
           found_waypoint=true;
-          console.log('Found it! '+insert_index);
           break;
         }
       }
 
       if(found_waypoint){
         insert_index++; //this will be the index or number of the new waypoint
+        console.log(insert_index);
         PathManager.insertWaypoint(insert_index,coords); 
-        PathManager.current_waypoint++; 
-        var waypoint=new leaflet.waypoint(coords,{
-          waypointCount: insert_index
-        });
-        waypoint.addTo(map);
-        waypoint.on('drag',events.drag_waypoint.bind(waypoint));
-        waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
-        console.log(waypointsLayer);
-        unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
-        syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
-        //todo: update the waypoint counter on the rest of them
-        // for(insert_index++;insert_index<PathManager.waypoints.length;insert_index++){
-        //   PathManager.waypoints[insert_index].changeWaypointCount(insert_index);
-        // }
       }
       else{
         console.error('Something went wrong with the waypoint insert! Could not find index location of where to insert!');
@@ -102,7 +144,6 @@ var Map=function(L){
     }
   };
 var events=this.events;
-  var mapPath= new MapPath(leaflet);
 
   //Set up paths
   var tiles_path=path.join(__dirname,'../assets/sat_tiles');
@@ -157,7 +198,6 @@ var events=this.events;
     leaflet.control.mousePosition().addTo(map); //displays lat and lon coordinates at bottom left of the map
     map.addControl(centerToPlaneButton);
 
-    mapPath.addTo(map);
     MapMeasure(leaflet).addTo(map);
     //unsyncedWaypointLine.addTo(map);
     //syncedWaypointLine.addTo(map);
@@ -185,25 +225,24 @@ var events=this.events;
 
   this.addWaypointMode=function(status){
     if(status){ //if in add waypoint already, turn it off
-      this.state=map_states.ADD_WAYPOINT;
+      current_state=MAP_STATE.ADD_WAYPOINT;
       map.on('click', this.events.add_waypoint_click);
       waypointsConnectionsLayer.on('click',this.events.insert_waypoint_click);
     }
     else{
-      this.state=map_states.MOVE;
+      current_state=MAP_STATE.MOVE;
       map.off('click', this.events.add_waypoint_click); //get rid of the event listener
       waypointsConnectionsLayer.off('click',this.events.insert_waypoint_click); 
     }
   };
 
   this.deleteWaypointMode=function(status){
-    console.log(status);
     if(status){ //if in add waypoint already, turn it off
-      this.state=map_states.DELETE_WAYPOINT;
+      current_state=MAP_STATE.DELETE_WAYPOINT;
       waypointsLayer.on('click', this.events.remove_waypoint_click); 
     }
     else{
-      this.state=map_states.MOVE;
+      current_state=MAP_STATE.MOVE;
       waypointsLayer.off('click', this.events.remove_waypoint_click);
     }
   };

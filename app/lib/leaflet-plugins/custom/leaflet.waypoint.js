@@ -74,6 +74,11 @@ L.waypoint= L.Marker.extend({
   },
 
   updateIcon: function(){
-    this.options.icon.options.html='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p></div>';
+    if(this._icon && this._icon.innerHTML){
+      this._icon.innerHTML='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p></div>';
+    }
+    else{
+      this.options.icon.options.html='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p></div>';
+    }
   }
 });

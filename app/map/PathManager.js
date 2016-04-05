@@ -38,6 +38,7 @@ var PathManager=function(){
 		var coords=Coordinates(coordinates);
 		if(coords){
 			this.plane_trail_coordinates.push(coords);
+			this.emit('update_trail', true);
 		}
 		else{
 			console.error('PathManager.addToTrail was passed in incorrect coordinates. Coordinates: '+coordinates);
@@ -62,7 +63,7 @@ var PathManager=function(){
 	this.removeWaypoint=function(index){
 		if(this.waypoints[index]){
 			this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.DELETE;
-			this.emit('remove_waypoint',index);
+			this.emit('set_deleted_waypoint',index);
 		}
 		else{
 			console.error('PathManager.removeWaypoint was passed in an index that does not exist. Index: '+index);
