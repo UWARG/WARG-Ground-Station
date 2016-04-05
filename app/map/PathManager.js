@@ -55,8 +55,9 @@ var PathManager={
 		this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.DELETE;
 	},
 
-	insertWaypoint: function(){
-
+	insertWaypoint: function(index,coords){
+		this.waypoints.splice(index, 0, new Waypoint(coords,map_config.get('default_waypoint_radius'),
+				Waypoint.SYNC_STATUS.INSERT));
 	},
 
 	moveWaypoint: function(){
