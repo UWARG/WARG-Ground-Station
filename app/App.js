@@ -9,7 +9,7 @@ var AircraftStatus=require('./app/AircraftStatus'); //initialize aircraft status
 var PathManager=require('./app/map/PathManager');
 var DataRelay=require('./app/connections/DataRelay')(); //connect to the data relay station and start parsing data
 var Multiecho=require('./app/connections/Multiecho')(); //initialize multiecho connection and start parsing data
-
+var Commands=require('./app/models/Commands');
 var app={};
 
 var WindowShortcuts=require('./app/util/WindowShortcuts');
