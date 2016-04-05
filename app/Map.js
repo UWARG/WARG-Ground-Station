@@ -3,6 +3,7 @@ var MapDraw=require('./map/MapDraw');
 var MapMeasure=require('./map/MapMeasure');
 var PathManager=require("./map/PathManager");
 var Waypoint=require('./models/Waypoint');
+var Template=require('./util/Template');
 
 var map_config=require('../config/map-config');
 var path=require('path');
@@ -70,6 +71,7 @@ var Map=function(L){
     waypoints.push(waypoint);
     waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
     this.updateWaypointConnectionLines();
+    waypoint.bindPopup(Template('waypointPopup')());
     //waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
   };
 
@@ -98,7 +100,6 @@ var Map=function(L){
     waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
     this.updateWaypointConnectionLines();
     for(var i=index+1;i<waypoints.length;i++){
-      debugger
       waypoints[i].changeWaypointCount(i);
     }
   };
@@ -135,7 +136,6 @@ var Map=function(L){
 
       if(found_waypoint){
         insert_index++; //this will be the index or number of the new waypoint
-        console.log(insert_index);
         PathManager.insertWaypoint(insert_index,coords); 
       }
       else{
@@ -192,6 +192,11 @@ var events=this.events;
       zoom: 17,
       layers: [base_layers['Google Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail'],overlay_layers['Path']] //the default layers of the map
     });
+
+    map.on('popupopen', function(e) {
+    var marker = e.popup._source;
+    debugger
+  });
 
     //allow the user to turn on and off specific layers
     leaflet.control.layers(base_layers, overlay_layers).addTo(map);
