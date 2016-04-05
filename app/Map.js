@@ -17,9 +17,17 @@ var Map=function(L){
   var leaflet=L;//reference to the window leaflet object
   var map=null;
 
+  var pathLayer=L.layerGroup();
   var waypointsLayer=L.featureGroup();
+  var waypointsConnectionsLayer=L.featureGroup();
+
   var unsyncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'red'});
   var syncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'blue'});
+
+  waypointsConnectionsLayer.addLayer(unsyncedWaypointLine);
+  waypointsConnectionsLayer.addLayer(syncedWaypointLine);
+pathLayer.addLayer(waypointsConnectionsLayer);
+pathLayer.addLayer(waypointsLayer);
 
   this.state=map_states.MOVE;
 
@@ -90,6 +98,8 @@ var events=this.events;
       clickable: true,
   });
 
+  overlay_layers['Path']=pathLayer;
+
   
 
   var centerToPlaneButton=L.easyButton( 'icon ion-pinpoint', function(){
@@ -102,7 +112,7 @@ var events=this.events;
     map = leaflet.map(id,{
       center: map_config.get('default_lat_lang'),
       zoom: 17,
-      layers: [base_layers['Google Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail']] //the default layers of the map
+      layers: [base_layers['Google Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail'],overlay_layers['Path']] //the default layers of the map
     });
 
     //allow the user to turn on and off specific layers
@@ -112,9 +122,9 @@ var events=this.events;
 
     mapPath.addTo(map);
     MapMeasure(leaflet).addTo(map);
-    unsyncedWaypointLine.addTo(map);
-    syncedWaypointLine.addTo(map);
-    waypointsLayer.addTo(map);
+    //unsyncedWaypointLine.addTo(map);
+    //syncedWaypointLine.addTo(map);
+    //waypointsLayer.addTo(map);
     new MapDraw(leaflet).addTo(map); //adds draw controls to map
   };
 
