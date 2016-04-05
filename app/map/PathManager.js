@@ -52,7 +52,7 @@ var PathManager=function(){
 	this.appendWaypoint=function(coordinates){
 		var coords=Coordinates(coordinates);
 		if(coords){
-			this.waypoints.push(new Waypoint(coordinates,map_config.get('default_waypoint_radius'),Waypoint.SYNC_STATUS.NOTHING));
+			this.waypoints.push(new Waypoint(coordinates,map_config.get('default_waypoint_radius'),Waypoint.SYNC_STATUS.APPEND));
 			this.emit('append_waypoint', coordinates);
 		}
 		else{
@@ -62,8 +62,15 @@ var PathManager=function(){
 
 	this.removeWaypoint=function(index){
 		if(this.waypoints[index]){
-			this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.DELETE;
-			this.emit('set_deleted_waypoint',index);
+			//if its an unsynced waypoint (so one that was recentely appended or inserted), delete it straight up
+			if(this.waypoints[index].sync_status===Waypoint.SYNC_STATUS.APPEND || this.waypoints[index].sync_status===Waypoint.SYNC_STATUS.INSERT){
+				this.waypoints.splice(index, 1);
+				this.emit('remove_waypoint',index);
+			}
+			else{
+				this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.DELETE);
+				this.emit('set_deleted_waypoint',index);
+			}
 		}
 		else{
 			console.error('PathManager.removeWaypoint was passed in an index that does not exist. Index: '+index);
@@ -73,7 +80,12 @@ var PathManager=function(){
 	this.insertWaypoint=function(index,coordinates){
 		var coords=Coordinates(coordinates);
 		if(this.waypoints[index] && coords){
-			this.waypoints.splice(index, 0, new Waypoint(coords,map_config.get('default_waypoint_radius'),Waypoint.SYNC_STATUS.INSERT));
+			var sync_status=Waypoint.SYNC_STATUS.INSERT;
+			//if the previous waypoint was appended, then append this one as well
+			if(this.waypoints[index-1] && this.waypoints[index-1].sync_status===Waypoint.SYNC_STATUS.APPEND){
+				sync_status=Waypoint.SYNC_STATUS.APPEND;
+			}
+			this.waypoints.splice(index, 0, new Waypoint(coords,map_config.get('default_waypoint_radius'),sync_status));
 			this.emit('insert_waypoint',index, coordinates);
 		}
 		else{
@@ -87,8 +99,8 @@ var PathManager=function(){
 			coords.lat ? this.waypoints[index].lat= coords.lat : null;
 			coords.lng ? this.waypoints[index].lng= coords.lng : null;
 			coords.alt ? this.waypoints[index].alt= coords.alt : null;
-			this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.UPDATE;
-			this.emit('update_waypoint',index, coordinates);
+			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
+			this.emit('update_waypoint',index, this.waypoints[index].getCoordinates());
 		}
 		else{
 			console.error('PathManager.updateWaypoint called on a waypoint index that does not exist or passed in invalid coordinates.Coords: '+coordinates);
@@ -97,7 +109,7 @@ var PathManager=function(){
 
 	this.updateWaypointRadius=function(index, radius){
 		if(this.waypoints[index] && radius){
-			this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.UPDATE;
+			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
 			this.waypoints[index].radius=radius;
 		}
 		else{
@@ -108,7 +120,7 @@ var PathManager=function(){
 	this.updateWaypointAltitude=function(index, alt){
 		if(this.waypoints[index] && alt){
 			this.waypoints[index].alt=alt;
-			this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.UPDATE;
+			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
 			this.emit('update_waypoint',index, Coordinates(this.waypoints[index]));
 		}
 		else{
@@ -116,10 +128,45 @@ var PathManager=function(){
 		}
 	};
 
-	
+	this.changeWaypointSyncStatus=function(waypoint,new_status){
+		//only set it as update if it was synced with the remote before
+		if(new_status===Waypoint.SYNC_STATUS.UPDATE){
+			if(waypoint.sync_status===Waypoint.SYNC_STATUS.NOTHING){
+				waypoint.sync_status=new_status;
+			}
+		}
+		else{
+			waypoint.sync_status=new_status;
+		}
+	};
 
-	this.sendWaypoint=function(){
-		
+	this.debugPrint=function(){
+		for(var i=0;i<this.waypoints.length;i++){
+			var string='Waypoint #'+i+'\n';
+			string+='Altitude: '+this.waypoints[i].alt+'\n';
+			string+='Radius: '+this.waypoints[i].radius+'\n';
+			string+='Sync Status: '+this.waypoints[i].sync_status+'\n\n';
+			console.log(string);
+		}
+	};
+
+	this.getPathChecksum=function(){
+		var checksum=0;
+		for(var i=0;i<this.waypoints.length;i++){
+			checksum+=this.waypoints[i].lat;
+			checksum+=this.waypoints[i].lng;
+			checksum+=this.waypoints[i].alt;
+			checksum+=this.waypoints[i].radius;
+		}
+		return checksum;
+	}
+
+	this.sendPath=function(){
+		for(var i=0;i<this.waypoints.length;i++){
+			
+			this.waypoints[i].sync_status=Waypoint.SYNC_STATUS.NOTHING;
+		}
+		this.emit('synced');
 	};
 };
 
