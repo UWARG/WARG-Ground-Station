@@ -4,7 +4,7 @@ var TelemetryData=require('../models/TelemetryData');
 var Validator=require('../util/Validator');
 var Logger=require('../util/Logger');
 
-module.exports=function(Marionette,L){
+module.exports=function(Marionette,L,$){
 
   return Marionette.ItemView.extend({
     template:Template('MapView'),
@@ -18,7 +18,8 @@ module.exports=function(Marionette,L){
     events:{
       'click #clear-plane-trail-button': 'clearPlaneTrail',
       'click #add-waypoint-button':'addWaypointToggle',
-      'click #delete-waypoint-button':'deleteWaypointToggle'
+      'click #delete-waypoint-button':'deleteWaypointToggle',
+      'submit .waypointPopupForm':'clickedWaypointPopupSubmit'
     },
 
     initialize: function(){
@@ -62,6 +63,10 @@ module.exports=function(Marionette,L){
     deleteWaypointToggle: function(e){
       this.map.deleteWaypointMode(!this.delete_waypoint_mode);
       this.delete_waypoint_mode=!this.delete_waypoint_mode;
+    },
+    clickedWaypointPopupSubmit: function(e){
+      e.preventDefault();
+      this.map.popupSubmitted(Number($('.waypoint-altitude').val()),Number($('.waypoint-radius').val()));
     }
   });
 };

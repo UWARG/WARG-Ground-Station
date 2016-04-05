@@ -21,6 +21,7 @@ var Map=function(L){
   var current_state=MAP_STATE.MOVE; //current map state
 
   var waypoints=[]; //contains all the leaflet waypoint objects
+  var current_changing_waypoint=null;
 
   //Set up of all the layers
   var waypointsLayer=L.featureGroup();
@@ -77,6 +78,8 @@ var Map=function(L){
 
   this.updateWaypoint=function(index, coords){
     waypoints[index].setLatLng(coords);
+    waypoints[index].changeAltitude(coords.alt);
+    console.log(PathManager.waypoints);
     this.updateWaypointConnectionLines();
   };
 
@@ -116,6 +119,7 @@ var Map=function(L){
     },
 
     remove_waypoint_click: function(e){
+      e.layer._popup._close(); //close the popup
       var waypoint=e.layer;
       PathManager.removeWaypoint(waypoint.waypointCount);
     },
@@ -133,7 +137,6 @@ var Map=function(L){
           break;
         }
       }
-
       if(found_waypoint){
         insert_index++; //this will be the index or number of the new waypoint
         PathManager.insertWaypoint(insert_index,coords); 
@@ -141,8 +144,15 @@ var Map=function(L){
       else{
         console.error('Something went wrong with the waypoint insert! Could not find index location of where to insert!');
       }
+    },
+    popupOpen: function(e){
+      current_changing_waypoint=e.popup._source.waypointCount; //this is the waypoint we change on a form submission
+    },
+    popUpClosed: function(e){
+      current_changing_waypoint=null;
     }
   };
+
 var events=this.events;
 
   //Set up paths
@@ -193,10 +203,8 @@ var events=this.events;
       layers: [base_layers['Google Satellite'], overlay_layers['Plane'],overlay_layers['Plane Trail'],overlay_layers['Path']] //the default layers of the map
     });
 
-    map.on('popupopen', function(e) {
-    var marker = e.popup._source;
-    debugger
-  });
+    map.on('popupopen', this.events.popupOpen);
+    map.on('popupclose', this.events.popUpClosed);
 
     //allow the user to turn on and off specific layers
     leaflet.control.layers(base_layers, overlay_layers).addTo(map);
@@ -204,9 +212,6 @@ var events=this.events;
     map.addControl(centerToPlaneButton);
 
     MapMeasure(leaflet).addTo(map);
-    //unsyncedWaypointLine.addTo(map);
-    //syncedWaypointLine.addTo(map);
-    //waypointsLayer.addTo(map);
     new MapDraw(leaflet).addTo(map); //adds draw controls to map
   };
 
@@ -255,7 +260,16 @@ var events=this.events;
   this.addWaypoint=function(waypoint){
     this.waypoints= this.waypoints || [];
     this.waypoints.push(waypoint);
-  }
+  };
+
+  this.popupSubmitted=function(new_alt, new_radius){
+    if(new_alt){
+      PathManager.updateWaypointAltitude(current_changing_waypoint, new_alt);
+    }
+    if(new_radius){
+      PathManager.updateWaypointRadius(current_changing_waypoint, new_radius);
+    }
+  };
 
 };
 

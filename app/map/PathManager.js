@@ -81,7 +81,7 @@ var PathManager=function(){
 		}
 	};
 
-	this.updateWaypoint=function(index, coordinates){ //eg update its location
+	this.updateWaypoint=function(index, coordinates){
 		var coords=Coordinates(coordinates);
 		if(this.waypoints[index] && coords){
 			coords.lat ? this.waypoints[index].lat= coords.lat : null;
@@ -94,6 +94,29 @@ var PathManager=function(){
 			console.error('PathManager.updateWaypoint called on a waypoint index that does not exist or passed in invalid coordinates.Coords: '+coordinates);
 		}
 	};
+
+	this.updateWaypointRadius=function(index, radius){
+		if(this.waypoints[index] && radius){
+			this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.UPDATE;
+			this.waypoints[index].radius=radius;
+		}
+		else{
+			console.error('PathManager.updateWaypointRadius called on a waypoint index that does not exist or passed in invalid coordinates.Radius: '+radius);
+		}
+	};
+
+	this.updateWaypointAltitude=function(index, alt){
+		if(this.waypoints[index] && alt){
+			this.waypoints[index].alt=alt;
+			this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.UPDATE;
+			this.emit('update_waypoint',index, Coordinates(this.waypoints[index]));
+		}
+		else{
+			console.error('PathManager.updateWaypointAltitude called on a waypoint index that does not exist or passed in invalid coordinates.Alt: '+alt);
+		}
+	};
+
+	
 
 	this.sendWaypoint=function(){
 		
