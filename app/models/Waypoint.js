@@ -9,8 +9,16 @@ var Waypoint=function(coordinates, radius, sync_status){
 	this.lat=coords.lat;
 	this.lng=coords.lng;
 	this.alt=coords.alt;
-	this.orbit_radius=radius;
+	this.radius=radius;
 	this.sync_status=sync_status || this.SYNC_STATUS.APPEND; //what to do with the waypoint during the next remote sync
+
+	this.getCoordinates=function(){
+		return{
+			lat: this.lat,
+			lng: this.lng,
+			alt: this.alt
+		}
+	};
 
 	this.updateCoordinates=function(coordinates){
 		var coords=Coordinates(coordinates);
@@ -33,11 +41,11 @@ var Waypoint=function(coordinates, radius, sync_status){
 
 //when a sync happens with the picpilot, this is the status of the waypoint and what needs to be done to it (ie upload, dont upload, etc)
 Waypoint.SYNC_STATUS=Object.freeze({
-	APPEND: 1,
-	DELETE: 2,
-	INSERT: 3, 
-	NOTHING: 4, //meaning the waypont is synced with the remote 
-	UPDATE: 5
+	APPEND: 'append',
+	DELETE: 'delete',
+	INSERT: 'insert', 
+	NOTHING: 'synced', //meaning the waypont is synced with the remote 
+	UPDATE: 'update'
 });
 
 module.exports=Waypoint;
