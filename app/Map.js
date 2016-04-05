@@ -42,12 +42,20 @@ var Map=function(L){
 
   });
 
+  PathManager.on('synced', function(){ //triggered when local path is synced with remote path
+    this.updateWaypointConnectionLines();
+  }.bind(this));
+
   PathManager.on('append_waypoint', function(coords){
     this.appendWaypoint(coords);
   }.bind(this));
 
   PathManager.on('set_deleted_waypoint', function(index){
     this.setDeletedWaypoint(index);
+  }.bind(this));
+
+   PathManager.on('remove_waypoint', function(index){
+    this.removeWaypoint(index);
   }.bind(this));
 
   PathManager.on('insert_waypoint', function(index, coords){
@@ -73,13 +81,11 @@ var Map=function(L){
     waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
     this.updateWaypointConnectionLines();
     waypoint.bindPopup(Template('waypointPopup')());
-    //waypoint.bindPopup('Altitude: <input type="number"><br>Radius: <input type="number"><br><button onclick="alert(\"hello!\")" >Send</button>');
   };
 
   this.updateWaypoint=function(index, coords){
     waypoints[index].setLatLng(coords);
     waypoints[index].changeAltitude(coords.alt);
-    console.log(PathManager.waypoints);
     this.updateWaypointConnectionLines();
   };
 
@@ -91,6 +97,9 @@ var Map=function(L){
   this.removeWaypoint=function(index){
     map.removeLayer(waypoints[index]);
     waypoints.splice(index, 1);
+    for(var i=index;i<waypoints.length;i++){
+      waypoints[i].changeWaypointCount(i);
+    }
     this.updateWaypointConnectionLines();
   };
 
@@ -101,6 +110,7 @@ var Map=function(L){
     waypointsLayer.addLayer(waypoint);
     waypoints.splice(index, 0, waypoint);
     waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
+    waypoint.bindPopup(Template('waypointPopup')());
     this.updateWaypointConnectionLines();
     for(var i=index+1;i<waypoints.length;i++){
       waypoints[i].changeWaypointCount(i);
