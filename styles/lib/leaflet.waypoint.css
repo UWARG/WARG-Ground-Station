@@ -18,6 +18,11 @@
   align-content: center;
   justify-content: center;
 }
+
+.waypointIconRemove .inner-circle{
+  background-color: red !important;
+}
+
 .waypointIcon .inner-circle p{
   margin: 10px 0 8px 18px;
   color: black;

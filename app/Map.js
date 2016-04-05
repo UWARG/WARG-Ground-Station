@@ -16,6 +16,8 @@ var map_states=Object.freeze({ //freeze keeps anything else from changing these 
 var Map=function(L){
   var leaflet=L;//reference to the window leaflet object
   var map=null;
+
+  var waypointsLayer=L.featureGroup();
   var unsyncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'red'});
   var syncedWaypointLine = leaflet.multiPolyline([[[0,0]]], {color: 'blue'});
 
@@ -31,6 +33,7 @@ var Map=function(L){
       var waypoint=new leaflet.waypoint(coords,{
         waypointCount: PathManager.current_waypoint
       });
+      waypointsLayer.addLayer(waypoint);
       PathManager.current_waypoint++;
       waypoint.addTo(map);
       waypoint.on('drag',events.drag_waypoint.bind(waypoint));
@@ -39,6 +42,14 @@ var Map=function(L){
     drag_waypoint: function(){
       PathManager.waypoints[this.waypointCount].updateCoordinates(this._latlng);
       PathManager.waypoints[this.waypointCount].sync_status=Waypoint.SYNC_STATUS.UPDATE;
+      unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
+      syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
+    },
+
+    remove_waypoint_click: function(e){
+      var waypoint=e.layer;
+      PathManager.removeWaypoint(waypoint.waypointCount);
+      waypoint.setDeleted(true);
       unsyncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().unsynced_polylines);
       syncedWaypointLine.setLatLngs(PathManager.getMultiPolylineCoords().synced_polylines);
     }
@@ -103,7 +114,7 @@ var events=this.events;
     MapMeasure(leaflet).addTo(map);
     unsyncedWaypointLine.addTo(map);
     syncedWaypointLine.addTo(map);
-
+    waypointsLayer.addTo(map);
     new MapDraw(leaflet).addTo(map); //adds draw controls to map
   };
 
@@ -133,6 +144,18 @@ var events=this.events;
     else{
       this.state=map_states.ADD_WAYPOINT;
       map.on('click', this.events.add_waypoint_click);
+    }
+  };
+
+  this.deleteWaypointMode=function(status){
+    console.log(status);
+    if(status){ //if in add waypoint already, turn it off
+      this.state=map_states.DELETE_WAYPOINT;
+      waypointsLayer.on('click', this.events.remove_waypoint_click); 
+    }
+    else{
+      this.state=map_states.MOVE;
+      waypointsLayer.off('click', this.events.remove_waypoint_click);
     }
   };
 

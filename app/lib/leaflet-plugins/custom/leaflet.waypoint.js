@@ -44,6 +44,24 @@ L.waypoint= L.Marker.extend({
     }
   },
 
+  setDeleted: function(status){
+    if(status){
+      this._icon.className+=' waypointIconRemove';
+    }
+    else{
+      this.options.icon.options.className=this.options.icon.options.className.replace('waypointIconRemove','');
+    }
+  },
+
+  setFlashing: function(status){
+    if(status){
+
+    }
+    else{
+      
+    }
+  },
+
   updateIcon: function(){
     this.options.icon.options.html='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p></div>';
   }

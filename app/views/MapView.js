@@ -17,12 +17,14 @@ module.exports=function(Marionette,L){
     },
     events:{
       'click #clear-plane-trail-button': 'clearPlaneTrail',
-      'click #add-waypoint-button':'addWaypointToggle'
+      'click #add-waypoint-button':'addWaypointToggle',
+      'click #delete-waypoint-button':'deleteWaypointToggle'
     },
 
     initialize: function(){
       this.map=new Map(L);
       this.add_waypoint_mode=false;
+      this.delete_waypoint_mode=false;
     },
     onRender:function(){
       TelemetryData.addListener('data_received',function(data){
@@ -56,6 +58,10 @@ module.exports=function(Marionette,L){
     addWaypointToggle: function(e){
       this.map.addWaypointMode(!this.add_waypoint_mode);
       this.add_waypoint_mode=!this.add_waypoint_mode;
+    },
+    deleteWaypointToggle: function(e){
+      this.map.deleteWaypointMode(!this.delete_waypoint_mode);
+      this.delete_waypoint_mode=!this.delete_waypoint_mode;
     }
   });
 };

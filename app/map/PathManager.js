@@ -51,8 +51,8 @@ var PathManager={
 		}
 	},
 
-	removeWaypoint: function(){
-
+	removeWaypoint: function(index){
+		this.waypoints[index].sync_status=Waypoint.SYNC_STATUS.DELETE;
 	},
 
 	insertWaypoint: function(){
