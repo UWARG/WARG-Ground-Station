@@ -3,6 +3,7 @@ var Map=require('../Map');
 var TelemetryData=require('../models/TelemetryData');
 var Validator=require('../util/Validator');
 var Logger=require('../util/Logger');
+var PathManager=require('../map/PathManager');
 
 module.exports=function(Marionette,L,$){
 
@@ -19,6 +20,7 @@ module.exports=function(Marionette,L,$){
       'click #clear-plane-trail-button': 'clearPlaneTrail',
       'click #add-waypoint-button':'addWaypointToggle',
       'click #delete-waypoint-button':'deleteWaypointToggle',
+      'click #send-path-button':'sendPath',
       'submit .waypointPopupForm':'clickedWaypointPopupSubmit'
     },
 
@@ -53,6 +55,11 @@ module.exports=function(Marionette,L,$){
         this.ui.plane_location_lon.text('Invalid');
       }
     },
+
+    sendPath: function(){
+      PathManager.sendPath();
+    },
+
     clearPlaneTrail: function(e){
       this.map.clearPlaneTrail();
     },

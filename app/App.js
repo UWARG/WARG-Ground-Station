@@ -6,7 +6,7 @@ var Network=require('./app/Network');
 var StatusManager=require('./app/StatusManager');
 var TelemetryData=require('./app/models/TelemetryData');
 var AircraftStatus=require('./app/AircraftStatus'); //initialize aircraft status manager
-
+var PathManager=require('./app/map/PathManager');
 var DataRelay=require('./app/connections/DataRelay')(); //connect to the data relay station and start parsing data
 var Multiecho=require('./app/connections/Multiecho')(); //initialize multiecho connection and start parsing data
 
