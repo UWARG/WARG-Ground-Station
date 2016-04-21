@@ -4,6 +4,8 @@ var util = require('util');
 var map_config=require('../../config/map-config');
 var Coordinates=require('../models/Coordinates');
 var Waypoint=require('../models/Waypoint');
+var Logger=require('../util/Logger');
+var Commands=require('../models/Commands');
 
 var PathManager=function(){
 	this.plane_trail_coordinates=[];
@@ -162,8 +164,12 @@ var PathManager=function(){
 	}
 
 	this.sendPath=function(){
+		Logger.info('[Path Manager] Clearing all waypoints');
+		Commands.clearWaypoints();
+		var total_waypoints=this.waypoints.length;
 		for(var i=0;i<this.waypoints.length;i++){
-			
+			Logger.info('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints);
+			Commands.appendWaypoint(this.waypoints[i],this.waypoints[i].radius);
 			this.waypoints[i].sync_status=Waypoint.SYNC_STATUS.NOTHING;
 		}
 		this.emit('synced');

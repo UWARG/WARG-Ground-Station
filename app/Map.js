@@ -80,7 +80,7 @@ var Map=function(L){
     waypoints.push(waypoint);
     waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
     this.updateWaypointConnectionLines();
-    waypoint.bindPopup(Template('waypointPopup')());
+    waypoint.bindPopup(Template('WaypointPopup')());
   };
 
   this.updateWaypoint=function(index, coords){
@@ -110,7 +110,7 @@ var Map=function(L){
     waypointsLayer.addLayer(waypoint);
     waypoints.splice(index, 0, waypoint);
     waypoint.on('drag',events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
-    waypoint.bindPopup(Template('waypointPopup')());
+    waypoint.bindPopup(Template('WaypointPopup')());
     this.updateWaypointConnectionLines();
     for(var i=index+1;i<waypoints.length;i++){
       waypoints[i].changeWaypointCount(i);
