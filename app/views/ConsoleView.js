@@ -3,6 +3,7 @@
 var Template=require('../util/Template');
 var Logger=require('../util/Logger');
 var Commands=require('../models/Commands');
+var advanced_config=require('../../config/advanced-config');
 
 module.exports=function(Marionette){
 
@@ -37,6 +38,9 @@ module.exports=function(Marionette){
 
       this.command_history=[];
       this.command_history_index=0;
+
+      this.max_console_messages=advanced_config.get('max_console_messages');
+      this.all_displayed_messages=[];
 
       //whats kinds of messages we want displayed in the console
       this.infoMessages=!true; //the ! is there because we will call this.infoMessageToggle which will flip this to true in the render function
@@ -152,24 +156,29 @@ module.exports=function(Marionette){
       this.ui.data_toggle.prop('checked',this.dataMessages);
     },
     addInfoMessage:function(time,text){
-      this.ui.console.append('<p class="message info-message"><time>'+time+'</time>'+text+'</p>');
+      this.all_displayed_messages.push(this.ui.console.append('<p class="message info-message"><time>'+time+'</time>'+text+'</p>').children('*:last-child'));
       this.scrollToBottom();
+      this.checkMaxConsoleMessages();
     },
     addDebugMessage:function(time,text){
-      this.ui.console.append('<p class="message debug-message"><time>'+time+'</time>'+text+'</p>');
+      this.all_displayed_messages.push(this.ui.console.append('<p class="message debug-message"><time>'+time+'</time>'+text+'</p>').children('*:last-child'));
       this.scrollToBottom();
+      this.checkMaxConsoleMessages();
     },
     addErrorMessage:function(time,text){
-      this.ui.console.append('<p class="message error-message"><time>'+time+'</time>'+text+'</p>');
+      this.all_displayed_messages.push(this.ui.console.append('<p class="message error-message"><time>'+time+'</time>'+text+'</p>').children('*:last-child'));
       this.scrollToBottom();
+      this.checkMaxConsoleMessages();
     },
     addWarnMessage:function(time,text){
-      this.ui.console.append('<p class="message warn-message"><time>'+time+'</time>'+text+'</p>');
+      this.all_displayed_messages.push(this.ui.console.append('<p class="message warn-message"><time>'+time+'</time>'+text+'</p>').children('*:last-child'));
       this.scrollToBottom();
+      this.checkMaxConsoleMessages();
     },
     addDataMessage:function(time,text){
-      this.ui.console.append('<p class="message data-message"><time>'+time+'</time>'+text+'</p>');
+      this.all_displayed_messages.push(this.ui.console.append('<p class="message data-message"><time>'+time+'</time>'+text+'</p>').children('*:last-child'));
       this.scrollToBottom();
+      this.checkMaxConsoleMessages();
     },
     sendCommand: function(e){
       if(e) e.preventDefault();
@@ -211,6 +220,12 @@ module.exports=function(Marionette){
     scrollToBottom: function(){
       if(this.scroll_bottom){
         this.ui.console[0].scrollTop=this.ui.console[0].scrollHeight;
+      }
+    },
+    checkMaxConsoleMessages: function(){
+      if(this.all_displayed_messages.length>this.max_console_messages){
+        this.all_displayed_messages[0].remove();
+        this.all_displayed_messages.shift();
       }
     }
   });
