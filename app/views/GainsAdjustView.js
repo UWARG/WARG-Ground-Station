@@ -2,18 +2,9 @@ var Template=require('../util/Template');
 var TelemetryData=require('../models/TelemetryData');
 var Commands=require('../models/Commands');
 var Validator=require('../util/Validator');
+var Logger=require('../util/Logger');
 
 var gains_config=require('../../config/gains-config');
-
-var GAINS={
-  YAW: 0x00,
-  PITCH: 0x01,
-  ROLL: 0x02,
-  HEADING: 0x03,
-  ALTITUDE: 0x04,
-  THROTTLE: 0x05,
-  FLAP: 0x06
-};
 
 module.exports=function(Marionette){
 
@@ -56,7 +47,7 @@ module.exports=function(Marionette){
       throttle_send_button:'#send-throttle-gain-button',
       flap_send_button:'#send-flap-gain-button',
       path_send_button:'#send-path-gain-button',
-      orbit_send_button:'#send-path-gain-button'
+      orbit_send_button:'#send-orbit-gain-button'
     },
 
     events:{
@@ -76,7 +67,62 @@ module.exports=function(Marionette){
     },
 
     initialize: function(){
-      this.verification_quoue=[];//verifies that the gain value sent is the one thats being used
+      this.needs_verifying={
+        yaw: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        pitch: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        roll: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        heading: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        flap: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        orbit: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        path: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        throttle: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        },
+        altitude: {
+          status: false,
+          ki: 0,
+          kp: 0,
+          kd: 0,
+        }   
+      };
       this.data_callback=null;
     },
 
@@ -91,25 +137,69 @@ module.exports=function(Marionette){
     },
 
     dataCallback: function(data){
-      if(this.verification_quoue.length>0 && data.editing_gain===this.verification_quoue[0].type && data.kd_gain===this.verification_quoue[0].kd
-          && data.kp_gain===this.verification_quoue[0].kp && data.ki_gain===this.verification_quoue[0].ki){
-        this.verification_quoue[0].button.text('Send');
-        this.verification_quoue.shift();
-        Commands.showGain(this.verification_quoue[0].type);
-      }
-    },
-
-    addToVerificationQuoue: function(object){
-      //get rid of any verification requests of the same type
-      for(var i=0;i<this.verification_quoue.length;i++){
-        if(this.verification_quoue[i].type===object.type){
-          this.verification_quoue.splice(i,1);
-          i--;
+      if(this.needs_verifying.yaw.status){
+        if(data.yaw_kp === this.needs_verifying.yaw.kp && data.yaw_ki === this.needs_verifying.yaw.ki && data.yaw_kd === this.needs_verifying.yaw.kd){
+          this.needs_verifying.yaw.status=false;
+          Logger.info('[Gains Adjust] Yaw gain successfully verified!');
+          this.ui.yaw_send_button.text('Send');
         }
       }
-      this.verification_quoue.push(object);
-      object.button.text('Verifiying..');
-      Commands.showGain(this.verification_quoue[0].type);
+      if(this.needs_verifying.pitch.status){
+        if(data.pitch_kp === this.needs_verifying.pitch.kp && data.pitch_ki === this.needs_verifying.pitch.ki && data.pitch_kd === this.needs_verifying.pitch.kd){
+          this.needs_verifying.pitch.status=false;
+          Logger.info('[Gains Adjust] Pitch gain successfully verified!');
+          this.ui.pitch_send_button.text('Send');
+        }
+      }
+      if(this.needs_verifying.roll.status){
+        if(data.roll_kp === this.needs_verifying.roll.kp && data.roll_ki === this.needs_verifying.roll.ki && data.roll_kd === this.needs_verifying.roll.kd){
+          this.needs_verifying.roll.status=false;
+          Logger.info('[Gains Adjust] Roll gain successfully verified!');
+          this.ui.roll_send_button.text('Send');
+        }
+      }
+      if(this.needs_verifying.heading.status){
+        if(data.heading_kp === this.needs_verifying.heading.kp && data.heading_ki === this.needs_verifying.heading.ki && data.heading_kd === this.needs_verifying.heading.kd){
+          this.needs_verifying.heading.status=false;
+          Logger.info('[Gains Adjust] Heading gain successfully verified!');
+          this.ui.heading_send_button.text('Send');
+        }
+      }
+      if(this.needs_verifying.flap.status){
+        if(data.flap_kp === this.needs_verifying.flap.kp && data.flap_ki === this.needs_verifying.flap.ki && data.flap_kd === this.needs_verifying.flap.kd){
+          this.needs_verifying.flap.status=false;
+          Logger.info('[Gains Adjust] Flap gain successfully verified!');
+          this.ui.flap_send_button.text('Send');
+        }
+      }
+      if(this.needs_verifying.orbit.status){
+        if(data.orbit_gain === this.needs_verifying.orbit.kp){
+          this.needs_verifying.orbit.status=false;
+          Logger.info('[Gains Adjust] Orbit gain successfully verified!');
+          this.ui.orbit_send_button.text('Send');
+        }
+      }
+      if(this.needs_verifying.throttle.status){
+        if(data.throttle_kp === this.needs_verifying.throttle.kp && data.throttle_ki === this.needs_verifying.throttle.ki && data.throttle_kd === this.needs_verifying.throttle.kd){
+          this.needs_verifying.throttle.status=false;
+          Logger.info('[Gains Adjust] Throttle gain successfully verified!');
+          this.ui.throttle_send_button.text('Send');
+        }
+      }
+      if(this.needs_verifying.altitude.status){
+        if(data.altitude_kp === this.needs_verifying.altitude.kp && data.altitude_ki === this.needs_verifying.altitude.ki && data.altitude_kd === this.needs_verifying.altitude.kd){
+          this.needs_verifying.altitude.status=false;
+          Logger.info('[Gains Adjust] Altitude gain successfully verified!');
+          this.ui.altitude_send_button.text('Send');
+        }
+      }
+      if(this.needs_verifying.path.status){
+        if(data.path_gain === this.needs_verifying.path.kp){
+          this.needs_verifying.path.status=false;
+          Logger.info('[Gains Adjust] Path gain successfully verified!');
+          this.ui.path_send_button.text('Send');
+        }
+      }
     },
 
     sendYawGains: function(){
@@ -119,13 +209,13 @@ module.exports=function(Marionette){
       Commands.sendKPGain('yaw',kp);
       Commands.sendKIGain('yaw',ki);
       Commands.sendKDGain('yaw',kd);
-      this.addToVerificationQuoue({
-        type: GAINS.YAW,
+      this.needs_verifying.yaw={
+        status: true,
         ki: ki,
-        kp: kp,
         kd: kd,
-        button: this.ui.yaw_send_button
-      });
+        kp: kp
+      };
+      this.ui.yaw_send_button.text('Verifying...');
     },
     sendPitchGains: function(){
       var ki=this.ui.pitch_ki.val();
@@ -134,13 +224,13 @@ module.exports=function(Marionette){
       Commands.sendKPGain('pitch',kp);
       Commands.sendKIGain('pitch',ki);
       Commands.sendKDGain('pitch',kd);
-      this.addToVerificationQuoue({
-        type: GAINS.PITCH,
+      this.needs_verifying.pitch={
+        status: true,
         ki: ki,
-        kp: kp,
         kd: kd,
-        button: this.ui.pitch_send_button
-      });
+        kp: kp
+      };
+      this.ui.pitch_send_button.text('Verifying...');
     },
     sendRollGains: function(){
       var ki=this.ui.roll_ki.val();
@@ -149,13 +239,13 @@ module.exports=function(Marionette){
       Commands.sendKPGain('roll',kp);
       Commands.sendKIGain('roll',ki);
       Commands.sendKDGain('roll',kd);
-      this.addToVerificationQuoue({
-        type: GAINS.ROLL,
+      this.needs_verifying.roll={
+        status: true,
         ki: ki,
-        kp: kp,
         kd: kd,
-        button: this.ui.roll_send_button
-      });
+        kp: kp
+      };
+      this.ui.roll_send_button.text('Verifying...');
     },
     sendHeadingGains: function(){
       var ki=this.ui.heading_ki.val();
@@ -164,13 +254,13 @@ module.exports=function(Marionette){
       Commands.sendKPGain('heading',kp);
       Commands.sendKIGain('heading',ki);
       Commands.sendKDGain('heading',kd);
-      this.addToVerificationQuoue({
-        type: GAINS.HEADING,
+      this.needs_verifying.heading={
+        status: true,
         ki: ki,
-        kp: kp,
         kd: kd,
-        button: this.ui.heading_send_button
-      });
+        kp: kp
+      };
+      this.ui.heading_send_button.text('Verifying...');
     },
     sendAltitudeGains: function(){
       var ki=this.ui.altitude_ki.val();
@@ -179,13 +269,13 @@ module.exports=function(Marionette){
       Commands.sendKPGain('altitude',kp);
       Commands.sendKIGain('altitude',ki);
       Commands.sendKDGain('altitude',kd);
-      this.addToVerificationQuoue({
-        type: GAINS.ALTITUDE,
+      this.needs_verifying.altitude={
+        status: true,
         ki: ki,
-        kp: kp,
         kd: kd,
-        button: this.ui.altitude_send_button
-      });
+        kp: kp
+      };
+      this.ui.altitude_send_button.text('Verifying...');
     },
     sendThrottleGains: function(){
       var ki=this.ui.throttle_ki.val();
@@ -194,13 +284,13 @@ module.exports=function(Marionette){
       Commands.sendKPGain('throttle',kp);
       Commands.sendKIGain('throttle',ki);
       Commands.sendKDGain('throttle',kd);
-      this.addToVerificationQuoue({
-        type: GAINS.THROTTLE,
+      this.needs_verifying.throttle={
+        status: true,
         ki: ki,
-        kp: kp,
         kd: kd,
-        button: this.ui.throttle_send_button
-      });
+        kp: kp
+      };
+      this.ui.throttle_send_button.text('Verifying...');
     },
     sendFlapGains: function(){
       var ki=this.ui.flap_ki.val();
@@ -209,24 +299,31 @@ module.exports=function(Marionette){
       Commands.sendKPGain('flap',kp);
       Commands.sendKIGain('flap',ki);
       Commands.sendKDGain('flap',kd);
-      //support for flap gain verification is not implemented in the picpilot yet
-      // this.addToVerificationQuoue({
-      //   type: GAINS.FLAP,
-      //   ki: ki,
-      //   kp: kp,
-      //   kd: kd,
-      //   button: this.ui.flap_send_button
-      // });
+      this.needs_verifying.flap={
+        status: true,
+        ki: ki,
+        kd: kd,
+        kp: kp
+      };
+      this.ui.flap_send_button.text('Verifying...');
     },
     sendOrbitalGains: function(){
       var kp=this.ui.orbit_kp.val();
       Commands.sendOrbitGain(kp);
-      //support for path and orbit gains verification is not implemented via the picpilot yet
+      this.needs_verifying.orbit={
+        status: true,
+        kp: kp
+      };
+      this.ui.orbit_send_button.text('Verifying...');
     },
     sendPathGains: function(){
       var kp=this.ui.path_kp.val();
       Commands.sendPathGain(kp);
-      //support for path and orbit gains verification is not implemented via the picpilot yet
+      this.needs_verifying.path={
+        status: true,
+        kp: kp
+      };
+      this.ui.path_send_button.text('Verifying...');
     },
     sendAllGains: function(){
       this.sendYawGains();
