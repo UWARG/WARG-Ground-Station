@@ -11,6 +11,15 @@ var Validator={
   isInteger: function(n) { //returns true if the number is an integer only. Note this will return false if you pass a number string (eg. '34.6')
     return n === +n && n === (n|0);
   },
+  isValidPercentage: function(percentage){
+    if(this.isValidNumber(percentage)){
+      var num=Number(percentage);
+      if(num>=0 && num<=100){
+        return true;
+      }
+    }
+    return false;
+  },
   isValidObject: function(object){
     if(_.isObject(object)){
       return true;
@@ -54,13 +63,13 @@ var Validator={
     return false;
   },
   isValidThrottle: function(throttle){
-    if(this.isValidNumber(throttle) && Number(throttle)>=0 && Number(throttle)<=100){
+    if(this.isInteger(throttle) && Number(throttle)>=-1024 && Number(throttle)<=1024){
       return true;
     }
     return false;
   },
   isValidFlap: function(flap){
-    if(this.isValidNumber(flap)){
+    if(this.isInteger(flap) && Number(flap)>=-1024 && Number(flap) <= 1024){
       return true;
     }
     return false;

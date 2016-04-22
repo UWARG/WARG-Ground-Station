@@ -39,8 +39,7 @@ module.exports=function(Marionette){
       this.setThrottle(data.throttle_setpoint);
       this.setYaw(data.yaw);
       this.setYawSetpoint(data.int_yaw_setpoint);
-      //this.setFlap(data.flap_setpoint); //NOTE: this isnt implemented yet
-      this.setFlap(46.586); //TODO: remove this after
+      this.setFlap(data.flap_setpoint);
 
       this.setYawRate(data.yaw_rate);
       this.setRollRate(data.roll_rate);
@@ -51,7 +50,7 @@ module.exports=function(Marionette){
     },
     setThrottle: function(num){
       if(Validator.isValidThrottle(num)){
-        this.ui.throttle.text(Number(num).toFixed(1));
+        this.ui.throttle.text(Number((num+1024)*100/2048).toFixed(1));//-1024 represents 0%
       }else{
         Logger.warn('Invalid throttle setpoint value received! Throttle:' +num);
         this.ui.throttle.text('Invalid');
@@ -111,7 +110,7 @@ module.exports=function(Marionette){
     },
     setFlap: function(num){
       if(Validator.isValidFlap(num)){
-        this.ui.flap.text(Number(num).toFixed(1));
+        this.ui.flap.text(Number((num+1024)*100/2048).toFixed(1));//-1024 represents 0%
       }else{
         Logger.warn('Invalid flap setpoint value received! Flap Setpoint: '+num);
         this.ui.flap.text('Invalid');
