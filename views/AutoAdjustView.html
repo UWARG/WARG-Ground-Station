@@ -90,12 +90,12 @@
   <thead>
     <tr>
       <th></th>
-      <th>Pitch</th>
-      <th>Roll</th>
-      <th>Heading</th>
-      <th>Altitude</th>
-      <th>Throttle</th>
-      <th>Flaps</th>
+      <th>Remote Pitch</th>
+      <th>Remote Roll</th>
+      <th>Remote Heading</th>
+      <th>Remote Altitude</th>
+      <th>Remote Throttle</th>
+      <th>Remote Flaps</th>
     </tr>
   </thead>
   <tbody>
@@ -137,7 +137,11 @@
     </tr>
   </tbody>
 </table>
-<div class="wrapper" style="margin-top: 50px">
+<div>
+  <p>Remote Autonomous Level: <span id="remote_autonomous_level_value">--</span></p>
+  <p>Autonomous Level Synced: <span id="autonomous_level_synced">--</span></p>
+</div>
+<div class="wrapper" style="margin-top: 12px">
   <button id="sendall" class="pure-button button-success">Send All</button>
   <button id="fullRC" class="pure-button button-error" >Full RC Control</button>
   <button id="fullGround" class="pure-button button-secondary" >Full Ground Control</button>
