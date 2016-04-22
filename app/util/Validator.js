@@ -57,7 +57,7 @@ var Validator={
     return false;
   },
   isValidAltitude: function(altitude){
-    if(this.isValidNumber(altitude) && Number(altitude)>=0){
+    if(this.isValidNumber(altitude)){
       return true;
     }
     return false;
