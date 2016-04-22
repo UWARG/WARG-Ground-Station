@@ -1,6 +1,8 @@
 var Template = require('../util/Template');
 var Logger = require('../util/Logger');
 var Commands = require('../models/Commands');
+var Bitmask=require('../util/Bitmask');
+var TelemetryData=require('../models/TelemetryData');
 
 module.exports = function(Marionette) {
 
@@ -30,6 +32,15 @@ module.exports = function(Marionette) {
       "click #fullRC": "fullRC",
       "click #fullAuto": "fullAuto",
       "click #fullGround": "fullGround"
+    },
+
+    intialize: function(){
+      this.telemetryCallback=null;
+    },
+
+    dataReceivedCallback: function(data){
+      var picpilot_autonomous_level=new Bitmask(Number(data.automous_level));
+      
     },
 
     sendAll: function(event) {
@@ -118,14 +129,14 @@ module.exports = function(Marionette) {
 };
 //this is copied from the data link documentation
 /*
-0b0000000000 = Full manual control (default)
-0b0000000001 = Set Pitch Rate(0), Pitch Angle(1)
-0b0000000010 = Pitch Control Source: Controller(0), Ground Station(1) 
-0b0000000100 = Roll Control Type: Roll Rate(0), Roll Angle(1)
-0b0000001000 = Roll Control Sources: Controller(0), Ground Station(1)
-0b0000110000 = Throttle control source: Controller(0), Ground Station(1), Autopilot(2)
-0b0001000000 = Altitude Source: Ground Station(0), Autopilot(1)
-0b0010000000 = Altitude Control On(1) or Off(0)
-0b0100000000 = Heading control source: Ground Station(0), Autopilot(1)
-0b1000000000= To fly with Ground Station Control of the Pitch Rate and Roll Angle:
+0000000000b = Full manual control (default)
+0000000001b = Set Pitch Rate(0), Pitch Angle(1)
+0000000010b = Pitch Control Source: Controller(0), Ground Station(1) 
+0000000100b = Roll Control Type: Roll Rate(0), Roll Angle(1)
+0000001000b = Roll Control Sources: Controller(0), Ground Station(1)
+0000110000b = Throttle control source: Controller(0), Ground Station(1), Autopilot(2)
+0001000000b = Altitude Source: Ground Station(0), Autopilot(1)
+0010000000b = Altitude Control On(1) or Off(0)
+0100000000b = Heading control source: Ground Station(0), Autopilot(1)
+1000000000b= To fly with Ground Station Control of the Pitch Rate and Roll Angle:
 */
