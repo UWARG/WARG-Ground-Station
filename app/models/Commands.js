@@ -30,15 +30,6 @@ var Commands={
     }
   },
   sendCommand: function(command, value){
-    var value='';
-    console.log(arguments);
-    for (i = 0; i < arguments.length; i++) {
-        value+=arguments[i];
-        if(i!==arguments.length-1){
-          value+=',';
-        }
-    }
-    console.log(value)
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+':'+value+'\r\n');
     }
