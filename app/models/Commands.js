@@ -155,7 +155,7 @@ var Commands={
     this.sendProtectedCommand('arm_vehicle');
   },
   disarmPlane: function(){
-    this.sendProtectedCommand('disarm_vehicle');
+    this.sendProtectedCommand('dearm_vehicle');
   },
   killPlane: function(){
     this.sendProtectedCommand('kill_plane');
