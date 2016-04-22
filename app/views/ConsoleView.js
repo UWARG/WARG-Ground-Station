@@ -215,7 +215,6 @@ module.exports=function(Marionette){
     enableScrollBottom:function(e){
       e.preventDefault();
       this.scroll_bottom=true;
-      this.checkMaxConsoleMessages();
       this.scrollToBottom();
     },
     scrollToBottom: function(){
@@ -224,11 +223,9 @@ module.exports=function(Marionette){
       }
     },
     checkMaxConsoleMessages: function(){
-      if(this.all_displayed_messages.length>this.max_console_messages && this.scroll_bottom){
-        while(this.all_displayed_messages.length>this.max_console_messages){
-          this.all_displayed_messages[0].remove();
-          this.all_displayed_messages.shift();
-        }
+      if(this.all_displayed_messages.length>this.max_console_messages){
+        this.all_displayed_messages[0].remove();
+        this.all_displayed_messages.shift();
       }
     }
   });
