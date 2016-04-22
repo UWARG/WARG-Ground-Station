@@ -80,7 +80,7 @@ module.exports=function(Marionette){
           this.ui.pitch_dial.css('transform','rotate('+int_pitch+'deg) scale(2)');
         }  
       }else{
-        this.ui.pitch_dial.css('height','0px');
+        this.ui.pitch_dial.css('transform','rotate(0deg) scale(2)');
         Logger.warn('Invalid pitch value received! Pitch: '+pitch);
       }
     },
@@ -94,7 +94,7 @@ module.exports=function(Marionette){
           this.ui.roll_dial.css('transform','rotate('+int_roll+'deg) scale(2)');
         }  
       }else{
-        this.ui.roll_dial.css('height','0px');
+        this.ui.roll_dial.css('transform','rotate(0deg) scale(2)');
         Logger.warn('Invalid roll value received! Roll: '+roll);
       }
     },
