@@ -93,16 +93,6 @@ module.exports={
     priority: 0,
     timeout: 0
   },
-  'AIRCRAFT_KILL_MODE':{
-  	status: false,
-  	message: 'Aircraft is in KILL MODE',
-  	turn_on_ontrue:[],
-  	turn_off_ontrue: [],
-  	turn_on_onfalse:[],
-    turn_off_onfalse:[],
-  	priority: 0,
-    timeout: 0
-  },
   'SIMULATION_ACTIVE':{
   	status: false,
   	message: 'Simulation Mode',
@@ -123,6 +113,56 @@ module.exports={
   	priority:1,
     timeout: 0
   },
+  'AIRCRAFT_ARMED':{
+    status: false,
+    message: 'Aircraft ARMED',
+    turn_on_ontrue:[],
+    turn_off_ontrue: [],
+    turn_on_onfalse:[],
+    turn_off_onfalse:[],
+    priority:0,
+    timeout: 0
+  },
+  'AIRCRAFT_INITIALIZE':{
+    status: false,
+    message: 'Aircraft Initializing',
+    turn_on_ontrue:[],
+    turn_off_ontrue: [],
+    turn_on_onfalse:[],
+    turn_off_onfalse:[],
+    priority:1,
+    timeout: 0
+  },
+  'AIRCRAFT_RUNNING':{
+    status: false,
+    message: 'Aircraft Running',
+    turn_on_ontrue:[],
+    turn_off_ontrue: [],
+    turn_on_onfalse:[],
+    turn_off_onfalse:[],
+    priority:1,
+    timeout: 0
+  },
+  'AIRCRAFT_KILLMODE_WARNING':{
+    status: false,
+    message: 'AIRCRAFT KILLMODE WARNING!',
+    turn_on_ontrue:[],
+    turn_off_ontrue: [],
+    turn_on_onfalse:[],
+    turn_off_onfalse:[],
+    priority:0,
+    timeout: 0
+  },
+  'AIRCRAFT_KILLMODE':{
+    status: false,
+    message: 'Aircraft is in KILL MODE!',
+    turn_on_ontrue:[],
+    turn_off_ontrue: [],
+    turn_on_onfalse:[],
+    turn_off_onfalse:[],
+    priority:0,
+    timeout: 0
+  },
   'AIRCRAFT_ERROR_POWER_ON_RESET':{
   	status: false,
   	message: 'Startup Error: Power on Reset',
@@ -131,7 +171,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_BROWN_OUT_RESET':{
   	status: false,
@@ -141,7 +181,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_IDLE_MODE_RESET':{
   	status: false,
@@ -151,7 +191,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_SLEEP_MODE_RESET':{
   	status: false,
@@ -161,7 +201,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_SOFTWARE_WATCH_DOG_RESET':{
   	status: false,
@@ -171,7 +211,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_SOFTWARE_RESET':{
   	status: false,
@@ -181,7 +221,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_EXTERNAL_RESET':{
   	status: false,
@@ -191,7 +231,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_VOLTAGE_REGULATOR_RESET':{
   	status: false,
@@ -201,7 +241,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_ILLEGAL_OPCODE_RESET':{
   	status: false,
@@ -211,7 +251,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   },
   'AIRCRAFT_ERROR_TRAP_RESET':{
   	status: false,
@@ -221,6 +261,6 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 30000
+    timeout: 0
   }
 };

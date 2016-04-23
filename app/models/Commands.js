@@ -159,11 +159,9 @@ var Commands={
   },
   killPlane: function(){
     this.sendProtectedCommand('kill_plane');
-    AircraftStatus.setKillModeStatus(true);
   },
   unkillPlane: function(){
     this.sendProtectedCommand('unkill_plane');
-    AircraftStatus.setKillModeStatus(false);
   },
   dropProbe: function(){
     this.sendCommand('drop_probe',1);
