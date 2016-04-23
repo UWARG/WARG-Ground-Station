@@ -80,16 +80,16 @@ var Commands={
     }
   },
   sendThrottle:function(throttle){
-    if(Validator.isValidThrottle(throttle)){
-      this.sendCommand('set_throttle',throttle);
+    if(Validator.isValidPercentage(throttle)){
+      this.sendCommand('set_throttle',(Number(throttle)*2048/100-1024).toFixed(0));
     }
     else{
       Logger.error('Command to not sent since invalid throttle value detected! Throttle:'+throttle);
     }
   },
   sendFlap:function(flap){
-    if(Validator.isValidFlap(flap)){
-      this.sendCommand('set_flap',flap);
+    if(Validator.isValidPercentage(flap)){
+      this.sendCommand('set_flap',(Number(flap)*2048/100-1024).toFixed(0));
     }
     else{
       Logger.error('Command to not sent since invalid flap value detected! Flap Setpoint:'+flap);
