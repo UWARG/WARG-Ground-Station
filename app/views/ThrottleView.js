@@ -38,7 +38,7 @@ module.exports=function(Marionette){
     onTelemetryCallback: function(data){
       this.setThrottle(data.throttle_setpoint);
       this.setYaw(data.yaw);
-      this.setYawSetpoint(data.int_yaw_setpoint);
+      //this.setYawSetpoint(data.int_yaw_setpoint);
       this.setFlap(data.flap_setpoint);
 
       this.setYawRate(data.yaw_rate);
@@ -64,14 +64,14 @@ module.exports=function(Marionette){
         this.ui.yaw.text('Invalid');
       }
     },
-    setYawSetpoint: function(num){
-      if(Validator.isValidYaw(num)){
-        this.ui.yaw_setpoint.text(Number(num).toFixed(1));
-      }else{
-        Logger.warn('Invalid yaw setpoint value received! Yaw Setpoint: '+num);
-        this.ui.yaw_setpoint.text('Invalid');
-      }
-    },
+    // setYawSetpoint: function(num){
+    //   if(Validator.isValidYaw(num)){
+    //     this.ui.yaw_setpoint.text(Number(num).toFixed(1));
+    //   }else{
+    //     Logger.warn('Invalid yaw setpoint value received! Yaw Setpoint: '+num);
+    //     this.ui.yaw_setpoint.text('Invalid');
+    //   }
+    // },
     setPitchRate: function(num){
       if(Validator.isValidNumber(num)){
         var rad=Number(num);
