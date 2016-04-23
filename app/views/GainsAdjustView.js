@@ -136,7 +136,38 @@ module.exports=function(Marionette){
       TelemetryData.removeListener('data_received',this.data_callback);
     },
 
+    normalizeData: function(data){
+      data.yaw_kp=Number(data.yaw_kp);
+      data.yaw_kd=Number(data.yaw_kd);
+      data.yaw_ki=Number(data.yaw_ki);
+      data.roll_kp=Number(data.roll_kp);
+      data.roll_kd=Number(data.roll_kd);
+      data.roll_ki=Number(data.roll_ki);
+      data.pitch_kp=Number(data.pitch_kp);
+      data.pitch_kd=Number(data.pitch_kd);
+      data.pitch_ki=Number(data.pitch_ki);
+      data.heading_kp=Number(data.heading_kp);
+      data.heading_kd=Number(data.heading_kd);
+      data.heading_ki=Number(data.heading_ki);
+      data.flap_kp=Number(data.flap_kp);
+      data.flap_kd=Number(data.flap_kd);
+      data.flap_ki=Number(data.flap_ki);
+      data.throttle_kp=Number(data.throttle_kp);
+      data.throttle_kd=Number(data.throttle_kd);
+      data.throttle_ki=Number(data.throttle_ki);
+      data.altitude_kp=Number(data.altitude_kp);
+      data.altitude_ki=Number(data.altitude_ki);
+      data.altitude_kd=Number(data.altitude_kd);
+      data.orbit_gain=Number(data.orbit_gain);
+      data.path_gain=Number(data.path_gain);
+    },
+
     dataCallback: function(data){
+      this.normalizeData(data);
+      console.log(this.needs_verifying.roll);
+      console.log(data.roll_kp);
+      console.log(data.roll_kd);
+      console.log(data.roll_ki);
       if(this.needs_verifying.yaw.status){
         if(data.yaw_kp === this.needs_verifying.yaw.kp && data.yaw_ki === this.needs_verifying.yaw.ki && data.yaw_kd === this.needs_verifying.yaw.kd){
           this.needs_verifying.yaw.status=false;
@@ -203,9 +234,9 @@ module.exports=function(Marionette){
     },
 
     sendYawGains: function(){
-      var ki=this.ui.yaw_ki.val();
-      var kd=this.ui.yaw_kd.val();
-      var kp=this.ui.yaw_kp.val();
+      var ki=Number(this.ui.yaw_ki.val());
+      var kd=Number(this.ui.yaw_kd.val());
+      var kp=Number(this.ui.yaw_kp.val());
       Commands.sendKPGain('yaw',kp);
       Commands.sendKIGain('yaw',ki);
       Commands.sendKDGain('yaw',kd);
@@ -218,9 +249,9 @@ module.exports=function(Marionette){
       this.ui.yaw_send_button.text('Verifying...');
     },
     sendPitchGains: function(){
-      var ki=this.ui.pitch_ki.val();
-      var kd=this.ui.pitch_kd.val();
-      var kp=this.ui.pitch_kp.val();
+      var ki=Number(this.ui.pitch_ki.val());
+      var kd=Number(this.ui.pitch_kd.val());
+      var kp=Number(this.ui.pitch_kp.val());
       Commands.sendKPGain('pitch',kp);
       Commands.sendKIGain('pitch',ki);
       Commands.sendKDGain('pitch',kd);
@@ -233,9 +264,9 @@ module.exports=function(Marionette){
       this.ui.pitch_send_button.text('Verifying...');
     },
     sendRollGains: function(){
-      var ki=this.ui.roll_ki.val();
-      var kd=this.ui.roll_kd.val();
-      var kp=this.ui.roll_kp.val();
+      var ki=Number(this.ui.roll_ki.val());
+      var kd=Number(this.ui.roll_kd.val());
+      var kp=Number(this.ui.roll_kp.val());
       Commands.sendKPGain('roll',kp);
       Commands.sendKIGain('roll',ki);
       Commands.sendKDGain('roll',kd);
@@ -245,12 +276,13 @@ module.exports=function(Marionette){
         kd: kd,
         kp: kp
       };
+      console.log(this.needs_verifying);
       this.ui.roll_send_button.text('Verifying...');
     },
     sendHeadingGains: function(){
-      var ki=this.ui.heading_ki.val();
-      var kd=this.ui.heading_kd.val();
-      var kp=this.ui.heading_kp.val();
+      var ki=Number(this.ui.heading_ki.val());
+      var kd=Number(this.ui.heading_kd.val());
+      var kp=Number(this.ui.heading_kp.val());
       Commands.sendKPGain('heading',kp);
       Commands.sendKIGain('heading',ki);
       Commands.sendKDGain('heading',kd);
@@ -263,9 +295,9 @@ module.exports=function(Marionette){
       this.ui.heading_send_button.text('Verifying...');
     },
     sendAltitudeGains: function(){
-      var ki=this.ui.altitude_ki.val();
-      var kd=this.ui.altitude_kd.val();
-      var kp=this.ui.altitude_kp.val();
+      var ki=Number(this.ui.altitude_ki.val());
+      var kd=Number(this.ui.altitude_kd.val());
+      var kp=Number(this.ui.altitude_kp.val());
       Commands.sendKPGain('altitude',kp);
       Commands.sendKIGain('altitude',ki);
       Commands.sendKDGain('altitude',kd);
@@ -278,9 +310,9 @@ module.exports=function(Marionette){
       this.ui.altitude_send_button.text('Verifying...');
     },
     sendThrottleGains: function(){
-      var ki=this.ui.throttle_ki.val();
-      var kd=this.ui.throttle_kd.val();
-      var kp=this.ui.throttle_kp.val();
+      var ki=Number(this.ui.throttle_ki.val());
+      var kd=Number(this.ui.throttle_kd.val());
+      var kp=Number(this.ui.throttle_kp.val());
       Commands.sendKPGain('throttle',kp);
       Commands.sendKIGain('throttle',ki);
       Commands.sendKDGain('throttle',kd);
@@ -293,9 +325,9 @@ module.exports=function(Marionette){
       this.ui.throttle_send_button.text('Verifying...');
     },
     sendFlapGains: function(){
-      var ki=this.ui.flap_ki.val();
-      var kd=this.ui.flap_kd.val();
-      var kp=this.ui.flap_kp.val();
+      var ki=Number(this.ui.flap_ki.val());
+      var kd=Number(this.ui.flap_kd.val());
+      var kp=Number(this.ui.flap_kp.val());
       Commands.sendKPGain('flap',kp);
       Commands.sendKIGain('flap',ki);
       Commands.sendKDGain('flap',kd);
@@ -308,7 +340,7 @@ module.exports=function(Marionette){
       this.ui.flap_send_button.text('Verifying...');
     },
     sendOrbitalGains: function(){
-      var kp=this.ui.orbit_kp.val();
+      var kp=Number(this.ui.orbit_kp.val());
       Commands.sendOrbitGain(kp);
       this.needs_verifying.orbit={
         status: true,
@@ -317,7 +349,7 @@ module.exports=function(Marionette){
       this.ui.orbit_send_button.text('Verifying...');
     },
     sendPathGains: function(){
-      var kp=this.ui.path_kp.val();
+      var kp=Number(this.ui.path_kp.val());
       Commands.sendPathGain(kp);
       this.needs_verifying.path={
         status: true,
