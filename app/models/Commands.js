@@ -5,6 +5,7 @@ var Logger=require('../util/Logger');
 var Validator=require('../util/Validator');
 var SimulationManager=require("../SimulationManager");
 var AircraftStatus=require('../AircraftStatus');
+var Coordinates=require('../models/Coordinates');
 
 var Commands={
   checkConnection: function(){ //to make sure the data relay connection exists first (otherwise we'll prob get weird errors)
@@ -168,6 +169,58 @@ var Commands={
   },
   resetProbe: function(){
     this.sendCommand('reset_probe',1);
+  },
+  clearWaypoints: function(){
+    this.sendCommand('clear_waypoints',1);
+  },
+  setTargetWaypoint: function(number){
+    if(Validator.isValidNumber(number)){
+      this.sendCommand('set_targetWaypoint', number);
+    }
+    else{
+      Logger.error('setTargetWaypoint command not since invalid waypoint number was passed in. Number: '+number);
+    }
+  },
+  removeWaypoint: function(number){
+    if(Validator.isValidNumber(number)){
+      this.sendCommand('remove_waypoint', number);
+    }
+    else{
+      Logger.error('removeWaypoint command not since invalid waypoint number was passed in. Number: '+number);
+    }
+  },
+  returnHome: function(){
+    this.sendCommand('return_home',1);
+  },
+  cancelReturnHome: function(){
+    this.sendCommand('cancel_returnHome',1);
+  },
+  setReturnHome: function(coordinates){
+    var coords=Coordinates(coordinates);
+    if(coords && coords.alt){
+      this.sendCommand('set_ReturnHomeCoordinates',coords.lat, coords.lng, coords.alt);
+    }
+    else{
+      Logger.error('setReturnHome command not since invalid coordinates were passed in. Coordinates: '+coordinates);
+    }
+  },
+  appendWaypoint: function(coordinates, radius){
+    var coords=Coordinates(coordinates);
+    if(coords && coords.alt && Validator.isValidNumber(radius)){
+      this.sendCommand('new_waypoint',coords.lat, coords.lng, coords.alt, radius);
+    }
+    else{
+      Logger.error('appendWaypoint command not since invalid coordinates were passed in. Coordinates: '+coordinates);
+    }
+  },
+  insertWaypoint: function(index,coordinates, radius){
+    var coords=Coordinates(coordinates);
+    if(Validator.isInteger(index) && coords && coords.alt && Validator.isValidNumber(radius)){
+      this.sendCommand('insert_Waypoint',coords.lat, coords.lng, coords.alt, radius, index-1, index+1);
+    }
+    else{
+      Logger.error('insertWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
+    }
   }
 };
 module.exports=Commands;

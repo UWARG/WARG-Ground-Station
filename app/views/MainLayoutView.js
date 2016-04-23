@@ -4,7 +4,7 @@ module.exports=function(Marionette,$,L,window){
   var ConsoleView=require('./ConsoleView')(Marionette);
   var StatusView=require('./StatusView')(Marionette,$);
   var CockpitLayoutView=require('./CockpitLayoutView')(Marionette);
-  var MapView=require('./MapView')(Marionette,L);
+  var MapView=require('./MapView')(Marionette,L,$);
   var EmergencyButtonsView=require('./EmergencyButtonsView')(Marionette,window);
 
 	return Marionette.LayoutView.extend({

@@ -3,8 +3,9 @@ var Map=require('../Map');
 var TelemetryData=require('../models/TelemetryData');
 var Validator=require('../util/Validator');
 var Logger=require('../util/Logger');
+var PathManager=require('../map/PathManager');
 
-module.exports=function(Marionette,L){
+module.exports=function(Marionette,L,$){
 
   return Marionette.ItemView.extend({
     template:Template('MapView'),
@@ -16,12 +17,17 @@ module.exports=function(Marionette,L){
       plane_location_lon:'.plane-longitude'
     },
     events:{
-      'click #clear-plane-trail-button': 'clearPlaneTrail'
+      'click #clear-plane-trail-button': 'clearPlaneTrail',
+      'click #add-waypoint-button':'addWaypointToggle',
+      'click #delete-waypoint-button':'deleteWaypointToggle',
+      'click #send-path-button':'sendPath',
+      'submit .waypointPopupForm':'clickedWaypointPopupSubmit'
     },
 
     initialize: function(){
       this.map=new Map(L);
-
+      this.add_waypoint_mode=false;
+      this.delete_waypoint_mode=false;
     },
     onRender:function(){
       TelemetryData.addListener('data_received',function(data){
@@ -49,8 +55,25 @@ module.exports=function(Marionette,L){
         this.ui.plane_location_lon.text('Invalid');
       }
     },
+
+    sendPath: function(){
+      PathManager.sendPath();
+    },
+
     clearPlaneTrail: function(e){
       this.map.clearPlaneTrail();
+    },
+    addWaypointToggle: function(e){
+      this.map.addWaypointMode(!this.add_waypoint_mode);
+      this.add_waypoint_mode=!this.add_waypoint_mode;
+    },
+    deleteWaypointToggle: function(e){
+      this.map.deleteWaypointMode(!this.delete_waypoint_mode);
+      this.delete_waypoint_mode=!this.delete_waypoint_mode;
+    },
+    clickedWaypointPopupSubmit: function(e){
+      e.preventDefault();
+      this.map.popupSubmitted(Number($('.waypoint-altitude').val()),Number($('.waypoint-radius').val()));
     }
   });
 };
