@@ -63,13 +63,13 @@ var Validator={
     return false;
   },
   isValidThrottle: function(throttle){
-    if(this.isInteger(throttle) && Number(throttle)>=-1024 && Number(throttle)<=1024){
+    if(this.isValidNumber(throttle) &&  this.isInteger(Number(throttle)) && Number(throttle)>=-1024 && Number(throttle)<=1024){
       return true;
     }
     return false;
   },
   isValidFlap: function(flap){
-    if(this.isInteger(flap) && Number(flap)>=-1024 && Number(flap) <= 1024){
+    if(this.isValidNumber(flap) && this.isInteger(Number(flap)) && Number(flap)>=-1024 && Number(flap) <= 1024){
       return true;
     }
     return false;
