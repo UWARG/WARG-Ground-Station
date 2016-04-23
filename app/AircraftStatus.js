@@ -41,9 +41,9 @@ var AircraftStatus=function(){
   TelemetryData.on('data_received',function(data){
     this.checkErrorCodes(data.startup_error_codes);
     this.checkGPS(data.gps_status);
-    this.checkUHFStatus(data.wireless_connection);
-    this.checkManualMode(data.wireless_connection);
-    this.checkPlaneStatus(data.autopilot_active);
+    this.checkUHFStatus(data.autopilot_active);
+    this.checkManualMode(data.autopilot_active);
+    this.checkPlaneStatus(data.wireless_connection);
   }.bind(this));
 
   this.checkPlaneStatus=function(number){
