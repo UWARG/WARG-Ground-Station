@@ -170,6 +170,7 @@ var PathManager=function(){
 		var total_waypoints=this.waypoints.length;
 		for(var i=0;i<this.waypoints.length;i++){
 			Logger.info('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints);
+			Logger.debug('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[i].lat+' Lon: '+this.waypoints[i].lng + ' A: '+this.waypoints[i].alt+' R: '+this.waypoints[i].radius);
 			Commands.appendWaypoint(this.waypoints[i],this.waypoints[i].radius);
 			this.waypoints[i].sync_status=Waypoint.SYNC_STATUS.NOTHING;
 		}
