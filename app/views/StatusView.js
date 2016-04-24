@@ -68,8 +68,8 @@ module.exports=function(Marionette,$){
         this.starting_time=moment(time,'HHmmss.SS');
       }
       this.setTime(data.time);
-      this.setBatteryLevel(data.batteryLevel);
-      this.setGpsLevel(data.gpsStatus);
+      this.setBatteryLevel(data.battery_level1);
+      this.setGpsLevel(data.gps_status);
       this.messagesReceived++; 
     },
     onNewStatusCallback: function(message, priority, timeout){

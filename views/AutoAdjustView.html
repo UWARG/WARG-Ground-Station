@@ -85,7 +85,63 @@
     
   </tbody>
 </table>
-<div class="wrapper" style="margin-top: 50px">
+
+<table class="pure-table pure-form" style="margin-top: 12px">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Remote Pitch</th>
+      <th>Remote Roll</th>
+      <th>Remote Heading</th>
+      <th>Remote Altitude</th>
+      <th>Remote Throttle</th>
+      <th>Remote Flaps</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Control <br> Type </td>
+      <td>
+        <p id="remote_pitch_type">--</p>
+      </td>
+      <td>
+        <p id="remote_roll_type">--</p>
+      </td>
+      <td>
+        <p id="remote_heading_toggle">--</p>
+      </td>
+      <td>
+        <p id="remote_altitude_toggle">--</p>
+      </td>
+    </tr>
+    <tr>
+      <td>Control <br> Source </td>
+      <td>
+        <p id="remote_pitch_source">--</p>
+      </td>
+      <td>
+        <p id="remote_roll_source">--</p>
+      </td>
+      <td>
+        <p id="remote_heading_source">--</p>
+      </td>
+      <td>
+        <p id="remote_altitude_source">--</p>
+      </td>
+      <td>
+        <p id="remote_throttle_source">--</p>
+      </td>
+      <td>
+        <p id="remote_flap_source">--</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div>
+  <p>Remote Autonomous Level: <span id="remote_autonomous_level_value">--</span></p>
+  <p>Autonomous Level Synced: <span id="autonomous_level_synced">--</span></p>
+</div>
+<div class="wrapper" style="margin-top: 12px">
   <button id="sendall" class="pure-button button-success">Send All</button>
   <button id="fullRC" class="pure-button button-error" >Full RC Control</button>
   <button id="fullGround" class="pure-button button-secondary" >Full Ground Control</button>

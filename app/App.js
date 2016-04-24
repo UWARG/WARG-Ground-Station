@@ -6,7 +6,8 @@ var Network=require('./app/Network');
 var StatusManager=require('./app/StatusManager');
 var TelemetryData=require('./app/models/TelemetryData');
 var AircraftStatus=require('./app/AircraftStatus'); //initialize aircraft status manager
-
+var PathManager=require('./app/map/PathManager');
+var Commands=require('./app/models/Commands');
 var app={};
 
 var WindowShortcuts=require('./app/util/WindowShortcuts');
