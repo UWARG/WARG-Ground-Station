@@ -36,6 +36,10 @@ module.exports=function(){
 	});
 
 	data_relay.on('data',function(data){
+		if(!data){ //dont do anything if we get blank data or anything thats not an object
+			Logger.error('Got a blank packet from the data relay station. Value: '+data);
+			return;
+		}
 		data = data.toString();
 
 		TelemetryData.received.push({

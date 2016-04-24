@@ -31,9 +31,13 @@ module.exports=function(Marionette,L,$){
     },
     onRender:function(){
       TelemetryData.addListener('data_received',function(data){
-        this.map.movePlane(data.lat,data.lon,data.heading);
-        this.map.expandPlaneTrail(data.lat,data.lon);
-        this.setLatitudeLongitude(data.lat,data.lon);
+        if(Validator.isValidLatitude(data.lat) && Validator.isValidLongitude(data.lng)){
+          if(Validator.isValidHeading(data.heading)){
+            this.map.movePlane(data.lat,data.lon,data.heading);
+          }
+          this.map.expandPlaneTrail(data.lat,data.lon);
+          this.setLatitudeLongitude(data.lat,data.lon);
+        }
       }.bind(this));
       this.ui.map.ready(function(){
        this.map.createMap('leaflet-map');
