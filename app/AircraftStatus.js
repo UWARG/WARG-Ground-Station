@@ -5,6 +5,7 @@ var Validator=require('./util/Validator');
 var Logger=require('./util/Logger');
 
 var AircraftStatus=function(){
+  this.following_path=false;
   this.killModeActive=false;
   this.killModeWarning=false;
   this.armed=false;
@@ -44,7 +45,14 @@ var AircraftStatus=function(){
     this.checkUHFStatus(data.autopilot_active);
     this.checkManualMode(data.autopilot_active);
     this.checkPlaneStatus(data.wireless_connection);
+    this.checkPathFollowing(data.following_path);
   }.bind(this));
+
+  this.checkPathFollowing=function(status){
+    if(typeof status !== 'undefined' || status!==null){
+      this.following_path=!!status;
+    }
+  }
 
   this.checkPlaneStatus=function(number){
     if(!Validator.isValidNumber(number)){

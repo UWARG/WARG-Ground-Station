@@ -221,6 +221,14 @@ var Commands={
     else{
       Logger.error('insertWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
     }
+  },
+  followPath: function(status){
+    if(status){
+      this.sendCommand('follow_path',1);
+    } 
+    else{
+      this.sendCommand('follow_path',0);
+    }
   }
 };
 module.exports=Commands;
