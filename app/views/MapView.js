@@ -14,7 +14,8 @@ module.exports=function(Marionette,L,$){
     ui:{
       map:'#leaflet-map',
       plane_location_lat:'.plane-latitude',
-      plane_location_lon:'.plane-longitude'
+      plane_location_lon:'.plane-longitude',
+      path_verified:'#path-verified'
     },
     events:{
       'click #clear-plane-trail-button': 'clearPlaneTrail',
@@ -37,6 +38,17 @@ module.exports=function(Marionette,L,$){
           }
           this.map.expandPlaneTrail(data.lat,data.lon);
           this.setLatitudeLongitude(data.lat,data.lon);
+        }
+        if(Validator.isValidNumber(data.path_checksum)){
+          if(Number(data.path_checksum)===PathManager.current_path_checksum){
+            this.ui.path_verified.text('Yes');
+          }
+          else{
+            this.ui.path_verified.text('No. A: '+data.path_checksum+', L: '+PathManager.current_path_checksum);
+          }
+        }
+        else{
+          Logger.warn('Invalid value for path_checksum received. Value: '+data.path_checksum);
         }
       }.bind(this));
       this.ui.map.ready(function(){

@@ -11,6 +11,7 @@ var PathManager=function(){
 	this.plane_trail_coordinates=[];
 	this.waypoints=[];
 	this.current_waypoint=0; //the waypoint the plane is currently heading to
+	this.current_path_checksum=0; //current path checksum
 
 	//formats the waypoints in two arrays of polylines (this is for drawing the polyline between waypoints)
 	this.getMultiPolylineCoords=function(){
@@ -152,14 +153,14 @@ var PathManager=function(){
 		}
 	};
 
-	this.getPathChecksum=function(){
+	this.calculatePathChecksum=function(){
 		var checksum=0;
 		for(var i=0;i<this.waypoints.length;i++){
 			checksum+=this.waypoints[i].lat;
 			checksum+=this.waypoints[i].lng;
 			checksum+=this.waypoints[i].alt;
-			checksum+=this.waypoints[i].radius;
 		}
+		this.current_path_checksum=checksum;
 		return checksum;
 	}
 
@@ -172,6 +173,7 @@ var PathManager=function(){
 			Commands.appendWaypoint(this.waypoints[i],this.waypoints[i].radius);
 			this.waypoints[i].sync_status=Waypoint.SYNC_STATUS.NOTHING;
 		}
+		this.calculatePathChecksum();
 		this.emit('synced');
 	};
 };
