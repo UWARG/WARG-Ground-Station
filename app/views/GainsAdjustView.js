@@ -136,96 +136,72 @@ module.exports=function(Marionette){
       TelemetryData.removeListener('data_received',this.data_callback);
     },
 
-    normalizeData: function(data){
-      data.yaw_kp=Number(data.yaw_kp);
-      data.yaw_kd=Number(data.yaw_kd);
-      data.yaw_ki=Number(data.yaw_ki);
-      data.roll_kp=Number(data.roll_kp);
-      data.roll_kd=Number(data.roll_kd);
-      data.roll_ki=Number(data.roll_ki);
-      data.pitch_kp=Number(data.pitch_kp);
-      data.pitch_kd=Number(data.pitch_kd);
-      data.pitch_ki=Number(data.pitch_ki);
-      data.heading_kp=Number(data.heading_kp);
-      data.heading_kd=Number(data.heading_kd);
-      data.heading_ki=Number(data.heading_ki);
-      data.flap_kp=Number(data.flap_kp);
-      data.flap_kd=Number(data.flap_kd);
-      data.flap_ki=Number(data.flap_ki);
-      data.throttle_kp=Number(data.throttle_kp);
-      data.throttle_kd=Number(data.throttle_kd);
-      data.throttle_ki=Number(data.throttle_ki);
-      data.altitude_kp=Number(data.altitude_kp);
-      data.altitude_ki=Number(data.altitude_ki);
-      data.altitude_kd=Number(data.altitude_kd);
-      data.orbit_gain=Number(data.orbit_gain);
-      data.path_gain=Number(data.path_gain);
+    //compares two values of gains with up to 3 decimal places of percision
+    compareGains: function(gain1, gain2){
+      gain1=Number(gain1);
+      gain2=Number(gain2);
+      return gain1.toFixed(3)===gain2.toFixed(3);
     },
 
     dataCallback: function(data){
-      this.normalizeData(data);
-      console.log(this.needs_verifying.roll);
-      console.log(data.roll_kp);
-      console.log(data.roll_kd);
-      console.log(data.roll_ki);
       if(this.needs_verifying.yaw.status){
-        if(data.yaw_kp === this.needs_verifying.yaw.kp && data.yaw_ki === this.needs_verifying.yaw.ki && data.yaw_kd === this.needs_verifying.yaw.kd){
+        if(this.compareGains(data.yaw_kp ,this.needs_verifying.yaw.kp) && this.compareGains(data.yaw_ki,this.needs_verifying.yaw.ki) && this.compareGains(data.yaw_kd ,this.needs_verifying.yaw.kd)){
           this.needs_verifying.yaw.status=false;
           Logger.info('[Gains Adjust] Yaw gain successfully verified!');
           this.ui.yaw_send_button.text('Send');
         }
       }
       if(this.needs_verifying.pitch.status){
-        if(data.pitch_kp === this.needs_verifying.pitch.kp && data.pitch_ki === this.needs_verifying.pitch.ki && data.pitch_kd === this.needs_verifying.pitch.kd){
+        if(this.compareGains(data.pitch_kp,this.needs_verifying.pitch.kp) && this.compareGains(data.pitch_ki,this.needs_verifying.pitch.ki) && this.compareGains(data.pitch_kd,this.needs_verifying.pitch.kd)){
           this.needs_verifying.pitch.status=false;
           Logger.info('[Gains Adjust] Pitch gain successfully verified!');
           this.ui.pitch_send_button.text('Send');
         }
       }
       if(this.needs_verifying.roll.status){
-        if(data.roll_kp === this.needs_verifying.roll.kp && data.roll_ki === this.needs_verifying.roll.ki && data.roll_kd === this.needs_verifying.roll.kd){
+        if(this.compareGains(data.roll_kp,this.needs_verifying.roll.kp) && this.compareGains(data.roll_ki,this.needs_verifying.roll.ki) && this.compareGains(data.roll_kd,this.needs_verifying.roll.kd)){
           this.needs_verifying.roll.status=false;
           Logger.info('[Gains Adjust] Roll gain successfully verified!');
           this.ui.roll_send_button.text('Send');
         }
       }
       if(this.needs_verifying.heading.status){
-        if(data.heading_kp === this.needs_verifying.heading.kp && data.heading_ki === this.needs_verifying.heading.ki && data.heading_kd === this.needs_verifying.heading.kd){
+        if(this.compareGains(data.heading_kp,this.needs_verifying.heading.kp) && this.compareGains(data.heading_ki,this.needs_verifying.heading.ki) && this.compareGains(data.heading_kd,this.needs_verifying.heading.kd)){
           this.needs_verifying.heading.status=false;
           Logger.info('[Gains Adjust] Heading gain successfully verified!');
           this.ui.heading_send_button.text('Send');
         }
       }
       if(this.needs_verifying.flap.status){
-        if(data.flap_kp === this.needs_verifying.flap.kp && data.flap_ki === this.needs_verifying.flap.ki && data.flap_kd === this.needs_verifying.flap.kd){
+        if(this.compareGains(data.flap_kp,this.needs_verifying.flap.kp) && this.compareGains(data.flap_ki,this.needs_verifying.flap.ki) && this.compareGains(data.flap_kd,this.needs_verifying.flap.kd)){
           this.needs_verifying.flap.status=false;
           Logger.info('[Gains Adjust] Flap gain successfully verified!');
           this.ui.flap_send_button.text('Send');
         }
       }
       if(this.needs_verifying.orbit.status){
-        if(data.orbit_gain === this.needs_verifying.orbit.kp){
+        if(this.compareGains(data.orbit_gain,this.needs_verifying.orbit.kp)){
           this.needs_verifying.orbit.status=false;
           Logger.info('[Gains Adjust] Orbit gain successfully verified!');
           this.ui.orbit_send_button.text('Send');
         }
       }
       if(this.needs_verifying.throttle.status){
-        if(data.throttle_kp === this.needs_verifying.throttle.kp && data.throttle_ki === this.needs_verifying.throttle.ki && data.throttle_kd === this.needs_verifying.throttle.kd){
+        if(this.compareGains(data.throttle_kp,this.needs_verifying.throttle.kp) && this.compareGains(data.throttle_ki,this.needs_verifying.throttle.ki) && this.compareGains(data.throttle_kd,this.needs_verifying.throttle.kd)){
           this.needs_verifying.throttle.status=false;
           Logger.info('[Gains Adjust] Throttle gain successfully verified!');
           this.ui.throttle_send_button.text('Send');
         }
       }
       if(this.needs_verifying.altitude.status){
-        if(data.altitude_kp === this.needs_verifying.altitude.kp && data.altitude_ki === this.needs_verifying.altitude.ki && data.altitude_kd === this.needs_verifying.altitude.kd){
+        if(this.compareGains(data.altitude_kp,this.needs_verifying.altitude.kp) && this.compareGains(data.altitude_ki,this.needs_verifying.altitude.ki) && this.compareGains(data.altitude_kd,this.needs_verifying.altitude.kd)){
           this.needs_verifying.altitude.status=false;
           Logger.info('[Gains Adjust] Altitude gain successfully verified!');
           this.ui.altitude_send_button.text('Send');
         }
       }
       if(this.needs_verifying.path.status){
-        if(data.path_gain === this.needs_verifying.path.kp){
+        if(this.compareGains(data.path_gain,this.needs_verifying.path.kp)){
           this.needs_verifying.path.status=false;
           Logger.info('[Gains Adjust] Path gain successfully verified!');
           this.ui.path_send_button.text('Send');
