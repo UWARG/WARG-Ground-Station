@@ -50,6 +50,7 @@ module.exports=function(Marionette){
     },
     setThrottle: function(num){
       if(Validator.isValidThrottle(num)){
+        var num=Number(num);
         this.ui.throttle.text(Number((num+1024)*100/2048).toFixed(1));//-1024 represents 0%
       }else{
         Logger.warn('Invalid throttle setpoint value received! Throttle:' +num);
@@ -110,6 +111,7 @@ module.exports=function(Marionette){
     },
     setFlap: function(num){
       if(Validator.isValidFlap(num)){
+        var num=Number(num);
         this.ui.flap.text(Number((num+1024)*100/2048).toFixed(1));//-1024 represents 0%
       }else{
         Logger.warn('Invalid flap setpoint value received! Flap Setpoint: '+num);
