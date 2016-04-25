@@ -139,6 +139,21 @@ module.exports = function (gui) {
     }));
 
     window_submenu.append(new gui.MenuItem({
+        label: 'Data View',
+        type: 'checkbox',
+        click: function () {
+            gui.Window.open('windows/dataView.html', {
+                focus: true,
+                position: 'center',
+                width: 500,
+                height: 600,
+                toolbar: true
+            });
+            Logger.debug('Opening Data View window');
+        }
+    }));
+
+    window_submenu.append(new gui.MenuItem({
         label: 'Gains Adjust',
         type: 'checkbox',
         click: function () {
