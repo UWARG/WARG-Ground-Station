@@ -147,7 +147,7 @@ module.exports = function (gui) {
                 position: 'center',
                 width: 500,
                 height: 600,
-                toolbar: true
+                toolbar: false
             });
             Logger.debug('Opening Data View window');
         }
