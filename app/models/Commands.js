@@ -207,7 +207,7 @@ var Commands={
   appendWaypoint: function(coordinates, radius){
     var coords=Coordinates(coordinates);
     if(coords && coords.alt && Validator.isValidNumber(radius)){
-      this.sendCommand('new_waypoint',coords.lat, coords.lng, coords.alt, radius);
+      Network.connections['data_relay'].write('new_waypoint:'+coords.lat+','+ coords.lng+','+ coords.alt+','+radius+'\r\n');
     }
     else{
       Logger.error('appendWaypoint command not since invalid coordinates were passed in. Coordinates: '+coordinates);
@@ -220,6 +220,14 @@ var Commands={
     }
     else{
       Logger.error('insertWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
+    }
+  },
+  followPath: function(status){
+    if(status){
+      this.sendCommand('follow_path',1);
+    } 
+    else{
+      this.sendCommand('follow_path',0);
     }
   }
 };

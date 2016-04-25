@@ -4,6 +4,8 @@ var TelemetryData=require('../models/TelemetryData');
 var Validator=require('../util/Validator');
 var Logger=require('../util/Logger');
 var PathManager=require('../map/PathManager');
+var AircraftStatus=require('../AircraftStatus');
+var Commands=require('../models/Commands');
 
 module.exports=function(Marionette,L,$){
 
@@ -14,14 +16,17 @@ module.exports=function(Marionette,L,$){
     ui:{
       map:'#leaflet-map',
       plane_location_lat:'.plane-latitude',
-      plane_location_lon:'.plane-longitude'
+      plane_location_lon:'.plane-longitude',
+      path_verified:'#path-verified',
+      start_following_button:'#start-following-button'
     },
     events:{
       'click #clear-plane-trail-button': 'clearPlaneTrail',
       'click #add-waypoint-button':'addWaypointToggle',
       'click #delete-waypoint-button':'deleteWaypointToggle',
       'click #send-path-button':'sendPath',
-      'submit .waypointPopupForm':'clickedWaypointPopupSubmit'
+      'submit .waypointPopupForm':'clickedWaypointPopupSubmit',
+      'click #start-following-button':'togglePathFollowing'
     },
 
     initialize: function(){
@@ -31,9 +36,30 @@ module.exports=function(Marionette,L,$){
     },
     onRender:function(){
       TelemetryData.addListener('data_received',function(data){
-        this.map.movePlane(data.lat,data.lon,data.heading);
-        this.map.expandPlaneTrail(data.lat,data.lon);
-        this.setLatitudeLongitude(data.lat,data.lon);
+        if(Validator.isValidLatitude(data.lat) && Validator.isValidLongitude(data.lng)){
+          if(Validator.isValidHeading(data.heading)){
+            this.map.movePlane(data.lat,data.lon,data.heading);
+          }
+          this.map.expandPlaneTrail(data.lat,data.lon);
+          this.setLatitudeLongitude(data.lat,data.lon);
+        }
+        if(Validator.isValidNumber(data.path_checksum)){
+          if(Number(data.path_checksum).toFixed(3)===PathManager.current_path_checksum.toFixed(3)){
+            this.ui.path_verified.text('Yes');
+          }
+          else{
+            this.ui.path_verified.text('No. A: '+data.path_checksum+', L: '+PathManager.current_path_checksum);
+          }
+        }
+        else{
+          Logger.warn('Invalid value for path_checksum received. Value: '+data.path_checksum);
+        }
+        if(AircraftStatus.following_path){
+          this.ui.start_following_button.text('Stop Following');
+        }
+        else{
+          this.ui.start_following_button.text('Start Following');
+        }
       }.bind(this));
       this.ui.map.ready(function(){
        this.map.createMap('leaflet-map');
@@ -74,6 +100,14 @@ module.exports=function(Marionette,L,$){
     clickedWaypointPopupSubmit: function(e){
       e.preventDefault();
       this.map.popupSubmitted(Number($('.waypoint-altitude').val()),Number($('.waypoint-radius').val()));
+    },
+    togglePathFollowing: function(){
+      if(AircraftStatus.following_path){ //if the plane is currently following a path
+        Commands.followPath(false);
+      }
+      else{
+        Commands.followPath(true);
+      }
     }
   });
 };

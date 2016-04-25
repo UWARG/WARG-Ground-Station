@@ -5,6 +5,7 @@ var Validator=require('./util/Validator');
 var Logger=require('./util/Logger');
 
 var AircraftStatus=function(){
+  this.following_path=false;
   this.killModeActive=false;
   this.killModeWarning=false;
   this.armed=false;
@@ -44,7 +45,14 @@ var AircraftStatus=function(){
     this.checkUHFStatus(data.autopilot_active);
     this.checkManualMode(data.autopilot_active);
     this.checkPlaneStatus(data.wireless_connection);
+    this.checkPathFollowing(data.following_path);
   }.bind(this));
+
+  this.checkPathFollowing=function(status){
+    if(typeof status !== 'undefined' || status!==null){
+      this.following_path=!!status;
+    }
+  }
 
   this.checkPlaneStatus=function(number){
     if(!Validator.isValidNumber(number)){
@@ -115,13 +123,13 @@ var AircraftStatus=function(){
     } 
   };
 
-  this.checkErrorCodes=function(data){
-    var dataNumber=Number(data);
+  this.checkErrorCodes=function(startup_error_codes){
+    var dataNumber=Number(startup_error_codes);
     if(!Validator.isInteger(dataNumber)){
-      Logger.warn('Invalid data value for errorCodes received. Value : '+data);
+      Logger.warn('Invalid data value for startup_error_codes received. Value : '+startup_error_codes);
     }
     else if(this.pastErrorCode!==dataNumber){ //if we got an error code value thats different from last time
-      var error_codes=new Bitmask(dataNumber,10); //shouldnt need this 10
+      var error_codes=new Bitmask(dataNumber);
       this.pastErrorCode=dataNumber;
 
       this.startup_errors.POWER_ON_RESET=error_codes.getBit(0);

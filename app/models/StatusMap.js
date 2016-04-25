@@ -171,7 +171,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 30000
   },
   'AIRCRAFT_ERROR_BROWN_OUT_RESET':{
   	status: false,
@@ -181,7 +181,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 30000
   },
   'AIRCRAFT_ERROR_IDLE_MODE_RESET':{
   	status: false,
@@ -231,7 +231,7 @@ module.exports={
   	turn_on_onfalse:[],
     turn_off_onfalse:[],
   	priority:0,
-    timeout: 0
+    timeout: 30000
   },
   'AIRCRAFT_ERROR_VOLTAGE_REGULATOR_RESET':{
   	status: false,
