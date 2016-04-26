@@ -13,37 +13,46 @@ var Commands={
       return false;
     }
 
-    if(Network.connections['data_relay']){
+    if(Network.connections['data_relay'] && !Network.connections['data_relay'].closed){
       return true;
     }
     else{
-      Logger.warn('Cannot send command as the data_relay connection has not yet been established');
+      Logger.warn('Cannot send command as the data_relay connection has not yet been established or the connection is closed');
       return false;
     }
   },
   sendProtectedCommand:function(command){
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+':'+picpilot_config.get('command_password')+'\r\n');
+      return true;
     }
     if(SimulationManager.simulationActive){
-      Logger.info('[Simulation] Successfully sent command '+command+':'+picpilot_config.get('command_password')+'\r\n')
+      Logger.info('[Simulation] Successfully sent command '+command+':'+picpilot_config.get('command_password')+'\r\n');
+      return true;
     }
+    return false;
   },
   sendCommand: function(command, value){
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+':'+value+'\r\n');
+      return true;
     }
     if(SimulationManager.simulationActive){
-      Logger.info('[Simulation] Successfully sent command '+command+':'+value+'\r\n')
+      Logger.info('[Simulation] Successfully sent command '+command+':'+value+'\r\n');
+      return true;
     }
+    return false;
   },
   sendRawCommand: function(command){
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+'\r\n');
+      return true;
     }
     if(SimulationManager.simulationActive){
-      Logger.info('[Simulation] Successfully sent command: '+command)
+      Logger.info('[Simulation] Successfully sent command: '+command);
+      return true;
     }
+    return false;
   },
   activateWriteMode: function(){
     this.sendRawCommand('commander');
@@ -207,7 +216,7 @@ var Commands={
   appendWaypoint: function(coordinates, radius){
     var coords=Coordinates(coordinates);
     if(coords && coords.alt && Validator.isValidNumber(radius)){
-      Network.connections['data_relay'].write('new_waypoint:'+coords.lat+','+ coords.lng+','+ coords.alt+','+radius+'\r\n');
+      Network.connections['data_relay'].write('new_Waypoint:'+coords.lat+','+ coords.lng+','+ coords.alt+','+radius+'\r\n');
     }
     else{
       Logger.error('appendWaypoint command not since invalid coordinates were passed in. Coordinates: '+coordinates);
@@ -228,6 +237,11 @@ var Commands={
     } 
     else{
       this.sendCommand('follow_path',0);
+    }
+  },
+  sendHeartbeat: function(){
+    if(this.sendCommand('send_heartbeat',1)){
+      Logger.debug('[HEARTBEAT] Sent heartbeat to the picpilot');
     }
   }
 };
