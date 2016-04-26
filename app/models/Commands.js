@@ -32,18 +32,24 @@ var Commands={
     }
     return false;
   },
-  sendCommand: function(command, value){
+  sendCommand: function(command, value){ //value can be an indefinte number of arguments
+    var value_string='';
+    for(var arg=1;arg<arguments.length-1;arg++){ //we start at one cause we only care about the values
+      value_string+=arguments[arg]+',';
+    };
+    value_string+=arguments[arguments.length-1];
+
     if(this.checkConnection()){
-      Network.connections['data_relay'].write(command+':'+value+'\r\n');
+      Network.connections['data_relay'].write(command+':'+value_string+'\r\n');
       return true;
     }
     if(SimulationManager.simulationActive){
-      Logger.info('[Simulation] Successfully sent command '+command+':'+value+'\r\n');
+      Logger.info('[Simulation] Successfully sent command '+command+':'+value_string+'\r\n');
       return true;
     }
     return false;
   },
-  sendRawCommand: function(command){
+  sendRawCommand: function(command){  
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+'\r\n');
       return true;
@@ -213,10 +219,10 @@ var Commands={
       Logger.error('setReturnHome command not since invalid coordinates were passed in. Coordinates: '+coordinates);
     }
   },
-  appendWaypoint: function(coordinates, radius){
+  appendWaypoint: function(coordinates, radius, probe_drop){
     var coords=Coordinates(coordinates);
     if(coords && coords.alt && Validator.isValidNumber(radius)){
-      Network.connections['data_relay'].write('new_Waypoint:'+coords.lat+','+ coords.lng+','+ coords.alt+','+radius+'\r\n');
+      this.sendCommand('new_waypoint',coords.lat,coords.lng,coords.alt,radius,probe_drop*1);
     }
     else{
       Logger.error('appendWaypoint command not since invalid coordinates were passed in. Coordinates: '+coordinates);
@@ -231,12 +237,26 @@ var Commands={
       Logger.error('insertWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
     }
   },
+  updateWaypoint: function(index, coordinates, radius, probe_drop){
+    var coords=Coordinates(coordinates);
+    if(Validator.isInteger(index) && coords && coords.alt && Validator.isValidNumber(radius)){
+      this.sendCommand('update_waypoint',coords.lat, coords.lng, coords.alt, radius, probe_drop*1,index);
+    }
+    else{
+      Logger.error('updateWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
+    }
+  },
   followPath: function(status){
     if(status){
       this.sendCommand('follow_path',1);
     } 
     else{
       this.sendCommand('follow_path',0);
+    }
+  },
+  setTargetWaypoint: function(index){
+    if(!isNaN(index)){
+      this.sendCommand('set_targetWaypoint', index);
     }
   },
   sendHeartbeat: function(){

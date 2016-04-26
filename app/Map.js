@@ -4,7 +4,7 @@ var MapMeasure=require('./map/MapMeasure');
 var PathManager=require("./map/PathManager");
 var Waypoint=require('./models/Waypoint');
 var Template=require('./util/Template');
-
+var Coordinates=require('./models/Coordinates');
 var map_config=require('../config/map-config');
 var path=require('path');
 
@@ -62,8 +62,8 @@ var Map=function(L){
     this.insertWaypoint(index, coords);
   }.bind(this));
 
-  PathManager.on('update_waypoint', function(index, coords){
-    this.updateWaypoint(index, coords);
+  PathManager.on('update_waypoint', function(index, waypoint){
+    this.updateWaypoint(index,waypoint);
   }.bind(this));
 
   this.updateWaypointConnectionLines=function(){
@@ -74,7 +74,8 @@ var Map=function(L){
 
   this.appendWaypoint=function(coords){
     var waypoint=new leaflet.waypoint(coords,{
-      waypointCount: PathManager.waypoints.length-1
+      waypointCount: PathManager.waypoints.length-1,
+      radius: map_config.get('default_waypoint_radius')
     });
     waypointsLayer.addLayer(waypoint);
     waypoints.push(waypoint);
@@ -83,9 +84,11 @@ var Map=function(L){
     waypoint.bindPopup(Template('WaypointPopup')());
   };
 
-  this.updateWaypoint=function(index, coords){
-    waypoints[index].setLatLng(coords);
-    waypoints[index].changeAltitude(coords.alt);
+  this.updateWaypoint=function(index, waypoint){
+    waypoints[index].setLatLng(Coordinates(waypoint));
+    waypoints[index].changeAltitude(waypoint.alt);
+    waypoints[index].changeRadius(waypoint.radius);
+    waypoints[index].setProbeDrop(waypoint.type==='probe_drop');
     this.updateWaypointConnectionLines();
   };
 
@@ -105,7 +108,8 @@ var Map=function(L){
 
   this.insertWaypoint=function(index, coords){
     var waypoint=new leaflet.waypoint(coords,{
-      waypointCount: index
+      waypointCount: index,
+      radius: map_config.get('default_waypoint_radius')
     });
     waypointsLayer.addLayer(waypoint);
     waypoints.splice(index, 0, waypoint);
@@ -272,13 +276,15 @@ var events=this.events;
     this.waypoints.push(waypoint);
   };
 
-  this.popupSubmitted=function(new_alt, new_radius){
+  this.popupSubmitted=function(new_alt, new_radius,is_probe_drop){
     if(new_alt){
       PathManager.updateWaypointAltitude(current_changing_waypoint, new_alt);
     }
     if(new_radius){
       PathManager.updateWaypointRadius(current_changing_waypoint, new_radius);
     }
+    PathManager.updateWaypointType(current_changing_waypoint, is_probe_drop);
+    PathManager.resyncWaypoint(current_changing_waypoint);
   };
 
 };

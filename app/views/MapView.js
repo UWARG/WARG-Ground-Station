@@ -18,7 +18,9 @@ module.exports=function(Marionette,L,$){
       plane_location_lat:'.plane-latitude',
       plane_location_lon:'.plane-longitude',
       path_verified:'#path-verified',
-      start_following_button:'#start-following-button'
+      start_following_button:'#start-following-button',
+      new_target_waypoint: '#new-follow-index input',
+      remote_waypoint_index:'#remote-waypoint-index'
     },
     events:{
       'click #clear-plane-trail-button': 'clearPlaneTrail',
@@ -26,7 +28,9 @@ module.exports=function(Marionette,L,$){
       'click #delete-waypoint-button':'deleteWaypointToggle',
       'click #send-path-button':'sendPath',
       'submit .waypointPopupForm':'clickedWaypointPopupSubmit',
-      'click #start-following-button':'togglePathFollowing'
+      'click #start-following-button':'togglePathFollowing',
+      'click #clear-path-button': 'clearPath',
+      'submit #new-follow-index':'followNewWaypoint'
     },
 
     initialize: function(){
@@ -44,8 +48,10 @@ module.exports=function(Marionette,L,$){
           this.setLatitudeLongitude(data.lat,data.lon);
         }
         if(Validator.isValidNumber(data.path_checksum)){
-          if(Number(data.path_checksum).toFixed(3)===PathManager.current_path_checksum.toFixed(3)){
+          PathManager.remote_path_checksum=Number(data.path_checksum);
+          if(Number(data.path_checksum)===PathManager.current_path_checksum){
             this.ui.path_verified.text('Yes');
+            PathManager.setSynced();
           }
           else{
             this.ui.path_verified.text('No. A: '+data.path_checksum+', L: '+PathManager.current_path_checksum);
@@ -59,6 +65,13 @@ module.exports=function(Marionette,L,$){
         }
         else{
           this.ui.start_following_button.text('Start Following');
+        }
+        if(Validator.isValidNumber(data.waypoint_count)){
+          PathManager.remote_waypoint_count=Number(data.waypoint_count);
+        }
+        if(Validator.isValidNumber(data.waypoint_index)){
+          PathManager.remote_waypoint_index=Number(data.waypoint_index);
+          this.ui.remote_waypoint_index.text(data.waypoint_index);
         }
       }.bind(this));
       this.ui.map.ready(function(){
@@ -86,6 +99,16 @@ module.exports=function(Marionette,L,$){
       PathManager.sendPath();
     },
 
+    clearPath: function(){
+      PathManager.clearPath();
+    },
+
+    followNewWaypoint: function(e){
+      e.preventDefault();
+      Commands.setTargetWaypoint(Number(this.ui.new_target_waypoint.val()));
+      this.ui.new_target_waypoint.val('');
+    },
+
     clearPlaneTrail: function(e){
       this.map.clearPlaneTrail();
     },
@@ -99,7 +122,7 @@ module.exports=function(Marionette,L,$){
     },
     clickedWaypointPopupSubmit: function(e){
       e.preventDefault();
-      this.map.popupSubmitted(Number($('.waypoint-altitude').val()),Number($('.waypoint-radius').val()));
+      this.map.popupSubmitted(Number($('.waypoint-altitude').val()),Number($('.waypoint-radius').val()), $('.is-probe').is(":checked"));
     },
     togglePathFollowing: function(){
       if(AircraftStatus.following_path){ //if the plane is currently following a path

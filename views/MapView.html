@@ -1,10 +1,15 @@
 <div class="map-controls">
   <button class="pure-button button-success" id="send-path-button">Send Path</button>
-  <button class="pure-button button-secondary" id="start-following-button">Start Following</button>
   <button class="pure-button button-secondary" id="add-waypoint-button">Add Waypoint</button>
   <button class="pure-button button-error" id="delete-waypoint-button">Delete Waypoint</button>
-  <button class="pure-button button-error" id="clear-plane-trail-button">Clear Trail</button>
+  <button class="pure-button button-error" id="clear-path-button">Clear Path</button>
   <p>Path Verified: <span id="path-verified">--</span></p>
+</div>
+<div class="map-controls">
+  <button class="pure-button button-secondary" id="start-following-button">Start Following</button>
+  <button class="pure-button button-error" id="clear-plane-trail-button">Clear Trail</button>
+  <form class="pure-form" id="new-follow-index"><input type="number" placeholder="Follow waypoint?"></input><button class="pure-button button-success">Send</button></form>
+  <p>Remote Following: <span id="remote-waypoint-index">--</span></p>
 </div>
 
 <div id="leaflet-map">
