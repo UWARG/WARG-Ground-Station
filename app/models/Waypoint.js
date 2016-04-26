@@ -10,6 +10,7 @@ var Waypoint=function(coordinates, radius, sync_status){
 	this.lng=coords.lng;
 	this.alt=coords.alt;
 	this.radius=radius;
+	this.type=false; //can be false or 'probe_drop'
 	this.sync_status=sync_status || this.SYNC_STATUS.APPEND; //what to do with the waypoint during the next remote sync
 
 	this.getCoordinates=function(){

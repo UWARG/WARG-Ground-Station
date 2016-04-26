@@ -49,7 +49,7 @@ L.waypoint= L.Marker.extend({
       this._icon.className+=' waypointIconRemove';
     }
     else{
-      this.options.icon.options.className=this.options.icon.options.className.replace('waypointIconRemove','');
+      this._icon.className=this._icon.className.replace('waypointIconRemove','');
     }
   },
 
@@ -57,7 +57,6 @@ L.waypoint= L.Marker.extend({
     if(status){
       this.flashing=false;
       this.flashingInterval=setInterval(function(){
-        debugger
         if(this.flashing){
           this._icon.className=this._icon.className.replace(' waypointIconFlashing','');
           this.flashing=false;
@@ -70,6 +69,16 @@ L.waypoint= L.Marker.extend({
     }
     else{
       clearInterval(this.flashingInterval);
+    }
+  },
+
+  setProbeDrop: function(status){
+    console.log(status);
+    if(status){
+      this._icon.className+=' waypointProbeDrop';
+    }
+    else{
+      this._icon.className=this._icon.className.replace('waypointProbeDrop','');
     }
   },
 

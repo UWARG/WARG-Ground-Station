@@ -57,6 +57,7 @@ var PathManager=function(){
 		if(coords){
 			this.waypoints.push(new Waypoint(coordinates,map_config.get('default_waypoint_radius'),Waypoint.SYNC_STATUS.APPEND));
 			this.emit('append_waypoint', coordinates);
+			this.calculatePathChecksum();
 		}
 		else{
 			console.error('Invalid parameter in PathManager.appendWaypoint: '+coordinates);
@@ -74,6 +75,7 @@ var PathManager=function(){
 				this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.DELETE);
 				this.emit('set_deleted_waypoint',index);
 			}
+			this.calculatePathChecksum();
 		}
 		else{
 			console.error('PathManager.removeWaypoint was passed in an index that does not exist. Index: '+index);
@@ -90,6 +92,7 @@ var PathManager=function(){
 			}
 			this.waypoints.splice(index, 0, new Waypoint(coords,map_config.get('default_waypoint_radius'),sync_status));
 			this.emit('insert_waypoint',index, coordinates);
+			this.calculatePathChecksum();
 		}
 		else{
 			console.error('PathManager insertWaypoint was passed in either a waypoint index that does not exist or invalid coordinates. Coords: '+ coordinates);
@@ -104,6 +107,7 @@ var PathManager=function(){
 			coords.alt ? this.waypoints[index].alt= coords.alt : null;
 			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
 			this.emit('update_waypoint',index, this.waypoints[index].getCoordinates());
+			this.calculatePathChecksum();
 		}
 		else{
 			console.error('PathManager.updateWaypoint called on a waypoint index that does not exist or passed in invalid coordinates.Coords: '+coordinates);
@@ -125,11 +129,20 @@ var PathManager=function(){
 			this.waypoints[index].alt=alt;
 			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
 			this.emit('update_waypoint',index, Coordinates(this.waypoints[index]));
+			this.calculatePathChecksum();
 		}
 		else{
 			console.error('PathManager.updateWaypointAltitude called on a waypoint index that does not exist or passed in invalid coordinates.Alt: '+alt);
 		}
 	};
+
+	this.updateWaypointType=function(index, is_probe_drop){
+		if(this.waypoints[index]){
+			this.waypoints[index].type= is_probe_drop ? "probe_drop" : false;
+			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
+			this.emit('update_waypoint',index, Coordinates(this.waypoints[index]), is_probe_drop);
+		}
+	}
 
 	this.changeWaypointSyncStatus=function(waypoint,new_status){
 		//only set it as update if it was synced with the remote before
@@ -148,6 +161,7 @@ var PathManager=function(){
 			var string='Waypoint #'+i+'\n';
 			string+='Altitude: '+this.waypoints[i].alt+'\n';
 			string+='Radius: '+this.waypoints[i].radius+'\n';
+			string+='Type: '+this.waypoints[i].type+'\n';
 			string+='Sync Status: '+this.waypoints[i].sync_status+'\n\n';
 			console.log(string);
 		}

@@ -62,8 +62,8 @@ var Map=function(L){
     this.insertWaypoint(index, coords);
   }.bind(this));
 
-  PathManager.on('update_waypoint', function(index, coords){
-    this.updateWaypoint(index, coords);
+  PathManager.on('update_waypoint', function(index, coords, is_probe_drop){
+    this.updateWaypoint(index,coords, is_probe_drop);
   }.bind(this));
 
   this.updateWaypointConnectionLines=function(){
@@ -83,9 +83,10 @@ var Map=function(L){
     waypoint.bindPopup(Template('WaypointPopup')());
   };
 
-  this.updateWaypoint=function(index, coords){
+  this.updateWaypoint=function(index, coords,is_probe_drop){
     waypoints[index].setLatLng(coords);
     waypoints[index].changeAltitude(coords.alt);
+    waypoints[index].setProbeDrop(is_probe_drop);
     this.updateWaypointConnectionLines();
   };
 
@@ -272,13 +273,15 @@ var events=this.events;
     this.waypoints.push(waypoint);
   };
 
-  this.popupSubmitted=function(new_alt, new_radius){
+  this.popupSubmitted=function(new_alt, new_radius,is_probe_drop){
     if(new_alt){
       PathManager.updateWaypointAltitude(current_changing_waypoint, new_alt);
     }
     if(new_radius){
       PathManager.updateWaypointRadius(current_changing_waypoint, new_radius);
     }
+    PathManager.updateWaypointType(current_changing_waypoint, is_probe_drop);
+    PathManager.debugPrint();
   };
 
 };

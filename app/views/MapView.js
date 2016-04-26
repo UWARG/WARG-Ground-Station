@@ -99,7 +99,7 @@ module.exports=function(Marionette,L,$){
     },
     clickedWaypointPopupSubmit: function(e){
       e.preventDefault();
-      this.map.popupSubmitted(Number($('.waypoint-altitude').val()),Number($('.waypoint-radius').val()));
+      this.map.popupSubmitted(Number($('.waypoint-altitude').val()),Number($('.waypoint-radius').val()), $('.is-probe').is(":checked"));
     },
     togglePathFollowing: function(){
       if(AircraftStatus.following_path){ //if the plane is currently following a path
