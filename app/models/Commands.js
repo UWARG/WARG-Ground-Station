@@ -241,7 +241,7 @@ var Commands={
   },
   sendHeartbeat: function(){
     if(this.sendCommand('send_heartbeat',1)){
-      Logger.info('[HEARTBEAT] Sent heartbeat to the picpilot');
+      Logger.debug('[HEARTBEAT] Sent heartbeat to the picpilot');
     }
   }
 };
