@@ -179,11 +179,11 @@ var Commands={
   unkillPlane: function(){
     this.sendProtectedCommand('unkill_plane');
   },
-  dropProbe: function(){
-    this.sendCommand('drop_probe',1);
+  dropProbe: function(number){
+    this.sendCommand('drop_probe',number);
   },
-  resetProbe: function(){
-    this.sendCommand('reset_probe',1);
+  resetProbe: function(number){
+    this.sendCommand('reset_probe',number);
   },
   clearWaypoints: function(){
     this.sendCommand('clear_waypoints',1);

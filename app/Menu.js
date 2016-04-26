@@ -171,8 +171,20 @@ module.exports = function (gui) {
     }));
 
     window_submenu.append(new gui.MenuItem({
-        label: 'Altitude Graph Entry',
-        type: 'checkbox'
+        label: 'Probe Drops',
+        type: 'checkbox',
+        click: function () {
+            gui.Window.open('./windows/probeDrops.html', {
+                focus: true,
+                position: 'center',
+                width: 575,
+                height: 270,
+                toolbar: false
+            });
+            Logger.debug('Opening probe drops window');
+        },
+        modifiers: 'ctrl-shift',
+        key: 'p'
     }));
 
     // Append window menu as a Submenu
