@@ -21,7 +21,8 @@ module.exports=function(Marionette,$){
       battery_message:".battery-message",
       battery_picture:".battery-picture .battery-base .percentage",
       gps_message:".gps-status .gps-message",
-      transmission_speed:'.transition-rate'
+      transmission_speed:'.transition-rate',
+      rssi:'.rssi'
     },
     events:{
       'click #reset-elapsed-time':'resetElapsedTime',
@@ -70,6 +71,7 @@ module.exports=function(Marionette,$){
       this.setTime(data.time);
       this.setBatteryLevel(data.battery_level1);
       this.setGpsLevel(data.gps_status);
+      this.ui.rssi.text(data.RSSI);
       this.messagesReceived++; 
     },
     onNewStatusCallback: function(message, priority, timeout){
