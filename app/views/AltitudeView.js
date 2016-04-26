@@ -52,8 +52,7 @@ module.exports=function(Marionette){
       this.setAltitude(data.altitude);
       this.setAltitudeSetpoint(data.altitude_setpoint);
       this.setGroundspeed(data.ground_speed);
-      //this.setAirspeed(data.airspeed); We dont have the airspeed yet
-      this.setAirspeed(24); //TODO: remove this after!
+      this.setAirspeed(data.airspeed);
     },
     setCanvasDimensions: function(){
       var canvas_dimensions=Math.min(this.ui.altitude_dials.parent().width()-12,this.ui.altitude_dials.parent().height()-105);
