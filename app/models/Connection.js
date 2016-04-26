@@ -14,6 +14,8 @@ var Connection = function (options) {
       throw new Error("Connection name,host, and port parameters are all required!")
     }
     
+    this.closed=false;
+
     // Initialize necessary properties from `EventEmitter` in this instance
     EventEmitter.call(this);
     this.setMaxListeners(advanced_config.get('connection_max_listeners'));
@@ -46,10 +48,12 @@ var Connection = function (options) {
 
     this.socket.on('connect',function(){
       this.emit('connect');
+      this.closed=false;
       Logger.info('Sucessfully connected to '+this.name+' with host '+this.host+' and port '+this.port);
     }.bind(this));
 
     this.socket.on('error',function(error){ 
+      this.closed=true;
       Logger.error('Problem with '+this.name+' connection (host: '+this.host+',port:'+this.port+')\n'
         +error.toString());
       this.emit('socket_error', error); //NOTE: named socket_error and not error so as to not throw an exception
@@ -62,6 +66,7 @@ var Connection = function (options) {
 
     this.socket.on('close',function(had_error){
       this.emit('close',had_error);
+      this.closed=true;
       if (had_error) {
           Logger.error('Connection to  '+this.name+' closed due to an error: Not reconnecting');
       } else {

@@ -3,6 +3,8 @@ var StatusManager=require('./StatusManager');
 var Bitmask=require('./util/Bitmask');
 var Validator=require('./util/Validator');
 var Logger=require('./util/Logger');
+var picpilot_config=require('../config/picpilot-config');
+var Commands=require('./models/Commands');
 
 var AircraftStatus=function(){
   this.following_path=false;
@@ -12,6 +14,8 @@ var AircraftStatus=function(){
   this.initializing=false;
   this.running=false;
   this.manualMode=false;
+  this.heartBeatTimeout=picpilot_config.get('heart_beat_timeout');
+
   this.xbee={//has not been implemented yet from the picpilots side
     status:false,
     timeSinceLost:null
@@ -38,6 +42,11 @@ var AircraftStatus=function(){
     ILLEGAL_OPCODE_RESET: false,
     TRAP_RESET: false
   };
+
+  //sending a heartbeat every 5 seconds
+  setInterval(function(){
+    Commands.sendHeartbeat();
+  }, this.heartBeatTimeout);
 
   TelemetryData.on('data_received',function(data){
     this.checkErrorCodes(data.startup_error_codes);
