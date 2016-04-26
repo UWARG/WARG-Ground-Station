@@ -102,7 +102,7 @@ var AircraftStatus=function(){
       else{ //has been turned to false
         this.uhf.timeSinceLost=Date.now();
       }
-      StatusManager.setStatusCode('UHF_LOST',!this.uhfStatus);
+      StatusManager.setStatusCode('UHF_LOST',!this.uhf.status);
     }
   };
   
