@@ -191,9 +191,9 @@ var PathManager=function(){
 			checksum+=waypoint_array[i].lng;
 			checksum+=waypoint_array[i].alt;
 			checksum+=waypoint_array[i].radius;
-			checksum+=(waypoint_array[i].type==='probe_drop')*1;
+			checksum+= (waypoint_array[i].type==='probe_drop')*1;
 		}
-		checksum=Math.floor(checksum);
+		checksum=Math.floor(checksum)%256; //modulo 256 because the checksum is stored as a byte on the picpilot
 		return checksum;
 	};
 
@@ -215,20 +215,35 @@ var PathManager=function(){
 		var total_waypoints=this.waypoints.length;
 
 		var current_waypoint_to_send=0;
-		var waypoints_sent=[];
-
+		var verifying_last=false;
 		this.sending_path_interval=setInterval(function(){
-			if(!this.waypoints[current_waypoint_to_send]){
+			if(!this.waypoints[current_waypoint_to_send] && !verifying_last){
 				clearInterval(this.sending_path_interval);
 			}
-			else if(this.getChecksum(waypoints_sent)===this.remote_path_checksum){
-				Logger.info('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints);
-				Logger.debug('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send].lat+' Lon: '+this.waypoints[current_waypoint_to_send].lng + ' A: '+this.waypoints[current_waypoint_to_send].alt+' R: '+this.waypoints[current_waypoint_to_send].radius);
-				Commands.appendWaypoint(this.waypoints[current_waypoint_to_send],this.waypoints[current_waypoint_to_send].radius,this.waypoints[current_waypoint_to_send].type==='probe_drop');
-				waypoints_sent.push(this.waypoints[current_waypoint_to_send]);
-				current_waypoint_to_send++;
+			else if (current_waypoint_to_send===0  && this.remote_waypoint_count!==0){
+				Commands.clearWaypoints();
 			}
-			else{
+			else if(current_waypoint_to_send===this.remote_waypoint_count){
+				if(!verifying_last){
+					Logger.info('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints);
+					Logger.debug('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send].lat+' Lon: '+this.waypoints[current_waypoint_to_send].lng + ' A: '+this.waypoints[current_waypoint_to_send].alt+' R: '+this.waypoints[current_waypoint_to_send].radius);
+					Commands.appendWaypoint(this.waypoints[current_waypoint_to_send],this.waypoints[current_waypoint_to_send].radius,this.waypoints[current_waypoint_to_send].type==='probe_drop');
+				}
+
+				if(verifying_last){
+					verifying_last=false;
+				}
+
+				current_waypoint_to_send++;
+
+				if(current_waypoint_to_send===total_waypoints){ //if we just sent the last waypoint
+					verifying_last=true;
+				}
+				else{
+					verifying_last=false;
+				}
+			}
+			else {
 				Logger.info('[Path Manager] Re-Sending waypoint '+current_waypoint_to_send + '/'+total_waypoints);
 				Logger.debug('[Path Manager] Re-Sending waypoint '+current_waypoint_to_send + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send-1].lat+' Lon: '+this.waypoints[current_waypoint_to_send-1].lng + ' A: '+this.waypoints[current_waypoint_to_send-1].alt+' R: '+this.waypoints[current_waypoint_to_send-1].radius);
 				Commands.appendWaypoint(this.waypoints[current_waypoint_to_send-1],this.waypoints[current_waypoint_to_send-1].radius,this.waypoints[current_waypoint_to_send-1].type==='probe_drop');
