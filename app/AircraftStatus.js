@@ -59,7 +59,7 @@ var AircraftStatus=function(){
 
   this.checkPathFollowing=function(status){
     if(typeof status !== 'undefined' || status!==null){
-      this.following_path=!!status;
+      this.following_path=!!Number(status);
     }
   }
 

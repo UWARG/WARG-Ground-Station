@@ -11,7 +11,9 @@ var PathManager=function(){
 	this.plane_trail_coordinates=[];
 	this.waypoints=[];
 	this.current_waypoint=0; //the waypoint the plane is currently heading to
+	this.waypoint_count=0;
 	this.current_path_checksum=0; //current path checksum
+	this.sending_path_interval=null;
 
 	//formats the waypoints in two arrays of polylines (this is for drawing the polyline between waypoints)
 	this.getMultiPolylineCoords=function(){
@@ -184,14 +186,32 @@ var PathManager=function(){
 	}
 
 	this.sendPath=function(){
+		if(this.sending_path_interval){
+			clearInterval(this.sending_path_interval);
+		}
+
 		Logger.info('[Path Manager] Clearing all waypoints');
 		Commands.clearWaypoints();
 		var total_waypoints=this.waypoints.length;
-		for(var i=0;i<this.waypoints.length;i++){
-			Logger.info('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints);
-			Logger.debug('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[i].lat+' Lon: '+this.waypoints[i].lng + ' A: '+this.waypoints[i].alt+' R: '+this.waypoints[i].radius);
-			Commands.appendWaypoint(this.waypoints[i],this.waypoints[i].radius,this.waypoints[i].type==='probe_drop');
-		}
+
+		var current_waypoint_to_send=0;
+		this.sending_path_interval=setInterval(function(){
+			if(!this.waypoints[current_waypoint_to_send]){
+				clearInterval(this.sending_path_interval);
+			}
+			else if(current_waypoint_to_send===this.waypoint_count){
+				Logger.info('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints);
+				Logger.debug('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send].lat+' Lon: '+this.waypoints[current_waypoint_to_send].lng + ' A: '+this.waypoints[current_waypoint_to_send].alt+' R: '+this.waypoints[current_waypoint_to_send].radius);
+				Commands.appendWaypoint(this.waypoints[current_waypoint_to_send],this.waypoints[current_waypoint_to_send].radius,this.waypoints[current_waypoint_to_send].type==='probe_drop');
+				current_waypoint_to_send++;
+			}
+			else{
+				Logger.info('[Path Manager] Re-Sending waypoint '+current_waypoint_to_send + '/'+total_waypoints);
+				Logger.debug('[Path Manager] Re-Sending waypoint '+current_waypoint_to_send + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send-1].lat+' Lon: '+this.waypoints[current_waypoint_to_send-1].lng + ' A: '+this.waypoints[current_waypoint_to_send-1].alt+' R: '+this.waypoints[current_waypoint_to_send-1].radius);
+				Commands.appendWaypoint(this.waypoints[current_waypoint_to_send-1],this.waypoints[current_waypoint_to_send-1].radius,this.waypoints[current_waypoint_to_send-1].type==='probe_drop');
+			}
+		}.bind(this),1000);
+
 		this.calculatePathChecksum();
 	};
 

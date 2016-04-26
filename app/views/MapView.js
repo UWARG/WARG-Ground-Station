@@ -61,6 +61,12 @@ module.exports=function(Marionette,L,$){
         else{
           this.ui.start_following_button.text('Start Following');
         }
+        if(Validator.isValidNumber(data.waypointCount)){
+          PathManager.waypoint_count=Number(data.waypoint_count);
+        }
+        if(Validator.isValidNumber(data.current_waypoint)){
+          PathManager.current_waypoint=Number(data.waypoint_index);
+        }
       }.bind(this));
       this.ui.map.ready(function(){
        this.map.createMap('leaflet-map');
