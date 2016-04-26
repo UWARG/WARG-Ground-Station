@@ -18,7 +18,9 @@ module.exports=function(Marionette,L,$){
       plane_location_lat:'.plane-latitude',
       plane_location_lon:'.plane-longitude',
       path_verified:'#path-verified',
-      start_following_button:'#start-following-button'
+      start_following_button:'#start-following-button',
+      new_target_waypoint: '#new-follow-index input',
+      remote_waypoint_index:'#remote-waypoint-index'
     },
     events:{
       'click #clear-plane-trail-button': 'clearPlaneTrail',
@@ -27,7 +29,8 @@ module.exports=function(Marionette,L,$){
       'click #send-path-button':'sendPath',
       'submit .waypointPopupForm':'clickedWaypointPopupSubmit',
       'click #start-following-button':'togglePathFollowing',
-      'click #clear-path-button': 'clearPath'
+      'click #clear-path-button': 'clearPath',
+      'submit #new-follow-index':'followNewWaypoint'
     },
 
     initialize: function(){
@@ -68,6 +71,7 @@ module.exports=function(Marionette,L,$){
         }
         if(Validator.isValidNumber(data.waypoint_index)){
           PathManager.remote_waypoint_index=Number(data.waypoint_index);
+          this.ui.remote_waypoint_index.text(data.waypoint_index);
         }
       }.bind(this));
       this.ui.map.ready(function(){
@@ -97,6 +101,12 @@ module.exports=function(Marionette,L,$){
 
     clearPath: function(){
       PathManager.clearPath();
+    },
+
+    followNewWaypoint: function(e){
+      e.preventDefault();
+      Commands.setTargetWaypoint(Number(this.ui.new_target_waypoint.val()));
+      this.ui.new_target_waypoint.val('');
     },
 
     clearPlaneTrail: function(e){

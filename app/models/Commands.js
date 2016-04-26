@@ -245,6 +245,11 @@ var Commands={
       this.sendCommand('follow_path',0);
     }
   },
+  setTargetWaypoint: function(index){
+    if(!isNaN(index)){
+      this.sendCommand('set_targetWaypoint', index);
+    }
+  },
   sendHeartbeat: function(){
     if(this.sendCommand('send_heartbeat',1)){
       Logger.debug('[HEARTBEAT] Sent heartbeat to the picpilot');
