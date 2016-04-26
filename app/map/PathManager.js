@@ -190,6 +190,14 @@ var PathManager=function(){
 		return checksum;
 	};
 
+	this.clearPath=function(){
+		for(var i=0;i<this.waypoints.length;i++){
+			this.removeWaypoint(i);
+		}
+		Commands.clearWaypoints();
+		Logger.info('[Path Manager] Cleared all waypoints');
+	};
+
 	this.sendPath=function(){
 		if(this.sending_path_interval){
 			clearInterval(this.sending_path_interval);

@@ -26,7 +26,8 @@ module.exports=function(Marionette,L,$){
       'click #delete-waypoint-button':'deleteWaypointToggle',
       'click #send-path-button':'sendPath',
       'submit .waypointPopupForm':'clickedWaypointPopupSubmit',
-      'click #start-following-button':'togglePathFollowing'
+      'click #start-following-button':'togglePathFollowing',
+      'click #clear-path-button': 'clearPath'
     },
 
     initialize: function(){
@@ -92,6 +93,10 @@ module.exports=function(Marionette,L,$){
 
     sendPath: function(){
       PathManager.sendPath();
+    },
+
+    clearPath: function(){
+      PathManager.clearPath();
     },
 
     clearPlaneTrail: function(e){
