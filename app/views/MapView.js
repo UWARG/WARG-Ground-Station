@@ -49,12 +49,12 @@ module.exports=function(Marionette,L,$){
         }
         if(Validator.isValidNumber(data.path_checksum)){
           PathManager.remote_path_checksum=Number(data.path_checksum);
-          if(Number(data.path_checksum)===PathManager.current_path_checksum){
+          if(Number(data.path_checksum).toFixed(4)===PathManager.current_path_checksum.toFixed(4)){
             this.ui.path_verified.text('Yes');
             PathManager.setSynced();
           }
           else{
-            this.ui.path_verified.text('No. A: '+data.path_checksum+', L: '+PathManager.current_path_checksum);
+            this.ui.path_verified.text('No. A: '+Number(data.path_checksum).toFixed(4)+', L: '+PathManager.current_path_checksum.toFixed(4));
           }
         }
         else{

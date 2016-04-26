@@ -193,7 +193,6 @@ var PathManager=function(){
 			checksum+=waypoint_array[i].radius;
 			checksum+= (waypoint_array[i].type==='probe_drop')*1;
 		}
-		checksum=Math.floor(checksum)%256; //modulo 256 because the checksum is stored as a byte on the picpilot
 		return checksum;
 	};
 
