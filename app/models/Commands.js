@@ -32,18 +32,24 @@ var Commands={
     }
     return false;
   },
-  sendCommand: function(command, value){
+  sendCommand: function(command, value){ //value can be an indefinte number of arguments
+    var value_string='';
+    for(var arg=1;arg<arguments.length-1;arg++){ //we start at one cause we only care about the values
+      value_string+=arguments[arg]+',';
+    };
+    value_string+=arguments[arguments.length-1];
+
     if(this.checkConnection()){
-      Network.connections['data_relay'].write(command+':'+value+'\r\n');
+      Network.connections['data_relay'].write(command+':'+value_string+'\r\n');
       return true;
     }
     if(SimulationManager.simulationActive){
-      Logger.info('[Simulation] Successfully sent command '+command+':'+value+'\r\n');
+      Logger.info('[Simulation] Successfully sent command '+command+':'+value_string+'\r\n');
       return true;
     }
     return false;
   },
-  sendRawCommand: function(command){
+  sendRawCommand: function(command){  
     if(this.checkConnection()){
       Network.connections['data_relay'].write(command+'\r\n');
       return true;
@@ -216,7 +222,7 @@ var Commands={
   appendWaypoint: function(coordinates, radius){
     var coords=Coordinates(coordinates);
     if(coords && coords.alt && Validator.isValidNumber(radius)){
-      Network.connections['data_relay'].write('new_Waypoint:'+coords.lat+','+ coords.lng+','+ coords.alt+','+radius+'\r\n');
+      this.sendCommand('new_Waypoint',coords.lat,coords.lng,coords.alt,radius);
     }
     else{
       Logger.error('appendWaypoint command not since invalid coordinates were passed in. Coordinates: '+coordinates);
