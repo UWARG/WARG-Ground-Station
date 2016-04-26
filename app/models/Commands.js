@@ -237,6 +237,15 @@ var Commands={
       Logger.error('insertWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
     }
   },
+  updateWaypoint: function(index, coordinates, radius, probe_drop){
+    var coords=Coordinates(coordinates);
+    if(Validator.isInteger(index) && coords && coords.alt && Validator.isValidNumber(radius)){
+      this.sendCommand('update_waypoint',coords.lat, coords.lng, coords.alt, radius, probe_drop*1,index);
+    }
+    else{
+      Logger.error('updateWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
+    }
+  },
   followPath: function(status){
     if(status){
       this.sendCommand('follow_path',1);

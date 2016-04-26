@@ -21,20 +21,20 @@
   align-items: center;
   justify-content: space-around;
 }
-.mapView form{
+.mapView .map-controls form{
   margin: 0;
   padding: 0 8px 0 8px;
   height: 32px;
   text-align: center;
   font-size: 14px;
 }
-.mapView form input{
+.mapView .map-controls form input{
   height: 100%;
   width: 150px;
   margin-right: 4px;
   text-align: left;
 }
-.mapView form button{
+.mapView  .map-controls form button{
   height: 100%;
   padding: 0 8px 0 8px;
 }

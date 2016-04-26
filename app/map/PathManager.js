@@ -67,6 +67,13 @@ var PathManager=function(){
 		}
 	};
 
+	this.resyncWaypoint=function(index){
+		if(this.waypoints[index]){
+			var waypoint=this.waypoints[index];
+			Commands.updateWaypoint(index, waypoint, waypoint.radius, waypoint.type==='probe_drop');
+		}
+	};
+
 	this.removeWaypoint=function(index){
 		if(this.waypoints[index]){
 			this.waypoints.splice(index, 1);

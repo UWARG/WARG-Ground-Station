@@ -284,7 +284,7 @@ var events=this.events;
       PathManager.updateWaypointRadius(current_changing_waypoint, new_radius);
     }
     PathManager.updateWaypointType(current_changing_waypoint, is_probe_drop);
-    PathManager.debugPrint();
+    PathManager.resyncWaypoint(current_changing_waypoint);
   };
 
 };
