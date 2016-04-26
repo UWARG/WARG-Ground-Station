@@ -20,6 +20,8 @@ L.waypoint= L.Marker.extend({
     options.draggable=true;
     options.waypointCount= options.waypointCount || 0;
     this.waypointCount=options.waypointCount;
+    this.type=false;
+    this.radius=options.radius;
     L.Marker.prototype.initialize.call(this, latlngalt, options);
     this.updateIcon();
   },
@@ -31,6 +33,16 @@ L.waypoint= L.Marker.extend({
     }
     else{
       console.error('L.waypoint.changeAltitude takes in a number parameter. Received: '+new_alt);
+    }
+  },
+
+  changeRadius: function(radius){
+    if(!isNaN(radius)){
+      this.radius=radius;
+      this.updateIcon();
+    }
+    else{
+      console.error('L.waypoint.changeRadius takes in a number parameter. Received: '+radius);
     }
   },
 
@@ -73,21 +85,22 @@ L.waypoint= L.Marker.extend({
   },
 
   setProbeDrop: function(status){
-    console.log(status);
-    if(status){
+    if(status && this.type!=="probe_drop"){
       this._icon.className+=' waypointProbeDrop';
+      this.type="probe_drop";
     }
     else{
       this._icon.className=this._icon.className.replace('waypointProbeDrop','');
+      this.type=false;
     }
   },
 
   updateIcon: function(){
     if(this._icon && this._icon.innerHTML){
-      this._icon.innerHTML='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p></div>';
+      this._icon.innerHTML='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p><p style="color: orange">'+this.radius+'m</p></div>';
     }
     else{
-      this.options.icon.options.html='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p></div>';
+      this.options.icon.options.html='<div class="inner-circle"><p>#'+this.waypointCount+'</p><p>'+this._latlng.alt+'m</p><p style="color: orange">'+this.radius+'m</p></div>';
     }
   }
 });

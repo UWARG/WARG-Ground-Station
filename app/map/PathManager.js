@@ -106,7 +106,7 @@ var PathManager=function(){
 			coords.lng ? this.waypoints[index].lng= coords.lng : null;
 			coords.alt ? this.waypoints[index].alt= coords.alt : null;
 			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
-			this.emit('update_waypoint',index, this.waypoints[index].getCoordinates());
+			this.emit('update_waypoint',index, this.waypoints[index]);
 			this.calculatePathChecksum();
 		}
 		else{
@@ -118,6 +118,7 @@ var PathManager=function(){
 		if(this.waypoints[index] && radius){
 			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
 			this.waypoints[index].radius=radius;
+			this.emit('update_waypoint',index, this.waypoints[index]);
 		}
 		else{
 			console.error('PathManager.updateWaypointRadius called on a waypoint index that does not exist or passed in invalid coordinates.Radius: '+radius);
@@ -128,7 +129,7 @@ var PathManager=function(){
 		if(this.waypoints[index] && alt){
 			this.waypoints[index].alt=alt;
 			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
-			this.emit('update_waypoint',index, Coordinates(this.waypoints[index]));
+			this.emit('update_waypoint',index, this.waypoints[index]);
 			this.calculatePathChecksum();
 		}
 		else{
@@ -140,7 +141,7 @@ var PathManager=function(){
 		if(this.waypoints[index]){
 			this.waypoints[index].type= is_probe_drop ? "probe_drop" : false;
 			this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.UPDATE);
-			this.emit('update_waypoint',index, Coordinates(this.waypoints[index]), is_probe_drop);
+			this.emit('update_waypoint',index, this.waypoints[index]);
 		}
 	}
 
