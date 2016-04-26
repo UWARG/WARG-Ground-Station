@@ -46,6 +46,8 @@ module.exports=function(Marionette,L,$){
         if(Validator.isValidNumber(data.path_checksum)){
           if(Number(data.path_checksum).toFixed(3)===PathManager.current_path_checksum.toFixed(3)){
             this.ui.path_verified.text('Yes');
+            PathManager.setSynced();
+            Logger.info('[Path Manager] Path Verified!');
           }
           else{
             this.ui.path_verified.text('No. A: '+data.path_checksum+', L: '+PathManager.current_path_checksum);

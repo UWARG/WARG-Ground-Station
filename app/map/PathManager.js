@@ -187,11 +187,16 @@ var PathManager=function(){
 			Logger.info('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints);
 			Logger.debug('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[i].lat+' Lon: '+this.waypoints[i].lng + ' A: '+this.waypoints[i].alt+' R: '+this.waypoints[i].radius);
 			Commands.appendWaypoint(this.waypoints[i],this.waypoints[i].radius);
-			this.waypoints[i].sync_status=Waypoint.SYNC_STATUS.NOTHING;
 		}
 		this.calculatePathChecksum();
-		this.emit('synced');
 	};
+
+	this.setSynced=function(){
+		for(var i=0;i<this.waypoints.length;i++){
+			this.waypoints[i].sync_status=Waypoint.SYNC_STATUS.NOTHING;
+	    }
+	    this.emit('synced');
+	}
 };
 
 util.inherits(PathManager,EventEmitter);
