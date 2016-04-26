@@ -108,7 +108,8 @@ var Map=function(L){
 
   this.insertWaypoint=function(index, coords){
     var waypoint=new leaflet.waypoint(coords,{
-      waypointCount: index
+      waypointCount: index,
+      radius: map_config.get('default_waypoint_radius')
     });
     waypointsLayer.addLayer(waypoint);
     waypoints.splice(index, 0, waypoint);
