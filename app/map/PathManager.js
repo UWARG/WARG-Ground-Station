@@ -13,6 +13,7 @@ var PathManager=function(){
 	this.remote_waypoint_index=0; //the waypoint the plane is currently heading to
 	this.remote_waypoint_count=0;
 	this.current_path_checksum=0; //current path checksum
+	this.remote_path_checksum=0;
 	this.sending_path_interval=null;
 
 	//formats the waypoints in two arrays of polylines (this is for drawing the polyline between waypoints)
@@ -173,17 +174,21 @@ var PathManager=function(){
 	};
 
 	this.calculatePathChecksum=function(){
+		this.current_path_checksum=this.getChecksum(this.waypoints);
+	};
+
+	this.getChecksum=function(waypoint_array){
 		var checksum=0;
-		for(var i=0;i<this.waypoints.length;i++){
-			checksum+=this.waypoints[i].lat;
-			checksum+=this.waypoints[i].lng;
-			checksum+=this.waypoints[i].alt;
-			checksum+=this.waypoints[i].radius;
-			checksum+=(this.waypoints[i].type==='probe_drop')*1;
+		for(var i=0;i<waypoint_array.length;i++){
+			checksum+=waypoint_array[i].lat;
+			checksum+=waypoint_array[i].lng;
+			checksum+=waypoint_array[i].alt;
+			checksum+=waypoint_array[i].radius;
+			checksum+=(waypoint_array[i].type==='probe_drop')*1;
 		}
-		this.current_path_checksum=Math.floor(checksum);
+		checksum=Math.floor(checksum);
 		return checksum;
-	}
+	};
 
 	this.sendPath=function(){
 		if(this.sending_path_interval){
@@ -195,14 +200,17 @@ var PathManager=function(){
 		var total_waypoints=this.waypoints.length;
 
 		var current_waypoint_to_send=0;
+		var waypoints_sent=[];
+
 		this.sending_path_interval=setInterval(function(){
 			if(!this.waypoints[current_waypoint_to_send]){
 				clearInterval(this.sending_path_interval);
 			}
-			else if(current_waypoint_to_send===this.waypoint_count){
+			else if(this.getChecksum(waypoints_sent)===this.remote_path_checksum){
 				Logger.info('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints);
 				Logger.debug('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send].lat+' Lon: '+this.waypoints[current_waypoint_to_send].lng + ' A: '+this.waypoints[current_waypoint_to_send].alt+' R: '+this.waypoints[current_waypoint_to_send].radius);
 				Commands.appendWaypoint(this.waypoints[current_waypoint_to_send],this.waypoints[current_waypoint_to_send].radius,this.waypoints[current_waypoint_to_send].type==='probe_drop');
+				waypoints_sent.push(this.waypoints[current_waypoint_to_send]);
 				current_waypoint_to_send++;
 			}
 			else{

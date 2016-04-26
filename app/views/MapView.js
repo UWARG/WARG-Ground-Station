@@ -44,6 +44,7 @@ module.exports=function(Marionette,L,$){
           this.setLatitudeLongitude(data.lat,data.lon);
         }
         if(Validator.isValidNumber(data.path_checksum)){
+          PathManager.remote_path_checksum=Number(data.path_checksum);
           if(Number(data.path_checksum)===PathManager.current_path_checksum){
             this.ui.path_verified.text('Yes');
             PathManager.setSynced();
