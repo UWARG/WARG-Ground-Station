@@ -222,7 +222,7 @@ var Commands={
   appendWaypoint: function(coordinates, radius){
     var coords=Coordinates(coordinates);
     if(coords && coords.alt && Validator.isValidNumber(radius)){
-      this.sendCommand('new_Waypoint',coords.lat,coords.lng,coords.alt,radius);
+      this.sendCommand('new_waypoint',coords.lat,coords.lng,coords.alt,radius);
     }
     else{
       Logger.error('appendWaypoint command not since invalid coordinates were passed in. Coordinates: '+coordinates);
