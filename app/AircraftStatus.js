@@ -51,9 +51,9 @@ var AircraftStatus=function(){
   TelemetryData.on('data_received',function(data){
     this.checkErrorCodes(data.startup_error_codes);
     this.checkGPS(data.gps_status);
-    this.checkUHFStatus(data.autopilot_active);
-    this.checkManualMode(data.autopilot_active);
-    this.checkPlaneStatus(data.wireless_connection);
+    this.checkUHFStatus(data.wireless_connection);
+    this.checkManualMode(data.wireless_connection);
+    this.checkPlaneStatus(data.autopilot_active);
     this.checkPathFollowing(data.following_path);
   }.bind(this));
 
@@ -68,14 +68,18 @@ var AircraftStatus=function(){
       Logger.warn('Invalid value for autopilot_active received. Value: '+number);
     }
     else{
-      var bitmask=new Bitmask(Number(number));
-      this.initializing=bitmask.getBit(0);
-      this.armed=bitmask.getBit(1);
-      this.running=bitmask.getBit(2);
-      this.killModeWarning=bitmask.getBit(3);
-      this.killModeActive=bitmask.getBit(4);
+      number=Number(number);
+      this.initializing= (number===0);
+      if(number===1){ //only set armed to false if the number is ONLY 1
+        this.armed= false;
+      }
+      this.armed= (number===2);
+      this.running= (number===3);
+      this.killModeWarning= (number===4);
+      this.killModeActive= (number===5);
 
       StatusManager.setStatusCode('AIRCRAFT_INITIALIZE',this.initializing);
+      StatusManager.setStatusCode('AIRCRAFT_UNARMED',!this.armed);
       StatusManager.setStatusCode('AIRCRAFT_ARMED',this.armed);
       StatusManager.setStatusCode('AIRCRAFT_RUNNING',this.running);
       StatusManager.setStatusCode('AIRCRAFT_KILLMODE_WARNING',this.killModeWarning);
