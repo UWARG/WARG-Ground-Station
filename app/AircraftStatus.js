@@ -54,12 +54,12 @@ var AircraftStatus=function(){
     this.checkUHFStatus(data.wireless_connection);
     this.checkManualMode(data.wireless_connection);
     this.checkPlaneStatus(data.autopilot_active);
-    this.checkPathFollowing(data.following_path);
+    this.checkPathFollowing(data.path_following);
   }.bind(this));
 
   this.checkPathFollowing=function(status){
     if(typeof status !== 'undefined' || status!==null){
-      this.following_path=!!Number(status);
+      this.following_path=(Number(status)===1);
     }
   }
 
