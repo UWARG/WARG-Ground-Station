@@ -176,8 +176,9 @@ var PathManager=function(){
 			checksum+=this.waypoints[i].lat;
 			checksum+=this.waypoints[i].lng;
 			checksum+=this.waypoints[i].alt;
+			checksum+=this.waypoints[i].radius;
 		}
-		this.current_path_checksum=checksum;
+		this.current_path_checksum=Math.floor(checksum);
 		return checksum;
 	}
 
@@ -188,7 +189,7 @@ var PathManager=function(){
 		for(var i=0;i<this.waypoints.length;i++){
 			Logger.info('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints);
 			Logger.debug('[Path Manager] Sending waypoint '+(i+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[i].lat+' Lon: '+this.waypoints[i].lng + ' A: '+this.waypoints[i].alt+' R: '+this.waypoints[i].radius);
-			Commands.appendWaypoint(this.waypoints[i],this.waypoints[i].radius);
+			Commands.appendWaypoint(this.waypoints[i],this.waypoints[i].radius,this.waypoints[i].type==='probe_drop');
 		}
 		this.calculatePathChecksum();
 	};
