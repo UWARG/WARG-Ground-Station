@@ -177,6 +177,7 @@ var PathManager=function(){
 			checksum+=this.waypoints[i].lng;
 			checksum+=this.waypoints[i].alt;
 			checksum+=this.waypoints[i].radius;
+			checksum+=(this.waypoints[i].type==='probe_drop')*1;
 		}
 		this.current_path_checksum=Math.floor(checksum);
 		return checksum;
