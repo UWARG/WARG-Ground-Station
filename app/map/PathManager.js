@@ -10,8 +10,8 @@ var Commands=require('../models/Commands');
 var PathManager=function(){
 	this.plane_trail_coordinates=[];
 	this.waypoints=[];
-	this.current_waypoint=0; //the waypoint the plane is currently heading to
-	this.waypoint_count=0;
+	this.remote_waypoint_index=0; //the waypoint the plane is currently heading to
+	this.remote_waypoint_count=0;
 	this.current_path_checksum=0; //current path checksum
 	this.sending_path_interval=null;
 
