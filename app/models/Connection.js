@@ -14,7 +14,7 @@ var Connection = function (options) {
       throw new Error("Connection name,host, and port parameters are all required!")
     }
     
-    this.closed=false;
+    this.closed=true;
 
     // Initialize necessary properties from `EventEmitter` in this instance
     EventEmitter.call(this);
