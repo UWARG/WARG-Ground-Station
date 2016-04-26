@@ -66,15 +66,17 @@ var PathManager=function(){
 
 	this.removeWaypoint=function(index){
 		if(this.waypoints[index]){
+			this.waypoints.splice(index, 1);
+			this.emit('remove_waypoint',index);
 			//if its an unsynced waypoint (so one that was recentely appended or inserted), delete it straight up
-			if(this.waypoints[index].sync_status===Waypoint.SYNC_STATUS.APPEND || this.waypoints[index].sync_status===Waypoint.SYNC_STATUS.INSERT){
-				this.waypoints.splice(index, 1);
-				this.emit('remove_waypoint',index);
-			}
-			else{
-				this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.DELETE);
-				this.emit('set_deleted_waypoint',index);
-			}
+			// if(this.waypoints[index].sync_status===Waypoint.SYNC_STATUS.APPEND || this.waypoints[index].sync_status===Waypoint.SYNC_STATUS.INSERT){
+			// 	this.waypoints.splice(index, 1);
+			// 	this.emit('remove_waypoint',index);
+			// }
+			// else{
+			// 	this.changeWaypointSyncStatus(this.waypoints[index],Waypoint.SYNC_STATUS.DELETE);
+			// 	this.emit('set_deleted_waypoint',index);
+			// }
 			this.calculatePathChecksum();
 		}
 		else{
