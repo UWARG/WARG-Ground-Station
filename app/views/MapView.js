@@ -40,7 +40,7 @@ module.exports=function(Marionette,L,$){
     },
     onRender:function(){
       TelemetryData.addListener('data_received',function(data){
-        if(Validator.isValidLatitude(data.lat) && Validator.isValidLongitude(data.lng)){
+        if(Validator.isValidLatitude(data.lat) && Validator.isValidLongitude(data.lon)){
           if(Validator.isValidHeading(data.heading)){
             this.map.movePlane(data.lat,data.lon,data.heading);
           }
