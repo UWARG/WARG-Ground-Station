@@ -8,6 +8,7 @@
     "url": "https://github.com/UWARG/WARG-Ground-Station-V2"
   },
   "main": "index.html",
+  "page-cache":true,
   "window": {
     "toolbar": false,
     "width": 1600,
