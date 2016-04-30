@@ -213,7 +213,7 @@ var Commands={
   setReturnHome: function(coordinates){
     var coords=Coordinates(coordinates);
     if(coords && coords.alt){
-      this.sendCommand('set_ReturnHomeCoordinates',coords.lat, coords.lng, coords.alt);
+      this.sendCommand('set_ReturnHomeCoordinates', coords.lng,coords.lat, coords.alt);
     }
     else{
       Logger.error('setReturnHome command not since invalid coordinates were passed in. Coordinates: '+coordinates);
@@ -222,7 +222,7 @@ var Commands={
   appendWaypoint: function(coordinates, radius, probe_drop){
     var coords=Coordinates(coordinates);
     if(coords && coords.alt && Validator.isValidNumber(radius)){
-      this.sendCommand('new_waypoint',coords.lat,coords.lng,coords.alt,radius,probe_drop*1);
+      this.sendCommand('new_waypoint',coords.lng,coords.lat,coords.alt,radius,probe_drop*1);
     }
     else{
       Logger.error('appendWaypoint command not since invalid coordinates were passed in. Coordinates: '+coordinates);
@@ -231,7 +231,7 @@ var Commands={
   insertWaypoint: function(index,coordinates, radius){
     var coords=Coordinates(coordinates);
     if(Validator.isInteger(index) && coords && coords.alt && Validator.isValidNumber(radius)){
-      this.sendCommand('insert_Waypoint',coords.lat, coords.lng, coords.alt, radius, index-1, index+1);
+      this.sendCommand('insert_Waypoint',coords.lng,coords.lat, coords.alt, radius, index-1, index+1);
     }
     else{
       Logger.error('insertWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
@@ -240,7 +240,7 @@ var Commands={
   updateWaypoint: function(index, coordinates, radius, probe_drop){
     var coords=Coordinates(coordinates);
     if(Validator.isInteger(index) && coords && coords.alt && Validator.isValidNumber(radius)){
-      this.sendCommand('update_waypoint',coords.lat, coords.lng, coords.alt, radius, probe_drop*1,index);
+      this.sendCommand('update_waypoint',coords.lng,coords.lat, coords.alt, radius, probe_drop*1,index);
     }
     else{
       Logger.error('updateWaypoint command not since invalid waypoint number or coordinates were passed in. Index: '+index);
