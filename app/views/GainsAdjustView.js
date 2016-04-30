@@ -63,7 +63,17 @@ module.exports=function(Marionette){
       'click #send-throttle-gain-button':'sendThrottleGains',
       'click #send-flap-gain-button':'sendFlapGains',
       'click #send-orbit-gain-button':'sendOrbitalGains',
-      'click #send-path-gain-button':'sendPathGains'
+      'click #send-path-gain-button':'sendPathGains',
+
+      'submit .yaw-form':'sendYawGains',
+      'submit .pitch-form':'sendPitchGains',
+      'submit .roll-form':'sendRollGains',
+      'submit .heading-form':'sendHeadingGains',
+      'submit .altitude-form':'sendAltitudeGains',
+      'submit .throttle-form':'sendThrottleGains',
+      'submit .flap-form':'sendFlapGains',
+      'submit .orbit-form':'sendOrbitalGains',
+      'submit .path-form':'sendPathGains'
     },
 
     initialize: function(){
@@ -209,7 +219,10 @@ module.exports=function(Marionette){
       }
     },
 
-    sendYawGains: function(){
+    sendYawGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var ki=Number(this.ui.yaw_ki.val());
       var kd=Number(this.ui.yaw_kd.val());
       var kp=Number(this.ui.yaw_kp.val());
@@ -224,7 +237,10 @@ module.exports=function(Marionette){
       };
       this.ui.yaw_send_button.text('Verifying...');
     },
-    sendPitchGains: function(){
+    sendPitchGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var ki=Number(this.ui.pitch_ki.val());
       var kd=Number(this.ui.pitch_kd.val());
       var kp=Number(this.ui.pitch_kp.val());
@@ -239,7 +255,10 @@ module.exports=function(Marionette){
       };
       this.ui.pitch_send_button.text('Verifying...');
     },
-    sendRollGains: function(){
+    sendRollGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var ki=Number(this.ui.roll_ki.val());
       var kd=Number(this.ui.roll_kd.val());
       var kp=Number(this.ui.roll_kp.val());
@@ -255,7 +274,10 @@ module.exports=function(Marionette){
       console.log(this.needs_verifying);
       this.ui.roll_send_button.text('Verifying...');
     },
-    sendHeadingGains: function(){
+    sendHeadingGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var ki=Number(this.ui.heading_ki.val());
       var kd=Number(this.ui.heading_kd.val());
       var kp=Number(this.ui.heading_kp.val());
@@ -270,7 +292,10 @@ module.exports=function(Marionette){
       };
       this.ui.heading_send_button.text('Verifying...');
     },
-    sendAltitudeGains: function(){
+    sendAltitudeGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var ki=Number(this.ui.altitude_ki.val());
       var kd=Number(this.ui.altitude_kd.val());
       var kp=Number(this.ui.altitude_kp.val());
@@ -285,7 +310,10 @@ module.exports=function(Marionette){
       };
       this.ui.altitude_send_button.text('Verifying...');
     },
-    sendThrottleGains: function(){
+    sendThrottleGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var ki=Number(this.ui.throttle_ki.val());
       var kd=Number(this.ui.throttle_kd.val());
       var kp=Number(this.ui.throttle_kp.val());
@@ -300,7 +328,10 @@ module.exports=function(Marionette){
       };
       this.ui.throttle_send_button.text('Verifying...');
     },
-    sendFlapGains: function(){
+    sendFlapGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var ki=Number(this.ui.flap_ki.val());
       var kd=Number(this.ui.flap_kd.val());
       var kp=Number(this.ui.flap_kp.val());
@@ -315,7 +346,10 @@ module.exports=function(Marionette){
       };
       this.ui.flap_send_button.text('Verifying...');
     },
-    sendOrbitalGains: function(){
+    sendOrbitalGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var kp=Number(this.ui.orbit_kp.val());
       Commands.sendOrbitGain(kp);
       this.needs_verifying.orbit={
@@ -324,7 +358,10 @@ module.exports=function(Marionette){
       };
       this.ui.orbit_send_button.text('Verifying...');
     },
-    sendPathGains: function(){
+    sendPathGains: function(e){
+      if(e){
+        e.preventDefault();
+      }
       var kp=Number(this.ui.path_kp.val());
       Commands.sendPathGain(kp);
       this.needs_verifying.path={
