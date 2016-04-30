@@ -263,6 +263,12 @@ var Commands={
     if(this.sendCommand('send_heartbeat',1)){
       Logger.debug('[HEARTBEAT] Sent heartbeat to the picpilot');
     }
+  },
+  returnHome: function(){
+    this.sendCommand('return_home',1);
+  },
+  cancelReturnHome: function(){
+    this.sendCommand('cancel_returnHome',1);
   }
 };
 module.exports=Commands;
