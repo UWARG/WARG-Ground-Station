@@ -9,7 +9,12 @@
   <button class="pure-button button-secondary" id="start-following-button">Start Following</button>
   <button class="pure-button button-error" id="clear-plane-trail-button">Clear Trail</button>
   <form class="pure-form" id="new-follow-index"><input type="number" placeholder="Follow waypoint?"></input><button class="pure-button button-success">Send</button></form>
-  <p>Remote Following: <span id="remote-waypoint-index">--</span></p>
+  <p>Following: <span id="remote-waypoint-index">--</span></p>
+  <div class="pure-form">
+    <input type="text" id="marker-lat" placeholder="Marker Latitude" style="width: 70px">
+    <input type="text" id="marker-lon" placeholder="Marker Longitude" style="width: 70px">
+  </div>
+  <button id="new-marker-button" class="pure-button button-success">Add</button>
 </div>
 
 <div id="leaflet-map">

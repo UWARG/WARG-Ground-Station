@@ -20,7 +20,9 @@ module.exports=function(Marionette,L,$){
       path_verified:'#path-verified',
       start_following_button:'#start-following-button',
       new_target_waypoint: '#new-follow-index input',
-      remote_waypoint_index:'#remote-waypoint-index'
+      remote_waypoint_index:'#remote-waypoint-index',
+      marker_lat:'#marker-lat',
+      marker_lon:'#marker-lon'
     },
     events:{
       'click #clear-plane-trail-button': 'clearPlaneTrail',
@@ -30,7 +32,8 @@ module.exports=function(Marionette,L,$){
       'submit .waypointPopupForm':'clickedWaypointPopupSubmit',
       'click #start-following-button':'togglePathFollowing',
       'click #clear-path-button': 'clearPath',
-      'submit #new-follow-index':'followNewWaypoint'
+      'submit #new-follow-index':'followNewWaypoint',
+      'click #new-marker-button':'addNewMarker'
     },
 
     initialize: function(){
@@ -131,6 +134,11 @@ module.exports=function(Marionette,L,$){
       else{
         Commands.followPath(true);
       }
+    },
+    addNewMarker: function(e){
+      var marker_lat=Number(this.ui.marker_lat.val());
+      var marker_lon=Number(this.ui.marker_lon.val());
+      this.map.addMarker(marker_lat, marker_lon);
     }
   });
 };

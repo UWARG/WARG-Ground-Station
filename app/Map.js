@@ -278,6 +278,12 @@ var events=this.events;
     this.waypoints.push(waypoint);
   };
 
+  this.addMarker=function(lat, lon){
+    if(!isNaN(lat) && !isNaN(lon)){
+      L.marker([lat, lon]).addTo(map).bindPopup("FROM HV");
+    } 
+  }
+
   this.popupSubmitted=function(new_alt, new_radius,is_probe_drop){
     if(new_alt){
       PathManager.updateWaypointAltitude(current_changing_waypoint, new_alt);
