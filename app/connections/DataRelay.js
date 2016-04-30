@@ -4,6 +4,7 @@ var Network=require('../Network');
 var Logger=require('../util/Logger');
 var TelemetryData=require('../models/TelemetryData');
 var StatusManager=require('../StatusManager');
+var Commands=require('../models/Commands');
 
 module.exports=function(){
   if(Network.connections['data_relay']){ //if a connection has already been established (occurs on a page refresh), destroy it
@@ -16,6 +17,8 @@ module.exports=function(){
 
 	data_relay.on('connect',function(){
     	StatusManager.setStatusCode('CONNECTED_DATA_RELAY',true);
+    	Commands.activateWriteMode();
+
 	});
 
 	data_relay.on('close',function(had_error){
