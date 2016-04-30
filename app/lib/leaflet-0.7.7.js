@@ -2858,7 +2858,12 @@ L.TileLayer = L.Class.extend({
 			s: this._getSubdomain(tilePoint),
 			z: tilePoint.z,
 			x: tilePoint.x,
-			y: tilePoint.y
+			y: tilePoint.y,
+			z0: 17-tilePoint.z,
+            x0: Math.floor(tilePoint.x/1024),
+            x1: Math.floor(tilePoint.x%1024),
+            y0: Math.floor(tilePoint.y/1024),
+            y1: Math.floor(tilePoint.y%1024)
 		}, this.options));
 	},
 

@@ -178,7 +178,7 @@ var events=this.events;
   var base_layers={};
   var overlay_layers={};
  
-  base_layers['Satellite']=leaflet.tileLayer(tiles_path+'/{z}/{x}/{y}.png', {
+  base_layers['Satellite']=leaflet.tileLayer(tiles_path+'/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
     maxZoom: 19
   });
 
