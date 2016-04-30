@@ -23,6 +23,8 @@ var Map=function(L){
   var waypoints=[]; //contains all the leaflet waypoint objects
   var current_changing_waypoint=null;
 
+  var safety_markers=[];
+
   //Set up of all the layers
   var waypointsLayer=L.featureGroup();
   var waypointsConnectionsLayer=L.featureGroup();
