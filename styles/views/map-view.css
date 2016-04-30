@@ -3,7 +3,7 @@
   width: 100%;
 }
 .mapView #leaflet-map{
-  height: calc(100% - 70px);
+  height: calc(100% - 110px);
   width: 100%;
 }
 .mapView .plane-location{
