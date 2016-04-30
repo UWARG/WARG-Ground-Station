@@ -14,8 +14,8 @@ module.exports=function(Marionette, window){
       'click #kill-plane-button':'killPlane',
       'click #unkill-plane-button':'unkillPlane',
       'click #drop-probe-button':'dropProbe',
-      'click #reset-probe-button':'resetProbe',
-      'click #write-mode-button':'writeMode'
+      'click #go-home-button':'returnHome',
+      'click #ungo-home-button':'cancelReturnHome'
     },
 
 
@@ -53,12 +53,12 @@ module.exports=function(Marionette, window){
       Commands.unkillPlane();
     },
 
-    dropProbe: function(){
-      Commands.dropProbe();
+    returnHome: function(){
+      Commands.returnHome();
     },
 
-    resetProbe: function(){
-      Commands.resetProbe();
+    cancelReturnHome: function(){
+      Commands.cancelReturnHome();
     }
   });
 };

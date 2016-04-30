@@ -8,6 +8,9 @@ var TelemetryData=require('./app/models/TelemetryData');
 var AircraftStatus=require('./app/AircraftStatus'); //initialize aircraft status manager
 var PathManager=require('./app/map/PathManager');
 var Commands=require('./app/models/Commands');
+
+var SafetyMarkers=require('./app/models/SafetyMarkers');
+
 var app={};
 
 var WindowShortcuts=require('./app/util/WindowShortcuts');

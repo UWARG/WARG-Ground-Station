@@ -4,6 +4,8 @@ var Network=require('../Network');
 var Logger=require('../util/Logger');
 var TelemetryData=require('../models/TelemetryData');
 var StatusManager=require('../StatusManager');
+var Commands=require('../models/Commands');
+var map_config=require('../../config/map-config');
 
 module.exports=function(){
   if(Network.connections['data_relay']){ //if a connection has already been established (occurs on a page refresh), destroy it
@@ -16,6 +18,12 @@ module.exports=function(){
 
 	data_relay.on('connect',function(){
     	StatusManager.setStatusCode('CONNECTED_DATA_RELAY',true);
+
+    	setTimeout(function(){
+    		Commands.activateWriteMode();
+    		Commands.sendHomeCoordinates(map_config.get('send_home_coords')[0],map_config.get('send_home_coords')[1], map_config.get('send_home_coords')[2]);
+    	},500);//SERGE: GET RID OF THIS TIMEOUT SHIT ONCE YOU fiGURE THIS SHIT OUT
+    	
 	});
 
 	data_relay.on('close',function(had_error){

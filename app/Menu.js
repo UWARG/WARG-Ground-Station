@@ -2,6 +2,8 @@
 var Logger = require('./util/Logger');
 var GainsImporter = require('./util/GainsImporter');
 var TelemetryData = require('./models/TelemetryData');
+var PathImporter=require('./util/PathImporter');
+
 module.exports = function (gui) {
     // Create the main application menu
     var main_menu = new gui.Menu({type: 'menubar'});
@@ -17,7 +19,10 @@ module.exports = function (gui) {
         }
     }));
     file_submenu.append(new gui.MenuItem({
-        label: 'Import Path'
+        label: 'Import Path',
+        click: function(){
+            PathImporter.import();
+        }
     }));
     file_submenu.append(new gui.MenuItem({
         label: 'Import Settings'
@@ -30,7 +35,10 @@ module.exports = function (gui) {
         }
     }));
     file_submenu.append(new gui.MenuItem({
-        label: 'Export Path'
+        label: 'Export Path',
+        click: function(){
+            PathImporter.export();
+        }
     }));
     file_submenu.append(new gui.MenuItem({
         label: 'Save Settings as...'
@@ -112,7 +120,7 @@ module.exports = function (gui) {
                 focus: true,
                 position: 'center',
                 width: 1250,
-                height: 500,
+                height: 530,
                 toolbar: false
             });
             Logger.debug('Opening Autonomous Level Adjust window');

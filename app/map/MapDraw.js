@@ -1,4 +1,5 @@
 //configures the leaflet draw plugin for the map
+var SafetyMarkers=require('../models/SafetyMarkers');
 
 var MapDraw=function(leaflet){
   // Initialise the FeatureGroup to store editable layers
@@ -54,6 +55,11 @@ var MapDraw=function(leaflet){
   
     map.on('draw:created', function(event) {
       var layer = event.layer;
+      var marker={
+        type: event.layerType,
+        latlngs:event.layer._latlngs
+      };
+      SafetyMarkers.addSafetyMarker(marker);
       drawnItems.addLayer(layer);
     });
   };

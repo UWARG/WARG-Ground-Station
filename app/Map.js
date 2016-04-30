@@ -23,6 +23,8 @@ var Map=function(L){
   var waypoints=[]; //contains all the leaflet waypoint objects
   var current_changing_waypoint=null;
 
+  var safety_markers=[];
+
   //Set up of all the layers
   var waypointsLayer=L.featureGroup();
   var waypointsConnectionsLayer=L.featureGroup();
@@ -178,7 +180,7 @@ var events=this.events;
   var base_layers={};
   var overlay_layers={};
  
-  base_layers['Satellite']=leaflet.tileLayer(tiles_path+'/{z}/{x}/{y}.png', {
+  base_layers['Satellite']=leaflet.tileLayer(tiles_path+'/{z0}/{x0}/{x1}/{y0}/{y1}.png', {
     maxZoom: 19
   });
 
