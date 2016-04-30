@@ -270,7 +270,7 @@ var Commands={
   cancelReturnHome: function(){
     this.sendCommand('cancel_returnHome',1);
   },
-  sendHomeCoordinates: function(lon, lat, alt){
+  sendHomeCoordinates: function(lat, lon, alt){
     this.sendCommand('set_ReturnHomeCoordinates',lon, lat, alt);
   }
 };
