@@ -96,7 +96,7 @@ module.exports = function(Marionette) {
       else{
         this.ui.remote_roll_source.text('Controller');
       }
-      if(alevel.getBit(4) && alevel.getBit(5)){
+      if(alevel.getBit(5)){
         this.ui.remote_throttle_source.text('Autopilot');
       }
       else if (alevel.getBit(4)){
@@ -129,7 +129,7 @@ module.exports = function(Marionette) {
       else{
         this.ui.remote_heading_toggle.text('Off');
       }
-      if(alevel.getBit(10) && alevel.getBit(11)){
+      if(alevel.getBit(11)){
         this.ui.remote_flap_source.text('Autopilot');
       }
       else if(alevel.getBit(10)){
@@ -145,44 +145,46 @@ module.exports = function(Marionette) {
     },
 
     encodeInputs: function(){
-      var autolevel = 0;
-      if (this.ui.flap_select.val() === "Autopilot") {
-        autolevel = autolevel + Math.pow(2, 11);
-      }
-      else if (this.ui.flap_select.val() === "Ground Station") {
-        autolevel = autolevel + Math.pow(2, 10);
-      }
-      if (this.ui.headingtype_select.val() === "On") {
-        autolevel = autolevel + Math.pow(2, 9);
-      }
-      if (this.ui.head_select.val() === "Autopilot") {
-        autolevel = autolevel + Math.pow(2, 8);
-      }
-      if (this.ui.alttype_select.val() === "On") {
-        autolevel = autolevel + Math.pow(2, 7);
-      }
-      if (this.ui.alt_select.val() === "Autopilot") {
-        autolevel = autolevel + Math.pow(2, 6);
-      }
-      if (this.ui.throttle_select.val() === "Autopilot") {
-        autolevel = autolevel + Math.pow(2, 5);
-      }
-      else if (this.ui.throttle_select.val() === "Ground Station") { //we dont add anything if its a controller
-        autolevel = autolevel + Math.pow(2, 4);
-      }
-      if (this.ui.roll_select.val() === "Ground Station") {
-        autolevel = autolevel + Math.pow(2, 3);
-      }
-      if (this.ui.rolltype_select.val() === "Angle") {
-        autolevel = autolevel + Math.pow(2, 2);
+      var autolevel = new Bitmask(0);
+
+      if (this.ui.pitchtype_select.val() === "Angle") {
+        autolevel.setBit(0, true);
       }
       if (this.ui.pitch_select.val() === "Ground Station") {
-        autolevel = autolevel + Math.pow(2, 1);
+        autolevel.setBit(1,true);
       }
-      if (this.ui.pitchtype_select.val() === "Angle") {
-        autolevel = autolevel + 1;
+      if (this.ui.rolltype_select.val() === "Angle") {
+        autolevel.setBit(2,true);
       }
-      return autolevel;
+      if (this.ui.roll_select.val() === "Ground Station") {
+        autolevel.setBit(3, true);
+      }
+      if (this.ui.throttle_select.val() === "Autopilot") {
+        autolevel.setBit(5,true);
+      }
+      else if (this.ui.throttle_select.val() === "Ground Station") { //we dont add anything if its a controller
+        autolevel.setBit(4,true);
+      }
+      if (this.ui.alt_select.val() === "Autopilot") {
+        autolevel.setBit(6,true);
+      }
+      if (this.ui.alttype_select.val() === "On") {
+        autolevel.setBit(7, true);
+      }
+      if (this.ui.head_select.val() === "Autopilot") {
+        autolevel.setBit(8, true);
+      }
+      if (this.ui.headingtype_select.val() === "On") {
+        autolevel.setBit(9, true);
+      }
+      if (this.ui.flap_select.val() === "Autopilot") {
+        autolevel.setBit(11,true);
+      }
+      else if (this.ui.flap_select.val() === "Ground Station") {
+        autolevel.setBit(10, true);
+      }
+      
+      return autolevel.decimal_value;
     },
 
     fullRC: function(event) {
