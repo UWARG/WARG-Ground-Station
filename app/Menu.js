@@ -120,7 +120,7 @@ module.exports = function (gui) {
                 focus: true,
                 position: 'center',
                 width: 1250,
-                height: 530,
+                height: 500,
                 toolbar: false
             });
             Logger.debug('Opening Autonomous Level Adjust window');
