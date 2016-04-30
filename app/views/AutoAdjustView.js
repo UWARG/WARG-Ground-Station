@@ -45,7 +45,10 @@ module.exports = function(Marionette) {
       "click #sendall": "sendAll",
       "click #fullRC": "fullRC",
       "click #fullAuto": "fullAuto",
-      "click #fullGround": "fullGround"
+      "click #fullGround": "fullGround",
+      "click #gcRollRate": "gcRollRate",
+      "click #gcHeading": "gcHeading",
+      "click #pathFollowing": "pathFollowing"
     },
 
     intialize: function(){
@@ -187,7 +190,7 @@ module.exports = function(Marionette) {
       return autolevel.decimal_value;
     },
 
-    fullRC: function(event) {
+    fullRC: function() {
       this.ui.flap_select.val('Controller');
       this.ui.throttle_select.val('Controller');
       this.ui.alt_select.val('Ground Station');
@@ -201,7 +204,7 @@ module.exports = function(Marionette) {
       this.sendAll();
     },
 
-    fullAuto: function(event) { //full autopilot and groundstation (defaults to angle)
+    fullAuto: function() { //full autopilot and groundstation (defaults to angle)
       this.ui.flap_select.val('Autopilot');
       this.ui.throttle_select.val('Autopilot');
       this.ui.alt_select.val('Autopilot');
@@ -215,11 +218,50 @@ module.exports = function(Marionette) {
       this.sendAll();
     },
 
-    fullGround: function(event) { //full groundstation (defaults to angle)
+    fullGround: function() {
       this.ui.flap_select.val('Ground Station');
       this.ui.throttle_select.val('Ground Station');
       this.ui.alt_select.val('Ground Station');
       this.ui.head_select.val('Ground Station');
+      this.ui.roll_select.val('Ground Station');
+      this.ui.pitch_select.val('Ground Station');
+      this.ui.pitchtype_select.val('Angle');
+      this.ui.rolltype_select.val('Angle');
+      this.ui.headingtype_select.val('On');
+      this.ui.alttype_select.val('On');
+      this.sendAll();
+    },
+    gcRollRate: function(){ //TODO for serge in the future: rename this appropriately
+      this.ui.flap_select.val('Ground Station');
+      this.ui.throttle_select.val('Ground Station');
+      this.ui.alt_select.val('Ground Station');
+      this.ui.head_select.val('Ground Station');
+      this.ui.roll_select.val('Ground Station');
+      this.ui.pitch_select.val('Ground Station');
+      this.ui.pitchtype_select.val('Angle');
+      this.ui.rolltype_select.val('Angle');
+      this.ui.headingtype_select.val('Off');
+      this.ui.alttype_select.val('Off');
+      this.sendAll();
+    },
+    gcHeading: function(){
+      this.ui.flap_select.val('Ground Station');
+      this.ui.throttle_select.val('Ground Station');
+      this.ui.alt_select.val('Ground Station');
+      this.ui.head_select.val('Ground Station');
+      this.ui.roll_select.val('Ground Station');
+      this.ui.pitch_select.val('Ground Station');
+      this.ui.pitchtype_select.val('Angle');
+      this.ui.rolltype_select.val('Angle');
+      this.ui.headingtype_select.val('On');
+      this.ui.alttype_select.val('On');
+      this.sendAll();
+    },
+    pathFollowing: function(){
+      this.ui.flap_select.val('Ground Station');
+      this.ui.throttle_select.val('Ground Station');
+      this.ui.alt_select.val('Ground Station');
+      this.ui.head_select.val('Autopilot');
       this.ui.roll_select.val('Ground Station');
       this.ui.pitch_select.val('Ground Station');
       this.ui.pitchtype_select.val('Angle');
