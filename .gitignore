@@ -12,3 +12,6 @@ Thumbs.db
 
 #due to some git file
 warggroundstation
+
+#webstorm stuff
+.idea
