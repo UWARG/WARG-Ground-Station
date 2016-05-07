@@ -1,6 +1,6 @@
 {
   "name": "WARG-Ground-Station",
-  "version": "4.0",
+  "version": "4.0.0",
   "description": "The WARG ground station that communiciated directly with the data-relay-station",
   "author": "Univeristy of Waterloo Arial Robotics Group - www.uwarg.com",
   "repository": {
