@@ -21,7 +21,7 @@ module.exports=function(){
 
     	setTimeout(function(){
     		Commands.activateWriteMode();
-    		Commands.sendHomeCoordinates(map_config.get('send_home_coords')[0],map_config.get('send_home_coords')[1], map_config.get('send_home_coords')[2]);
+    		Commands.sendHomeCoordinates(map_config.get('send_home_coords')[0], map_config.get('send_home_coords')[1], map_config.get('send_home_altitude'));
     	},500);//SERGE: GET RID OF THIS TIMEOUT SHIT ONCE YOU fiGURE THIS SHIT OUT
     	
 	});
