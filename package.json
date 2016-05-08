@@ -8,7 +8,8 @@
     "url": "https://github.com/UWARG/WARG-Ground-Station-V2"
   },
   "scripts": {
-    "start": "./node_modules/.bin/electron ."
+    "start": "./node_modules/.bin/electron .",
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "license": "ISC",
   "private": true,
@@ -18,7 +19,11 @@
     "leaflet": "^0.7.7",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
-    "node-localstorage": "^1.1.2",
+    "node-persist": "0.0.11",
     "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "ink-docstrap": "^1.1.4",
+    "jsdoc": "^3.4.0"
   }
 }
