@@ -1,4 +1,4 @@
-var SettingsLoader=require('../app/util/SettingsLoader');
+var SettingsLoader=require('../app/util/PersistentSettings');
 
 var network_config={
 	datarelay_host:'127.0.0.1',

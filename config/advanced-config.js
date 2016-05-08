@@ -1,4 +1,4 @@
-var SettingsLoader=require('../app/util/SettingsLoader');
+var SettingsLoader=require('../app/util/PersistentSettings');
 
 var advanced_config={
   logger_max_listeners:20, //maximum number of listeners that can attach to the Logger object (should increase if you plan on having lots of consoles open)

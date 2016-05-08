@@ -1,4 +1,4 @@
-var SettingsLoader=require('../app/util/SettingsLoader');
+var SettingsLoader=require('../app/util/PersistentSettings');
 
 //Picpilot specific options and settings
 var picpilot_config={
