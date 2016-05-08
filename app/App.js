@@ -1,4 +1,3 @@
-var gui = require('nw.gui');
 var app_config=require('./config/application-config');
 var Logger=require('./app/util/Logger');
 
@@ -8,19 +7,12 @@ var TelemetryData=require('./app/models/TelemetryData');
 var AircraftStatus=require('./app/AircraftStatus'); //initialize aircraft status manager
 var PathManager=require('./app/map/PathManager');
 var Commands=require('./app/models/Commands');
+var network_config=require('./config/network-config');
 
 var SafetyMarkers=require('./app/models/SafetyMarkers');
 
 var app={};
 
-var WindowShortcuts=require('./app/util/WindowShortcuts');
-WindowShortcuts(Mousetrap,gui);
-
-app.menu=require('./app/Menu')(gui);
-app.windows=[]; //an array of all the windows open
-
-// Append Menu to Window
-gui.Window.get().menu = app.menu;
 
 var MainLayoutView=require('./app/views/MainLayoutView')(Marionette,$,L,window);
 

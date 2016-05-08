@@ -1,3 +1,7 @@
+/**
+ * This is a test
+ * @module AircraftStatus
+ */
 var TelemetryData=require('./models/TelemetryData');
 var StatusManager=require('./StatusManager');
 var Bitmask=require('./util/Bitmask');
