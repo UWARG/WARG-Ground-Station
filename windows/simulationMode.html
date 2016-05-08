@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Simulation Mode</title>
-    <script src="../app/lib/jquery-2.1.4.js"></script>
+    <script>window.$ = window.jQuery = require('../app/lib/jquery-2.1.4.js');</script>
+
     <script src="../app/lib/underscore.js"></script>
     <script src="../app/lib/backbone.js"></script>
     <script src="../app/lib/backbone.marionette.js"></script>
     <script src="../app/lib/mousetrap.js"></script>
 
     <!-- Our window entry point -->
-    <script src="../app/windows/simulation-mode.js"></script>
+    <script src="../app/core/windows/simulation-mode.js"></script>
 
       <link rel="stylesheet" href="../styles/lib/pure.css">
   <link rel="stylesheet" href="../styles/main.css">

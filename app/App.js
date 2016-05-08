@@ -12,7 +12,8 @@ var network_config=require('./config/network-config');
 var SafetyMarkers=require('./app/models/SafetyMarkers');
 
 var app={};
-
+var Menu=require('./app/core/Menu');
+Menu.initialize();
 
 var MainLayoutView=require('./app/views/MainLayoutView')(Marionette,$,L,window);
 
