@@ -18,14 +18,18 @@ PersistentStorage.initSync({
   dir: path.join(__dirname,'../../persistent_storage')
 });
 
-//Loads in configuration from config files into local storage if they dont exist. Subsequent
 /**
  * @class PersistentSettings
  * @param file_name The file name of the config file (ie. 'advanced-settings'). This is used as the prefix to its keys
  * @param settings The contents of the config object. These are used to generate the key-value pairs that are saved in settings
  */
 var PersistentSettings=function(file_name, settings){
+  "use strict";
+
+  /** @property file_name {string} The stored file name. Usually not used externally */
   this.file_name=file_name;
+
+  /** @property default_settings {Hash} The original default settings that are stored from the config objects. */
   this.default_settings=settings;
 
   for(var key in settings){
