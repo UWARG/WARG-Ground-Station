@@ -1,0 +1,39 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc","closure"]
+  },
+  "source": {
+    "include": ["./app/", "package.json", "README.md"],
+    "exclude": ["./app/lib/"],
+    "includePattern": ".+.js(doc)?$",
+    "excludePattern": "(node_modules/|docs)"
+  },
+
+  "plugins": ["plugins/markdown"],
+
+  "templates": {
+    "systemName"            : "WARG Groundstation",
+    "footer"                : "",
+    "copyright"             :  "Copyright Waterloo Aerial Robotics Group 2016",
+    "includeDate"           : true,
+    "navType"               : "inline",
+    "theme"                 : "yeti",
+    "linenums"              : true,
+    "collapseSymbols"       : false,
+    "inverseNav"            : false,
+    "outputSourceFiles"     : true ,
+    "outputSourcePath"      : false,
+    "dateFormat"            : "DD-MM-YYYY",
+    "syntaxTheme"           : "default",
+    "sort"                  : true
+  },
+
+  "opts": {
+    "template": "./node_modules/ink-docstrap/template",  // same as -t templates/default
+    "encoding": "utf8",               // same as -e utf8
+    "destination": "./docs/",          // same as -d ./out/
+    "recurse": true,                 // same as -r
+    "private" : true
+  }
+}
