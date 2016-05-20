@@ -1,208 +1,128 @@
-const remote = require('electron').remote;
-const Menu = remote.Menu;
-const BrowserWindow = remote.BrowserWindow;
+/**
+ * @author Serge Babayan
+ * @module core/Menu
+ * @requires electron
+ * @requires util/GainsImporter
+ * @requires util/PathImporter
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence ISC
+ * @description Application menu configuration. Custom menu items are added here.
+ * The top level object is the menu item name.
+ * The second level is the sub-menu name.
+ * Add a `callback` attribute with a function if you want to call a function
+ * after a user clicks on the item.
+ * Add a 'openWindow' attribute with the name of your window if you want to
+ * open a specific window.
+ * If both `callback` and `openWindow` are provided, the callback will be
+ * executed and then the window will be opened.
+ * Note: The `View` and `Help` menu items are generated in the MenuBuilder
+ *
+ * @example <caption>Example of a menu item that calls a function before opening
+ * 'project_root/windows/myNewWindow.html'</caption>
+ *
+ * var Menu = {
+ *  'Windows': { //this is the menu label
+ *    'Open Your New Window': { //this is the submenu label
+ *      callback: function () {
+ *        //optional function to be called before opening window
+ *      },
+ *      openWindow: 'myNewWindow', //name of the window to open (optional)
+ *      height: 800, //height and width of the window. Default is 500 by 500
+ *      width: 600,
+ *      devTools: true //whether to open chrome devtools with the window (false by default)
+ *    }
+ *  }
+* };
+ */
 
+const {remote} = require('electron');
+var GainsImporter = require('../util/GainsImporter');
+var PathImporter = require('../util/PathImporter');
 
-var path=require("path");
-
-module.exports.initialize=function(){
-  var menu_template = [
-    {
-      label: 'File',
-      submenu: [
-        {
-          label: 'Import PID Gains',
-        },
-        {
-          label: 'Import Path',
-        },
-        {
-          label: 'Import Settings',
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Export PID Gains',
-        },
-        {
-          label: 'Export Path',
-        },
-        {
-          label: 'Save Settings as...',
-        },
-        {
-          label: 'Quit',
-          accelerator: 'CmdOrCtrl+Q',
-          click: function() {
-            remote.app.quit();
-          },
-          role: 'close'
-        }
-      ]
+var Menu = {
+  'File': {
+    'Import PID Gains': {
+      callback: GainsImporter.import
     },
-    {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Reload',
-          accelerator: 'CmdOrCtrl+R',
-          click: function(item, focusedWindow) {
-            if (focusedWindow)
-              focusedWindow.reload();
-          }
-        },
-        {
-          label: 'Toggle Full Screen',
-          accelerator: (function() {
-            if (process.platform == 'darwin')
-              return 'Ctrl+Command+F';
-            else
-              return 'F11';
-          })(),
-          click: function(item, focusedWindow) {
-            if (focusedWindow)
-              focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-          }
-        },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: (function() {
-            if (process.platform == 'darwin')
-              return 'Alt+Command+I';
-            else
-              return 'Ctrl+Shift+I';
-          })(),
-          click: function(item, focusedWindow) {
-            if (focusedWindow)
-              focusedWindow.webContents.toggleDevTools();
-          }
-        }
-      ]
+    'Import Path': {
+      callback: PathImporter.import
     },
-    {
-      label: 'Windows',
-      role: 'window',
-      submenu: [
-        {
-          label: 'Simulation Mode',
-          click: function(){
-            var win = new BrowserWindow({ width: 800, height: 600 });
-            win.loadURL(path.join(__dirname,'../../windows/simulationMode.html'));
-          }
-
-        },
-        {
-          label: 'Console',
-          accelerator: 'CmdOrCtrl+C',
-        },
-        {
-          label: '3D View'
-        },
-        {
-          label: 'Autonomus Level Adjust',
-          accelerator: 'CmdOrCtrl+A'
-        },
-        {
-          label: 'Data Entry',
-          accelerator: 'CmdOrCtrl+D',
-        },
-        {
-          label: 'Data View',
-          accelerator: 'CmdOrCtrl+V',
-        },
-        {
-          label: 'Gains Adjust',
-          accelerator: 'CmdOrCtrl+G',
-        },
-        {
-          label: 'Probe Drops',
-          accelerator: 'CmdOrCtrl+P',
-        }
-      ]
+    'Import Settings': {},
+    '': {}, //this is a separator
+    'Export PID Gains': {
+      callback: GainsImporter.export
     },
-    {
-      label: 'Settings',
-      role: 'help',
-      submenu: [
-        {
-          label: 'Network Settings',
-          accelerator: 'CmdOrCtrl+S',
-        },
-        {
-          label: 'App Settings',
-          accelerator: 'CmdOrCtrl+N'
-        }
-      ]
+    'Export Path': {
+      callback: PathImporter.export
     },
-    {
-      label: 'Help',
-      role: 'help',
-      submenu: [
-        {
-          label: 'Electron Docs',
-          click: function() { require('electron').shell.openExternal('http://electron.atom.io') }
-        }
-      ]
+    'Save Settings as...': {},
+    'Quit': {
+      callback: remote.app.quit
     }
-  ];
-
-  if (process.platform == 'darwin') {
-    var name = remote.app.getName();
-    template.unshift({
-      label: name,
-      submenu: [
-        {
-          label: 'About ' + name,
-          role: 'about'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Services',
-          role: 'services',
-          submenu: []
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Hide ' + name,
-          accelerator: 'Command+H',
-          role: 'hide'
-        },
-        {
-          label: 'Hide Others',
-          accelerator: 'Command+Alt+H',
-          role: 'hideothers'
-        },
-        {
-          label: 'Show All',
-          role: 'unhide'
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Quit',
-          accelerator: 'Command+Q',
-          click: function() { app.quit(); }
-        }
-      ]
-    });
-    // Window menu.
-    template[3].submenu.push(
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Bring All to Front',
-        role: 'front'
-      }
-    );
+  },
+  'Windows': {
+    'Simulation Mode': {
+      openWindow: 'simulationMode',
+      height: 800,
+      width: 600,
+      devTools: true
+    },
+    'Console': {
+      openWindow: 'console',
+      width: 900,
+      height: 500,
+      shortcut: 'CmdOrCtrl+Shift+C'
+    },
+    '3D View': {
+      openWindow: '3dView',
+      width: 900,
+      height: 500,
+      shortcut: 'CmdOrCtrl+Shift+V'
+    },
+    'Autonomus Level Adjust': {
+      openWindow: 'autoAdjust',
+      width: 1250,
+      height: 530,
+      shortcut: 'CmdOrCtrl+Shift+A'
+    },
+    'Data Entry': {
+      openWindow: 'dataEntry',
+      width: 500,
+      height: 250,
+      shortcut: 'CmdOrCtrl+Shift+D'
+    },
+    'Data View': {
+      openWindow: 'dataView',
+      width: 500,
+      height: 600
+    },
+    'Gains Adjust': {
+      openWindow: 'gainsAdjust',
+      width: 1100,
+      height: 550,
+      shortcut: 'CmdOrCtrl+Shift+G'
+    },
+    'Probe Drops': {
+      openWindow: 'probeDrops',
+      width: 575,
+      height: 270,
+      shortcut: 'CmdOrCtrl+Shift+P'
+    }
+  },
+  'Settings': {
+    'Network Settings': {
+      openWindow: 'networkSettings',
+      width: 600,
+      height: 500,
+      shortcut: 'CmdOrCtrl+Shift+N'
+    },
+    'App Settings': {
+      openWindow: 'appSettings',
+      width: 600,
+      height: 700,
+      shortcut: 'CmdOrCtrl+Shift+S'
+    }
   }
-
-  var menu = Menu.buildFromTemplate(menu_template);
-  Menu.setApplicationMenu(menu);
 };
+
+module.exports = Menu;
