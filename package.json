@@ -14,7 +14,7 @@
   "license": "ISC",
   "private": true,
   "dependencies": {
-    "electron-prebuilt": "^0.37.8",
+    "electron-prebuilt": "^1.1.0",
     "fast-csv": "^1.0.0",
     "leaflet": "^0.7.7",
     "mkdirp": "^0.5.1",
