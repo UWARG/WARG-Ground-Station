@@ -29,14 +29,15 @@ var WindowsManager = {
     }
     //otherwise create the window
     else {
-      var new_window = new BrowserWindow(options);
+      let new_window = new BrowserWindow(options);
       new_window.name = window_file_name;
       new_window.loadURL('file://' + __dirname + 'windows/' + window_file_name);
-      if(options.openDevTools){
+
+      if (options.openDevTools) {
         new_window.webContents.openDevTools();
       }
       //delete all instances of the window
-      new_window.on('closed', function(){
+      new_window.on('closed', function () {
         this.open_windows[new_window.name] = null;
         delete this.open_windows[new_window.name];
       }.bind(this));
