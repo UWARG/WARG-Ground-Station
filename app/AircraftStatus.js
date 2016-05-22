@@ -48,9 +48,9 @@ var AircraftStatus=function(){
   };
 
   //sending a heartbeat every 5 seconds
-  setInterval(function(){
-    Commands.sendHeartbeat();
-  }, this.heartBeatTimeout);
+  // setInterval(function(){
+  //   Commands.sendHeartbeat();
+  // }, this.heartBeatTimeout);
 
   TelemetryData.on('data_received',function(data){
     this.checkErrorCodes(data.startup_error_codes);

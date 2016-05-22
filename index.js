@@ -24,14 +24,14 @@ app.on('window-all-closed', function () {
 });
 
 // when electron has initialized and ready to open windows
-app.on('ready', () => {
+app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1600, height: 900});
 
   mainWindow.setMenu(MenuBuilder.build());
 
-  // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
+  // and load the mainWindow.html of the app.
+  mainWindow.loadURL('file://' + __dirname + '/templates/windows/mainWindow.html');
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

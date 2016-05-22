@@ -28,6 +28,10 @@ module.exports=function(Marionette,$,L,window){
       this.getRegion('telemetry').show(new CockpitLayoutView());
       this.getRegion('map').show(new MapView());
       this.getRegion('buttons').show(new EmergencyButtonsView());
+    },
+
+    onDestroy: function(){
+      console.log('calling the destroy method of the view')
     }
 	});
-}
+};

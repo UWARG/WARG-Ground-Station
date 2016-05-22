@@ -27,7 +27,7 @@ var _=require('underscore');
  * //Use the output from this ^^ as your views template.
  */
 var Template=function(template_name){
-  return _.template(fs.readFileSync('./views/'+template_name+'.html','utf8'));
+  return _.template(fs.readFileSync('./templates/views/'+template_name+'.html','utf8'));
 };
 
 module.exports=Template;
