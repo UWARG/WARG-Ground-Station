@@ -66,8 +66,8 @@ var Menu = {
   'Windows': {
     'Simulation Mode': {
       openWindow: 'simulationMode',
-      height: 800,
-      width: 600,
+      height: 600,
+      width: 400,
       devTools: true
     },
     'Console': {

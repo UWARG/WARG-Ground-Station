@@ -2,7 +2,6 @@
  * @author Serge Babayan
  * @module core/MenuBuilder
  * @requires core/Menu
- * @requires util/Logger
  * @requires core/WindowManager
  * @requires electron
  * @copyright Waterloo Aerial Robotics Group 2016
@@ -14,7 +13,6 @@ const electron = require('electron');
 const ElectronMenu = electron.Menu;
 var Menu = require('./Menu');
 var WindowManager = require('./WindowManager');
-var Logger = require('../util/Logger');
 
 /**
  * function build
@@ -36,17 +34,16 @@ module.exports.build = function () {
           }
           submenu.push({
             label: sub_menu_label,
-            height: Menu[menu_label][sub_menu_label].height || 500,
-            width: Menu[menu_label][sub_menu_label].width || 500,
             accelerator: Menu[menu_label][sub_menu_label].shortcut || null,
             click: function (menu_label, sub_menu_label) {
               if (Menu[menu_label][sub_menu_label].callback) {
                 Menu[menu_label][sub_menu_label].callback();
               }
               if (Menu[menu_label][sub_menu_label].openWindow) {
-                Logger.debug('Opening ' + Menu[menu_label][sub_menu_label].openWindow + ' window');
                 WindowManager.openWindow(Menu[menu_label][sub_menu_label].openWindow, {
-                  devTools: Menu[menu_label][sub_menu_label].devTools
+                  devTools: Menu[menu_label][sub_menu_label].devTools,
+                  height: Menu[menu_label][sub_menu_label].height || 500,
+                  width: Menu[menu_label][sub_menu_label].width || 500
                 });
               }
             }.bind(this, menu_label, sub_menu_label)
@@ -91,7 +88,7 @@ module.exports.build = function () {
             if (process.platform == 'darwin')
               return 'Alt+Command+I';
             else
-              return 'Ctrl+Shift+I';
+              return 'Ctrl+Shift+J';
           })(),
           click: function (item, focusedWindow) {
             if (focusedWindow)

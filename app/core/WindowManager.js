@@ -2,11 +2,13 @@
  * @author Serge Babayan
  * @module core/WindowManager
  * @requires electron
+ * @requires util/Logger
  * @requires root-path
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description Manages the creation and destruction of windows for the application
  */
+var Logger = require('../util/Logger');
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 var app_root = require('root-path');
@@ -34,7 +36,7 @@ var WindowsManager = {
     else {
       var new_window = new BrowserWindow(options);
       new_window.name = window_file_name;
-      new_window.loadURL('file://' + app_root('templates/windows/' + window_file_name + '.html'));
+      new_window.loadURL('file://' + app_root(`templates/windows/${window_file_name}.html`));
       new_window.setMenu(null); //we don't want new windows to have their own menu
 
       if (options.devTools) {
@@ -46,6 +48,7 @@ var WindowsManager = {
         delete this.open_windows[new_window.name];
       }.bind(this));
       this.open_windows[new_window.name] = new_window;
+      Logger.debug(`Opening ${new_window.name} window`);
     }
   },
   /**
