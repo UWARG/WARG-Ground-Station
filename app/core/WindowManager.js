@@ -55,7 +55,6 @@ var WindowsManager = {
    * @returns name {string|null} The name of the window, or null if one wasn't found
    */
   getWindowNameFromId: function(id){
-    console.log(this.open_windows);
     for(var window in this.open_windows){
       if(this.open_windows.hasOwnProperty(window)){
         if(this.open_windows[window].id === id){

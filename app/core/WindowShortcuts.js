@@ -13,7 +13,7 @@
  */
 var electron = require('electron');
 var remote = electron.remote;
-var Logger = require('../util/Logger');
+var Logger = remote.require('./app/util/Logger');
 var WindowManager = remote.require('./app/core/WindowManager');
 
 /**
@@ -29,11 +29,12 @@ module.exports.init = function (Mousetrap) {
   //refreshes the window
   Mousetrap.bind('mod+shift+r', function (e) {
     Logger.debug('Refreshing '+WindowManager.getWindowNameFromId(remote.getCurrentWindow().id)+' window');
-    //remote.getCurrentWindow().reload();
+    remote.getCurrentWindow().reload();
   });
 
   //closes the window
   Mousetrap.bind('mod+shift+q', function (e) {
+    Logger.debug('Closing '+WindowManager.getWindowNameFromId(remote.getCurrentWindow().id)+' window');
     remote.getCurrentWindow().close();
   });
 };

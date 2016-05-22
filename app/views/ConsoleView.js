@@ -1,7 +1,8 @@
 //View for the console
 //NOTE: this view should never be re-rendered!
+var remote = require('electron').remote;
 var Template=require('../util/Template');
-var Logger=require('../util/Logger');
+var Logger=remote.require('./app//util/Logger');
 var Commands=require('../models/Commands');
 var advanced_config=require('../../config/advanced-config');
 
