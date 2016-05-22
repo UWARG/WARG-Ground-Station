@@ -63,6 +63,15 @@ var WindowsManager = {
       }
     }
     return null;
+  },
+
+  /**
+   * @function getFocusedWindowName
+   * @description Returns the unique name for the currently focused window
+   * @returns name {string|null} The name of the window, or null if one wasn't found
+   */
+  getFocusedWindowName: function(){
+    return this.getWindowNameFromId(electron.BrowserWindow.getFocusedWindow().id);
   }
 };
 

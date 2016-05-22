@@ -28,13 +28,13 @@ module.exports.init = function (Mousetrap) {
 
   //refreshes the window
   Mousetrap.bind('mod+shift+r', function (e) {
-    Logger.debug('Refreshing '+WindowManager.getWindowNameFromId(remote.getCurrentWindow().id)+' window');
+    Logger.debug('Refreshing ' + WindowManager.getFocusedWindowName() + ' window');
     remote.getCurrentWindow().reload();
   });
 
   //closes the window
   Mousetrap.bind('mod+shift+q', function (e) {
-    Logger.debug('Closing '+WindowManager.getWindowNameFromId(remote.getCurrentWindow().id)+' window');
+    Logger.debug('Closing ' + WindowManager.getFocusedWindowName() + ' window');
     remote.getCurrentWindow().close();
   });
 };
