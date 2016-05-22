@@ -5,7 +5,7 @@
  * @requires util/GainsImporter
  * @requires util/PathImporter
  * @copyright Waterloo Aerial Robotics Group 2016
- * @licence ISC
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description Application menu configuration. Custom menu items are added here.
  * The top level object is the menu item name.
  * The second level is the sub-menu name.

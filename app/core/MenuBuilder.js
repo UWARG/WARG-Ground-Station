@@ -6,7 +6,7 @@
  * @requires core/WindowManager
  * @requires electron
  * @copyright Waterloo Aerial Robotics Group 2016
- * @licence ISC
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description Builds an electron based menu template from the core/Menu file
  * and returns an electron menu that can be attached to a BrowserWindow
  */

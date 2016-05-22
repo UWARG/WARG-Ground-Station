@@ -4,7 +4,7 @@
  * @requires path
  * @requires node-persist
  * @copyright Waterloo Aerial Robotics Group 2016
- * @licence ISC
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description This module provides persistent settings support to the app. It uses [node-persist](https://github.com/simonlast/node-persist)
  * which provides a local storage api for saving settings. It takes in a `config` object found in the `project_root/config folder`
  * of the app and returns a new wrapper object for setting and accessing persistent settings.

@@ -4,7 +4,7 @@
  * @requires electron
  * @requires root-path
  * @copyright Waterloo Aerial Robotics Group 2016
- * @licence ISC
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description Manages the creation and destruction of windows for the application
  */
 const electron = require('electron');

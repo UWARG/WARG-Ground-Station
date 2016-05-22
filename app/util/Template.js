@@ -4,7 +4,7 @@
  * @requires fs
  * @requires underscore
  * @copyright Waterloo Aerial Robotics Group 2016
- * @licence ISC
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description This module uses [underscore's](http://underscorejs.org/#template) template generation with an input from the html files
  * in the `project_root/views` directory. It outputs a templated file (stringified version of the html)
  * that you can use as a template to your views.

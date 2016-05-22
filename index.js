@@ -2,7 +2,7 @@
  * @author Serge Babayan
  * @requires electron
  * @copyright Waterloo Aerial Robotics Group 2016
- * @licence ISC
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description This is the main file that starts up the electron app
  */
 

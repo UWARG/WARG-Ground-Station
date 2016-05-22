@@ -4,7 +4,7 @@
  * @requires util/Logger
  * @requires electron
  * @copyright Waterloo Aerial Robotics Group 2016
- * @licence ISC
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description Creates common shortcuts for a window. Requires `Mousetrap.js` to be declared within the window.
  * Current shortcuts include the ability to close and refresh windows, as well as open dev tools.
  * @example <caption>Usage example</caption>
