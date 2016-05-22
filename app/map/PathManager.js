@@ -70,7 +70,7 @@ var PathManager=function(){
 	this.resyncWaypoint=function(index){
 		if(this.waypoints[index]){
 			var waypoint=this.waypoints[index];
-			Commands.updateWaypoint(index, waypoint, waypoint.radius, waypoint.type==='probe_drop');
+			Commands.updateWaypoint(index, waypoint.lat, waypoint.lng, waypoint.alt, waypoint.radius, waypoint.type==='probe_drop');
 		}
 	};
 
@@ -226,7 +226,12 @@ var PathManager=function(){
 				if(!verifying_last){
 					Logger.info('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints);
 					Logger.debug('[Path Manager] Sending waypoint '+(current_waypoint_to_send+1) + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send].lat+' Lon: '+this.waypoints[current_waypoint_to_send].lng + ' A: '+this.waypoints[current_waypoint_to_send].alt+' R: '+this.waypoints[current_waypoint_to_send].radius);
-					Commands.appendWaypoint(this.waypoints[current_waypoint_to_send],this.waypoints[current_waypoint_to_send].radius,this.waypoints[current_waypoint_to_send].type==='probe_drop');
+					Commands.appendWaypoint(
+            this.waypoints[current_waypoint_to_send].lat,
+            this.waypoints[current_waypoint_to_send].lng,
+            this.waypoints[current_waypoint_to_send].alt,
+            this.waypoints[current_waypoint_to_send].radius,
+            this.waypoints[current_waypoint_to_send].type==='probe_drop');
 				}
 
 				if(verifying_last){
@@ -245,7 +250,12 @@ var PathManager=function(){
 			else {
 				Logger.info('[Path Manager] Re-Sending waypoint '+current_waypoint_to_send + '/'+total_waypoints);
 				Logger.debug('[Path Manager] Re-Sending waypoint '+current_waypoint_to_send + '/'+total_waypoints+' with: Lat: '+this.waypoints[current_waypoint_to_send-1].lat+' Lon: '+this.waypoints[current_waypoint_to_send-1].lng + ' A: '+this.waypoints[current_waypoint_to_send-1].alt+' R: '+this.waypoints[current_waypoint_to_send-1].radius);
-				Commands.appendWaypoint(this.waypoints[current_waypoint_to_send-1],this.waypoints[current_waypoint_to_send-1].radius,this.waypoints[current_waypoint_to_send-1].type==='probe_drop');
+				Commands.appendWaypoint(
+          this.waypoints[current_waypoint_to_send-1].lat,
+          this.waypoints[current_waypoint_to_send-1].lng,
+          this.waypoints[current_waypoint_to_send-1].alt,
+          this.waypoints[current_waypoint_to_send-1].radius,
+          this.waypoints[current_waypoint_to_send-1].type==='probe_drop');
 			}
 		}.bind(this),1000);
 

@@ -11,6 +11,12 @@ var Validator={
   isInteger: function(n) { //returns true if the number is an integer only. Note this will return false if you pass a number string (eg. '34.6')
     return n === +n && n === (n|0);
   },
+  isPositiveNumber: function(n) {
+    if(this.isValidNumber(n) && Number(n) >= 0){
+      return true;
+    }
+    return false;
+  },
   isValidPercentage: function(percentage){
     if(this.isValidNumber(percentage)){
       var num=Number(percentage);

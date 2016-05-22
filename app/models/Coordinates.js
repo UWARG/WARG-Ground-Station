@@ -1,3 +1,8 @@
+/**
+ * @module models/Coordinates
+ * @param obj
+ * @returns {boolean}
+ */
 //Code copied from: https://github.com/Leaflet/Leaflet/blob/master/src/geo/LatLng.js
 //Used inside the path manager for validating latitude and longitude objects
 function isArray(obj){
