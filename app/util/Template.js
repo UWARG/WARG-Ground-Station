@@ -10,8 +10,9 @@
  * that you can use as a template to your views.
  */
 
-var fs=require('fs');
-var _=require('underscore');
+var fs = require('fs');
+var _ = require('underscore');
+var app_root = require('root-path');
 
 /**
  * @function
@@ -26,8 +27,8 @@ var _=require('underscore');
  * return Template('my_html_file_name_in_views.html');
  * //Use the output from this ^^ as your views template.
  */
-var Template=function(template_name){
-  return _.template(fs.readFileSync('./templates/views/'+template_name+'.html','utf8'));
+var Template = function (template_name) {
+  return _.template(fs.readFileSync(app_root('templates/views/' + template_name + '.html'), 'utf8'));
 };
 
-module.exports=Template;
+module.exports = Template;

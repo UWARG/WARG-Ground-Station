@@ -2,12 +2,14 @@
  * @author Serge Babayan
  * @module core/WindowManager
  * @requires electron
+ * @requires root-path
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence ISC
  * @description Manages the creation and destruction of windows for the application
  */
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
+var app_root = require('root-path');
 
 var WindowsManager = {
   /**
@@ -30,9 +32,9 @@ var WindowsManager = {
     }
     //otherwise create the window
     else {
-      let new_window = new BrowserWindow(options);
+      var new_window = new BrowserWindow(options);
       new_window.name = window_file_name;
-      new_window.loadURL('file://' + __dirname + 'templates/windows/' + window_file_name);
+      new_window.loadURL('file://' + app_root('templates/windows/' + window_file_name + '.html'));
       new_window.setMenu(null); //we don't want new windows to have their own menu
 
       if (options.devTools) {
@@ -43,9 +45,25 @@ var WindowsManager = {
         this.open_windows[new_window.name] = null;
         delete this.open_windows[new_window.name];
       }.bind(this));
-
       this.open_windows[new_window.name] = new_window;
     }
+  },
+  /**
+   * @function getWindowNameFromId
+   * @description Retrieves the hash key or window name for a window based on its BrowserWindow id
+   * @param id {int} The id of the window
+   * @returns name {string|null} The name of the window, or null if one wasn't found
+   */
+  getWindowNameFromId: function(id){
+    console.log(this.open_windows);
+    for(var window in this.open_windows){
+      if(this.open_windows.hasOwnProperty(window)){
+        if(this.open_windows[window].id === id){
+          return window;
+        }
+      }
+    }
+    return null;
   }
 };
 

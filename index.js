@@ -35,6 +35,7 @@ app.on('ready', function() {
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
+    app.quit();
     mainWindow = null;
   });
 });
