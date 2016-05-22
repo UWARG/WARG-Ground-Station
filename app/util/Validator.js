@@ -1,116 +1,115 @@
 //Useful and commonly used validation functions used throughout the app
-var _=require('underscore');
+var _ = require('underscore');
 
-var Validator={
-  isValidNumber:function(number){
+var Validator = {
+  isValidNumber: function (number) {
     return !isNaN(parseFloat(number)) && isFinite(number);
   },
-  isFloat: function(n) {  //returns true if the number is a float only. Note this will return false if you pass a number string (eg. '34')
-    return n === +n && n !== (n|0);
+  isFloat: function (n) {  //returns true if the number is a float only. Note this will return false if you pass a number string (eg. '34')
+    return n === +n && n !== (n | 0);
   },
-  isInteger: function(n) { //returns true if the number is an integer only. Note this will return false if you pass a number string (eg. '34.6')
-    return n === +n && n === (n|0);
+  isInteger: function (n) { //returns true if the number is an integer only. Note this will return false if you pass a number string (eg. '34.6')
+    return n === +n && n === (n | 0);
   },
-  isPositiveNumber: function(n) {
-    if(this.isValidNumber(n) && Number(n) >= 0){
-      return true;
-    }
-    return false;
+  isPositiveNumber: function (n) {
+    return this.isValidNumber(n) && Number(n) >= 0;
   },
-  isValidPercentage: function(percentage){
-    if(this.isValidNumber(percentage)){
-      var num=Number(percentage);
-      if(num>=0 && num<=100){
+  isString: function (value) {
+    return typeof myVar === 'string' || myVar instanceof String;
+  },
+  isValidPercentage: function (percentage) {
+    if (this.isValidNumber(percentage)) {
+      var num = Number(percentage);
+      if (num >= 0 && num <= 100) {
         return true;
       }
     }
     return false;
   },
-  isValidObject: function(object){
-    if(_.isObject(object)){
+  isValidObject: function (object) {
+    if (_.isObject(object)) {
       return true;
     }
     return false;
   },
-  isValidPitch: function(pitch){
-    if(this.isValidNumber(pitch) && Number(pitch)>=-180 && Number(pitch)<=180){
+  isValidPitch: function (pitch) {
+    if (this.isValidNumber(pitch) && Number(pitch) >= -180 && Number(pitch) <= 180) {
       return true;
     }
     return false
   },
-  isValidRoll: function(roll){
-    if(this.isValidNumber(roll) && Number(roll)>=-180 && Number(roll)<=180){
+  isValidRoll: function (roll) {
+    if (this.isValidNumber(roll) && Number(roll) >= -180 && Number(roll) <= 180) {
       return true;
     }
     return false
   },
-  isValidYaw: function(yaw){
-    if(this.isValidNumber(yaw)){
+  isValidYaw: function (yaw) {
+    if (this.isValidNumber(yaw)) {
       return true;
     }
     return false;
   },
-  isValidHeading: function(heading){
-    if(this.isValidNumber(heading) && Number(heading)>=0 && Number(heading)<=360){
+  isValidHeading: function (heading) {
+    if (this.isValidNumber(heading) && Number(heading) >= 0 && Number(heading) <= 360) {
       return true;
     }
     return false;
   },
-  isValidSpeed: function(speed){
-    if(this.isValidNumber(speed) && Number(speed)>=0){
+  isValidSpeed: function (speed) {
+    if (this.isValidNumber(speed) && Number(speed) >= 0) {
       return true;
     }
     return false;
   },
-  isValidAltitude: function(altitude){
-    if(this.isValidNumber(altitude)){
+  isValidAltitude: function (altitude) {
+    if (this.isValidNumber(altitude)) {
       return true;
     }
     return false;
   },
-  isValidThrottle: function(throttle){
-    if(this.isValidNumber(throttle) &&  this.isInteger(Number(throttle)) && Number(throttle)>=-1024 && Number(throttle)<=1024){
+  isValidThrottle: function (throttle) {
+    if (this.isValidNumber(throttle) && this.isInteger(Number(throttle)) && Number(throttle) >= -1024 && Number(throttle) <= 1024) {
       return true;
     }
     return false;
   },
-  isValidFlap: function(flap){
-    if(this.isValidNumber(flap) && this.isInteger(Number(flap)) && Number(flap)>=-1024 && Number(flap) <= 1024){
+  isValidFlap: function (flap) {
+    if (this.isValidNumber(flap) && this.isInteger(Number(flap)) && Number(flap) >= -1024 && Number(flap) <= 1024) {
       return true;
     }
     return false;
   },
-  isValidLatitude:function(lat){
-    if(this.isValidNumber(lat)){
+  isValidLatitude: function (lat) {
+    if (this.isValidNumber(lat)) {
       return true;
     }
     return false;
   },
-  isValidLongitude: function(lon){
-    if(this.isValidNumber(lon)){
+  isValidLongitude: function (lon) {
+    if (this.isValidNumber(lon)) {
       return true;
     }
     return false;
   },
-  isValidTime: function(timestring){
-    if(this.isValidNumber(timestring) && Number(timestring).toFixed(2)<=0){
+  isValidTime: function (timestring) {
+    if (this.isValidNumber(timestring) && Number(timestring).toFixed(2) <= 0) {
       return false;
     }
     return true;
   },
-  isValidBattery: function(battery){
-    if(this.isValidNumber(battery) && Number(battery)>=0 && Number(battery)<=100){
+  isValidBattery: function (battery) {
+    if (this.isValidNumber(battery) && Number(battery) >= 0 && Number(battery) <= 100) {
       return true;
     }
     return false;
   },
-  isValidGPS:function(gps)
-  {
-    if(this.isInteger(Number(gps))){
+  isValidGPS: function (gps) {
+    if (this.isInteger(Number(gps))) {
       return true;
     }
-    return false;  
+    return false;
   }
 };
 
-module.exports=Validator;
+module.exports = Validator;

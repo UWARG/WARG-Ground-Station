@@ -3,8 +3,6 @@
  * @module util/Commands
  * @requires util/Validator
  * @requires SimulationManager
- * @requires models/Coordinates
- * @requires AircraftStatus
  * @requires util/Logger
  * @requires Network
  * @requires config/picpilot-config
@@ -19,8 +17,6 @@ var Network = require('../Network');
 var Logger = require('../util/Logger');
 var Validator = require('../util/Validator');
 var SimulationManager = require("../SimulationManager");
-var AircraftStatus = require('../AircraftStatus');
-var Coordinates = require('../models/Coordinates');
 
 var Commands = {
   /**
@@ -221,7 +217,7 @@ var Commands = {
    * @returns {boolean} Whether the command sent successfully
    */
   sendKPGain: function (type, gain) {
-    if (Validator.isValidNumber(gain)) {
+    if (Validator.isString(type) && Validator.isValidNumber(gain)) {
       return this.sendCommand('set_' + type + 'KPGain', gain);
     }
     else {
@@ -238,7 +234,7 @@ var Commands = {
    * @returns {boolean} Whether the command sent successfully
    */
   sendKIGain: function (type, gain) {
-    if (Validator.isValidNumber(gain)) {
+    if (Validator.isString(type) && Validator.isValidNumber(gain)) {
       return this.sendCommand('set_' + type + 'KIGain', gain);
     }
     else {
@@ -255,7 +251,7 @@ var Commands = {
    * @returns {boolean} Whether the command sent successfully
    */
   sendKDGain: function (type, gain) {
-    if (Validator.isValidNumber(gain)) {
+    if (Validator.isString(type) && Validator.isValidNumber(gain)) {
       return this.sendCommand('set_' + type + 'KDGain', gain);
     }
     else {
