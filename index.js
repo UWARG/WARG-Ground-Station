@@ -9,6 +9,7 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+var MenuBuilder = require('./app/core/MenuBuilder');
 
 //need to keep a global reference of the main window otherwise it'll be closed when javascript garbage collects
 let mainWindow;
@@ -26,6 +27,8 @@ app.on('window-all-closed', function () {
 app.on('ready', () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1600, height: 900});
+
+  mainWindow.setMenu(MenuBuilder.build());
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html');

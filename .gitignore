@@ -3,6 +3,7 @@ cache/
 assets/sat_tiles/
 logs/
 docs/
+out/
 
 Thumbs.db
 

@@ -29,13 +29,14 @@
  *      openWindow: 'myNewWindow', //name of the window to open (optional)
  *      height: 800, //height and width of the window. Default is 500 by 500
  *      width: 600,
- *      devTools: true //whether to open chrome devtools with the window (false by default)
+ *      devTools: true, //whether to open chrome devtools with the window (false by default)
+ *      type: 'separator' //whether this sub menu item is a separator
  *    }
  *  }
 * };
  */
 
-const {remote} = require('electron');
+const electron = require('electron');
 var GainsImporter = require('../util/GainsImporter');
 var PathImporter = require('../util/PathImporter');
 
@@ -48,7 +49,9 @@ var Menu = {
       callback: PathImporter.import
     },
     'Import Settings': {},
-    '': {}, //this is a separator
+    'seperator1': {
+      type: 'separator' //this is a separator
+    },
     'Export PID Gains': {
       callback: GainsImporter.export
     },
@@ -57,7 +60,7 @@ var Menu = {
     },
     'Save Settings as...': {},
     'Quit': {
-      callback: remote.app.quit
+      callback: electron.app.quit
     }
   },
   'Windows': {

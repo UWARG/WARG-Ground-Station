@@ -23,6 +23,7 @@ var WindowsManager = {
    * @param options {Object} Parameters specific to electron.BrowserWindow
    */
   openWindow: function (window_file_name, options) {
+    options = options || {};
     //if the window is already open, focus on it
     if (this.open_windows[window_file_name]) {
       this.open_windows[window_file_name].focus();
@@ -31,9 +32,10 @@ var WindowsManager = {
     else {
       let new_window = new BrowserWindow(options);
       new_window.name = window_file_name;
-      new_window.loadURL('file://' + __dirname + 'windows/' + window_file_name);
+      new_window.loadURL('file://' + __dirname + 'templates/windows/' + window_file_name);
+      new_window.setMenu(null); //we don't want new windows to have their own menu
 
-      if (options.openDevTools) {
+      if (options.devTools) {
         new_window.webContents.openDevTools();
       }
       //delete all instances of the window
