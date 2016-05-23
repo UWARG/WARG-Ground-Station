@@ -44,6 +44,7 @@ var WindowsManager = {
       }
       //delete all instances of the window
       new_window.on('closed', function () {
+        Logger.debug(`Closed ${new_window.name} window`);
         this.open_windows[new_window.name] = null;
         delete this.open_windows[new_window.name];
       }.bind(this));

@@ -34,7 +34,6 @@ module.exports.init = function (Mousetrap) {
 
   //closes the window
   Mousetrap.bind('mod+shift+q', function (e) {
-    Logger.debug('Closing ' + WindowManager.getFocusedWindowName() + ' window');
     remote.getCurrentWindow().close();
   });
 };
