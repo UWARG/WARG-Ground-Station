@@ -1,0 +1,6 @@
+files:
+	- app
+branches:
+	- master
+	- electron
+packageJson: package.json
