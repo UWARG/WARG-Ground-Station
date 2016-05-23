@@ -1,5 +1,6 @@
 var Template=require('../util/Template');
-var TelemetryData=require('../models/TelemetryData');
+var remote = require('electron').remote;
+var TelemetryData=remote.require('./app/models/TelemetryData');
 
 module.exports=function(Marionette){
 

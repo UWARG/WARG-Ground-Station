@@ -10,6 +10,8 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 var MenuBuilder = require('./app/core/MenuBuilder');
+var DataRelay = require('./app/connections/DataRelay.js');
+var AircraftStatus = require('./app/AircraftStatus'); //required for initialization of the aircraft status manager
 
 //need to keep a global reference of the main window otherwise it'll be closed when javascript garbage collects
 let mainWindow;
@@ -25,6 +27,8 @@ app.on('window-all-closed', function () {
 
 // when electron has initialized and ready to open windows
 app.on('ready', function() {
+  DataRelay.init(); //start the data relay connection
+
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1600, height: 900});
 

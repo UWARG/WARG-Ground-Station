@@ -1,9 +1,11 @@
 //The view for the status bar
 //NOTE: this view should NEVER be rendered more than once (otherwise we're leaving unclosed listeners on the TelemetryData)
 var Template=require('../util/Template');
-var TelemetryData=require('../models/TelemetryData');
-var StatusManager=require('../StatusManager');
-var Logger=require('../util/Logger');
+var remote = require('electron').remote;
+
+var TelemetryData=remote.require('./app/models/TelemetryData');
+var StatusManager=remote.require('./app/StatusManager');
+var Logger=remote.require('./app/util/Logger');
 var moment=require('moment');
 var Validator=require('../util/Validator');
 

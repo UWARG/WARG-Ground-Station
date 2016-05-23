@@ -1,10 +1,11 @@
 var fs = require('fs');
 var mkdirp=require('mkdirp');
 var path=require('path');
+var remote = require('electron').remote;
 
 var Template = require('../util/Template');
-var TelemetryData = require('../models/TelemetryData')
-var Logger = require('../util/Logger');
+var TelemetryData = remote.require('./app/models/TelemetryData')
+var Logger = remote.require('./app/util/Logger');
 var app_config = require('../../config/application-config');
 
 var write_location=path.join(__dirname,'../../'+app_config.get('log_dir') + "data_entries/");

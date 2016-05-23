@@ -1,6 +1,7 @@
+var remote = require('electron').remote;
 var Template=require('../util/Template');
 var PlaneScene=require('../models/PlaneScene');
-var TelemetryData=require('../models/TelemetryData');
+var TelemetryData=remote.require('./app/models/TelemetryData');
 var Validator=require('../util/Validator');
 
 module.exports=function(Marionette,THREE,window){

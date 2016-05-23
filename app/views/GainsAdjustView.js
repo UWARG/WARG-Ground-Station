@@ -1,8 +1,9 @@
 var Template=require('../util/Template');
-var TelemetryData=require('../models/TelemetryData');
-var Commands=require('../models/Commands');
+var remote = require('electron').remote;
+var TelemetryData=remote.require('./app/models/TelemetryData');
+var Commands=remote.require('./app/models/Commands');
 var Validator=require('../util/Validator');
-var Logger=require('../util/Logger');
+var Logger=remote.require('./app/util/Logger');
 
 var gains_config=require('../../config/gains-config');
 

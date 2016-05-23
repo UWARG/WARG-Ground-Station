@@ -1,6 +1,7 @@
+var remote = require('electron').remote;
 var Template=require('../util/Template');
-var TelemetryData=require('../models/TelemetryData');
-var Logger=require('../util/Logger');
+var TelemetryData=remote.require('./app/models/TelemetryData');
+var Logger=remote.require('./app/util/Logger');
 
 module.exports=function(Marionette){
   var AttitudeView=require('./AttitudeView')(Marionette);

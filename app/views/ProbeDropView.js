@@ -1,8 +1,10 @@
 var Template=require('../util/Template');
-var Commands=require('../models/Commands');
-var TelemetryData=require('../models/TelemetryData');
+var remote = require('electron').remote;
+
+var Commands=remote.require('./app/models/Commands');
+var TelemetryData=remote.require('./app/models/TelemetryData');
 var Bitmask=require('../util/Bitmask');
-var Logger=require('../util/Logger');
+var Logger=remote.require('./app/util/Logger');
 var Validator=require('../util/Validator');
 
 module.exports=function(Marionette){

@@ -11,5 +11,3 @@ window.onbeforeunload = (e) => {
   window_view.destroy();
   e.returnValue = true;
 };
-
-var DataRelay = require('../../app/connections/DataRelay').init(); //connect to the data relay station and start parsing data

@@ -1,10 +1,11 @@
 var fdialogs = require('node-webkit-fdialogs');
 var csv=require('fast-csv');
+var remote = require('electron').remote;
 
-var TelemetryData=require('../models/TelemetryData');
+var TelemetryData=remote.require('./app/models/TelemetryData');
 var Template=require('../util/Template');
-var Logger=require('../util/Logger');
-var SimulationManager=require('../SimulationManager');
+var Logger=remote.require('./app/util/Logger');
+var SimulationManager=remote.require('./app/SimulationManager');
 
 module.exports=function(Marionette){
 

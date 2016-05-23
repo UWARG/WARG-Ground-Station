@@ -1,11 +1,12 @@
 var Template=require('../util/Template');
 var Map=require('../Map');
-var TelemetryData=require('../models/TelemetryData');
+var remote = require('electron').remote;
+var TelemetryData=remote.require('./app/models/TelemetryData');
 var Validator=require('../util/Validator');
-var Logger=require('../util/Logger');
-var PathManager=require('../map/PathManager');
-var AircraftStatus=require('../AircraftStatus');
-var Commands=require('../models/Commands');
+var Logger=remote.require('./app/util/Logger');
+var PathManager=remote.require('./app/map/PathManager');
+var AircraftStatus=remote.require('./app/AircraftStatus');
+var Commands=remote.require('./app/models/Commands');
 
 module.exports=function(Marionette,L,$){
 
