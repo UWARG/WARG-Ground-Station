@@ -11,11 +11,11 @@
  */
 
 var PersistentStorage = require('node-persist');
-var path=require('path');
+var path = require('path');
 
 //initialize the PersistentStorage module with the specified directory to save its contents to
 PersistentStorage.initSync({
-  dir: path.join(__dirname,'../../persistent_storage')
+  dir: path.join(__dirname, '../../persistent_storage')
 });
 
 /**
@@ -23,19 +23,19 @@ PersistentStorage.initSync({
  * @param file_name The file name of the config file (ie. 'advanced-settings'). This is used as the prefix to its keys
  * @param settings The contents of the config object. These are used to generate the key-value pairs that are saved in settings
  */
-var PersistentSettings=function(file_name, settings){
+var PersistentSettings = function (file_name, settings) {
   "use strict";
 
   /** @property file_name {string} The stored file name. Usually not used externally */
-  this.file_name=file_name;
+  this.file_name = file_name;
 
   /** @property default_settings {Hash} The original default settings that are stored from the config objects. */
-  this.default_settings=settings;
+  this.default_settings = settings;
 
-  for(var key in settings){
-    if(settings.hasOwnProperty(key)){
-      if(!PersistentStorage.getItemSync(this.file_name+'_'+key)){ //if the key doesn't exist in local storage yet
-        PersistentStorage.setItemSync(this.file_name+'_'+key,settings[key]); //create the key in local storage
+  for (var key in settings) {
+    if (settings.hasOwnProperty(key)) {
+      if (!PersistentStorage.getItemSync(this.file_name + '_' + key)) { //if the key doesn't exist in local storage yet
+        PersistentStorage.setItemSync(this.file_name + '_' + key, settings[key]); //create the key in local storage
       }
     }
   }
@@ -45,8 +45,8 @@ var PersistentSettings=function(file_name, settings){
    * @returns {Object} The value that is stored in the key.
    * The object type stays intact (so if its defined as an array in the config object, it will return an array)
    */
-  this.get=function(key){
-    return PersistentStorage.getItemSync(this.file_name+'_'+key);
+  this.get = function (key) {
+    return PersistentStorage.getItemSync(this.file_name + '_' + key);
   };
 
   /**
@@ -54,9 +54,9 @@ var PersistentSettings=function(file_name, settings){
    * @param key {string} The key to set
    * @param value {Object} The value to set
    */
-  this.set=function(key,value){
-    PersistentStorage.setItemSync(this.file_name+'_'+key,value);
+  this.set = function (key, value) {
+    PersistentStorage.setItemSync(this.file_name + '_' + key, value);
   };
 };
 
-module.exports=PersistentSettings;
+module.exports = PersistentSettings;
