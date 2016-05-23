@@ -217,7 +217,7 @@ var Commands = {
    * @returns {boolean} Whether the command sent successfully
    */
   sendKPGain: function (type, gain) {
-    if (Validator.isString(type) && Validator.isValidNumber(gain)) {
+    if (Validator.isNonEmptyString(type) && Validator.isValidNumber(gain)) {
       return this.sendCommand('set_' + type + 'KPGain', gain);
     }
     else {
@@ -234,7 +234,7 @@ var Commands = {
    * @returns {boolean} Whether the command sent successfully
    */
   sendKIGain: function (type, gain) {
-    if (Validator.isString(type) && Validator.isValidNumber(gain)) {
+    if (Validator.isNonEmptyString(type) && Validator.isValidNumber(gain)) {
       return this.sendCommand('set_' + type + 'KIGain', gain);
     }
     else {
@@ -251,7 +251,7 @@ var Commands = {
    * @returns {boolean} Whether the command sent successfully
    */
   sendKDGain: function (type, gain) {
-    if (Validator.isString(type) && Validator.isValidNumber(gain)) {
+    if (Validator.isNonEmptyString(type) && Validator.isValidNumber(gain)) {
       return this.sendCommand('set_' + type + 'KDGain', gain);
     }
     else {

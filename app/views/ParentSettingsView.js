@@ -68,7 +68,7 @@ module.exports=function(Marionette,$){
             if(this.displayed_settings[filename].hasOwnProperty(setting_key)){ //go to the setting
               var original_value=this.original_settings[filename].default_settings[setting_key];
               var new_value=this.displayed_settings[filename][setting_key].val();
-              if (Validator.isValidObject(original_value)){ //if the original value is an object or array, try to do a json.parse and store it as an object
+              if (Validator.isObject(original_value)){ //if the original value is an object or array, try to do a json.parse and store it as an object
                 var parsed_object=null;
                 try{
                   parsed_object=JSON.parse(this.displayed_settings[filename][setting_key].val());

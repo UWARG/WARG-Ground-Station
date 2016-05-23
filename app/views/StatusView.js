@@ -145,7 +145,7 @@ module.exports=function(Marionette,$){
     },
     setGpsLevel:function(gps_level)
     {
-      if(!Validator.isValidGPS(gps_level)){
+      if(!Validator.isValidGpsStatus(gps_level)){
         Logger.warn('Got an invalid value for the GPS level! GPS Level: '+gps_level);
         this.ui.gps_message.css('color','orange');
         this.ui.gps_message.text('Invalid GPS Level');
