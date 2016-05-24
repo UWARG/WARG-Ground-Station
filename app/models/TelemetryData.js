@@ -16,6 +16,12 @@ var util = require('util');
 var advanced_config = require('../../config/advanced-config');
 var EventEmitter = require('events');
 
+/**
+ * When a new data packet has been received on the data relay connection
+ * @event TelemetryData:data_received
+ * @property {Object} data - The received data from the data relay connection. Data is in the same format as `TelemetryData.current_state`
+ */
+
 var TelemetryData = function () {
   /**
    * @var headers {Array}
