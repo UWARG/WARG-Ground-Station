@@ -15,7 +15,7 @@ var Menu = require('./Menu');
 var WindowManager = require('./WindowManager');
 
 /**
- * function build
+ * @function build
  * @returns {electron.Menu} menu
  */
 module.exports.build = function () {
