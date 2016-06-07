@@ -64,7 +64,7 @@ var Validator = {
 
   /**
    * Checks if a value is a positive number
-   * @function isInteger
+   * @function isPositiveNumber
    * @param number {string | Number} The value to check
    * @returns {boolean}
    */
@@ -73,8 +73,18 @@ var Validator = {
   },
 
   /**
+   * Checks if a value is a bollean integer (1 or 0)
+   * @function isBooleanInt
+   * @param number {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isBooleanInt: function (number) {
+    return this.isInteger(number) && (number == 1 || number == 0);
+  },
+
+  /**
    * Checks if a value is a string
-   * @function isInteger
+   * @function isString
    * @param value {mixed} The value to check
    * @returns {boolean}
    */
@@ -84,7 +94,7 @@ var Validator = {
 
   /**
    * Checks if a value is a string
-   * @function isInteger
+   * @function isNonEmptyString
    * @param value {string} The value to check
    * @returns {boolean}
    */
