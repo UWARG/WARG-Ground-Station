@@ -114,7 +114,7 @@ var Validator = {
 
   /**
    * Checks if a value is valid percentage between 0 and 100
-   * @function isInteger
+   * @function isValidPercentage
    * @param percentage {string | Number} The value to check
    * @returns {boolean}
    */
