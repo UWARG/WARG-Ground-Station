@@ -5,12 +5,13 @@
  * @requires config/map-config
  * @requires Network
  * @requires util/Logger
+ * @requires util/Validator
  * @requires StatusManger
  * @requires models/Commands
  * @requires models/TelemetryData
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
- * @description Configures the data relay connection for connecting to it, and parsing its data and sending it out
+ * @description Configures the data relay connection for connecting to it, and parsing its data and sending out events
  * to the TelemetryData module
  * @extends EventEmitter
  * @see http://docs.uwarg.com/picpilot/datalink/
@@ -18,6 +19,7 @@
 var network_config = require('../../config/network-config');
 var Network = require('../Network');
 var Logger = require('../util/Logger');
+var Validator = require('../util/Validator');
 var TelemetryData = require('../models/TelemetryData');
 var StatusManager = require('../StatusManager');
 var Commands = require('../models/Commands');
@@ -71,11 +73,14 @@ DataRelay.parseHeaders = function (data) {
     return str.trim();
   });
 
-  Logger.debug('Network ' + this.name + ' Received headers: ' + data);
-  Logger.debug('Network ' + this.name + ' Parsed headers: ' + JSON.stringify(TelemetryData.headers));
+  this.checkForMissingHeaders(data);
+
+  Logger.debug('Network data_relay Received headers: ' + data);
+  Logger.debug('Network data_relay Parsed headers: ' + JSON.stringify(TelemetryData.headers));
   Logger.data(TelemetryData.headers, 'DATA_RELAY_HEADERS');
   StatusManager.addStatus('Received headers from data_relay', 3, 3000);
 };
+
 
 DataRelay.parseData = function (data) {
   var split_data = data.split(",");
@@ -100,6 +105,9 @@ DataRelay.parseData = function (data) {
           if (TelemetryData.current_state[header] === null) {
             data[header] = null;
           }
+          else if (TelemetryData.current_state[header] === undefined) { //if we didn't receive this piece of data (happens if we don't receive enough data)
+            Logger.error('There was an error in parsing the data. Value for header ' + header + ' not received');
+          }
           else {
             var validation_functions = PacketTypes[packet_type_name][header];
             if (typeof validation_functions === 'string') { //if its only a single validation function
@@ -111,16 +119,16 @@ DataRelay.parseData = function (data) {
                 data[header] = null;
               }
             }
-            else{ //if its in array and there are multiple validation functions
+            else { //if its in array and there are multiple validation functions
               var failed = false;
-              for(var i = 0;i< validation_functions.length; i++){
-                if(!validation_functions[i](TelemetryData.current_state[header])){
+              for (var i = 0; i < validation_functions.length; i++) {
+                if (!Validator[validation_functions[i]](TelemetryData.current_state[header])) {
                   failed = true;
                 }
               }
-              if(failed){
+              if (failed) {
                 data[header] = null;
-              }else{
+              } else {
                 data[header] = Number(TelemetryData.current_state[header]);
               }
             }

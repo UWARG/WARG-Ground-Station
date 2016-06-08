@@ -117,6 +117,7 @@ var Menu = {
       openWindow: 'networkSettings',
       width: 600,
       height: 500,
+      devTools: false,
       shortcut: 'CmdOrCtrl+Shift+N'
     },
     'App Settings': {
