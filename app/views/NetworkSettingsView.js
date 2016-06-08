@@ -1,7 +1,19 @@
-var Template = require('../util/Template');
-var ParentSettingsView = require('./ParentSettingsView');//the parent item view from which this one extends from
+/**
+ * @author Serge Babayan
+ * @module views/NetworkSettingsView
+ * @requires util/Template
+ * @requires views/ParentSettingsView
+ * @requires config/network-config
+ * @requires connections/DataRelay
+ * @requires electron
+ * @extends views/ParentSettingsView
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description Responsible for displaying configurable settings for the data relay connection
+ */
 
-//the setting files from which to display
+var Template = require('../util/Template');
+var ParentSettingsView = require('./ParentSettingsView');
 var network_config = require('../../config/network-config');
 var remote = require('electron').remote;
 var DataRelay = remote.require('./app/connections/DataRelay');
