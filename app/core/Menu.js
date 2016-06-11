@@ -66,9 +66,9 @@ var Menu = {
   'Windows': {
     'Simulation Mode': {
       openWindow: 'simulationMode',
-      height: 600,
-      width: 400,
-      devTools: true
+      height: 350,
+      width: 450,
+      devTools: false
     },
     'Console': {
       openWindow: 'console',
@@ -124,7 +124,8 @@ var Menu = {
       openWindow: 'appSettings',
       width: 600,
       height: 700,
-      shortcut: 'CmdOrCtrl+Shift+S'
+      shortcut: 'CmdOrCtrl+Shift+S',
+      devTools: false
     }
   }
 };

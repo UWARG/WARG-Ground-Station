@@ -1,17 +1,34 @@
-var Template=require('../util/Template');
-var ParentSettingsView=require('./ParentSettingsView');//the parent item view from which this one extends from
+/**
+ * @author Serge Babayan
+ * @module views/AppSettingsView
+ * @requires util/Template
+ * @requires views/ParentSettingsView
+ * @requires config/advanced-config
+ * @requires config/application-config
+ * @requires config/map-config
+ * @requires config/picpilot-config
+ * @requires electron
+ * @extends views/ParentSettingsView
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description Responsible general app settings
+ */
 
-//the setting files from which to display
-var advanced_config=require('../../config/advanced-config');
-var app_config=require('../../config/application-config');
-var map_config=require('../../config/map-config');
-var picpilot_config=require('../../config/picpilot-config');
+var Template = require('../util/Template');
+var ParentSettingsView = require('./ParentSettingsView');
+var remote = require('electron').remote;
 
-module.exports=function(Marionette,$){
-  return ParentSettingsView(Marionette,$).extend({
-    template:Template('AppSettingsView'),
+//the setting files to display
+var advanced_config = remote.require('./config/advanced-config');
+var app_config = remote.require('./config/application-config');
+var map_config = remote.require('./config/map-config');
+var picpilot_config = remote.require('./config/picpilot-config');
 
-    onRender:function(){
+module.exports = function (Marionette, $) {
+  return ParentSettingsView(Marionette, $).extend({
+    template: Template('AppSettingsView'),
+
+    onRender: function () {
       this.ui.app_settings.append('<h2>Advanced Settings</h2>');
       this.addSettings(advanced_config);
       this.ui.app_settings.append('<h2>Application Settings</h2>');

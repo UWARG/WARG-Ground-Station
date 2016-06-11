@@ -14,8 +14,8 @@
 
 var Template = require('../util/Template');
 var ParentSettingsView = require('./ParentSettingsView');
-var network_config = require('../../config/network-config');
 var remote = require('electron').remote;
+var network_config = remote.require('./config/network-config');
 var DataRelay = remote.require('./app/connections/DataRelay');
 
 module.exports = function (Marionette, $) {
