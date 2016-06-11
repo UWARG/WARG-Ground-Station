@@ -1,14 +1,19 @@
 /**
  * @author Serge Babayan
  * @module views/ConsoleView
- * @requires util/Template
- * @requires config/advanced-config
- * @requires util/Logger
  * @requires models/Commands
+ * @requires util/Logger
+ * @requires util/Template
  * @requires electron
+ * @requires config/advanced-config
+ * @listens util/Logger~Logger:info
+ * @listens util/Logger~Logger:debug
+ * @listens util/Logger~Logger:data
+ * @listens util/Logger~Logger:error-log
+ * @listens util/Logger~Logger:warn
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
- * @description Displays a console that communicates directly with the Logger module
+ * @description Listens to the logger module and displays the messages in a console like view
  */
 
 var remote = require('electron').remote;

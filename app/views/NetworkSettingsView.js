@@ -12,10 +12,11 @@
  * @description Responsible for displaying configurable settings for the data relay connection
  */
 
+var remote = require('electron').remote;
 var Template = require('../util/Template');
 var ParentSettingsView = require('./ParentSettingsView');
-var remote = require('electron').remote;
 var network_config = remote.require('./config/network-config');
+
 var DataRelay = remote.require('./app/connections/DataRelay');
 
 module.exports = function (Marionette, $) {

@@ -1,19 +1,35 @@
-var fdialogs = require('node-webkit-fdialogs');
-var csv=require('fast-csv');
+/**
+ * @author Serge Babayan
+ * @module views/ProbeDropView
+ * @requires SimulationManager
+ * @requires util/Logger
+ * @requires models/TelemetryData
+ * @requires util/Template
+ * @requires node-webkit-fdialogs
+ * @requires fast-csv
+ * @requires electron
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description Simulation view that allows the user to select and run a simulation file at a specified speed
+ */
+
 var remote = require('electron').remote;
 
-var TelemetryData=remote.require('./app/models/TelemetryData');
-var Template=require('../util/Template');
-var Logger=remote.require('./app/util/Logger');
-var SimulationManager=remote.require('./app/SimulationManager');
+var TelemetryData = remote.require('./app/models/TelemetryData');
+var Template = require('../util/Template');
+var Logger = remote.require('./app/util/Logger');
+var SimulationManager = remote.require('./app/SimulationManager');
 
-module.exports=function(Marionette){
+var fdialogs = require('node-webkit-fdialogs');
+var csv = require('fast-csv');
+
+module.exports = function (Marionette) {
 
   return Marionette.ItemView.extend({
-    template:Template('SimulationView'),
-    className:'simulationView',
+    template: Template('SimulationView'),
+    className: 'simulationView',
 
-    ui:{
+    ui: {
       file_path: '#selected-file-path',
       transmission_speed: '#selected_speed',
       start_button: '#toggle-simulation-button',
@@ -26,14 +42,14 @@ module.exports=function(Marionette){
       'change #change-speed-slider': 'changeTransmissionSpeed'
     },
 
-    onRender:function(){
+    onRender: function () {
       this.ui.file_path.text(SimulationManager.default_simulation_path);
       this.ui.transmission_speed.text(SimulationManager.transmission_frequency);
 
-      if(SimulationManager.simulationActive){
+      if (SimulationManager.simulationActive) {
         this.changeToStopButton();
       }
-      else{
+      else {
         this.changeToStartButton();
       }
 
@@ -44,25 +60,25 @@ module.exports=function(Marionette){
         delimiter: ',',
         trim: true //If you want to trim all values parsed set to true.
       })
-      .on('data-invalid', function(){
+        .on('data-invalid', function () {
           Logger.warn('Invalid data detected in simulation file');
-       })
-     .on("data", function(data){
-        SimulationManager.addDataEntry(data);
-     });
+        })
+        .on("data", function (data) {
+          SimulationManager.addDataEntry(data);
+        });
     },
 
-    toggleSimulation: function(){
+    toggleSimulation: function () {
       SimulationManager.toggleSimulation();
-      if(SimulationManager.simulationActive){
+      if (SimulationManager.simulationActive) {
         this.changeToStopButton();
       }
-      else{
+      else {
         this.changeToStartButton();
       }
     },
 
-    openSimulationFile: function(){
+    openSimulationFile: function () {
       var dialog = new fdialogs.FDialog({
         type: 'open',
         accept: ['.csv'],
@@ -70,42 +86,42 @@ module.exports=function(Marionette){
       });
 
       dialog.readFile(function (err, content, path) {
-        if(err){
-          Logger.error('There was an error reading the simulation file. Error: '+err);
+        if (err) {
+          Logger.error('There was an error reading the simulation file. Error: ' + err);
         }
-        else{
+        else {
           this.ui.file_path.text(path);
 
           SimulationManager.clearData();
 
           csv.fromString(content, {
-              headers: true, //Set to true if you expect the first line of your CSV to contain headers, alternatly you can specify an array of headers to use.
-              ignoreEmpty: true, //If you wish to ignore empty rows.
-              discardUnmappedColumns: true, //If you want to discard columns that do not map to a header.
-              delimiter: ',',
-              trim: true //If you want to trim all values parsed set to true.
+            headers: true, //Set to true if you expect the first line of your CSV to contain headers, alternatly you can specify an array of headers to use.
+            ignoreEmpty: true, //If you wish to ignore empty rows.
+            discardUnmappedColumns: true, //If you want to discard columns that do not map to a header.
+            delimiter: ',',
+            trim: true //If you want to trim all values parsed set to true.
+          })
+            .on('data-invalid', function () {
+              Logger.warn('Invalid data detected in simulation file');
             })
-            .on('data-invalid', function(){
-                Logger.warn('Invalid data detected in simulation file');
-             })
-           .on("data", function(data){
+            .on("data", function (data) {
               SimulationManager.addDataEntry(data);
-           });
+            });
         }
       }.bind(this));
     },
 
-    changeTransmissionSpeed: function(){
+    changeTransmissionSpeed: function () {
       SimulationManager.changeTransmissionFrequency(this.ui.change_speed_slider.val());
       this.ui.transmission_speed.text(SimulationManager.transmission_frequency);
     },
 
-    changeToStartButton: function(){
+    changeToStartButton: function () {
       this.ui.start_button.text('Start Simulation');
       this.ui.start_button.removeClass('button-error');
       this.ui.start_button.addClass('button-success');
     },
-    changeToStopButton: function(){
+    changeToStopButton: function () {
       this.ui.start_button.text('Stop Simulation');
       this.ui.start_button.addClass('button-error');
       this.ui.start_button.removeClass('button-success');

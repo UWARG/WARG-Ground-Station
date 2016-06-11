@@ -1,28 +1,34 @@
-var Template=require('../util/Template');
+/**
+ * @author Serge Babayan
+ * @module views/MainLayoutView
+ * @requires util/Template
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description A layout view that includes the CockpitLayoutView, ConsoleView, StatusView, MapView and EmergencyButtonsView
+ */
 
-module.exports=function(Marionette,$,L,window){
-  var ConsoleView=require('./ConsoleView')(Marionette);
-  var StatusView=require('./StatusView')(Marionette,$);
-  var CockpitLayoutView=require('./CockpitLayoutView')(Marionette);
-  var MapView=require('./MapView')(Marionette,L,$);
-  var EmergencyButtonsView=require('./EmergencyButtonsView')(Marionette,window);
+var Template = require('../util/Template');
 
-	return Marionette.LayoutView.extend({
-		template:Template('MainLayoutView'),
-    className:'mainLayoutView',
+module.exports = function (Marionette, $, L, window) {
+  var ConsoleView = require('./ConsoleView')(Marionette);
+  var StatusView = require('./StatusView')(Marionette, $);
+  var CockpitLayoutView = require('./CockpitLayoutView')(Marionette);
+  var MapView = require('./MapView')(Marionette, L, $);
+  var EmergencyButtonsView = require('./EmergencyButtonsView')(Marionette, window);
 
-    regions:{
-      console:"#console-region",
-      status:"#status-region",
+  return Marionette.LayoutView.extend({
+    template: Template('MainLayoutView'),
+    className: 'mainLayoutView',
+
+    regions: {
+      console: "#console-region",
+      status: "#status-region",
       map: "#right-region",
-      telemetry:"#top-left-region",
+      telemetry: "#top-left-region",
       buttons: "#emergency-button-region"
     },
 
-		initialize: function(){
-
-		},
-    onRender:function(){
+    onRender: function () {
       this.getRegion('console').show(new ConsoleView());
       this.getRegion('status').show(new StatusView());
       this.getRegion('telemetry').show(new CockpitLayoutView());
@@ -30,8 +36,8 @@ module.exports=function(Marionette,$,L,window){
       this.getRegion('buttons').show(new EmergencyButtonsView());
     },
 
-    onDestroy: function(){
-      console.log('calling the destroy method of the view')
+    onDestroy: function () {
+      //TODO: need to call the destroy events of the item views
     }
-	});
+  });
 };

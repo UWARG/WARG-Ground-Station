@@ -1,8 +1,16 @@
-var gui=require('nw.gui');
+var GainsAdjustView = require('../../app/views/GainsAdjustView')(Marionette, $);
+var WindowShortcuts = require('../../app/core/WindowShortcuts');
 
-var gainsAdjustView=require('./app/views/GainsAdjustView')(Marionette);
-var WindowShortcuts=require('./app/util/WindowShortcuts')(Mousetrap, gui);
+WindowShortcuts.init(Mousetrap);
 
-$(document).ready(function(){
-  $('body').append((new gainsAdjustView()).render().$el);
+var window_view = new GainsAdjustView();
+
+$(document).ready(function () {
+  $('body').append(window_view.render().$el);
 });
+
+//call the destroy method to get rid of any event listeners that we're no longer going to be using
+window.onbeforeunload = (e) => {
+  window_view.destroy();
+  e.returnValue = true;
+};

@@ -8,12 +8,14 @@
  * @requires util/Validator
  * @requires util/Bitmask
  * @requires models/Commands
+ * @requires config/picpilot-config
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description Keeps track of the current state of the autopilot, and informs the StatusManger about any important
  * changes
  * @see http://docs.uwarg.com/picpilot/datalink/
  */
+
 var TelemetryData = require('./models/TelemetryData');
 var StatusManager = require('./StatusManager');
 var Bitmask = require('./util/Bitmask');
