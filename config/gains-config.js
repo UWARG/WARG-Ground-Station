@@ -1,4 +1,4 @@
-var SettingsLoader=require('../app/util/SettingsLoader');
+var SettingsLoader=require('../app/util/PersistentSettings');
 
 //NOTE: all of these MUST be numbers
 var gains_config={

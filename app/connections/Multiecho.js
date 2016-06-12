@@ -4,7 +4,7 @@ var Network=require('../Network');
 var Logger=require('../util/Logger');
 var TelemetryData=require('../models/TelemetryData');
 
-module.exports=function(){
+module.exports.init=function(){
   if(Network.connections['multi_echo']){ //if a connection has already been established (occurs on a page refresh), destroy it
     Network.connections['multi_echo'].disconnect();
   }

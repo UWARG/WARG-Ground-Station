@@ -1,4 +1,4 @@
-var SettingsLoader=require('../app/util/SettingsLoader');
+var SettingsLoader=require('../app/util/PersistentSettings');
 
 var app_config={
 	mode: process.env.NODE_ENV || "development",

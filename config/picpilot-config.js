@@ -1,4 +1,4 @@
-var SettingsLoader=require('../app/util/SettingsLoader');
+var PersistentSettings=require('../app/util/PersistentSettings');
 
 //Picpilot specific options and settings
 var picpilot_config={
@@ -6,4 +6,4 @@ var picpilot_config={
   heart_beat_timeout:5000 //how often to send the heartbeat in milliseconds
 };
 
-module.exports=new SettingsLoader('picpilot_config',picpilot_config);
+module.exports=new PersistentSettings('picpilot_config',picpilot_config);

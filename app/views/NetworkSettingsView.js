@@ -1,38 +1,49 @@
-var Template=require('../util/Template');
-var ParentSettingsView=require('./ParentSettingsView');//the parent item view from which this one extends from
+/**
+ * @author Serge Babayan
+ * @module views/NetworkSettingsView
+ * @requires util/Template
+ * @requires views/ParentSettingsView
+ * @requires config/network-config
+ * @requires connections/DataRelay
+ * @requires electron
+ * @extends views/ParentSettingsView
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description Responsible for displaying configurable settings for the data relay connection
+ */
 
-//the setting files from which to display
-var network_config=require('../../config/network-config');
-var DataRelay=require('../connections/DataRelay');
-var Multiecho=require('../connections/Multiecho');
+var remote = require('electron').remote;
+var Template = require('../util/Template');
+var ParentSettingsView = require('./ParentSettingsView');
+var network_config = remote.require('./config/network-config');
 
+var DataRelay = remote.require('./app/connections/DataRelay');
 
-module.exports=function(Marionette,$){
-  return ParentSettingsView(Marionette,$).extend({
-    template:Template('NetworkSettingsView'),
+module.exports = function (Marionette, $) {
+  return ParentSettingsView(Marionette, $).extend({
+    template: Template('NetworkSettingsView'),
 
-    ui:{
-      app_settings:'.app-settings',
-      save_button:'.save-button',
-      discard_button:'.discard-button',
+    ui: {
+      app_settings: '.app-settings',
+      save_button: '.save-button',
+      discard_button: '.discard-button',
       error_message: '.error-message-box'
     },
 
-    events:{
+    events: {
       "click .save-button": 'saveSettings',
-      "click .discard-button":'discardChanges',
-      "click .reset-default-button":'resetSettingsToDefault',
-      "change .app-settings input":'enableSaveDiscardButton',
-      "click .reconnect-all-button":'reconnectAll'
+      "click .discard-button": 'discardChanges',
+      "click .reset-default-button": 'resetSettingsToDefault',
+      "change .app-settings input": 'enableSaveDiscardButton',
+      "click .reconnect-all-button": 'reconnectAll'
     },
 
-    onRender:function(){
+    onRender: function () {
       this.addSettings(network_config);
     },
 
-    reconnectAll: function(){
-      DataRelay();//restart the data relay connection
-      Multiecho(); //restart the multiecho connection
+    reconnectAll: function () {
+      DataRelay.init(); //restart the data relay connection
     }
   });
 };

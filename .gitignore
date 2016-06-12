@@ -1,8 +1,9 @@
 node_modules/
 cache/
 assets/sat_tiles/
-local_storage
 logs/
+docs/
+out/
 
 Thumbs.db
 

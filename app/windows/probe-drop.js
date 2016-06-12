@@ -1,7 +1,16 @@
-var gui=require('nw.gui');
-var probeDropView=require('./app/views/ProbeDropView')(Marionette);
-var WindowShortcuts=require('./app/util/WindowShortcuts')(Mousetrap, gui);
+var ProbeDropView = require('../../app/views/ProbeDropView')(Marionette, $);
+var WindowShortcuts = require('../../app/core/WindowShortcuts');
 
-$(document).ready(function(){
-  $('body').append((new probeDropView()).render().$el);
+WindowShortcuts.init(Mousetrap);
+
+var window_view = new ProbeDropView();
+
+$(document).ready(function () {
+  $('body').append(window_view.render().$el);
 });
+
+//call the destroy method to get rid of any event listeners that we're no longer going to be using
+window.onbeforeunload = (e) => {
+  window_view.destroy();
+  e.returnValue = true;
+};

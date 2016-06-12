@@ -1,40 +1,30 @@
 {
   "name": "WARG-Ground-Station",
-  "version": "3.1.1",
-  "description": "The WARG ground station written in NW.js",
-  "author": "Univeristy of Waterloo Arial Robotics Group- www.uwarg.com",
+  "version": "4.0.0",
+  "description": "The WARG ground station that communiciated directly with the data-relay-station",
+  "author": "Univeristy of Waterloo Arial Robotics Group - www.uwarg.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/UWARG/WARG-Ground-Station-V2"
   },
-  "main": "index.html",
-  "page-cache":true,
-  "window": {
-    "toolbar": false,
-    "width": 1600,
-    "height": 900,
-    "fullscreen": false,
-    "frame": true
-  },
-  "single-instance": true,
   "scripts": {
-    "start": "node node_modules/nw/bin/nw ./",
-    "build": "node ./build.js"
+    "start": "./node_modules/.bin/electron .",
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "license": "ISC",
   "private": true,
   "dependencies": {
+    "electron-prebuilt": "^1.1.0",
     "fast-csv": "^1.0.0",
-    "leaflet": "^0.7.7",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
-    "node-localstorage": "^1.1.2",
+    "node-persist": "0.0.11",
     "node-webkit-fdialogs": "^0.2.7",
-    "nw": "0.12.3",
+    "root-path": "^0.2.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "nw-builder": "^2.2.0"
+    "ink-docstrap": "^1.1.4",
+    "jsdoc": "^3.4.0"
   }
 }
