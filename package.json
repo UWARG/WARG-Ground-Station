@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/electron .",
-    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --recursive"
   },
   "license": "ISC",
   "private": true,
@@ -24,7 +25,15 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "ink-docstrap": "^1.1.4",
-    "jsdoc": "^3.4.0"
+    "install": "^0.8.1",
+    "istanbul": "^0.4.3",
+    "jsdoc": "^3.4.0",
+    "mocha": "^2.5.3",
+    "npm": "^3.9.5",
+    "rewire": "^2.5.1",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0"
   }
 }

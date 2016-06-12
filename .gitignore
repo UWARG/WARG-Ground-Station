@@ -4,6 +4,7 @@ assets/sat_tiles/
 logs/
 docs/
 out/
+coverage/
 
 Thumbs.db
 
