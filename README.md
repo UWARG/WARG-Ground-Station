@@ -7,15 +7,15 @@
 # Installation
 1. Clone the repo  
 2. Download [Node.js](https://nodejs.org/en/) for your OS
-3. Run `npm install` to install the app dependencies (which includes NW.js)
+3. Run `npm install` to install the app dependencies (which includes electron)
 4. Download [sat_tiles.zip](https://drive.google.com/file/d/0BwjduHozuvOiaUFzV2dZdncyZnc/view?usp=sharing) and extract the `sat_tiles` folder to the assets folder of the project
 5. Run `npm start` to start the app
 
-# Building
-You have the option of building a self-contained cross-platform executable of the groundstation if you so wish. To do this, simply run `npm install` to install all of the apps dependencies, then run `npm run build`. This will use [nw-builder](https://github.com/nwjs/nw-builder) to build the executable of the app and save it in the build directory.
-
 # Running the simulation
 The Ground Station supports simulations, so the data-relay-station doesn't actually have to be run. Click on the `Window>>Simulation Mode` menu item to open the simulation window and start up the simulator.
+
+# Running Tests
+Run `npm test` to run the unit tests. The groundstation uses `mocha` as its BDD testing framework, `sinonjs` as its method stubbing library, `chai` as its assertion library, as well as `rewire` to mock out require calls,  and `isntanbul` for code coverage reports.
 
 #Licence
 Copyright (c) 2016, Waterloo Aerial Robotics Group (WARG)
@@ -44,7 +44,3 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-
-Uses [NW.js](http://nwjs.io), [Marionette](http://marionettejs.com/), and [Leaflet](http://leafletjs.com).
-
-Map tiles are in OSM format. They can be downloaded and exported using GMapCatcher. Leaflet is the maps library used to display the tiles.
