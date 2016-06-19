@@ -22,6 +22,36 @@ var EventEmitter = require('events');
  * @property {Object} data - The received data from the data relay connection. Data is in the same format as `TelemetryData.current_state`
  */
 
+/**
+ * When a new data packet has been received on the data relay connection
+ * @event TelemetryData:aircraft_position
+ * @property {Object} data - Information on the position of the aircraft
+ */
+
+/**
+ * When a new data packet has been received on the data relay connection
+ * @event TelemetryData:aircraft_orientation
+ * @property {Object} data - Information on the orientation of the aircraft
+ */
+
+/**
+ * When a new data packet has been received on the data relay connection
+ * @event TelemetryData:aircraft_gains
+ * @property {Object} data - Current aircraft gains information
+ */
+
+/**
+ * When a new data packet has been received on the data relay connection
+ * @event TelemetryData:aircraft_status
+ * @property {Object} data - Current aircraft status information
+ */
+
+/**
+ * When a new data packet has been received on the data relay connection
+ * @event TelemetryData:aircraft_channels
+ * @property {Object} data - Information about the channel inputs and outputs of the picpilot
+ */
+
 var TelemetryData = function () {
   /**
    * @var headers {Array}
