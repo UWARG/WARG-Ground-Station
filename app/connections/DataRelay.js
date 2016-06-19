@@ -46,11 +46,11 @@ DataRelay.parseHeaders = function (data) {
 DataRelay.parseData = function (data) {
   var sorted_data = PacketParser.parseData(data, TelemetryData.headers);
 
-  _.each(sorted_data, function(packet_data, packet_type_name){
+  _.each(sorted_data, function (packet_data, packet_type_name) {
     TelemetryData.emit(packet_type_name, packet_data);
   });
 
-  data.split(",").map(function(data_value, index){
+  data.split(",").map(function (data_value, index) {
     TelemetryData.current_state[TelemetryData.headers[index]] = data_value.trim();
   });
 

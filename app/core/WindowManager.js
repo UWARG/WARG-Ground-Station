@@ -58,10 +58,10 @@ var WindowsManager = {
    * @param id {int} The id of the window
    * @returns name {string|null} The name of the window, or null if one wasn't found
    */
-  getWindowNameFromId: function(id){
-    for(var window in this.open_windows){
-      if(this.open_windows.hasOwnProperty(window)){
-        if(this.open_windows[window].id === id){
+  getWindowNameFromId: function (id) {
+    for (var window in this.open_windows) {
+      if (this.open_windows.hasOwnProperty(window)) {
+        if (this.open_windows[window].id === id) {
           return window;
         }
       }
@@ -74,7 +74,7 @@ var WindowsManager = {
    * @description Returns the unique name for the currently focused window
    * @returns name {string|null} The name of the window, or null if one wasn't found
    */
-  getFocusedWindowName: function(){
+  getFocusedWindowName: function () {
     return this.getWindowNameFromId(electron.BrowserWindow.getFocusedWindow().id);
   }
 };
