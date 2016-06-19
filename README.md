@@ -1,7 +1,7 @@
 # WARG Ground Station
 ##### The ground station that displays data received from the [data-relay-station](https://github.com/UWARG/data-relay-station)
 
-![Build Status](https://travis-ci.org/UWARG/WARG-Ground-Station.svg?branch=master)
+[![Build Status](https://travis-ci.org/UWARG/WARG-Ground-Station.svg?branch=master)](https://travis-ci.org/UWARG/WARG-Ground-Station/builds)
 
 ![Screenshot](https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/assets/screenshots/mainscreen.PNG)
 
@@ -18,6 +18,9 @@ The Ground Station supports simulations, so the data-relay-station doesn't actua
 
 # Running Tests
 Run `npm test` to run the unit tests. The groundstation uses `mocha` as its BDD testing framework, `sinonjs` as its method stubbing library, `chai` as its assertion library, as well as `rewire` to mock out require calls,  and `isntanbul` for code coverage reports.
+
+# API Documentation
+You can read the api docs by visiting [api.gs.uwarg.com](http://api.gs.uwarg.com). The documentation is hosted on github pages, and can be generated (assuming you have the correct github permissions) by running the `upload-docs.sh` script.
 
 # Licence
 Copyright (c) 2016, Waterloo Aerial Robotics Group (WARG)
