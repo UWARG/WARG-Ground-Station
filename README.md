@@ -2,6 +2,7 @@
 ##### The ground station that displays data received from the [data-relay-station](https://github.com/UWARG/data-relay-station)
 
 [![Build Status](https://travis-ci.org/UWARG/WARG-Ground-Station.svg?branch=master)](https://travis-ci.org/UWARG/WARG-Ground-Station/builds)
+[![Coverage Status](https://coveralls.io/repos/github/UWARG/WARG-Ground-Station/badge.svg?branch=master)](https://coveralls.io/github/UWARG/WARG-Ground-Station?branch=master)
 
 ![Screenshot](https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/assets/screenshots/mainscreen.PNG)
 
