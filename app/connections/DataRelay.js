@@ -5,139 +5,57 @@
  * @requires config/map-config
  * @requires Network
  * @requires util/Logger
- * @requires util/Validator
+ * @requires util/PacketParser
  * @requires StatusManger
- * @requires models/Commands
  * @requires models/TelemetryData
+ * @emits models/TelemetryData~TelemetryData:data_received
+ * @emits models/TelemetryData~TelemetryData:aircraft_position
+ * @emits models/TelemetryData~TelemetryData:aircraft_orientation
+ * @emits models/TelemetryData~TelemetryData:aircraft_gains
+ * @emits models/TelemetryData~TelemetryData:aircraft_status
+ * @emits models/TelemetryData~TelemetryData:aircraft_channels
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
  * @description Configures the data relay connection for connecting to it, and parsing its data and sending out events
  * to the TelemetryData module
- * @extends EventEmitter
  * @see http://docs.uwarg.com/picpilot/datalink/
  */
 var network_config = require('../../config/network-config');
 var Network = require('../Network');
 var Logger = require('../util/Logger');
-var Validator = require('../util/Validator');
 var TelemetryData = require('../models/TelemetryData');
 var StatusManager = require('../StatusManager');
-var Commands = require('../models/Commands');
-var PacketTypes = require('../models/PacketTypes');
+var PacketParser = require('../util/PacketParser');
+var _ = require('underscore');
 
 var DataRelay = {};
-
-DataRelay.checkForMissingHeaders = function (data) {
-  var expected_headers = {};
-  var header;
-
-  //create a list of the headers we expect to receive and set their value to 0
-  for (var packet_type_name in PacketTypes) {
-    if (PacketTypes.hasOwnProperty(packet_type_name)) {
-      for (header in PacketTypes[packet_type_name]) {
-        if (PacketTypes[packet_type_name].hasOwnProperty(header)) {
-          expected_headers[header] = 0;
-        }
-      }
-    }
-  }
-
-  //iterate through the data packet that we actually received
-  for (var i = 0; i < TelemetryData.headers.length; i++) {
-    var header_name = TelemetryData.headers[i];
-
-    //if we receive a header that wasn't listed in the PacketTypes model
-    if (expected_headers[header_name] === undefined) {
-      Logger.warn('An unexpected header was received from the data relay. Header: ' + header_name);
-    }
-    //if we received the same header more than once
-    else if (expected_headers[header_name] > 0) {
-      expected_headers[header_name]++;
-      Logger.warn('Header: ' + header_name + ' was received more than once! Times: ' + expected_headers[header_name]);
-    }
-    else if (expected_headers[header_name] == 0) {
-      expected_headers[header_name]++;
-    }
-  }
-
-  //check to see if all the expected headers were received
-  for (header in expected_headers) {
-    if (expected_headers.hasOwnProperty(header) && expected_headers[header] === 0) {
-      Logger.warn('Did not receive an expected header! Header: ' + header);
-    }
-  }
-};
 
 DataRelay.parseHeaders = function (data) {
   TelemetryData.headers = data.split(",").map(function (str) {
     return str.trim();
   });
 
-  this.checkForMissingHeaders(data);
+  PacketParser.checkForMissingHeaders(data);
 
   Logger.debug('Network data_relay Received headers: ' + data);
-  Logger.debug('Network data_relay Parsed headers: ' + JSON.stringify(TelemetryData.headers));
   Logger.data(TelemetryData.headers, 'DATA_RELAY_HEADERS');
   StatusManager.addStatus('Received headers from data_relay', 3, 3000);
 };
 
 
 DataRelay.parseData = function (data) {
-  var split_data = data.split(",");
+  var sorted_data = PacketParser.parseData(data, TelemetryData.headers);
 
-  //warn the user if we receive an improper number of data
-  if (split_data.length !== TelemetryData.headers.length) {
-    Logger.error('Number of data headers doesn\'t match the number of data!. Length of data: ' + split_data.length + ' Length of headers: ' + TelemetryData.headers.length);
-  }
+  _.each(sorted_data, function(packet_data, packet_type_name){
+    TelemetryData.emit(packet_type_name, packet_data);
+  });
 
-  for (var i = 0; i < split_data.length; i++) {
-    //the replace is required because there's a chance of random brackets being in the values (with past logs at least)
-    TelemetryData.current_state[TelemetryData.headers[i]] = split_data[i];
-  }
+  data.split(",").map(function(data_value, index){
+    TelemetryData.current_state[TelemetryData.headers[index]] = data_value.trim();
+  });
+
   TelemetryData.state_history.push(TelemetryData.current_state);
   TelemetryData.emit('data_received', TelemetryData.current_state);
-
-  for (var packet_type_name in PacketTypes) {
-    if (PacketTypes.hasOwnProperty(packet_type_name)) {
-      var data = {};
-      for (var header in PacketTypes[packet_type_name]) {
-        if (PacketTypes[packet_type_name].hasOwnProperty(header)) {
-          if (TelemetryData.current_state[header] === null) {
-            data[header] = null;
-          }
-          else if (TelemetryData.current_state[header] === undefined) { //if we didn't receive this piece of data (happens if we don't receive enough data)
-            Logger.error('There was an error in parsing the data. Value for header ' + header + ' not received');
-          }
-          else {
-            var validation_functions = PacketTypes[packet_type_name][header];
-            if (typeof validation_functions === 'string') { //if its only a single validation function
-              if (Validator[validation_functions](TelemetryData.current_state[header])) {
-                data[header] = Number(TelemetryData.current_state[header]);
-              }
-              else {
-                Logger.warn('Invalid data received for ' + header + '. Value: ' + TelemetryData.current_state[header]);
-                data[header] = null;
-              }
-            }
-            else { //if its in array and there are multiple validation functions
-              var failed = false;
-              for (var i = 0; i < validation_functions.length; i++) {
-                if (!Validator[validation_functions[i]](TelemetryData.current_state[header])) {
-                  failed = true;
-                }
-              }
-              if (failed) {
-                data[header] = null;
-              } else {
-                data[header] = Number(TelemetryData.current_state[header]);
-              }
-            }
-          }
-        }
-      }
-      TelemetryData.emit(packet_type_name, data);
-    }
-  }
 
   Logger.data(JSON.stringify(TelemetryData.current_state), 'DATA_RELAY_DATA');
   StatusManager.setStatusCode('TIMEOUT_DATA_RELAY', false);
