@@ -12,6 +12,8 @@ git init
 
 git remote add origin git@github.com:UWARG/WARG-Ground-Station.git
 
+echo 'api.gs.uwarg.com' > CNAME
+
 git add .
 
 git commit -m "Updated documentation for version $VERSION"
