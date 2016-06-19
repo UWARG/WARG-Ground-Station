@@ -17,7 +17,7 @@ The Ground Station supports simulations, so the data-relay-station doesn't actua
 # Running Tests
 Run `npm test` to run the unit tests. The groundstation uses `mocha` as its BDD testing framework, `sinonjs` as its method stubbing library, `chai` as its assertion library, as well as `rewire` to mock out require calls,  and `isntanbul` for code coverage reports.
 
-#Licence
+# Licence
 Copyright (c) 2016, Waterloo Aerial Robotics Group (WARG)
 All rights reserved.
 
