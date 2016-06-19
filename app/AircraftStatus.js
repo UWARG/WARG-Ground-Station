@@ -135,7 +135,7 @@ var AircraftStatus = function () {
    * @param data.autopilot_active {number | null}
    * @param data.path_following {number | null}
    */
-  var telemetryCallback = function(data){
+  var telemetryCallback = function (data) {
     checkErrorCodes(data.startup_error_codes);
     checkGPS(data.gps_status);
     checkUHFStatus(data.wireless_connection);

@@ -1,7 +1,7 @@
 //configures the leaflet draw plugin for the map
-var SafetyMarkers=require('../models/SafetyMarkers');
+var SafetyMarkers = require('../models/SafetyMarkers');
 
-var MapDraw=function(leaflet){
+var MapDraw = function (leaflet) {
   // Initialise the FeatureGroup to store editable layers
   var drawnItems = new leaflet.FeatureGroup();
 
@@ -36,9 +36,7 @@ var MapDraw=function(leaflet){
           //fillColor:''
         }
       },
-      marker: {
-        
-      }
+      marker: {}
     },
     edit: {
       featureGroup: drawnItems //Important!
@@ -49,15 +47,15 @@ var MapDraw=function(leaflet){
   var drawControl = new leaflet.Control.Draw(leaflet_draw_options);
 
   //adds the draw controls to the map
-  this.addTo=function(map){
+  this.addTo = function (map) {
     drawnItems.addTo(map);
     drawControl.addTo(map);
-  
-    map.on('draw:created', function(event) {
+
+    map.on('draw:created', function (event) {
       var layer = event.layer;
-      var marker={
+      var marker = {
         type: event.layerType,
-        latlngs:event.layer._latlngs
+        latlngs: event.layer._latlngs
       };
       SafetyMarkers.addSafetyMarker(marker);
       drawnItems.addLayer(layer);
@@ -65,4 +63,4 @@ var MapDraw=function(leaflet){
   };
 }
 
-module.exports=MapDraw;
+module.exports = MapDraw;
