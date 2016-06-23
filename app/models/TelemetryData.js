@@ -58,45 +58,24 @@ var TelemetryData = function () {
   this.headers = [];
 
   /**
-   * @var received {Array}
-   * All [{time, data}] received from data relay station (one item per transmission, increasing index more recent)
-   * @example
-   * console.log(TelemetryData.received)
-   * [
-   *  {
-   *    time: 126549876,
-   *    data: [34, 5656, 234, 123, ..]
-   *  }
-   *  ...
-   * ]
-   */
-  this.received = [];
-
-  /**
    * @var current_state {Hash}
-   * Current flight state. In the format of a hash, where the keys are the header names, and the values are the data
+   * Current flight state. In the format of a hash, where the keys are the packet names, and the value is an array of header=>value data
+   * @see models/PacketTypes
    * @example
    * console.log(TelemetryData.current_state)
    * {
-   *  lat: 45.45455,
-   *  lon: 324234,
-   *  time: 234324324,
-   *  ...
+   *    aircraft_position: {
+   *      lat: 45.45455,
+   *      lon: 324234,
+   *      time: 234324324,
+   *      ...
+   *    },
+   *    aircraft_orientation: {
+   *        ...
+   *    }
    * }
    */
   this.current_state = {};
-
-  /**
-   * @var state_history {Array}
-   * All past flight states. Unlike the `received` property, the contents of the array are hashes in the same form as `current_state`
-   */
-  this.state_history = [];
-
-  /**
-   * @var sent {Array}
-   * All [{time, data}] data sent to the data relay station (one item per transmission, increasing index more recent)
-   */
-  this.sent = [];
 
   /**
    * Converts a springfield version of headers (separated by commas) into an array and sets it as its headers.
