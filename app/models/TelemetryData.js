@@ -19,12 +19,6 @@ var _ = require('underscore');
 
 /**
  * When a new data packet has been received on the data relay connection
- * @event TelemetryData:data_received
- * @property {Object} data - The received data from the data relay connection. Data is in the same format as `TelemetryData.current_state`
- */
-
-/**
- * When a new data packet has been received on the data relay connection
  * @event TelemetryData:aircraft_position
  * @property {Object} data - Information on the position of the aircraft
  */
@@ -115,9 +109,13 @@ var TelemetryData = function () {
    * //Outputs: ['header1', 'header2', 'header3', 'header4']
    */
   this.setHeadersFromString = function (headers_string) {
-    this.headers = headers_string.split(",").map(function (str) {
-      return str.trim();
-    });
+    this.headers = [];
+
+    if(headers_string){
+      this.headers = headers_string.split(",").map(function (str) {
+        return str.trim();
+      });
+    }
   };
 
   /**
@@ -139,9 +137,11 @@ var TelemetryData = function () {
    * TelemetryData.emitPackets(packets);
    */
   this.emitPackets = function (packets) {
-    _.each(packets, function (packet_data, packet_name) {
-      this.emit(packet_name, packet_data);
-    });
+    if(packets){
+      _.each(packets, function (packet_data, packet_name) {
+        this.emit(packet_name, packet_data);
+      }.bind(this));
+    }
   };
 
   EventEmitter.call(this);
