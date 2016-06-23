@@ -52,7 +52,7 @@ var PacketParser = {
       }
     });
   },
-
+  
   /**
    * Converts a string of data into a packet type object, to be emitted by the TelemetryData module.
    * Uses the PacketTypes module in order to sort the headers into the appropriate packet types as well
@@ -75,6 +75,10 @@ var PacketParser = {
    * }
    */
   parseData: function (data, headers_array) {
+    if(!data || !headers_array){
+      return {};
+    }
+
     var data_array = data.split(",");
     var sorted_data = {};
     var current_state = {};

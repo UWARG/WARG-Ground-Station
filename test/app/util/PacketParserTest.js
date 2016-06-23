@@ -59,6 +59,14 @@ describe('PacketParser', function () {
       PacketParser.checkForMissingHeaders(['header1', 'header2', 'header3', 'header4', 'unexpected_header']);
       expect(Logger.warn).to.have.been.calledWith('An unexpected header was received from the data relay. Header: unexpected_header');
     });
+
+    it('given an empty array should warn user correctly', function(){
+      PacketParser.checkForMissingHeaders([]);
+      expect(Logger.warn).to.have.been.calledWith('Did not receive an expected header! Header: header4');
+      expect(Logger.warn).to.have.been.calledWith('Did not receive an expected header! Header: header3');
+      expect(Logger.warn).to.have.been.calledWith('Did not receive an expected header! Header: header2');
+      expect(Logger.warn).to.have.been.calledWith('Did not receive an expected header! Header: header1');
+    });
   });
 
   describe('parseData', function () {
@@ -233,6 +241,21 @@ describe('PacketParser', function () {
       var result = PacketParser.parseData('99,35,36,85', ['header1', 'header2', 'header3', 'header4']);
       expect(Logger.warn, 'Logger.warn').to.have.been.calledWith('Validation failed for header1. Value: 99');
       expect(result['packetType1']['header1']).to.equal(null);
+    });
+
+    it('given null data should return an empty object', function () {
+      var result = PacketParser.parseData(null, ['header1', 'header2', 'header3', 'header4']);
+      expect(result).to.eql({});
+    });
+
+    it('given null headers should return an empty object', function () {
+      var result = PacketParser.parseData('wef,wef,wef', null);
+      expect(result).to.eql({});
+    });
+
+    it('given an empty array for headers should return null for expected headers', function () {
+      var result = PacketParser.parseData('wef,wef,wef', []);
+      expect(result).to.eql(getExpectedResult(null,null,null,null));
     });
   });
 });
