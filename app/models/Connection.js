@@ -129,6 +129,7 @@ var Connection = function (options) {
    */
   this.socket.on('timeout', function () {
     this.emit('timeout');
+    //TODO: Set the timeout programmatically in the log message
     Logger.error('Timed out for 5s for ' + this.name + ' connection (host: ' + this.host + ',port:' + this.port + ')');
   }.bind(this));
 
