@@ -15,6 +15,7 @@
 var util = require('util');
 var advanced_config = require('../../config/advanced-config');
 var EventEmitter = require('events');
+var _ = require('underscore');
 
 /**
  * When a new data packet has been received on the data relay connection
@@ -99,16 +100,57 @@ var TelemetryData = function () {
 
   /**
    * @var sent {Array}
-   * All [time, data] data sent to the data relay station (one item per transmission, increasing index more recent)
+   * All [{time, data}] data sent to the data relay station (one item per transmission, increasing index more recent)
    */
   this.sent = [];
+
+  /**
+   * Converts a springfield version of headers (separated by commas) into an array and sets it as its headers.
+   * Will also perform a trim() on each of the header values.
+   * @function setHeadersFromString
+   * @param {String} headers_string
+   * @example
+   * TelemetryData.setHeadersFromString('header1,header2, header3, header4');
+   * console.log(TelemetryData.headers);
+   * //Outputs: ['header1', 'header2', 'header3', 'header4']
+   */
+  this.setHeadersFromString = function (headers_string) {
+    this.headers = headers_string.split(",").map(function (str) {
+      return str.trim();
+    });
+  };
+
+  /**
+   * Takes in a packet object and emits each one with its own payload. Packet object should be in the same format as
+   * the PacketTypes model, only the value being the value of the actual header.
+   * @function emitPackets
+   * @param {Object} packets A key value pair of the packet name and its data payload
+   * @example <caption> Usage example </caption>
+   * var packets = {
+   *    packet_name: {
+   *      packet_data1: 'packet_value1',
+   *      packet_data2: 'packet_value2'
+   *    }
+   *    packet_name2: {
+   *        ...
+   *    }
+   * }
+   * //this will emit a 'packet_name' and 'packet_name2' events each with their respective data
+   * TelemetryData.emitPackets(packets);
+   */
+  this.emitPackets = function (packets) {
+    _.each(packets, function (packet_data, packet_name) {
+      this.emit(packet_name, packet_data);
+    });
+  };
 
   EventEmitter.call(this);
 };
 
-util.inherits(TelemetryData, EventEmitter); //give TelemetryData events functionality, so that we can emit and recieve events
+//give TelemetryData the ability to emit and listen to events
+util.inherits(TelemetryData, EventEmitter);
 
-var td = new TelemetryData();
-td.setMaxListeners(advanced_config.get('telemetrydata_max_listeners'));
+var telemetry_data_instance = new TelemetryData();
+telemetry_data_instance.setMaxListeners(advanced_config.get('telemetrydata_max_listeners'));
 
-module.exports = td;
+module.exports = telemetry_data_instance;
