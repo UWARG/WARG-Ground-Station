@@ -172,6 +172,11 @@ describe('PacketParser', function () {
       expect(result).to.deep.equal(getExpectedResult(34, 35, 36, 37));
     });
 
+    it('given a data value that is an empty string should return null in the expected header', function () {
+      var result = PacketParser.parseData(' , 35, 36, 37', ['header1', 'header2', 'header3', 'header4']);
+      expect(result).to.deep.equal(getExpectedResult(null, 35, 36, 37));
+    });
+
     it('given a header that is not received should warn user and return null for the header value', function () {
       var result = PacketParser.parseData('34, 35, 36', ['header1', 'header2', 'header3']);
       expect(Logger.error).to.have.calledWith('Parsing Error. Value for header header4 not received');
