@@ -44,6 +44,12 @@ var Connection = function (options) {
    */
   this.closed = true;
 
+  /**
+   * Timeout for the socket in milliseconds. Defaults to 5 seconds
+   * @type {number}
+   */
+  this.timeout = 5000;
+
   // Initialize necessary properties from `EventEmitter` in this instance
   EventEmitter.call(this);
 
@@ -74,6 +80,15 @@ var Connection = function (options) {
   };
 
   /**
+   * Sets the timeout for the socket connection in milliseconds
+   * @function setTimeout
+   * @param {int} timeout
+   */
+  this.setTimeout = function(timeout){
+    this.socket.setTimeout(timeout);
+  };
+
+  /**
    * Attempts to send data through the socket
    * @param data {Object} The data to send
    * @fires Connection:write
@@ -97,6 +112,7 @@ var Connection = function (options) {
    * @type {net.Socket}
    */
   this.socket = new net.Socket();
+  this.socket.setTimeout(this.timeout);
 
   this.socket.on('connect', function () {
     /**
@@ -129,8 +145,7 @@ var Connection = function (options) {
    */
   this.socket.on('timeout', function () {
     this.emit('timeout');
-    //TODO: Set the timeout programmatically in the log message
-    Logger.error('Timed out for 5s for ' + this.name + ' connection (host: ' + this.host + ',port:' + this.port + ')');
+    Logger.error('Timed out for ' + this.timeout/1000 + 's for ' + this.name + ' connection (host: ' + this.host + ',port:' + this.port + ')');
   }.bind(this));
 
   /**

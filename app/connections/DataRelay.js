@@ -5,7 +5,7 @@
  * @requires Network
  * @requires util/Logger
  * @requires util/PacketParser
- * @requires StatusManger
+ * @requires StatusManager
  * @requires models/TelemetryData
  * @emits models/TelemetryData~TelemetryData:aircraft_position
  * @emits models/TelemetryData~TelemetryData:aircraft_orientation
@@ -18,6 +18,7 @@
  * to the TelemetryData module
  * @see http://docs.uwarg.com/picpilot/datalink/
  */
+
 var network_config = require('../../config/network-config');
 var Network = require('../Network');
 var Logger = require('../util/Logger');
@@ -51,12 +52,13 @@ DataRelay.parseData = function (data) {
  */
 DataRelay.init = function () {
   if (Network.connections['data_relay']) { //if a connection has already been established, disconnect it
+    Network.connections['data_relay'].removeAllListeners();
     Network.connections['data_relay'].disconnect();
   }
 
   var data_relay = Network.addConnection('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
 
-  data_relay.socket.setTimeout(network_config.get('datarelay_timeout'));
+  data_relay.setTimeout(network_config.get('datarelay_timeout'));
 
   data_relay.on('connect', function () {
     TelemetryData.headers = [];
