@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>WARG Groundstation Source: views/ConsoleView.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.yeti.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">WARG Groundstation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-AircraftStatus.html">AircraftStatus</a></li><li><a href="module-connections_DataRelay.html">connections/DataRelay</a></li><li><a href="module-core_Menu.html">core/Menu</a></li><li><a href="module-core_MenuBuilder.html">core/MenuBuilder</a></li><li><a href="module-core_WindowManager.html">core/WindowManager</a></li><li><a href="module-core_WindowShortcuts.html">core/WindowShortcuts</a></li><li><a href="module-models_Connection.html">models/Connection</a></li><li><a href="module-models_Coordinates.html">models/Coordinates</a></li><li><a href="module-models_PacketTypes.html">models/PacketTypes</a></li><li><a href="module-models_TelemetryData.html">models/TelemetryData</a></li><li><a href="module-util_Commands.html">util/Commands</a></li><li><a href="module-util_PacketParser.html">util/PacketParser</a></li><li><a href="module-util_PersistentSettings.html">util/PersistentSettings</a></li><li><a href="module-util_Template.html">util/Template</a></li><li><a href="module-util_Validator.html">util/Validator</a></li><li><a href="module-views_3dView.html">views/3dView</a></li><li><a href="module-views_AltitudeView.html">views/AltitudeView</a></li><li><a href="module-views_AppSettingsView.html">views/AppSettingsView</a></li><li><a href="module-views_AttitudeView.html">views/AttitudeView</a></li><li><a href="module-views_AutoAdjustView.html">views/AutoAdjustView</a></li><li><a href="module-views_CockpitLayoutView.html">views/CockpitLayoutView</a></li><li><a href="module-views_ConsoleView.html">views/ConsoleView</a></li><li><a href="module-views_DataEntryView.html">views/DataEntryView</a></li><li><a href="module-views_DataView.html">views/DataView</a></li><li><a href="module-views_EmergencyButtonsView.html">views/EmergencyButtonsView</a></li><li><a href="module-views_GainsAdjustView.html">views/GainsAdjustView</a></li><li><a href="module-views_MainLayoutView.html">views/MainLayoutView</a></li><li><a href="module-views_MapView.html">views/MapView</a></li><li><a href="module-views_NetworkSettingsView.html">views/NetworkSettingsView</a></li><li><a href="module-views_ParentSettingsView.html">views/ParentSettingsView</a></li><li><a href="module-views_ProbeDropView.html">views/ProbeDropView</a></li><li><a href="module-views_StatusView.html">views/StatusView</a></li><li><a href="module-views_ThrottleView.html">views/ThrottleView</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection-Connection.html">models/Connection~Connection</a></li><li><a href="module-util_PersistentSettings-PersistentSettings.html">util/PersistentSettings~PersistentSettings</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection.html#~event:Connection:close">models/Connection~Connection:close</a></li><li><a href="module-models_Connection.html#~event:Connection:connect">models/Connection~Connection:connect</a></li><li><a href="module-models_Connection.html#~event:Connection:data">models/Connection~Connection:data</a></li><li><a href="module-models_Connection.html#~event:Connection:socket_error">models/Connection~Connection:socket_error</a></li><li><a href="module-models_Connection.html#~event:Connection:timeout">models/Connection~Connection:timeout</a></li><li><a href="module-models_Connection.html#~event:Connection:write">models/Connection~Connection:write</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_channels">models/TelemetryData~TelemetryData:aircraft_channels</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_gains">models/TelemetryData~TelemetryData:aircraft_gains</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_orientation">models/TelemetryData~TelemetryData:aircraft_orientation</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_position">models/TelemetryData~TelemetryData:aircraft_position</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_status">models/TelemetryData~TelemetryData:aircraft_status</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: views/ConsoleView.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+ * @author Serge Babayan
+ * @module views/ConsoleView
+ * @requires models/Commands
+ * @requires util/Logger
+ * @requires util/Template
+ * @requires electron
+ * @requires config/advanced-config
+ * @listens util/Logger~Logger:info
+ * @listens util/Logger~Logger:debug
+ * @listens util/Logger~Logger:data
+ * @listens util/Logger~Logger:error-log
+ * @listens util/Logger~Logger:warn
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description Listens to the logger module and displays the messages in a console like view
+ */
+
+var remote = require('electron').remote;
+var Template = require('../util/Template');
+var Logger = remote.require('./app/util/Logger');
+var Commands = remote.require('./app/models/Commands');
+var advanced_config = remote.require('./config/advanced-config');
+
+module.exports = function (Marionette) {
+
+  return Marionette.ItemView.extend({
+    template: Template('ConsoleView'),
+
+    ui: {
+      console: "#console",
+      command_input: "#commands-input",
+      info_toggle: "#console-info-toggle",
+      debug_toggle: "#console-debug-toggle",
+      error_toggle: "#console-error-toggle",
+      warn_toggle: "#console-warn-toggle",
+      data_toggle: "#console-data-toggle"
+    },
+
+    events: {
+      'click #scroll-bottom-button': 'enableScrollBottom',
+      'submit #commands-input-form': 'sendCommand',
+      'keyup #commands-input': 'cycleCommandHistory',
+      'change #console-info-toggle': 'toggleInfoMessages',
+      'change #console-debug-toggle': 'toggleDebugMessages',
+      'change #console-error-toggle': 'toggleErrorMessages',
+      'change #console-warn-toggle': 'toggleWarnMessages',
+      'change #console-data-toggle': 'toggleDataMessages'
+    },
+
+    className: 'consoleView',
+
+    initialize: function () {
+      this.scroll_bottom = true; //whether the console will scroll down upon new message arrival
+
+      this.command_history = [];
+      this.command_history_index = 0;
+
+      this.max_console_messages = advanced_config.get('max_console_messages');
+      this.all_displayed_messages = [];
+
+      //whats kinds of messages we want displayed in the console
+      this.infoMessages = false;
+      this.debugMessages = false;
+      this.errorMessages = false;
+      this.warnMessages = false;
+      this.dataMessages = false;
+
+      this.logger_callbacks = {}; //we need to keep a reference to the add message callbacks so that we can properly remove off the logger listener
+    },
+
+    onRender: function () {
+      //Turns on the logger listeners
+      this.toggleInfoMessages();
+      this.toggleDebugMessages();
+      this.toggleErrorMessages();
+      this.toggleWarnMessages();
+      this.toggleDataMessages();
+
+      this.detectScrollUp();
+    },
+    onBeforeDestroy: function () {
+      //Remove any logger listeners
+      if (this.logger_callbacks['info']) {
+        Logger.removeListener('info', this.logger_callbacks['info']);
+      }
+      if (this.logger_callbacks['debug']) {
+        Logger.removeListener('debug', this.logger_callbacks['debug']);
+      }
+      if (this.logger_callbacks['error-log']) {
+        Logger.removeListener('error-log', this.logger_callbacks['error-log']);
+      }
+      if (this.logger_callbacks['warn']) {
+        Logger.removeListener('warn', this.logger_callbacks['warn']);
+      }
+      if (this.logger_callbacks['data']) {
+        Logger.removeListener('data', this.logger_callbacks['data']);
+      }
+    },
+    toggleInfoMessages: function () {
+      if (this.infoMessages) { //if we should stop listening to info level messages
+        if (this.logger_callbacks['info']) {
+          Logger.removeListener('info', this.logger_callbacks['info']); //stop listening to info level messages from the Logger
+        }
+        this.infoMessages = false;
+      } else { //if we should start listening to info level messages
+        var callback = this.addInfoMessage.bind(this);
+        this.logger_callbacks['info'] = callback;
+        Logger.addListener('info', callback); //call this.addInfoMessage every time an info level message comes in
+        this.infoMessages = true;
+        this.scroll_bottom = true;
+      }
+      this.ui.info_toggle.prop('checked', this.infoMessages);
+    },
+    toggleDebugMessages: function () {
+      if (this.debugMessages) {
+        if (this.logger_callbacks['debug']) {
+          Logger.removeListener('debug', this.logger_callbacks['debug']);
+        }
+        this.debugMessages = false;
+      } else {
+        var callback = this.addDebugMessage.bind(this);
+        this.logger_callbacks['debug'] = callback;
+        Logger.addListener('debug', callback);
+        this.debugMessages = true;
+        this.scroll_bottom = true;
+      }
+      this.ui.debug_toggle.prop('checked', this.debugMessages);
+    },
+    toggleErrorMessages: function () {
+      if (this.errorMessages) {
+        if (this.logger_callbacks['error-log']) {
+          Logger.removeListener('error-log', this.logger_callbacks['error-log']);
+        }
+        this.errorMessages = false;
+      } else {
+        var callback = this.addErrorMessage.bind(this);
+        this.logger_callbacks['error-log'] = callback;
+        Logger.addListener('error-log', callback);
+        this.errorMessages = true;
+        this.scroll_bottom = true;
+      }
+      this.ui.error_toggle.prop('checked', this.errorMessages);
+    },
+    toggleWarnMessages: function () {
+      if (this.warnMessages) {
+        if (this.logger_callbacks['warn']) {
+          Logger.removeListener('warn', this.logger_callbacks['warn']);
+        }
+        this.warnMessages = false;
+      } else {
+        var callback = this.addWarnMessage.bind(this);
+        this.logger_callbacks['warn'] = callback;
+        Logger.addListener('warn', callback);
+        this.warnMessages = true;
+        this.scroll_bottom = true;
+      }
+      this.ui.warn_toggle.prop('checked', this.warnMessages);
+    },
+    toggleDataMessages: function () {
+      if (this.dataMessages) {
+        if (this.logger_callbacks['data']) {
+          Logger.removeListener('data', this.logger_callbacks['data']);
+        }
+        this.dataMessages = false;
+      } else {
+        var callback = this.addDataMessage.bind(this);
+        this.logger_callbacks['data'] = callback;
+        Logger.addListener('data', callback);
+        this.dataMessages = true;
+        this.scroll_bottom = true;
+      }
+      this.ui.data_toggle.prop('checked', this.dataMessages);
+    },
+    addInfoMessage: function (time, text) {
+      this.all_displayed_messages.push(this.ui.console.append('&lt;p class="message info-message">&lt;time>' + time + '&lt;/time>' + text + '&lt;/p>').children('*:last-child'));
+      this.scrollToBottom();
+      this.checkMaxConsoleMessages();
+    },
+    addDebugMessage: function (time, text) {
+      this.all_displayed_messages.push(this.ui.console.append('&lt;p class="message debug-message">&lt;time>' + time + '&lt;/time>' + text + '&lt;/p>').children('*:last-child'));
+      this.scrollToBottom();
+      this.checkMaxConsoleMessages();
+    },
+    addErrorMessage: function (time, text) {
+      this.all_displayed_messages.push(this.ui.console.append('&lt;p class="message error-message">&lt;time>' + time + '&lt;/time>' + text + '&lt;/p>').children('*:last-child'));
+      this.scrollToBottom();
+      this.checkMaxConsoleMessages();
+    },
+    addWarnMessage: function (time, text) {
+      this.all_displayed_messages.push(this.ui.console.append('&lt;p class="message warn-message">&lt;time>' + time + '&lt;/time>' + text + '&lt;/p>').children('*:last-child'));
+      this.scrollToBottom();
+      this.checkMaxConsoleMessages();
+    },
+    addDataMessage: function (time, text) {
+      this.all_displayed_messages.push(this.ui.console.append('&lt;p class="message data-message">&lt;time>' + time + '&lt;/time>' + text + '&lt;/p>').children('*:last-child'));
+      this.scrollToBottom();
+      this.checkMaxConsoleMessages();
+    },
+    sendCommand: function (e) {
+      if (e) e.preventDefault();
+      var command = this.ui.command_input.val();
+      if (command &amp;&amp; command.trim()) {
+        Commands.sendRawCommand(command.trim());
+        this.ui.command_input.val('');
+        this.command_history.push(command.trim());
+        this.command_history_index = 0;
+      }
+    },
+    cycleCommandHistory: function (e) {
+      if (e.keyCode === 38) { //keyup
+        this.ui.command_input.val(this.command_history[this.command_history.length - 1 - this.command_history_index]);
+        this.command_history.length - 1 - this.command_history_index > 0 ? this.command_history_index++ : this.command_history_index;
+      }
+      else if (e.keyCode === 40) { //keydown
+        this.ui.command_input.val(this.command_history[this.command_history.length - 1 - this.command_history_index]);
+        this.command_history_index > 0 ? this.command_history_index-- : this.command_history_index;
+      }
+    },
+    detectScrollUp: function () { //disables scrollToBottom if it detects an upward scroll
+      var lastScrollTop = 0;
+      var that = this;
+      this.ui.console.scroll(function (event) {
+        var scrolltop = event.target.scrollTop;
+        if (scrolltop &lt; lastScrollTop) {
+          // upscroll code
+          that.scroll_bottom = false;
+        }
+        lastScrollTop = scrolltop;
+      });
+    },
+    enableScrollBottom: function (e) {
+      e.preventDefault();
+      this.scroll_bottom = true;
+      this.scrollToBottom();
+    },
+    scrollToBottom: function () {
+      if (this.scroll_bottom) {
+        this.ui.console[0].scrollTop = this.ui.console[0].scrollHeight;
+      }
+    },
+    checkMaxConsoleMessages: function () {
+      if (this.all_displayed_messages.length > this.max_console_messages) {
+        this.all_displayed_messages[0].remove();
+        this.all_displayed_messages.shift();
+      }
+    }
+  });
+};</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+	<span class="copyright">
+	Copyright Waterloo Aerial Robotics Group 2016
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on 24-06-2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>

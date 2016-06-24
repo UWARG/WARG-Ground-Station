@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>WARG Groundstation Source: util/Validator.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.yeti.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">WARG Groundstation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-AircraftStatus.html">AircraftStatus</a></li><li><a href="module-connections_DataRelay.html">connections/DataRelay</a></li><li><a href="module-core_Menu.html">core/Menu</a></li><li><a href="module-core_MenuBuilder.html">core/MenuBuilder</a></li><li><a href="module-core_WindowManager.html">core/WindowManager</a></li><li><a href="module-core_WindowShortcuts.html">core/WindowShortcuts</a></li><li><a href="module-models_Connection.html">models/Connection</a></li><li><a href="module-models_Coordinates.html">models/Coordinates</a></li><li><a href="module-models_PacketTypes.html">models/PacketTypes</a></li><li><a href="module-models_TelemetryData.html">models/TelemetryData</a></li><li><a href="module-util_Commands.html">util/Commands</a></li><li><a href="module-util_PacketParser.html">util/PacketParser</a></li><li><a href="module-util_PersistentSettings.html">util/PersistentSettings</a></li><li><a href="module-util_Template.html">util/Template</a></li><li><a href="module-util_Validator.html">util/Validator</a></li><li><a href="module-views_3dView.html">views/3dView</a></li><li><a href="module-views_AltitudeView.html">views/AltitudeView</a></li><li><a href="module-views_AppSettingsView.html">views/AppSettingsView</a></li><li><a href="module-views_AttitudeView.html">views/AttitudeView</a></li><li><a href="module-views_AutoAdjustView.html">views/AutoAdjustView</a></li><li><a href="module-views_CockpitLayoutView.html">views/CockpitLayoutView</a></li><li><a href="module-views_ConsoleView.html">views/ConsoleView</a></li><li><a href="module-views_DataEntryView.html">views/DataEntryView</a></li><li><a href="module-views_DataView.html">views/DataView</a></li><li><a href="module-views_EmergencyButtonsView.html">views/EmergencyButtonsView</a></li><li><a href="module-views_GainsAdjustView.html">views/GainsAdjustView</a></li><li><a href="module-views_MainLayoutView.html">views/MainLayoutView</a></li><li><a href="module-views_MapView.html">views/MapView</a></li><li><a href="module-views_NetworkSettingsView.html">views/NetworkSettingsView</a></li><li><a href="module-views_ParentSettingsView.html">views/ParentSettingsView</a></li><li><a href="module-views_ProbeDropView.html">views/ProbeDropView</a></li><li><a href="module-views_StatusView.html">views/StatusView</a></li><li><a href="module-views_ThrottleView.html">views/ThrottleView</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection-Connection.html">models/Connection~Connection</a></li><li><a href="module-util_PersistentSettings-PersistentSettings.html">util/PersistentSettings~PersistentSettings</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection.html#~event:Connection:close">models/Connection~Connection:close</a></li><li><a href="module-models_Connection.html#~event:Connection:connect">models/Connection~Connection:connect</a></li><li><a href="module-models_Connection.html#~event:Connection:data">models/Connection~Connection:data</a></li><li><a href="module-models_Connection.html#~event:Connection:socket_error">models/Connection~Connection:socket_error</a></li><li><a href="module-models_Connection.html#~event:Connection:timeout">models/Connection~Connection:timeout</a></li><li><a href="module-models_Connection.html#~event:Connection:write">models/Connection~Connection:write</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_channels">models/TelemetryData~TelemetryData:aircraft_channels</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_gains">models/TelemetryData~TelemetryData:aircraft_gains</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_orientation">models/TelemetryData~TelemetryData:aircraft_orientation</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_position">models/TelemetryData~TelemetryData:aircraft_position</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_status">models/TelemetryData~TelemetryData:aircraft_status</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: util/Validator.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+ * @author Serge Babayan
+ * @module util/Validator
+ * @requires underscore
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description Useful and commonly used validation functions used throughout the app
+ */
+
+var _ = require('underscore');
+
+var Validator = {
+  /**
+   * Checks if a value is numeric (Note: `'123.32'` and `123.32` are both numeric)
+   * @function isValidNumber
+   * @param number {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidNumber: function (number) {
+    return !isNaN(parseFloat(number)) &amp;&amp; isFinite(number);
+  },
+
+  /**
+   * Checks if a value is a float only
+   * @function isFloat
+   * @param number {string | Number} The value to check
+   * @returns {boolean}
+   * @example
+   * Validator.isFloat('23.23') //true
+   * Validator.isFloat(34.44) //true
+   * Validator.isFloat(4) //false
+   * Validator.isFloat('4') //false
+   */
+  isFloat: function (number) {
+    if (this.isValidNumber(number)) {
+      var n = Number(number);
+      return n === +n &amp;&amp; n !== (n | 0);
+    }
+    else {
+      return false;
+    }
+  },
+
+  /**
+   * Checks if a value is an integer only
+   * @function isInteger
+   * @param number {string | Number} The value to check
+   * @returns {boolean}
+   * @example
+   * Validator.isInteger('23.23') //false
+   * Validator.isInteger(34.44) //false
+   * Validator.isInteger(4) //true
+   * Validator.isInteger('4') //true
+   */
+  isInteger: function (number) {
+    if (this.isValidNumber(number)) {
+      var n = Number(number);
+      return n === +n &amp;&amp; n === (n | 0);
+    }
+    else {
+      return false;
+    }
+  },
+
+  /**
+   * Checks if a value is a positive number
+   * @function isPositiveNumber
+   * @param number {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isPositiveNumber: function (number) {
+    return this.isValidNumber(number) &amp;&amp; Number(number) >= 0;
+  },
+
+  /**
+   * Checks if a value is a bollean integer (1 or 0)
+   * @function isBooleanInt
+   * @param number {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isBooleanInt: function (number) {
+    return this.isInteger(number) &amp;&amp; (number == 1 || number == 0);
+  },
+
+  /**
+   * Checks if a value is a string
+   * @function isString
+   * @param value {mixed} The value to check
+   * @returns {boolean}
+   */
+  isString: function (value) {
+    return typeof value === 'string' || value instanceof String;
+  },
+
+  /**
+   * Checks if a value is a string
+   * @function isNonEmptyString
+   * @param value {string} The value to check
+   * @returns {boolean}
+   */
+  isNonEmptyString: function (value) {
+    return this.isString(value) &amp;&amp; value.trim().length > 0;
+  },
+
+  /**
+   * Checks if a value is an object
+   * @function isObject
+   * @param object {Object} The value to check
+   * @returns {boolean}
+   */
+  isObject: function (object) {
+    return _.isObject(object);
+  },
+
+  /**
+   * Checks if a value is valid percentage between 0 and 100
+   * @function isValidPercentage
+   * @param percentage {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidPercentage: function (percentage) {
+    if (this.isValidNumber(percentage)) {
+      var num = Number(percentage);
+      if (num >= 0 &amp;&amp; num &lt;= 100) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  /**
+   * Checks if a value is valid pitch (number between -180 and 180)
+   * @function isValidPitch
+   * @param pitch {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidPitch: function (pitch) {
+    if (this.isValidNumber(pitch)) {
+      pitch = Number(pitch);
+      return pitch >= -180 &amp;&amp; pitch &lt;= 180;
+    }
+    return false;
+  },
+
+  /**
+   * Checks if a value is valid roll (number between -180 and 180)
+   * @function isValidRoll
+   * @param roll {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidRoll: function (roll) {
+    if (this.isValidNumber(roll)) {
+      roll = Number(roll);
+      return roll >= -180 &amp;&amp; roll &lt;= 180;
+    }
+    return false;
+  },
+
+  /**
+   * Checks if a value is valid roll
+   * @function isValidYaw
+   * @param yaw {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidYaw: function (yaw) {
+    return this.isValidNumber(yaw);
+  },
+
+  /**
+   * Checks if a value is valid roll (number between 0 and 360)
+   * @function isValidHeading
+   * @param heading {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidHeading: function (heading) {
+    if (this.isValidNumber(heading)) {
+      heading = Number(heading);
+      return heading >= 0 &amp;&amp; heading &lt;= 360;
+    }
+    return false;
+  },
+
+  /**
+   * Checks if a value is valid, positive speed
+   * @function isValidSpeed
+   * @param speed {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidSpeed: function (speed) {
+    return this.isPositiveNumber(speed);
+  },
+
+  /**
+   * Checks if a value is valid altitude (number above -5m)
+   * @function isValidAltitude
+   * @param altitude {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidAltitude: function (altitude) {
+    return this.isValidNumber(altitude) &amp;&amp; Number(altitude) > -5;
+  },
+
+  /**
+   * Checks if a value is valid 10-bit pwm value (between -1024 and 1024)
+   * @function isValidPWM
+   * @param value {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidPWM: function (value) {
+    if (this.isInteger(value)) {
+      value = Number(value);
+      return value >= -1024 &amp;&amp; value &lt;= 1024;
+    }
+    return false;
+  },
+
+  /**
+   * Checks if a value is valid throttle (between -1024 and 1024)
+   * @function isValidThrottle
+   * @param throttle {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidThrottle: function (throttle) {
+    return this.isValidPWM(throttle);
+  },
+
+  /**
+   * Checks if a value is valid flap (between -1024 and 1024)
+   * @function isValidFlap
+   * @param flap {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidFlap: function (flap) {
+    return this.isValidPWM(flap);
+  },
+
+  /**
+   * Checks if a value is valid latitude
+   * @function isValidLatitude
+   * @param lat {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidLatitude: function (lat) {
+    return this.isValidNumber(lat);
+  },
+
+  /**
+   * Checks if a value is valid longitude
+   * @function isValidLongitude
+   * @param lon {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidLongitude: function (lon) {
+    return this.isValidNumber(lon);
+  },
+
+  /**
+   * Checks if a value is valid UTC time
+   * @function isValidTime
+   * @param timestring {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidTime: function (timestring) {
+    return this.isPositiveNumber(timestring);
+  },
+
+  /**
+   * Checks if a value is valid battery level
+   * @function isValidBattery
+   * @param battery {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidBattery: function (battery) {
+    return this.isValidNumber(battery) &amp;&amp; Number(battery) >= 0 &amp;&amp; Number(battery) &lt;= 100;
+  },
+
+  /**
+   * Checks if a value is valid gps status
+   * @function isValidGpsStatus
+   * @param gps {string | Number} The value to check
+   * @returns {boolean}
+   */
+  isValidGpsStatus: function (gps) {
+    return this.isInteger(gps) &amp;&amp; this.isPositiveNumber(gps);
+  }
+};
+
+module.exports = Validator;</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+	<span class="copyright">
+	Copyright Waterloo Aerial Robotics Group 2016
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on 24-06-2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>

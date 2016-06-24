@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>WARG Groundstation Source: views/StatusView.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.yeti.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">WARG Groundstation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-AircraftStatus.html">AircraftStatus</a></li><li><a href="module-connections_DataRelay.html">connections/DataRelay</a></li><li><a href="module-core_Menu.html">core/Menu</a></li><li><a href="module-core_MenuBuilder.html">core/MenuBuilder</a></li><li><a href="module-core_WindowManager.html">core/WindowManager</a></li><li><a href="module-core_WindowShortcuts.html">core/WindowShortcuts</a></li><li><a href="module-models_Connection.html">models/Connection</a></li><li><a href="module-models_Coordinates.html">models/Coordinates</a></li><li><a href="module-models_PacketTypes.html">models/PacketTypes</a></li><li><a href="module-models_TelemetryData.html">models/TelemetryData</a></li><li><a href="module-util_Commands.html">util/Commands</a></li><li><a href="module-util_PacketParser.html">util/PacketParser</a></li><li><a href="module-util_PersistentSettings.html">util/PersistentSettings</a></li><li><a href="module-util_Template.html">util/Template</a></li><li><a href="module-util_Validator.html">util/Validator</a></li><li><a href="module-views_3dView.html">views/3dView</a></li><li><a href="module-views_AltitudeView.html">views/AltitudeView</a></li><li><a href="module-views_AppSettingsView.html">views/AppSettingsView</a></li><li><a href="module-views_AttitudeView.html">views/AttitudeView</a></li><li><a href="module-views_AutoAdjustView.html">views/AutoAdjustView</a></li><li><a href="module-views_CockpitLayoutView.html">views/CockpitLayoutView</a></li><li><a href="module-views_ConsoleView.html">views/ConsoleView</a></li><li><a href="module-views_DataEntryView.html">views/DataEntryView</a></li><li><a href="module-views_DataView.html">views/DataView</a></li><li><a href="module-views_EmergencyButtonsView.html">views/EmergencyButtonsView</a></li><li><a href="module-views_GainsAdjustView.html">views/GainsAdjustView</a></li><li><a href="module-views_MainLayoutView.html">views/MainLayoutView</a></li><li><a href="module-views_MapView.html">views/MapView</a></li><li><a href="module-views_NetworkSettingsView.html">views/NetworkSettingsView</a></li><li><a href="module-views_ParentSettingsView.html">views/ParentSettingsView</a></li><li><a href="module-views_ProbeDropView.html">views/ProbeDropView</a></li><li><a href="module-views_StatusView.html">views/StatusView</a></li><li><a href="module-views_ThrottleView.html">views/ThrottleView</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection-Connection.html">models/Connection~Connection</a></li><li><a href="module-util_PersistentSettings-PersistentSettings.html">util/PersistentSettings~PersistentSettings</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection.html#~event:Connection:close">models/Connection~Connection:close</a></li><li><a href="module-models_Connection.html#~event:Connection:connect">models/Connection~Connection:connect</a></li><li><a href="module-models_Connection.html#~event:Connection:data">models/Connection~Connection:data</a></li><li><a href="module-models_Connection.html#~event:Connection:socket_error">models/Connection~Connection:socket_error</a></li><li><a href="module-models_Connection.html#~event:Connection:timeout">models/Connection~Connection:timeout</a></li><li><a href="module-models_Connection.html#~event:Connection:write">models/Connection~Connection:write</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_channels">models/TelemetryData~TelemetryData:aircraft_channels</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_gains">models/TelemetryData~TelemetryData:aircraft_gains</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_orientation">models/TelemetryData~TelemetryData:aircraft_orientation</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_position">models/TelemetryData~TelemetryData:aircraft_position</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_status">models/TelemetryData~TelemetryData:aircraft_status</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: views/StatusView.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+ * @author Serge Babayan
+ * @module views/StatusView
+ * @requires StatusManager
+ * @requires models/TelemetryData
+ * @requires util/Template
+ * @requires util/Logger
+ * @requires util/Validator
+ * @requires electron
+ * @requires moment
+ * @listens models/TelemetryData~TelemetryData:data_received
+ * @listens models/StatusManager~StatusManager:new_status
+ * @listens models/StatusManager~StatusManager:remote_status
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description View for the status bar that listens in on events from StatusManager and TelemetryData
+ */
+
+var remote = require('electron').remote;
+var TelemetryData = remote.require('./app/models/TelemetryData');
+var StatusManager = remote.require('./app/StatusManager');
+var Logger = remote.require('./app/util/Logger');
+var Validator = require('../util/Validator');
+var Template = require('../util/Template');
+
+var moment = require('moment');
+
+module.exports = function (Marionette, $) {
+
+  return Marionette.ItemView.extend({
+    template: Template('StatusView'), //name of the file in the views folder at the project root
+    className: 'statusView',
+
+    ui: {
+      statuses: ".statuses",
+      vehicle_time: ".time-view .vehicle-time",
+      elapsed_time: ".time-view .elapsed-time",
+      battery_percent: ".battery-percentage",
+      battery_message: ".battery-message",
+      battery_picture: ".battery-picture .battery-base .percentage",
+      gps_message: ".gps-status .gps-message",
+      transmission_speed: '.transition-rate',
+      rssi: '.rssi'
+    },
+    events: {
+      'click #reset-elapsed-time': 'resetElapsedTime',
+      'click #clear-statuses-button': 'clearStatuses'
+    },
+
+    initialize: function () {
+      this.starting_time = null;
+      this.current_battery_level = -1;
+      this.current_gps_status = null;
+      this.messagesReceived = 0;//for keeping track of the transmission rate
+      this.transmissionInterval = null;
+
+      this.data_callback = null; //so that we can get rid of the listener safely
+      this.new_status_callback = null;
+      this.remove_status_callback = null;
+
+      this.status_messages = [];
+    },
+    onRender: function () {
+      this.data_callback = this.onDataCallback.bind(this);
+      TelemetryData.addListener('data_received', this.data_callback);
+
+      this.new_status_callback = this.onNewStatusCallback.bind(this);
+      StatusManager.addListener('new_status', this.new_status_callback);
+
+      this.remove_status_callback = this.onRemoveStatusCallback.bind(this);
+      StatusManager.addListener('remove_status', this.remove_status_callback);
+
+      this.transmissionInterval = setInterval(function () {
+        this.ui.transmission_speed.text(this.messagesReceived + '/s');
+        this.messagesReceived = 0;
+      }.bind(this), 1000);
+    },
+    onBeforeDestroy: function () {
+      TelemetryData.removeListener('data_received', this.data_callback);
+      StatusManager.removeListener('new_status', this.new_status_callback);
+      StatusManager.removeListener('remove_status', this.remove_status_callback);
+      clearInterval(this.transmissionInterval);
+    },
+    onDataCallback: function (data) {
+      if (!this.starting_time &amp;&amp; Validator.isValidTime(data.time)) {
+        time = Number(data.time).toFixed(2);
+        this.starting_time = moment(time, 'HHmmss.SS');
+      }
+      this.setTime(data.time);
+      this.setBatteryLevel(data.battery_level1);
+      this.setGpsLevel(data.gps_status);
+      this.ui.rssi.text(data.RSSI);
+      this.messagesReceived++;
+    },
+    onNewStatusCallback: function (message, priority, timeout) {
+      if (priority === 0) {
+        var element = $('&lt;p class="status status-high red">' + message + '&lt;/p>');
+      }
+      else if (priority === 1) {
+        var element = $('&lt;p class="status status-high green">' + message + '&lt;/p>');
+      }
+      else if (priority === 2) {
+        var element = $('&lt;p class="status status-medium">' + message + '&lt;/p>');
+      }
+      else {
+        var element = $('&lt;p class="status status-low">' + message + '&lt;/p>');
+      }
+      this.status_messages.push({
+        element: element,
+        message: message,
+        priority: priority,
+        timeout: timeout
+      });
+      this.ui.statuses.append(element);
+      this.ui.statuses[0].scrollTop = 0;
+    },
+    onRemoveStatusCallback: function (message, priority, timeout) {
+      for (var i = 0; i &lt; this.status_messages.length; i++) {
+        if (this.status_messages[i].message === message &amp;&amp; this.status_messages[i].priority === priority &amp;&amp; this.status_messages[i].timeout === timeout) {
+          this.status_messages[i].element.remove();
+          this.status_messages.splice(i, 1);
+          return;
+        }
+      }
+    },
+    setTime: function (time) {
+      if (!Validator.isValidTime(time)) {
+        Logger.warn('Got invalid value for the time! Time: ' + time);
+        this.ui.vehicle_time.text('Invalid Time Received');
+        this.ui.elapsed_time.text('--');
+      }
+      else {
+        time = Number(time).toFixed(2);
+        var date = moment(time, 'HHmmss.SS');
+        var elapsed_time = moment(date.diff(this.starting_time));
+        this.ui.vehicle_time.text(date.format('HH:mm:ss:SS'));
+        this.ui.elapsed_time.text(elapsed_time.minute() + ' min ' + elapsed_time.second() + ' sec');
+      }
+    },
+    setBatteryLevel: function (battery_level) {
+      if (!Validator.isValidBattery(battery_level)) {
+        Logger.warn('Got an invalid value for the battery level! Battery Level: ' + battery_level);
+        this.ui.battery_percent.text('Invalid Battery Level');
+      }
+      else if (Number(battery_level) !== this.current_battery_level) {
+        var percent = Math.round(Number(battery_level));
+        this.current_battery_level = percent;
+        this.ui.battery_percent.text(percent + '%');
+        this.ui.battery_picture.css('width', percent + '%');
+        if (percent > 50 &amp;&amp; percent &lt;= 100) {
+          this.ui.battery_picture.css('background-color', 'green');
+          this.ui.battery_message.text('');
+        } else if (percent >= 20 &amp;&amp; percent &lt;= 50) {
+          this.ui.battery_picture.css('background-color', 'orange');
+          this.ui.battery_message.text('Low');
+          this.ui.battery_message.css('color', 'orange');
+        } else {
+          this.ui.battery_picture.css('background-color', 'red');
+          this.ui.battery_message.text('Very Low');
+          this.ui.battery_message.css('color', 'red');
+        }
+      }
+    },
+    setGpsLevel: function (gps_level) {
+      if (!Validator.isValidGpsStatus(gps_level)) {
+        Logger.warn('Got an invalid value for the GPS level! GPS Level: ' + gps_level);
+        this.ui.gps_message.css('color', 'orange');
+        this.ui.gps_message.text('Invalid GPS Level');
+      }
+      else {
+        var level = Number(gps_level);
+        if (level !== this.current_gps_status) { //check if the gps status is different than last time
+          this.current_gps_status = level;
+
+          if (gps_level === 0) {
+            Logger.warn('no GPS connection');
+            this.ui.gps_message.css('color', 'red');
+            this.ui.gps_message.text('NOT CONNECTED');
+          }
+          else {
+            this.ui.gps_message.css('color', 'green');
+            this.ui.gps_message.text('Connected to ' + (gps_level &amp; 0x0f) + ' satelites');
+          }
+        }
+      }
+    },
+    resetElapsedTime: function () {
+      this.starting_time = null;
+    },
+    clearStatuses: function () { //removes all persistent statuses
+      StatusManager.removeStatusesByTimeout(0);
+    }
+
+  });
+};</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+	<span class="copyright">
+	Copyright Waterloo Aerial Robotics Group 2016
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on 24-06-2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>

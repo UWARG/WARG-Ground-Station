@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>WARG Groundstation Source: AircraftStatus.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.yeti.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">WARG Groundstation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-AircraftStatus.html">AircraftStatus</a></li><li><a href="module-connections_DataRelay.html">connections/DataRelay</a></li><li><a href="module-core_Menu.html">core/Menu</a></li><li><a href="module-core_MenuBuilder.html">core/MenuBuilder</a></li><li><a href="module-core_WindowManager.html">core/WindowManager</a></li><li><a href="module-core_WindowShortcuts.html">core/WindowShortcuts</a></li><li><a href="module-models_Connection.html">models/Connection</a></li><li><a href="module-models_Coordinates.html">models/Coordinates</a></li><li><a href="module-models_PacketTypes.html">models/PacketTypes</a></li><li><a href="module-models_TelemetryData.html">models/TelemetryData</a></li><li><a href="module-util_Commands.html">util/Commands</a></li><li><a href="module-util_PacketParser.html">util/PacketParser</a></li><li><a href="module-util_PersistentSettings.html">util/PersistentSettings</a></li><li><a href="module-util_Template.html">util/Template</a></li><li><a href="module-util_Validator.html">util/Validator</a></li><li><a href="module-views_3dView.html">views/3dView</a></li><li><a href="module-views_AltitudeView.html">views/AltitudeView</a></li><li><a href="module-views_AppSettingsView.html">views/AppSettingsView</a></li><li><a href="module-views_AttitudeView.html">views/AttitudeView</a></li><li><a href="module-views_AutoAdjustView.html">views/AutoAdjustView</a></li><li><a href="module-views_CockpitLayoutView.html">views/CockpitLayoutView</a></li><li><a href="module-views_ConsoleView.html">views/ConsoleView</a></li><li><a href="module-views_DataEntryView.html">views/DataEntryView</a></li><li><a href="module-views_DataView.html">views/DataView</a></li><li><a href="module-views_EmergencyButtonsView.html">views/EmergencyButtonsView</a></li><li><a href="module-views_GainsAdjustView.html">views/GainsAdjustView</a></li><li><a href="module-views_MainLayoutView.html">views/MainLayoutView</a></li><li><a href="module-views_MapView.html">views/MapView</a></li><li><a href="module-views_NetworkSettingsView.html">views/NetworkSettingsView</a></li><li><a href="module-views_ParentSettingsView.html">views/ParentSettingsView</a></li><li><a href="module-views_ProbeDropView.html">views/ProbeDropView</a></li><li><a href="module-views_StatusView.html">views/StatusView</a></li><li><a href="module-views_ThrottleView.html">views/ThrottleView</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection-Connection.html">models/Connection~Connection</a></li><li><a href="module-util_PersistentSettings-PersistentSettings.html">util/PersistentSettings~PersistentSettings</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="module-models_Connection.html#~event:Connection:close">models/Connection~Connection:close</a></li><li><a href="module-models_Connection.html#~event:Connection:connect">models/Connection~Connection:connect</a></li><li><a href="module-models_Connection.html#~event:Connection:data">models/Connection~Connection:data</a></li><li><a href="module-models_Connection.html#~event:Connection:socket_error">models/Connection~Connection:socket_error</a></li><li><a href="module-models_Connection.html#~event:Connection:timeout">models/Connection~Connection:timeout</a></li><li><a href="module-models_Connection.html#~event:Connection:write">models/Connection~Connection:write</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_channels">models/TelemetryData~TelemetryData:aircraft_channels</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_gains">models/TelemetryData~TelemetryData:aircraft_gains</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_orientation">models/TelemetryData~TelemetryData:aircraft_orientation</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_position">models/TelemetryData~TelemetryData:aircraft_position</a></li><li><a href="module-models_TelemetryData.html#~event:TelemetryData:aircraft_status">models/TelemetryData~TelemetryData:aircraft_status</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: AircraftStatus.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
+ * @author Serge Babayan
+ * @module AircraftStatus
+ * @listens models/TelemetryData:data_received
+ * @requires models/TelemetryData
+ * @requires StatusManager
+ * @requires util/Logger
+ * @requires util/Validator
+ * @requires util/Bitmask
+ * @requires models/Commands
+ * @requires config/picpilot-config
+ * @copyright Waterloo Aerial Robotics Group 2016
+ * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
+ * @description Keeps track of the current state of the autopilot, and informs the StatusManger about any important
+ * changes
+ * @see http://docs.uwarg.com/picpilot/datalink/
+ */
+
+var TelemetryData = require('./models/TelemetryData');
+var StatusManager = require('./StatusManager');
+var Bitmask = require('./util/Bitmask');
+var Validator = require('./util/Validator');
+var Logger = require('./util/Logger');
+var picpilot_config = require('../config/picpilot-config');
+var Commands = require('./models/Commands');
+
+var AircraftStatus = function () {
+  /**
+   * @var following_path {boolean} Whether the aircraft is currently following a path
+   */
+  this.following_path = false;
+
+  /**
+   * Information on the current autopilot status
+   * @var autopilot_status
+   * @type {{initializing: boolean, running: boolean, armed: boolean, killModeWarning: boolean, killModeActive: boolean}}
+   */
+  this.autopilot_status = {
+    initializing: false, //Whether the aircraft is initializing
+    running: false, //Whether the aircraft is in its main loop
+    armed: false, //Whether the aircraft is armed
+    killModeWarning: false, //Whether the aircraft is about to go into kill mode
+    killModeActive: false //Whether the aircraft is currently in kill mode
+  };
+
+  /**
+   * Whether the autopilot is on or off
+   * @var manualMode
+   * @type {boolean}
+   */
+  this.manualMode = false;
+
+  /**
+   * Current xbee connection status
+   * @var xbee
+   * @type {{status: boolean, timeSinceLost: null}}
+   */
+  this.xbee = {//has not been implemented yet from the picpilots side
+    status: false,
+    timeSinceLost: null
+  };
+
+  /**
+   * Current gps connection status
+   * var gps
+   * @type {{status: boolean, timeSinceLost: null}}
+   */
+  this.gps = {
+    status: false,
+    timeSinceLost: null
+  };
+
+  /**
+   * Current UHF connection status
+   * @var uhf
+   * @type {{status: boolean, timeSinceLost: null}}
+   */
+  this.uhf = {
+    status: false,
+    timeSinceLost: null
+  };
+
+  /**
+   * What the last received error code was
+   * @type {null | number}
+   */
+  this.pastErrorCode = null;
+
+  /**
+   * Startup errors that occurred on the autopilot
+   * @var startup_errors
+   * @type {{POWER_ON_RESET: boolean, BROWN_OUT_RESET: boolean, IDLE_MODE_RESET: boolean, SLEEP_MODE_RESET: boolean, SOFTWARE_WATCH_DOG_RESET: boolean, SOFTWARE_RESET: boolean, EXTERNAL_RESET: boolean, VOLTAGE_REGULATOR_RESET: boolean, ILLEGAL_OPCODE_RESET: boolean, TRAP_RESET: boolean}}
+   */
+  this.startup_errors = {
+    POWER_ON_RESET: false,
+    BROWN_OUT_RESET: false,
+    IDLE_MODE_RESET: false,
+    SLEEP_MODE_RESET: false,
+    SOFTWARE_WATCH_DOG_RESET: false,
+    SOFTWARE_RESET: false,
+    EXTERNAL_RESET: false,
+    VOLTAGE_REGULATOR_RESET: false,
+    ILLEGAL_OPCODE_RESET: false,
+    TRAP_RESET: false
+  };
+
+  /**
+   * For keeping track and clearing the interval function when sending heartbeats to the picpilot
+   * @var heartBeatInterval
+   * @type {number}
+   * @private
+   */
+  var heartBeatInterval = 5;
+
+  /**
+   * Starts sending heartbeats at the rate as specified in the picpilot config. Will clear and restart it if called multiple times
+   * @function startHeartbeat
+   */
+  this.startHeartbeat = function () {
+    if (heartBeatInterval) {
+      clearInterval(heartBeatInterval);
+    }
+    heartBeatInterval = setInterval(function () {
+      Commands.sendHeartbeat();
+    }.bind(this), picpilot_config.get('heart_beat_timeout'));
+  }.bind(this);
+
+  /**
+   * @function telemetryCallback
+   * @private
+   * @param data {Object}
+   * @param data.startup_error_codes {number | null}
+   * @param data.gps_status {number | null}
+   * @param data.wireless_connection {number | null}
+   * @param data.autopilot_active {number | null}
+   * @param data.path_following {number | null}
+   */
+  var telemetryCallback = function (data) {
+    checkErrorCodes(data.startup_error_codes);
+    checkGPS(data.gps_status);
+    checkUHFStatus(data.wireless_connection);
+    checkManualMode(data.wireless_connection);
+    checkPlaneStatus(data.autopilot_active);
+    checkPathFollowing(data.path_following);
+  };
+
+  TelemetryData.on('data_received', telemetryCallback);
+
+  /**
+   * Checks whether the plane is currently following a path
+   * @param status {number | null}
+   */
+  var checkPathFollowing = function (status) {
+    if (typeof status !== 'undefined' || status !== null) {
+      this.following_path = (Number(status) === 1);
+    }
+  }.bind(this);
+
+  /**
+   * Checks the current autopilot status based on telemetry data
+   * @param number {number | null}
+   */
+  var checkPlaneStatus = function (number) {
+    if (!Validator.isValidNumber(number)) {
+      Logger.warn('Invalid value for autopilot_active received. Value: ' + number);
+    }
+    else {
+      number = Number(number);
+      this.initializing = (number === 0);
+      if (number === 1) { //only set armed to false if the number is ONLY 1
+        this.armed = false;
+      }
+      this.armed = (number === 2);
+      this.running = (number === 3);
+      this.killModeWarning = (number === 4);
+      this.killModeActive = (number === 5);
+
+      StatusManager.setStatusCode('AIRCRAFT_INITIALIZE', this.initializing);
+      StatusManager.setStatusCode('AIRCRAFT_UNARMED', !this.armed);
+      StatusManager.setStatusCode('AIRCRAFT_ARMED', this.armed);
+      StatusManager.setStatusCode('AIRCRAFT_RUNNING', this.running);
+      StatusManager.setStatusCode('AIRCRAFT_KILLMODE_WARNING', this.killModeWarning);
+      StatusManager.setStatusCode('AIRCRAFT_KILLMODE', this.killModeActive);
+    }
+  }.bind(this);
+
+  var checkUHFStatus = function (data) {
+    var number = Number(data);
+    if (!Validator.isInteger(number)) {
+      Logger.warn('Invalid value for wireless_connection received. Value: ' + data);
+    }
+    else {
+      var bitmask = new Bitmask(number);
+      this.uhf.status = bitmask.getBit(1);
+
+      if (this.uhf.status) { //has been turned to true
+        this.uhf.timeSinceLost = null;
+      }
+      else { //has been turned to false
+        this.uhf.timeSinceLost = Date.now();
+      }
+      StatusManager.setStatusCode('UHF_LOST', !this.uhf.status);
+    }
+  }.bind(this);
+
+  var checkManualMode = function (data) {
+    var number = Number(data);
+    if (!Validator.isInteger(number)) {
+      Logger.warn('Invalid value for wireless_connection received. Value: ' + data);
+    }
+    else {
+      var bitmask = new Bitmask(number);
+      this.manualMode = !bitmask.getBit(0);
+      StatusManager.setStatusCode('MANUAL_MODE', this.manualMode);
+    }
+  }.bind(this);
+
+  var checkGPS = function (data) {
+    var number = Number(data);
+    if (!Validator.isValidNumber(number)) {
+      Logger.warn('Invalid GPS status received. Status: ' + data);
+    }
+    var connection_status = ((number &amp; 0xf0) >> 4) > 0; // if theres at least 1 fix
+    if (connection_status !== this.gps.status) { //if its a different status
+      this.gps.status = connection_status;
+      StatusManager.setStatusCode('GPS_LOST', !this.gps.status);
+      if (this.gps.status === false) { //if it was set to false, start the timer
+        this.gps.timeSinceLost = Date.now();
+      }
+      else {
+        this.gps.timeSinceLost = null;
+      }
+    }
+  }.bind(this);
+
+  var checkErrorCodes = function (startup_error_codes) {
+    var dataNumber = Number(startup_error_codes);
+    if (!Validator.isInteger(dataNumber)) {
+      Logger.warn('Invalid data value for startup_error_codes received. Value : ' + startup_error_codes);
+    }
+    else if (this.pastErrorCode !== dataNumber) { //if we got an error code value thats different from last time
+      var error_codes = new Bitmask(dataNumber);
+      this.pastErrorCode = dataNumber;
+
+      this.startup_errors.POWER_ON_RESET = error_codes.getBit(0);
+      this.startup_errors.BROWN_OUT_RESET = error_codes.getBit(1);
+      this.startup_errors.IDLE_MODE_RESET = error_codes.getBit(2);
+      this.startup_errors.SLEEP_MODE_RESET = error_codes.getBit(3);
+      this.startup_errors.SOFTWARE_WATCH_DOG_RESET = error_codes.getBit(4);
+      this.startup_errors.SOFTWARE_RESET = error_codes.getBit(5);
+      this.startup_errors.EXTERNAL_RESET = error_codes.getBit(6);
+      this.startup_errors.VOLTAGE_REGULATOR_RESET = error_codes.getBit(7);
+      this.startup_errors.ILLEGAL_OPCODE_RESET = error_codes.getBit(8);
+      this.startup_errors.TRAP_RESET = error_codes.getBit(9);
+
+
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_POWER_ON_RESET', this.startup_errors.POWER_ON_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_BROWN_OUT_RESET', this.startup_errors.BROWN_OUT_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_IDLE_MODE_RESET', this.startup_errors.IDLE_MODE_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_SLEEP_MODE_RESET', this.startup_errors.SLEEP_MODE_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_SOFTWARE_WATCH_DOG_RESET', this.startup_errors.SOFTWARE_WATCH_DOG_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_SOFTWARE_RESET', this.startup_errors.SOFTWARE_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_EXTERNAL_RESET', this.startup_errors.EXTERNAL_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_VOLTAGE_REGULATOR_RESET', this.startup_errors.VOLTAGE_REGULATOR_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_ILLEGAL_OPCODE_RESET', this.startup_errors.ILLEGAL_OPCODE_RESET);
+      StatusManager.setStatusCode('AIRCRAFT_ERROR_TRAP_RESET', this.startup_errors.TRAP_RESET);
+    }
+  }.bind(this)
+};
+
+module.exports = new AircraftStatus();</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+
+	<span class="copyright">
+	Copyright Waterloo Aerial Robotics Group 2016
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on 24-06-2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>
