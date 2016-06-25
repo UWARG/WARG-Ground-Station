@@ -41,7 +41,7 @@ describe('DataRelay', function () {
 
   describe('init', function () {
     beforeEach(function () {
-      Network.connections = [];
+      Network.connections = {};
       Network.addConnection = sandbox.stub();
       connection.setTimeout = sandbox.spy();
       connection.disconnect = sandbox.spy();
@@ -63,6 +63,30 @@ describe('DataRelay', function () {
       Network.connections['data_relay'] = connection;
       DataRelay.init();
       expect(connection.disconnect).to.have.been.callCount(1);
+    });
+
+    it('should successfully listen to appripriate events on the connection', function () {
+      DataRelay.init();
+      expect(connection.listenerCount('connect')).to.equal(1);
+      expect(connection.listenerCount('close')).to.equal(1);
+      expect(connection.listenerCount('timeout')).to.equal(1);
+      expect(connection.listenerCount('write')).to.equal(1);
+      expect(connection.listenerCount('data')).to.equal(1);
+    });
+
+    it('should successfully clear event listeners on multiple disconnects', function () {
+      Network.addConnection = function(){
+        Network.connections['data_relay'] = connection;
+        return connection;
+      };
+      DataRelay.init();
+      DataRelay.init();
+      DataRelay.init();
+      expect(connection.listenerCount('connect')).to.equal(1);
+      expect(connection.listenerCount('close')).to.equal(1);
+      expect(connection.listenerCount('timeout')).to.equal(1);
+      expect(connection.listenerCount('write')).to.equal(1);
+      expect(connection.listenerCount('data')).to.equal(1);
     });
 
     it('should set the correct timeout for the connection', function () {
