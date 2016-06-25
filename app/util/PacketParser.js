@@ -52,7 +52,7 @@ var PacketParser = {
       }
     });
   },
-
+  
   /**
    * Converts a string of data into a packet type object, to be emitted by the TelemetryData module.
    * Uses the PacketTypes module in order to sort the headers into the appropriate packet types as well
@@ -75,7 +75,13 @@ var PacketParser = {
    * }
    */
   parseData: function (data, headers_array) {
-    var data_array = data.split(",");
+    if(!data || !headers_array){
+      return {};
+    }
+
+    var data_array = data.split(",").map(function(data){
+      return data.trim();
+    });
     var sorted_data = {};
     var current_state = {};
 
@@ -94,7 +100,7 @@ var PacketParser = {
 
       _.each(packet_headers, function (validators, header_name) {
         //if it is null, that means the data relay intentionally didn't send us the data
-        if (current_state[header_name] === null) {
+        if (current_state[header_name] === '') {
           packet_data[header_name] = null;
         }
         //warn the user if we didn't receive a piece of data (happens if we don't receive enough data)
