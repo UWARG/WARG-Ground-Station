@@ -1,4 +1,3 @@
-var LocalStorage = require('./LocalStorage');
 var fdialogs = require('node-webkit-fdialogs'); //https://www.npmjs.com/package/node-webkit-fdialogs
 var Logger = require('../util/Logger');
 var Commands = require('../models/Commands');
