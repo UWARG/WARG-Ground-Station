@@ -27,23 +27,62 @@ var _ = require('underscore');
 
 var SimulationManager = new function () {
   var string_data = [];
+
+  /** @type {int} **/
   var current_index = 0;
+
+  /** @type {int|null} **/
   var interval_id = null;
 
-  /**
-   * @var {int} transmission_frequency How often a second we want to transmit the data. Default is 5
-   */
-  this.transmission_frequency = 5;
+  /** @type {int} **/
+  var transmission_frequency = 5;
+
+  /** @type {string} **/
+  var default_simulation_path = path.join(__dirname, '../../assets/simulation/default_flight_data.csv');
+
+  /** @type {boolean} **/
+  var simulation_active = false;
 
   /**
-   * @var {string} default_simulation_path The default path of the simulation csv file that we'll use
+   * Whether the simulation is currently active
+   * @function isActive
+   * @returns {boolean}
    */
-  this.default_simulation_path = path.join(__dirname, '../../assets/simulation/default_flight_data.csv');
+  this.isActive = function(){
+    return simulation_active;
+  };
 
   /**
-   * @var {bool} simulation_active Whether the simulation is currently running
+   * Returns the file path for the default simulation csv file
+   * @returns {string}
    */
-  this.simulation_active = false;
+  this.getDefaultSimulationPath = function(){
+    return default_simulation_path;
+  };
+
+  /**
+   * Returns the current transmission frequency
+   * @returns {int}
+   */
+  this.getTransmissionFrequency = function(){
+    return transmission_frequency;
+  };
+
+  /**
+   * Change the frequency at which data is emitted. Re-toggles the simulation to apply the changes to the emitters immediately.
+   * If a non-integer is passed in will not do anything.
+   * @function setTransmissionFrequency
+   * @param {int} new_frequency
+   */
+  this.setTransmissionFrequency = function (new_frequency) {
+    if (Validator.isInteger(new_frequency) && new_frequency !== 0) {
+      transmission_frequency = parseInt(new_frequency);
+      if (simulation_active) {
+        this.toggleSimulation();
+        this.toggleSimulation();
+      }
+    }
+  };
 
   /**
    * Clears all the simulation data and resets the index to 0
@@ -69,34 +108,18 @@ var SimulationManager = new function () {
    * @function toggleSimulation
    */
   this.toggleSimulation = function () {
-    if (!this.simulation_active) { //begin the simulation
+    if (!simulation_active) { //begin the simulation
       interval_id = setInterval(function () {
         emitData();
-      }, 1000 / Math.abs(this.transmission_frequency));
-      this.simulation_active = true;
+      }, 1000 / Math.abs(transmission_frequency));
+      simulation_active = true;
       StatusManager.setStatusCode('SIMULATION_ACTIVE', true);
       Network.disconnectAll();
     }
     else {//end the simulation
       clearInterval(interval_id);
-      this.simulation_active = false;
+      simulation_active = false;
       StatusManager.setStatusCode('SIMULATION_ACTIVE', false);
-    }
-  };
-
-  /**
-   * Change the frequency at which data is emitted. Re-toggles the simulation to apply the changes to the emitters immediately.
-   * If a non-integer is passed in will not do anything.
-   * @function setTransmissionFrequency
-   * @param {int} new_frequency
-   */
-  this.setTransmissionFrequency = function (new_frequency) {
-    if (Validator.isInteger(new_frequency) && new_frequency !== 0) {
-      this.transmission_frequency = parseInt(new_frequency);
-      if (this.simulation_active) {
-        this.toggleSimulation();
-        this.toggleSimulation();
-      }
     }
   };
 
@@ -121,7 +144,7 @@ var SimulationManager = new function () {
    * @function updateCurrentIndex
    */
   var updateCurrentIndex = function () {
-    if (SimulationManager.transmission_frequency < 0) { //if transmission frequency is negative
+    if (transmission_frequency < 0) { //if transmission frequency is negative
       if (current_index - 1 < 0) {
         current_index = string_data.length - 1;
       }
