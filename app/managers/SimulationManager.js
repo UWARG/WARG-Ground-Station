@@ -38,7 +38,7 @@ var SimulationManager = new function () {
   var transmission_frequency = 5;
 
   /** @type {string} **/
-  var default_simulation_path = path.join(__dirname, '../../assets/simulation/default_flight_data.csv');
+  var simulation_file_path = path.join(__dirname, '../../assets/simulation/default_flight_data.csv');
 
   /** @type {boolean} **/
   var simulation_active = false;
@@ -48,23 +48,33 @@ var SimulationManager = new function () {
    * @function isActive
    * @returns {boolean}
    */
-  this.isActive = function(){
+  this.isActive = function () {
     return simulation_active;
   };
 
   /**
-   * Returns the file path for the default simulation csv file
+   * Sets the simulation file path
+   * @function setSimulationFilePath
+   * @param {string} new_path New simulation file path
+   */
+  this.setSimulationFilePath = function (new_path) {
+    simulation_file_path = new_path;
+  };
+
+  /**
+   * Returns the current file path for the simulation file
+   * @function getSimulationFilePath
    * @returns {string}
    */
-  this.getDefaultSimulationPath = function(){
-    return default_simulation_path;
+  this.getSimulationFilePath = function () {
+    return simulation_file_path;
   };
 
   /**
    * Returns the current transmission frequency
    * @returns {int}
    */
-  this.getTransmissionFrequency = function(){
+  this.getTransmissionFrequency = function () {
     return transmission_frequency;
   };
 
@@ -85,7 +95,7 @@ var SimulationManager = new function () {
   };
 
   /**
-   * Clears all the simulation data and resets the index to 0
+   * Clears all the simulation data entires and resets the index to 0
    * @function clearData
    */
   this.clearData = function () {
@@ -94,10 +104,9 @@ var SimulationManager = new function () {
   };
 
   /**
-   * Add a packet of data to its internal storage, to be emitted later. If the internal
-   * storage is empty, will set the headers
+   * Adds a data entry to be emitted later
    * @function addDataEntry
-   * @param {Array} data
+   * @param {Array} data An array of comma delimited strings, representing data received from the data relay
    */
   this.addDataEntry = function (data) {
     string_data.push(data.join());

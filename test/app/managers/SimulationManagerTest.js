@@ -235,4 +235,10 @@ describe('SimulationManager', function () {
       SimulationManager.toggleSimulation = toggle;
     });
   });
+
+  describe('getDefaultSimulationFilePath', function(){
+    it('should return a string path', function(){
+      expect(SimulationManager.getSimulationFilePath()).to.be.a('string');
+    });
+  })
 });
