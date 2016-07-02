@@ -80,7 +80,7 @@ var SimulationManager = new function () {
 
   /**
    * Change the frequency at which data is emitted. Re-toggles the simulation to apply the changes to the emitters immediately.
-   * If a non-integer is passed in will not do anything.
+   * If a non-integer or 0 is passed in will not do anything.
    * @function setTransmissionFrequency
    * @param {int} new_frequency
    */
