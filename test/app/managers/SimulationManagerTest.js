@@ -240,5 +240,10 @@ describe('SimulationManager', function () {
     it('should return a string path', function(){
       expect(SimulationManager.getSimulationFilePath()).to.be.a('string');
     });
+
+    it('should set the simulation file path', function(){
+      SimulationManager.setSimulationFilePath('some_path');
+      expect(SimulationManager.getSimulationFilePath()).to.be.equal('some_path');
+    });
   })
 });
