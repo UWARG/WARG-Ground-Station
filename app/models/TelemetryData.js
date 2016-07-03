@@ -119,41 +119,43 @@ var TelemetryData = function () {
     headers = [];
 
     if (headers_string) {
-      this.headers = headers_string.split(",").map(function (str) {
+      headers = headers_string.split(",").map(function (str) {
         return str.trim();
       });
     }
   };
 
   /**
-   * Sets the telemetry data headers
-   * @function setHeaders
-   * @returns {Array} The array of headers
+   * Gets the current state of the telemetry data (data that is the most recent)
+   * @function getCurrentState
+   * @returns {Object}
+   * @see models/PacketTypes
    */
-  this.getHeaders = function () {
-    return this.headers;
+  this.getCurrentState = function () {
+    return current_state;
   };
 
   /**
-   * Sets the telemetry data headers
-   * @function setHeaders
-   * @param {Array} headers An array of headers
+   * Sets the telemetry data current state
+   * @function setCurrentState
+   * @param {Object} new_state The state (make sure its in the correct format)
+   * @see models/PacketTypes
    */
-  this.setHeaders = function (headers) {
-    this.headers = headers;
+  this.setCurrentState = function (new_state) {
+    current_state = new_state;
   };
 
   /**
-   * Clears the telemetry data headers
-   * @function clearHeaders
+   * Uses the PacketParser module and the existing headers to set the current state from a comma delimited data string
+   * @function setCurrentStateFromString
+   * @param {String} new_state_string Comma-delimited data string
    */
-  this.clearHeaders = function () {
-    this.headers = [];
+  this.setCurrentStateFromString = function (new_state_string) {
+    this.setCurrentState(PacketParser.parseData(new_state_string, headers));
   };
 
   /**
-   * Takes in a packet object and emits each one with its own payload. Packet object should be in the same format as
-   * the PacketTypes model, only the value being the value of the actual header.
+   * Emits the telemetry data's current state as a variety of packets
    * @function emitPackets
    * @example <caption> Usage example </caption>
    * TelemetryData.setCurrentState({
@@ -168,9 +170,9 @@ var TelemetryData = function () {
    * //this will emit a 'packet_name' and 'packet_name2' events each with their respective data
    * TelemetryData.emitPackets();
    */
-  this.emitPackets = function (packets) {
-    if (packets) {
-      _.each(packets, function (packet_data, packet_name) {
+  this.emitPackets = function () {
+    if (current_state) {
+      _.each(current_state, function (packet_data, packet_name) {
         this.emit(packet_name, packet_data);
       }.bind(this));
     }
