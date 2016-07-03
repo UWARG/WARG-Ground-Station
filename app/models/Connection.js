@@ -39,16 +39,19 @@ var Connection = function (options) {
   }
 
   /**
-   * Whether the connection has been closed
-   * @type {boolean}
-   */
-  this.closed = true;
-
-  /**
    * Timeout for the socket in milliseconds. Defaults to 5 seconds
    * @type {number}
+   * @private
    */
-  this.timeout = 5000;
+  var timeout = 5000;
+
+  /**
+   * A reference to the socket.
+   * @type {net.Socket|EventEmitter}
+   * @private
+   */
+  var socket = new net.Socket();
+  socket.setTimeout(timeout);
 
   // Initialize necessary properties from `EventEmitter` in this instance
   EventEmitter.call(this);
@@ -80,11 +83,29 @@ var Connection = function (options) {
   };
 
   /**
+   * Disconnects the connection and removes all event listeners
+   * @function destroy
+   */
+  this.destroy = function () {
+    this.disconnect();
+    this.socket.removeAllListeners();
+  };
+
+  /**
+   * Gets the timeout for the socket connection in milliseconds
+   * @function getTimeout
+   * @returns {int} timeout
+   */
+  this.getTimeout = function () {
+    return timeout;
+  };
+
+  /**
    * Sets the timeout for the socket connection in milliseconds
    * @function setTimeout
    * @param {int} timeout
    */
-  this.setTimeout = function(timeout){
+  this.setTimeout = function (timeout) {
     this.socket.setTimeout(timeout);
   };
 
@@ -94,7 +115,7 @@ var Connection = function (options) {
    * @fires Connection:write
    */
   this.write = function (data) {
-    this.socket.write(data, 'utf8', function (error) {
+    socket.write(data, 'utf8', function (error) {
       if (!error) {
         /**
          * Emitted if data was successfully sent through the socket. Passes back the data sent
@@ -107,26 +128,17 @@ var Connection = function (options) {
     }.bind(this));
   };
 
-  /**
-   * A reference to the socket.
-   * @type {net.Socket}
-   */
-  this.socket = new net.Socket();
-  this.socket.setTimeout(this.timeout);
-
-  this.socket.on('connect', function () {
+  socket.on('connect', function () {
     /**
      * Emitted when the socket has successfully connected
      * @event Connection:connect
      * @type {null}
      */
     this.emit('connect');
-    this.closed = false;
     Logger.info('Sucessfully connected to ' + this.name + ' with host ' + this.host + ' and port ' + this.port);
   }.bind(this));
 
-  this.socket.on('error', function (error) {
-    this.closed = true;
+  socket.on('error', function (error) {
     Logger.error('Problem with ' + this.name + ' connection (host: ' + this.host + ',port:' + this.port + ')\n'
       + error.toString());
 
@@ -143,9 +155,9 @@ var Connection = function (options) {
    * @event Connection:timeout
    * @type {null}
    */
-  this.socket.on('timeout', function () {
+  socket.on('timeout', function () {
     this.emit('timeout');
-    Logger.error('Timed out for ' + this.timeout/1000 + 's for ' + this.name + ' connection (host: ' + this.host + ',port:' + this.port + ')');
+    Logger.error('Timed out for ' + timeout / 1000 + 's for ' + this.name + ' connection (host: ' + this.host + ',port:' + this.port + ')');
   }.bind(this));
 
   /**
@@ -153,9 +165,8 @@ var Connection = function (options) {
    * @event Connection:close
    * @type {bool}
    */
-  this.socket.on('close', function (had_error) {
+  socket.on('close', function (had_error) {
     this.emit('close', had_error);
-    this.closed = true;
     if (had_error) {
       Logger.error('Connection to  ' + this.name + ' closed due to an error: Not reconnecting');
     } else {
@@ -168,7 +179,7 @@ var Connection = function (options) {
    * @event Connection:data
    * @type {Buffer}
    */
-  this.socket.on('data', function (data) {
+  socket.on('data', function (data) {
     this.emit('data', data);
   }.bind(this));
 };
