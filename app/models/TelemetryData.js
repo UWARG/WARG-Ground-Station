@@ -1,6 +1,7 @@
 /**
  * @author Serge Babayan
  * @module models/TelemetryData
+ * @requires util/PacketParser
  * @requires util
  * @requires events
  * @requires config/advanced-config
@@ -12,6 +13,7 @@
  * @see http://docs.uwarg.com/picpilot/datalink/
  */
 
+var PacketParser = require('../util/PacketParser');
 var util = require('util');
 var advanced_config = require('../../config/advanced-config');
 var EventEmitter = require('events');
@@ -49,20 +51,22 @@ var _ = require('underscore');
 
 var TelemetryData = function () {
   /**
-   * @var headers {Array}
+   * @var {Array} headers
    * An array of headers in the order that the groundstation will be receiving them, as specified from the data relay
+   * @private
    * @example
-   * console.log(TelemetryData.headers)
+   * console.log(TelemetryData.getHeaders())
    * ['lat', 'lon', 'time', ...]
    */
-  this.headers = [];
+  var headers = [];
 
   /**
-   * @var current_state {Hash}
+   * @var {Object} current_state
    * Current flight state. In the format of a hash, where the keys are the packet names, and the value is an array of header=>value data
+   * @private
    * @see models/PacketTypes
    * @example
-   * console.log(TelemetryData.current_state)
+   * console.log(TelemetryData.getCurrentState())
    * {
    *    aircraft_position: {
    *      lat: 45.45455,
@@ -75,35 +79,86 @@ var TelemetryData = function () {
    *    }
    * }
    */
-  this.current_state = {};
+  var current_state = {};
+
+  /**
+   * @function setHeaders
+   * @param {Array} new_headers
+   */
+  this.setHeaders = function (new_headers) {
+    headers = new_headers;
+  };
+
+  /**
+   * @function getHeaders
+   * @returns {Array}
+   */
+  this.getHeaders = function () {
+    return headers;
+  };
+
+  /**
+   * Clears the telemetry data headers
+   * @function clearHeaders
+   */
+  this.clearHeaders = function () {
+    headers = [];
+  };
 
   /**
    * Converts a springfield version of headers (separated by commas) into an array and sets it as its headers.
    * Will also perform a trim() on each of the header values.
    * @function setHeadersFromString
-   * @param {String} headers_string
+   * @param {String} headers_string Comma-delimited headers string
    * @example
    * TelemetryData.setHeadersFromString('header1,header2, header3, header4');
    * console.log(TelemetryData.headers);
    * //Outputs: ['header1', 'header2', 'header3', 'header4']
    */
   this.setHeadersFromString = function (headers_string) {
-    this.headers = [];
+    headers = [];
 
-    if(headers_string){
-      this.headers = headers_string.split(",").map(function (str) {
+    if (headers_string) {
+      headers = headers_string.split(",").map(function (str) {
         return str.trim();
       });
     }
   };
 
   /**
-   * Takes in a packet object and emits each one with its own payload. Packet object should be in the same format as
-   * the PacketTypes model, only the value being the value of the actual header.
+   * Gets the current state of the telemetry data (data that is the most recent)
+   * @function getCurrentState
+   * @returns {Object}
+   * @see models/PacketTypes
+   */
+  this.getCurrentState = function () {
+    return current_state;
+  };
+
+  /**
+   * Sets the telemetry data current state
+   * @function setCurrentState
+   * @param {Object} new_state The state (make sure its in the correct format)
+   * @see models/PacketTypes
+   */
+  this.setCurrentState = function (new_state) {
+    current_state = new_state;
+  };
+
+  /**
+   * Uses the PacketParser module and the existing headers to set the current state from a comma delimited data string
+   * @function setCurrentStateFromString
+   * @param {String} new_state_string Comma-delimited data string
+   */
+  this.setCurrentStateFromString = function (new_state_string) {
+    this.setCurrentState(PacketParser.parseData(new_state_string, headers));
+  };
+
+  /**
+   * Emits the telemetry data's current state as a variety of packets
    * @function emitPackets
-   * @param {Object} packets A key value pair of the packet name and its data payload
    * @example <caption> Usage example </caption>
-   * var packets = {
+   * TelemetryData.setCurrentState({
    *    packet_name: {
    *      packet_data1: 'packet_value1',
    *      packet_data2: 'packet_value2'
@@ -111,13 +166,13 @@ var TelemetryData = function () {
    *    packet_name2: {
    *        ...
    *    }
-   * }
+   * })
    * //this will emit a 'packet_name' and 'packet_name2' events each with their respective data
-   * TelemetryData.emitPackets(packets);
+   * TelemetryData.emitPackets();
    */
-  this.emitPackets = function (packets) {
-    if(packets){
-      _.each(packets, function (packet_data, packet_name) {
+  this.emitPackets = function () {
+    if (current_state) {
+      _.each(current_state, function (packet_data, packet_name) {
         this.emit(packet_name, packet_data);
       }.bind(this));
     }
