@@ -5,7 +5,6 @@
  * @requires models/TelemetryData
  * @requires util/Logger
  * @requires util/Validator
- * @requires util/PacketParser
  * @requires StatusManager
  * @requires models/Network
  * @requires underscore
@@ -21,7 +20,6 @@ var TelemetryData = require('../models/TelemetryData');
 var Logger = require('../util/Logger');
 var StatusManager = require('../StatusManager');
 var Network = require('../Network');
-var PacketParser = require('../util/PacketParser');
 var Validator = require('../util/Validator');
 var _ = require('underscore');
 
@@ -139,10 +137,10 @@ var SimulationManager = new function () {
    */
   var emitData = function () {
     if (string_data.length > 0) {
-      TelemetryData.current_state = PacketParser.parseData(string_data[current_index], TelemetryData.headers);
-      TelemetryData.emitPackets(TelemetryData.current_state);
+      TelemetryData.setCurrentStateFromString(string_data[current_index]);
+      TelemetryData.emitPackets();
 
-      Logger.data(JSON.stringify(TelemetryData.current_state), 'DATA_RELAY_DATA');
+      Logger.data(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
       updateCurrentIndex();
     }
   };
