@@ -58,6 +58,7 @@ module.exports = function (Marionette) {
      * Parses the simulation file, and adds its data entries into the Simulation Manager. Sets TelemetryData headers to be the first line of the file.
      * @function parseSimulationFile
      * @param {String} file_path Simulation file path
+     * @private
      */
     parseSimulationFile: function (file_path) {
       SimulationManager.clearData();
@@ -89,6 +90,7 @@ module.exports = function (Marionette) {
     /**
      * Toggles the simulation status and sets the appropriate button colors
      * @function toggleSimulation
+     * @private
      */
     toggleSimulation: function () {
       SimulationManager.toggleSimulation();
@@ -104,6 +106,7 @@ module.exports = function (Marionette) {
      * Opens an electron dialog window, so that the user can select a file. When a file is selected, calls parseSimulationFile
      * with the file path
      * @function openSimulationFile
+     * @private
      */
     openSimulationFile: function () {
       dialog.showOpenDialog({
@@ -130,6 +133,7 @@ module.exports = function (Marionette) {
     /**
      * Changes the transmission frequency of the simulation manager based on the slider value
      * @function changeTransmissionSpeed
+     * @private
      */
     changeTransmissionSpeed: function () {
       SimulationManager.setTransmissionFrequency(this.ui.change_speed_slider.val());
@@ -139,6 +143,7 @@ module.exports = function (Marionette) {
     /**
      * Modifies the Start Simulation/Stop Simulation button to be the start simulation button
      * @function changeToStartButton
+     * @private
      */
     changeToStartButton: function () {
       this.ui.start_button.text('Start Simulation');
@@ -149,6 +154,7 @@ module.exports = function (Marionette) {
     /**
      * Modifies the Start Simulation/Stop Simulation button to be the stop simulation button
      * @function changeToStopButton
+     * @private
      */
     changeToStopButton: function () {
       this.ui.start_button.text('Stop Simulation');
