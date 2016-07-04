@@ -40,10 +40,17 @@ var Connection = function (options) {
 
   /**
    * Timeout for the socket in milliseconds. Defaults to 5 seconds
-   * @type {number}
+   * @type {int}
    * @private
    */
   var timeout = 5000;
+
+  /**
+   * Whether the connection is closed
+   * @type {boolean}
+   * @private
+   */
+  var closed = true;
 
   /**
    * A reference to the socket.
@@ -92,6 +99,15 @@ var Connection = function (options) {
   this.destroy = function () {
     this.disconnect();
     socket.removeAllListeners();
+  };
+
+  /**
+   * Whether the connection has been closed
+   * @function isClosed
+   * @returns {boolean}
+   */
+  this.isClosed = function(){
+    return closed;
   };
 
   /**
@@ -146,6 +162,7 @@ var Connection = function (options) {
      */
     this.emit('connect');
     Logger.info('Sucessfully connected to ' + this.name + ' with host ' + this.host + ' and port ' + this.port);
+    closed = false;
   }.bind(this));
 
   socket.on('error', function (error) {
@@ -177,6 +194,7 @@ var Connection = function (options) {
    */
   socket.on('close', function (had_error) {
     this.emit('close', had_error);
+    closed = true;
     if (had_error) {
       Logger.error('Connection to ' + this.name + ' closed due to an error: Not reconnecting');
     } else {

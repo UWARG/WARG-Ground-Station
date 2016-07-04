@@ -81,6 +81,11 @@ describe('Connection', function () {
       var c = createConnection();
       expect(socket.setTimeout).to.have.been.calledWith(5000);
     });
+
+    it('should initialize isClosed to true', function () {
+      var c = createConnection();
+      expect(c.isClosed()).to.be.equal(true);
+    });
   });
 
   describe('setTimeout', function () {
@@ -189,6 +194,7 @@ describe('Connection', function () {
       var listener = sinon.spy();
       c.on('connect', listener);
       socket.emit('connect');
+      expect(c.isClosed()).to.be.equal(false);
       expect(Logger.info).to.have.been.calledWith('Sucessfully connected to ' + connection_name + ' with host ' + connection_host + ' and port ' + connection_port);
       expect(listener).to.have.callCount(1);
     });
@@ -217,6 +223,7 @@ describe('Connection', function () {
       c.on('close', listener);
       socket.emit('close', false);
       expect(listener).to.have.been.calledWith(false);
+      expect(c.isClosed()).to.be.equal(true);
       expect(Logger.warn).to.have.been.calledWith('Connection to ' + connection_name + ' closed: Not reconnecting');
     });
 
