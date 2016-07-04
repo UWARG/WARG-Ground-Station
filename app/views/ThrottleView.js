@@ -62,7 +62,7 @@ module.exports = function (Marionette) {
       this.setYawRate(data.yaw_rate);
       this.setRollRate(data.roll_rate);
       this.setPitchRate(data.pitch_rate);
-      this.sendSetWingTilt();
+      
     },
     onBeforeDestroy: function () {
       TelemetryData.removeListener('data_received', this.on_telemetry_callback);

@@ -538,9 +538,9 @@ var Commands = {
     }
   },
   /**
-   * Tell the aircraft to follow the flight plan
-   * @function followPath
-   * @param tilt {int} Whether the plane should follow the flight plan
+   * Commands the aircraft to tilt its wings
+   * @function sendWingTilt
+   * @param tilt {int} the angle that the wings should be tilted at
    * @returns {boolean} Whether the command sent successfully
    */
   sendWingTilt: function (tilt) {
