@@ -22,10 +22,14 @@ var NetworkManager = new function(){
   /**
    * Adds a connection to the NetworkManager, and attempts to connect it.
    * Note that this does not check if an existing connection of the same name exists. Will just overwrite the connection in that case.
-   * @param name
-   * @param host
-   * @param port
-   * @returns {Connection}
+   * @function addConnection
+   * @param {String} name Unique connection name
+   * @param {String} host Host(ie. 192.168.1.101)
+   * @param {String} port The port to connect to
+   * @returns {Connection} The newly created connection
+   * @example <caption>Say we want to connect data relay to 192.168.1.101:1234</caption>
+   * //This will create a new connection for the data relay and attempt to connect to it
+   * NetworkManager.addConnection('data_relay', '192.168.1.101', '1234');
    */
   this.addConnection = function(name, host, port){
     var new_connection = new Connection({
@@ -39,13 +43,27 @@ var NetworkManager = new function(){
   };
 
   /**
+   * Disconnects and removes a connection and all its event listeners from Network manager.
+   * Does nothing if the connection does not exist
+   * @function removeConnection
+   * @param {String} name Unique connection name
+   */
+  this.removeConnection = function(name){
+    if(connections[name]){
+      connections[name].destroy();
+      delete connections[name];
+    }
+  };
+
+  /**
    * Returns the stored connection as specified by the its name. Returns null if the connection doesn't exist
-   * @param {String} key
+   * @function getConnectionByName
+   * @param {String} name The unique name for the connection
    * @returns {Connection}
    */
-  this.getConnectionByKey = function(key){
-    if(connections[key]){
-      return connections[key];
+  this.getConnectionByName = function(name){
+    if(connections[name]){
+      return connections[name];
     }
     return null;
   };
