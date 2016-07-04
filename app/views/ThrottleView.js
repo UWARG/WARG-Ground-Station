@@ -38,11 +38,13 @@ module.exports = function (Marionette) {
       pitch_rate_deg: '.pitch-rate-value-deg',
       yaw_rate_deg: '.yaw-rate-value-deg',
       throttle_input: '.throttle-form input',
-      flap_input: '.flap-form input'
+      flap_input: '.flap-form input',
+      tilt_input: '.tilt-form input'
     },
     events: {
       'submit .flap-form': 'sendSetFlapCommand',
-      'submit .throttle-form': 'sendSetThrottleCommand'
+      'submit .throttle-form': 'sendSetThrottleCommand',
+      'submit .tilt-form': 'sendSetWingTilt'
     },
     initialize: function () {
       this.on_telemetry_callback = null;
@@ -60,6 +62,7 @@ module.exports = function (Marionette) {
       this.setYawRate(data.yaw_rate);
       this.setRollRate(data.roll_rate);
       this.setPitchRate(data.pitch_rate);
+      this.sendSetWingTilt();
     },
     onBeforeDestroy: function () {
       TelemetryData.removeListener('data_received', this.on_telemetry_callback);
@@ -142,6 +145,11 @@ module.exports = function (Marionette) {
     sendSetFlapCommand: function (e) {
       e.preventDefault();
       Commands.sendFlap(this.ui.flap_input.val());
+      this.ui.flap_input.val('');
+    },
+    sendSetWingTilt: function (e) {
+      e.preventDefault();
+      Commands.sendWingTilt(this.ui.tilt_input.val());
       this.ui.flap_input.val('');
     }
   });

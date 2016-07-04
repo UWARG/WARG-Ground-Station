@@ -536,7 +536,23 @@ var Commands = {
     if (this.sendCommand('send_heartbeat', 1)) {
       Logger.debug('[HEARTBEAT] Sent heartbeat to the picpilot');
     }
+  },
+  /**
+   * Tell the aircraft to follow the flight plan
+   * @function followPath
+   * @param tilt {int} Whether the plane should follow the flight plan
+   * @returns {boolean} Whether the command sent successfully
+   */
+  sendWingTilt: function (tilt) {
+    if (Validator.isValidNumber(tilt)) {
+      return this.sendCommand('remove_waypoint', index);
+    }
+    else {
+      Logger.error('SendWingTilt failed as invalid tilt angle was passed in. Number: ' + index);
+      return false;
+    }
   }
+
 };
 
 module.exports = Commands;
