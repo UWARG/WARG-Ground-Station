@@ -2,7 +2,7 @@
  * @author Serge Babayan
  * @module util/Commands
  * @requires util/Validator
- * @requires SimulationManager
+ * @requires managers/SimulationManager
  * @requires util/Logger
  * @requires managers/NetworkManager
  * @requires config/picpilot-config
@@ -16,7 +16,7 @@ var picpilot_config = require('../../config/picpilot-config');
 var NetworkManager = require('../managers/NetworkManager');
 var Logger = require('../util/Logger');
 var Validator = require('../util/Validator');
-var SimulationManager = require("../SimulationManager");
+var SimulationManager = require("../managers/SimulationManager");
 
 var Commands = {
   /**
@@ -25,7 +25,7 @@ var Commands = {
    * @returns {boolean} Connection status
    */
   checkConnection: function () {
-    if (SimulationManager.simulationActive) {
+    if (SimulationManager.isActive()) {
       return false;
     }
     if(NetworkManager.getConnectionByName('data_relay') && !NetworkManager.getConnectionByName('data_relay').isClosed()){
@@ -48,7 +48,7 @@ var Commands = {
       NetworkManager.getConnectionByName('data_relay').write(command + ':' + picpilot_config.get('command_password') + '\r\n');
       return true;
     }
-    if (SimulationManager.simulationActive) {
+    if (SimulationManager.isActive()) {
       Logger.info('[Simulation] Successfully sent command ' + command + ':' + picpilot_config.get('command_password') + '\r\n');
       return true;
     }
@@ -78,7 +78,7 @@ var Commands = {
       NetworkManager.getConnectionByName('data_relay').write(command + ':' + value_string + '\r\n');
       return true;
     }
-    if (SimulationManager.simulationActive) {
+    if (SimulationManager.isActive()) {
       Logger.info('[Simulation] Successfully sent command ' + command + ':' + value_string + '\r\n');
       return true;
     }
@@ -96,7 +96,7 @@ var Commands = {
       NetworkManager.getConnectionByName('data_relay').write(command + '\r\n');
       return true;
     }
-    if (SimulationManager.simulationActive) {
+    if (SimulationManager.isActive()) {
       Logger.info('[Simulation] Successfully sent command: ' + command);
       return true;
     }
