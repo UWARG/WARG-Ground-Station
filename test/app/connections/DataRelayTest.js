@@ -45,9 +45,9 @@ describe('DataRelay', function () {
       NetworkManager.getConnectionByName.withArgs('data_relay').returns(null);
       NetworkManager.removeAllConnections = sandbox.spy();
       NetworkManager.addConnection = sandbox.stub();
+      NetworkManager.addConnection.returns(connection);
       connection.setTimeout = sandbox.spy();
       connection.disconnect = sandbox.spy();
-      NetworkManager.addConnection.returns(connection);
       Logger.error = sandbox.spy();
     });
 
