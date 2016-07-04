@@ -10,9 +10,7 @@ describe('DataRelay', function () {
   var sandbox = sinon.sandbox.create();
   var DataRelay = rewire('../../../app/connections/DataRelay');
   var NetworkManager = {};
-  var TelemetryData = {
-    headers: []
-  };
+  var TelemetryData = {};
   var Logger = {};
   var StatusManager = {
     addStatus: sandbox.spy(),
@@ -32,11 +30,7 @@ describe('DataRelay', function () {
   });
 
   afterEach(function () {
-    TelemetryData.headers = [];
     sandbox.restore();
-
-    StatusManager.addStatus.reset();
-    StatusManager.setStatusCode.reset();
   });
 
   describe('init', function () {
@@ -49,6 +43,18 @@ describe('DataRelay', function () {
       connection.setTimeout = sandbox.spy();
       connection.disconnect = sandbox.spy();
       Logger.error = sandbox.spy();
+      Logger.debug = sandbox.spy();
+      Logger.data = sandbox.spy();
+      TelemetryData.setHeaders = sandbox.spy();
+      TelemetryData.setCurrentStateFromString = sandbox.spy();
+      TelemetryData.emitPackets = sandbox.spy();
+      TelemetryData.clearHeaders = sandbox.spy();
+      TelemetryData.setHeadersFromString = sandbox.spy();
+      TelemetryData.getHeaders = sandbox.stub();
+      TelemetryData.getHeaders.returns([]);
+      TelemetryData.getCurrentState = sandbox.stub();
+      TelemetryData.getCurrentState.returns({});
+      PacketParser.checkForMissingHeaders = sandbox.spy();
     });
 
     afterEach(function () {
@@ -83,21 +89,27 @@ describe('DataRelay', function () {
     it('given data event call parseHeaders if its the first packet of data', function () {
       var data = '654,654';
       var data_buffer = new Buffer(data);
-      var parseHeadersSpy = sandbox.stub(DataRelay, 'parseHeaders');
-      TelemetryData.headers = [];
+      TelemetryData.getHeaders.returns([]);
       DataRelay.init();
       connection.emit('data', data_buffer);
-      expect(parseHeadersSpy).to.have.been.calledWith(data);
+      expect(TelemetryData.setHeadersFromString).to.have.been.calledWith(data);
+      expect(PacketParser.checkForMissingHeaders).to.have.been.calledWith([]);
+      expect(Logger.debug).to.have.been.calledWith('Network data_relay Received headers: 654,654');
+      expect(Logger.data).to.have.been.calledWith(JSON.stringify(TelemetryData.getHeaders()), 'DATA_RELAY_HEADERS');
+      expect(StatusManager.addStatus).to.have.been.calledWith('Received headers from data_relay');
     });
 
     it('given data event call parseData if its not the first packet of data', function () {
       var data = '654,654';
       var data_buffer = new Buffer(data);
-      TelemetryData.headers = ['header1', 'header2'];
-      var parseDataSpy = sandbox.stub(DataRelay, 'parseData');
+      TelemetryData.getHeaders.returns(['header1', 'header2']);
+      TelemetryData.getCurrentState.returns({header1: '654', header2: '654'});
       DataRelay.init();
       connection.emit('data', data_buffer);
-      expect(parseDataSpy).to.have.been.calledWith(data);
+      expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith(data);
+      expect(TelemetryData.emitPackets).to.have.callCount(1);
+      expect(Logger.data).to.have.been.calledWith(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
+      expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_DATA_RELAY', false);
     });
 
     it('warn the user if it receives a blank data packet', function () {
@@ -107,10 +119,9 @@ describe('DataRelay', function () {
     });
 
     it('should clear TelemetryData headers on a connect event', function () {
-      TelemetryData.headers = ['header1'];
       DataRelay.init();
       connection.emit('connect');
-      expect(TelemetryData.headers).to.eql([]);
+      expect(TelemetryData.clearHeaders).to.have.callCount(1);
     });
 
     it('should set a status code on a disconnect', function () {
@@ -129,71 +140,6 @@ describe('DataRelay', function () {
       DataRelay.init();
       connection.emit('write');
       expect(StatusManager.addStatus).to.have.been.calledWith('Sent command to data_relay');
-    });
-  });
-
-  describe('parseData', function () {
-    beforeEach(function () {
-      TelemetryData.setHeadersFromString = sandbox.spy();
-      PacketParser.checkForMissingHeaders = sandbox.spy();
-      Logger.debug = sandbox.spy();
-      Logger.data = sandbox.spy();
-    });
-    it('should set telemetry data headers', function () {
-      var data = 'header1,header2';
-      DataRelay.parseHeaders(data);
-      expect(TelemetryData.setHeadersFromString).to.have.been.calledWith(data);
-    });
-
-    it('should check for any missing headers', function () {
-      var data = 'header1,header2';
-      TelemetryData.headers = ['header1'];
-      DataRelay.parseHeaders(data);
-      expect(PacketParser.checkForMissingHeaders).to.have.been.calledWith(TelemetryData.headers);
-    });
-
-    it('should log headers', function () {
-      var data = 'header1,header2';
-      DataRelay.parseHeaders(data);
-      expect(Logger.debug).to.have.callCount(1);
-      expect(Logger.data).to.have.callCount(1);
-    });
-
-    it('should add received headers status code', function () {
-      var data = 'header1,header2';
-      DataRelay.parseHeaders(data);
-      expect(StatusManager.addStatus).to.have.callCount(1);
-    });
-  });
-  describe('parseData', function () {
-    beforeEach(function () {
-      TelemetryData.emitPackets = sandbox.spy();
-      PacketParser.parseData = sandbox.stub();
-      Logger.data = sandbox.spy();
-    });
-    it('should set TelemetryData current state', function () {
-      var data = '324,234';
-      PacketParser.parseData.returns(data);
-      DataRelay.parseData(data);
-      expect(PacketParser.parseData).to.have.been.calledWith(data, TelemetryData.headers);
-      expect(TelemetryData.current_state).to.be.eql(data);
-    });
-
-    it('emit data packets', function () {
-      var data = '324,234';
-      PacketParser.parseData.returns(data);
-      DataRelay.parseData(data);
-      expect(TelemetryData.emitPackets).to.have.been.calledWith(TelemetryData.current_state);
-    });
-
-    it('log data packet contents', function () {
-      DataRelay.parseData('something');
-      expect(Logger.data).to.have.callCount(1);
-    });
-
-    it('set timeout status code to false', function () {
-      DataRelay.parseData('something');
-      expect( StatusManager.setStatusCode).to.have.callCount(1);
     });
   });
 });
