@@ -9,7 +9,7 @@ var network_config = require('../../../config/network-config');
 describe('DataRelay', function () {
   var sandbox = sinon.sandbox.create();
   var DataRelay = rewire('../../../app/connections/DataRelay');
-  var Network = {};
+  var NetworkManager = {};
   var TelemetryData = {
     headers: []
   };
@@ -23,7 +23,7 @@ describe('DataRelay', function () {
 
   beforeEach(function () {
     DataRelay.__set__({
-      'Network': Network,
+      'NetworkManager': NetworkManager,
       'TelemetryData': TelemetryData,
       'Logger': Logger,
       'StatusManager': StatusManager,
@@ -41,46 +41,32 @@ describe('DataRelay', function () {
 
   describe('init', function () {
     beforeEach(function () {
-      Network.connections = {};
-      Network.addConnection = sandbox.stub();
+      NetworkManager.getConnectionByName = sandbox.stub();
+      NetworkManager.getConnectionByName.withArgs('data_relay').returns(null);
+      NetworkManager.removeAllConnections = sandbox.spy();
+      NetworkManager.addConnection = sandbox.stub();
+      NetworkManager.addConnection.returns(connection);
       connection.setTimeout = sandbox.spy();
       connection.disconnect = sandbox.spy();
-      Network.addConnection.returns(connection);
       Logger.error = sandbox.spy();
     });
 
     afterEach(function () {
-      Network.connections = [];
       connection.removeAllListeners();
     });
 
     it('should correctly add a connection with name of data relay', function () {
       DataRelay.init();
-      expect(Network.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
+      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
     });
 
     it('should disconnect the data relay connection if it already exists', function () {
-      Network.connections['data_relay'] = connection;
+      NetworkManager.getConnectionByName.withArgs('data_relay').returns(connection);
       DataRelay.init();
-      expect(connection.disconnect).to.have.been.callCount(1);
+      expect(NetworkManager.removeAllConnections).to.have.been.calledWith('data_relay');
     });
 
     it('should successfully listen to appripriate events on the connection', function () {
-      DataRelay.init();
-      expect(connection.listenerCount('connect')).to.equal(1);
-      expect(connection.listenerCount('close')).to.equal(1);
-      expect(connection.listenerCount('timeout')).to.equal(1);
-      expect(connection.listenerCount('write')).to.equal(1);
-      expect(connection.listenerCount('data')).to.equal(1);
-    });
-
-    it('should successfully clear event listeners on multiple disconnects', function () {
-      Network.addConnection = function(){
-        Network.connections['data_relay'] = connection;
-        return connection;
-      };
-      DataRelay.init();
-      DataRelay.init();
       DataRelay.init();
       expect(connection.listenerCount('connect')).to.equal(1);
       expect(connection.listenerCount('close')).to.equal(1);

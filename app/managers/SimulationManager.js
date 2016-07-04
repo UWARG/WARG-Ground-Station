@@ -6,7 +6,7 @@
  * @requires util/Logger
  * @requires util/Validator
  * @requires StatusManager
- * @requires models/Network
+ * @requires managers/NetworkManager
  * @requires underscore
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
@@ -19,7 +19,7 @@ var path = require('path');
 var TelemetryData = require('../models/TelemetryData');
 var Logger = require('../util/Logger');
 var StatusManager = require('../StatusManager');
-var Network = require('../Network');
+var NetworkManager = require('./NetworkManager');
 var Validator = require('../util/Validator');
 var _ = require('underscore');
 
@@ -121,7 +121,7 @@ var SimulationManager = new function () {
       }, 1000 / Math.abs(transmission_frequency));
       simulation_active = true;
       StatusManager.setStatusCode('SIMULATION_ACTIVE', true);
-      Network.disconnectAll();
+      NetworkManager.disconnectAllConnections();
     }
     else {//end the simulation
       clearInterval(interval_id);
