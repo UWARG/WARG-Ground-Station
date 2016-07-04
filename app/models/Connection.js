@@ -63,7 +63,10 @@ var Connection = function (options) {
    */
   this.connect = function () {
     Logger.info('Attempting to connect to ' + this.name + ' at ' + this.host + ':' + this.port);
-    this.socket.connect(this.port, this.host);
+    socket.connect({
+      port: this.port,
+      host: this.host
+    });
   };
 
   /**
@@ -71,7 +74,7 @@ var Connection = function (options) {
    */
   this.disconnect = function () {
     Logger.info('Disconnecting from ' + this.name + ' at ' + this.host + ':' + this.port);
-    this.socket.destroy();
+    socket.end();
   };
 
   /**
@@ -88,7 +91,7 @@ var Connection = function (options) {
    */
   this.destroy = function () {
     this.disconnect();
-    this.socket.removeAllListeners();
+    socket.removeAllListeners();
   };
 
   /**
@@ -103,10 +106,11 @@ var Connection = function (options) {
   /**
    * Sets the timeout for the socket connection in milliseconds
    * @function setTimeout
-   * @param {int} timeout
+   * @param {int} new_timeout
    */
-  this.setTimeout = function (timeout) {
-    this.socket.setTimeout(timeout);
+  this.setTimeout = function (new_timeout) {
+    timeout = new_timeout;
+    socket.setTimeout(new_timeout);
   };
 
   /**
@@ -115,6 +119,10 @@ var Connection = function (options) {
    * @fires Connection:write
    */
   this.write = function (data) {
+    if (!data) {
+      Logger.error('No data written to the ' + this.name + ' connection as a blank data packet was received');
+      return;
+    }
     socket.write(data, 'utf8', function (error) {
       if (!error) {
         /**
@@ -124,6 +132,8 @@ var Connection = function (options) {
          */
         this.emit('write', data);
         Logger.info("Network " + this.name + " Sent: " + data);
+      } else {
+        Logger.error('An error occurred writing to the ' + this.name + ' connection. Attempted write: ' + data);
       }
     }.bind(this));
   };
@@ -156,7 +166,7 @@ var Connection = function (options) {
    * @type {null}
    */
   socket.on('timeout', function () {
-    this.emit('timeout');
+    this.emit('timeout', timeout);
     Logger.error('Timed out for ' + timeout / 1000 + 's for ' + this.name + ' connection (host: ' + this.host + ',port:' + this.port + ')');
   }.bind(this));
 
@@ -168,7 +178,7 @@ var Connection = function (options) {
   socket.on('close', function (had_error) {
     this.emit('close', had_error);
     if (had_error) {
-      Logger.error('Connection to  ' + this.name + ' closed due to an error: Not reconnecting');
+      Logger.error('Connection to ' + this.name + ' closed due to an error: Not reconnecting');
     } else {
       Logger.warn('Connection to ' + this.name + ' closed: Not reconnecting');
     }
