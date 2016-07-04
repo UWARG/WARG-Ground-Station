@@ -76,7 +76,7 @@ describe('NetworkManager', function () {
     });
   });
 
-  describe('disconnectAll', function () {
+  describe('disconnectAllConnections', function () {
     it('should call a disconnect method on every connection', function () {
       var connection_instance2 = {};
       connection_instance2.connect = sinon.spy();
@@ -89,15 +89,40 @@ describe('NetworkManager', function () {
         'Connection': Connection
       });
       NetworkManager.addConnection('different_name', connection_host, connection_port);
-      NetworkManager.disconnectAll();
+      NetworkManager.disconnectAllConnections();
       expect(connection_instance.disconnect).to.have.callCount(1);
       expect(connection_instance2.disconnect).to.have.callCount(1);
     });
 
     it('should call a disconnect if theres only one connection', function () {
       addConnection();
-      NetworkManager.disconnectAll();
+      NetworkManager.disconnectAllConnections();
       expect(connection_instance.disconnect).to.have.callCount(1);
+    });
+  });
+
+  describe('removeAllConnections', function () {
+    it('should call a destroy method on every connection', function () {
+      var connection_instance2 = {};
+      connection_instance2.connect = sinon.spy();
+      connection_instance2.destroy = sinon.spy();
+      addConnection();
+      Connection = function () {
+        return connection_instance2;
+      };
+      NetworkManager.__set__({
+        'Connection': Connection
+      });
+      NetworkManager.addConnection('different_name', connection_host, connection_port);
+      NetworkManager.removeAllConnections();
+      expect(connection_instance.destroy).to.have.callCount(1);
+      expect(connection_instance2.destroy).to.have.callCount(1);
+    });
+
+    it('should call a disconnect if theres only one connection', function () {
+      addConnection();
+      NetworkManager.removeAllConnections();
+      expect(connection_instance.destroy).to.have.callCount(1);
     });
   });
 

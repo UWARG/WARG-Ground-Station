@@ -2,7 +2,7 @@
  * @author Serge Babayan
  * @module connections/DataRelay
  * @requires config/network-config
- * @requires Network
+ * @requires managers/NetworkManager
  * @requires util/Logger
  * @requires util/PacketParser
  * @requires StatusManager
@@ -20,7 +20,7 @@
  */
 
 var network_config = require('../../config/network-config');
-var Network = require('../Network');
+var NetworkManager = require('../managers/NetworkManager');
 var Logger = require('../util/Logger');
 var TelemetryData = require('../models/TelemetryData');
 var StatusManager = require('../StatusManager');
@@ -51,12 +51,11 @@ DataRelay.parseData = function (data) {
  * @function init
  */
 DataRelay.init = function () {
-  if (Network.connections['data_relay']) { //if a connection has already been established, disconnect it
-    Network.connections['data_relay'].removeAllListeners();
-    Network.connections['data_relay'].disconnect();
+  if(NetworkManager.getConnectionByName('data_relay')){
+    NetworkManager.removeAllConnections('data_relay');
   }
 
-  var data_relay = Network.addConnection('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
+  var data_relay = NetworkManager.addConnection('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
 
   data_relay.setTimeout(network_config.get('datarelay_timeout'));
 

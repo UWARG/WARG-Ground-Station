@@ -8,7 +8,7 @@ describe('SimulationManager', function () {
   var SimulationManager = {};
   var TelemetryData = {};
   var Logger = {};
-  var Network = {};
+  var NetworkManager = {};
   var StatusManager = {};
   var clock;
 
@@ -22,7 +22,7 @@ describe('SimulationManager', function () {
     TelemetryData.getHeaders = sinon.stub();
     TelemetryData.getHeaders.returns(['header1', 'header2']);
     TelemetryData.setCurrentStateFromString = sinon.spy();
-    Network.disconnectAll = sinon.spy();
+    NetworkManager.disconnectAllConnections = sinon.spy();
     StatusManager.setStatusCode = sinon.spy();
     SimulationManager.simulation_active = false;
     Logger.data = sinon.spy();
@@ -30,7 +30,7 @@ describe('SimulationManager', function () {
     SimulationManager.__set__({
       'TelemetryData': TelemetryData,
       'Logger': Logger,
-      'Network': Network,
+      'NetworkManager': NetworkManager,
       'StatusManager': StatusManager
     });
 
@@ -69,7 +69,7 @@ describe('SimulationManager', function () {
 
     it('should disconnect all network connections on a simulation start', function () {
       SimulationManager.toggleSimulation();
-      expect(Network.disconnectAll).to.have.callCount(1);
+      expect(NetworkManager.disconnectAllConnections).to.have.callCount(1);
     });
 
     it('should emit data packet at the correct frequency when a data entry is added and simulation started', function () {

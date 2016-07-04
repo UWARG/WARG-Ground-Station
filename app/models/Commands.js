@@ -4,7 +4,7 @@
  * @requires util/Validator
  * @requires SimulationManager
  * @requires util/Logger
- * @requires Network
+ * @requires managers/NetworkManager
  * @requires config/picpilot-config
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
@@ -13,7 +13,7 @@
  * @see http://docs.uwarg.com/picpilot/datalink/
  */
 var picpilot_config = require('../../config/picpilot-config');
-var Network = require('../Network');
+var NetworkManager = require('../managers/NetworkManager');
 var Logger = require('../util/Logger');
 var Validator = require('../util/Validator');
 var SimulationManager = require("../SimulationManager");
@@ -28,8 +28,7 @@ var Commands = {
     if (SimulationManager.simulationActive) {
       return false;
     }
-
-    if (Network.connections['data_relay'] && !Network.connections['data_relay'].closed) {
+    if(NetworkManager.getConnectionByName('data_relay') && !NetworkManager.getConnectionByName('data_relay').isClosed()){
       return true;
     }
     else {
@@ -46,7 +45,7 @@ var Commands = {
    */
   sendProtectedCommand: function (command) {
     if (this.checkConnection()) {
-      Network.connections['data_relay'].write(command + ':' + picpilot_config.get('command_password') + '\r\n');
+      NetworkManager.getConnectionByName('data_relay').write(command + ':' + picpilot_config.get('command_password') + '\r\n');
       return true;
     }
     if (SimulationManager.simulationActive) {
@@ -76,7 +75,7 @@ var Commands = {
     value_string += arguments[arguments.length - 1];
 
     if (this.checkConnection()) {
-      Network.connections['data_relay'].write(command + ':' + value_string + '\r\n');
+      NetworkManager.getConnectionByName('data_relay').write(command + ':' + value_string + '\r\n');
       return true;
     }
     if (SimulationManager.simulationActive) {
@@ -94,7 +93,7 @@ var Commands = {
    */
   sendRawCommand: function (command) {
     if (this.checkConnection()) {
-      Network.connections['data_relay'].write(command + '\r\n');
+      NetworkManager.getConnectionByName('data_relay').write(command + '\r\n');
       return true;
     }
     if (SimulationManager.simulationActive) {

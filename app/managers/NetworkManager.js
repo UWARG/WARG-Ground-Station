@@ -10,6 +10,7 @@
  */
 
 var Connection = require('../models/Connection');
+var _ = require('underscore');
 
 var NetworkManager = new function(){
   /**
@@ -56,6 +57,18 @@ var NetworkManager = new function(){
   };
 
   /**
+   * Disconnects and removes all connections, including their event listeners from the app.
+   * Use with caution.
+   * @function removeAllConnections
+   */
+  this.removeAllConnections = function(){
+    _.each(connections, function(connection, connection_name){
+      connection.destroy();
+      delete connections[connection_name];
+    });
+  };
+
+  /**
    * Returns the stored connection as specified by the its name. Returns null if the connection doesn't exist
    * @function getConnectionByName
    * @param {String} name The unique name for the connection
@@ -70,13 +83,12 @@ var NetworkManager = new function(){
 
   /**
    * Disconnects any network connections
-   * @function disconnectAll
+   * @function disconnectAllConnections
    */
-  this.disconnectAll = function(){
-    var connection = Object.keys(connections);
-    for (var i = 0; i < connection.length; i++) {
-      connections[connection[i]].disconnect();
-    }
+  this.disconnectAllConnections = function(){
+    _.each(connections, function(connection, connection_name){
+      connection.disconnect();
+    });
   };
 };
 
