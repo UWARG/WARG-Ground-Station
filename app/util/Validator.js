@@ -103,6 +103,15 @@ var Validator = {
   },
 
   /**
+   * Whether the object is blank (an empty array, object, or string). Note that 0 is considered NOT blank, since its a value
+   * @param {mixed} value
+   * @returns {boolean}
+   */
+  isBlank: function(value){
+    return _.isEmpty(value) && value != 0;
+  },
+
+  /**
    * Checks if a value is an object
    * @function isObject
    * @param object {Object} The value to check

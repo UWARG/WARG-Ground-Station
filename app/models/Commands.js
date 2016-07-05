@@ -44,6 +44,10 @@ var Commands = {
    * @returns {boolean} Whether the command was successfully sent. Will return false if there is no connection and the simulator isn't active
    */
   sendProtectedCommand: function (command) {
+    if(Validator.isBlank(command)){
+      Logger.error('Cannot send blank commands to data_relay!');
+      return false;
+    }
     if (this.checkConnection()) {
       NetworkManager.getConnectionByName('data_relay').write(command + ':' + picpilot_config.get('command_password') + '\r\n');
       return true;
@@ -59,7 +63,7 @@ var Commands = {
    * Sends a regular command to the data relay
    * @function sendCommand
    * @param command {string} The command name
-   * @param value {string | Number} The value of the command. This can be lots of different parameters
+   * @param value* {string | Number} The value of the command. This can be lots of different parameters
    * @returns {boolean} Whether the command was successfully sent. Will return false if there is no connection and the simulator isn't active
    * @example
    * Commands.sendCommand('awesomeCommand', 'value1', 'value2', 'value3');
@@ -67,8 +71,16 @@ var Commands = {
    * //awesomeCommand:value1, value2, value3
    */
   sendCommand: function (command, value) { //value can be an indefinite number of arguments
+    if(Validator.isBlank(command) || Validator.isBlank(value)){
+      Logger.error('Cannot send blank commands to data_relay!');
+      return false;
+    }
     var value_string = '';
     for (var arg = 1; arg < arguments.length - 1; arg++) { //we start at one cause we only care about the values
+      if(Validator.isBlank(arguments[arg])){
+        Logger.error('Cannot send blank commands to data_relay!');
+        return false;
+      }
       value_string += arguments[arg] + ',';
     }
 
@@ -92,6 +104,10 @@ var Commands = {
    * @returns {boolean} Whether the command was successfully sent. Will return false if there is no connection and the simulator isn't active
    */
   sendRawCommand: function (command) {
+    if(Validator.isBlank(command)){
+      Logger.error('Cannot send blank commands to data_relay!');
+      return false;
+    }
     if (this.checkConnection()) {
       NetworkManager.getConnectionByName('data_relay').write(command + '\r\n');
       return true;
