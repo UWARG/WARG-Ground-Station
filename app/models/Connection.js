@@ -98,6 +98,7 @@ var Connection = function (options) {
    */
   this.destroy = function () {
     this.disconnect();
+    this.removeAllListeners();
     socket.removeAllListeners();
   };
 
