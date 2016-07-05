@@ -165,7 +165,7 @@ describe('Connection', function () {
 
     it('should end socket and warn user given a disconnect', function () {
       c.disconnect();
-      expect(socket.end).to.have.callCount(1)
+      expect(socket.end).to.have.callCount(1);
       expect(Logger.info).to.have.been.calledWith('Disconnecting from ' + connection_name + ' at ' + connection_host + ':' + connection_port);
     });
 
@@ -176,10 +176,12 @@ describe('Connection', function () {
     });
 
     it('should disconnect and remove all listeners from a socket given a destroy', function () {
+      c.on('write', function(){});
       socket.on('write', function(){});
       c.destroy();
       expect(socket.end).to.have.callCount(1);
-      expect(socket.listenerCount()).to.equal(0);
+      expect(socket.listenerCount('write')).to.equal(0);
+      expect(c.listenerCount('write')).to.equal(0);
     });
   });
 
