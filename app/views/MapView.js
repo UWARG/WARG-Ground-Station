@@ -99,9 +99,6 @@ module.exports = function (Marionette, L, $) {
           this.ui.path_verified.text('No. A: ' + data.path_checksum.toFixed(4) + ', L: ' + PathManager.current_path_checksum.toFixed(4));
         }
       }
-      else {
-        Logger.warn('Invalid value for path_checksum received. Value: ' + data.path_checksum);
-      }
       if (AircraftStatus.following_path) {
         this.ui.start_following_button.text('Stop Following');
       }
@@ -121,10 +118,6 @@ module.exports = function (Marionette, L, $) {
       if (Validator.isValidLatitude(lat) && Validator.isValidLongitude(lon)) {
         this.ui.plane_location_lat.text(Number(lat).toFixed(5));
         this.ui.plane_location_lon.text(Number(lon).toFixed(5));
-      } else {
-        Logger.warn('Invalid longitude or latitude received! Latitude: ' + lat + ' Longitude: ' + lon);
-        this.ui.plane_location_lat.text('Invalid');
-        this.ui.plane_location_lon.text('Invalid');
       }
     },
 
