@@ -181,6 +181,12 @@ describe('SimulationManager', function () {
       expect(SimulationManager.getTransmissionFrequency()).to.equal(4);
     });
 
+    it('should not set the transmission frequency given string 0', function () {
+      SimulationManager.setTransmissionFrequency(4);
+      SimulationManager.setTransmissionFrequency('0');
+      expect(SimulationManager.getTransmissionFrequency()).to.equal(4);
+    });
+
     it('should not set the transmission frequency given a floating point input', function () {
       SimulationManager.setTransmissionFrequency(4);
       SimulationManager.setTransmissionFrequency(9.69);
