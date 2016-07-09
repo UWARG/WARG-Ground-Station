@@ -12,8 +12,6 @@ var PacketTypes = {
   aircraft_position: { //this is the event name
     'lat': 'isValidLatitude', //the key is the header name, the value is a function name in the Validator module. Could be an array if you want to use multiple
     'lon': 'isValidLongitude',
-    'sys_time': 'isValidTime',
-    'time': 'isValidTime',
     'airspeed': 'isValidSpeed',
     'ground_speed': 'isValidSpeed',
     'heading': 'isValidHeading',
@@ -65,6 +63,8 @@ var PacketTypes = {
   },
 
   aircraft_status: {
+    'time': 'isValidTime',
+    'sys_time': 'isValidTime',
     'last_command_sent0': ['isPositiveNumber', 'isInteger'],
     'last_command_sent1': ['isPositiveNumber', 'isInteger'],
     'last_command_sent2': ['isPositiveNumber', 'isInteger'],
