@@ -59,43 +59,12 @@ module.exports = function (Marionette, L, $) {
       this.map = new Map(L);
       this.add_waypoint_mode = false;
       this.delete_waypoint_mode = false;
+      this.aircraft_position_callback = this.aircraftPositionCallback.bind(this);
+      this.aircraft_status_callback = this.aircraftStatusCallback.bind(this);
+      TelemetryData.on('aircraft_position', this.aircraft_position_callback);
+      TelemetryData.on('aircraft_status', this.aircraft_status_callback);
     },
     onRender: function () {
-      TelemetryData.addListener('data_received', function (data) {
-        if (Validator.isValidLatitude(data.lat) && Validator.isValidLongitude(data.lon)) {
-          if (Validator.isValidHeading(data.heading)) {
-            this.map.movePlane(data.lat, data.lon, data.heading);
-          }
-          this.map.expandPlaneTrail(data.lat, data.lon);
-          this.setLatitudeLongitude(data.lat, data.lon);
-        }
-        if (Validator.isValidNumber(data.path_checksum)) {
-          PathManager.remote_path_checksum = Number(data.path_checksum);
-          if (Number(data.path_checksum).toFixed(4) === PathManager.current_path_checksum.toFixed(4)) {
-            this.ui.path_verified.text('Yes');
-            PathManager.setSynced();
-          }
-          else {
-            this.ui.path_verified.text('No. A: ' + Number(data.path_checksum).toFixed(4) + ', L: ' + PathManager.current_path_checksum.toFixed(4));
-          }
-        }
-        else {
-          Logger.warn('Invalid value for path_checksum received. Value: ' + data.path_checksum);
-        }
-        if (AircraftStatus.following_path) {
-          this.ui.start_following_button.text('Stop Following');
-        }
-        else {
-          this.ui.start_following_button.text('Start Following');
-        }
-        if (Validator.isValidNumber(data.waypoint_count)) {
-          PathManager.remote_waypoint_count = Number(data.waypoint_count);
-        }
-        if (Validator.isValidNumber(data.waypoint_index)) {
-          PathManager.remote_waypoint_index = Number(data.waypoint_index);
-          this.ui.remote_waypoint_index.text(data.waypoint_index);
-        }
-      }.bind(this));
       this.ui.map.ready(function () {
         this.map.createMap('leaflet-map');
       }.bind(this));
@@ -103,9 +72,51 @@ module.exports = function (Marionette, L, $) {
         this.map.resize();
       }.bind(this));
     },
-    onBeforeDestroy: function () {
 
+    onBeforeDestroy: function(){
+      TelemetryData.removeListener('aircraft_position', this.aircraft_position_callback);
+      TelemetryData.removeListener('aircraft_status', this.aircraft_status_callback);
     },
+
+    aircraftPositionCallback: function(data){
+      if (data.lat !== null && data.lon !== null) {
+        if (data.heading !== null) {
+          this.map.movePlane(data.lat, data.lon, data.heading);
+        }
+        this.map.expandPlaneTrail(data.lat, data.lon);
+        this.setLatitudeLongitude(data.lat, data.lon);
+      }
+    },
+
+    aircraftStatusCallback: function(data){
+      if (data.path_checksum !== null) {
+        PathManager.remote_path_checksum = data.path_checksum;
+        if (PathManager.remote_path_checksum.toFixed(4) === PathManager.current_path_checksum.toFixed(4)) {
+          this.ui.path_verified.text('Yes');
+          PathManager.setSynced();
+        }
+        else {
+          this.ui.path_verified.text('No. A: ' + data.path_checksum.toFixed(4) + ', L: ' + PathManager.current_path_checksum.toFixed(4));
+        }
+      }
+      else {
+        Logger.warn('Invalid value for path_checksum received. Value: ' + data.path_checksum);
+      }
+      if (AircraftStatus.following_path) {
+        this.ui.start_following_button.text('Stop Following');
+      }
+      else {
+        this.ui.start_following_button.text('Start Following');
+      }
+      if (data.waypoint_count !== null) {
+        PathManager.remote_waypoint_count = data.waypoint_count;
+      }
+      if (data.waypoint_index !== null) {
+        PathManager.remote_waypoint_index =data.waypoint_index;
+        this.ui.remote_waypoint_index.text(data.waypoint_index);
+      }
+    },
+
     setLatitudeLongitude: function (lat, lon) {
       if (Validator.isValidLatitude(lat) && Validator.isValidLongitude(lon)) {
         this.ui.plane_location_lat.text(Number(lat).toFixed(5));
