@@ -57,10 +57,10 @@ module.exports = function (Marionette) {
       this.ui.altitude_dials.parent().resize(this.setCanvasDimensions.bind(this));
 
       this.telemetry_callback = this.telemetryCallback.bind(this);
-      TelemetryData.addListener('data_received', this.telemetry_callback);
+      TelemetryData.addListener('aircraft_position', this.telemetry_callback);
     },
     onBeforeDestroy: function () {
-      TelemetryData.removeListener('data_received', this.telemetry_callback);
+      TelemetryData.removeListener('aircraft_position', this.telemetry_callback);
     },
     telemetryCallback: function (data) {
       this.setAltitude(data.altitude);
@@ -79,53 +79,34 @@ module.exports = function (Marionette) {
       }
     },
     setAltitude: function (altitude) {
-      if (Validator.isValidAltitude(altitude)) {
+      if (altitude !== null) {
         var int_alt = Number(altitude);
         var degrees = (int_alt / this.max_altitude) * 360;
         this.ui.altitude_hand.css('transform', 'rotate(' + degrees + 'deg)');
         this.ui.altitude_text.text(int_alt.toFixed(1));
       }
-      else {
-        Logger.warn('Altitude received is not valid! Altitude:' + altitude);
-        this.ui.altitude_text.text('Invalid');
-        this.ui.altitude_hand.css('transform', 'rotate(0deg)');
-      }
     },
     setGroundspeed: function (speed) {
-      if (Validator.isValidSpeed(speed)) {
+      if (speed !== null) {
         var int_speed = Number(speed);
         var degrees = (int_speed / this.max_ground_speed) * 360;
         this.ui.ground_speed_hand.css('transform', 'rotate(' + degrees + 'deg)');
         this.ui.ground_speed_text.text(int_speed.toFixed(1));
         this.ui.ground_speed_text_kmh.text((int_speed * 3.6).toFixed(1));
       }
-      else {
-        Logger.warn('Groundspeed received is not valid! Groundspeed:' + speed);
-        this.ui.ground_speed_text.text('Invalid');
-        this.ui.ground_speed_hand.css('transform', 'rotate(0deg)');
-      }
     },
     setAirspeed: function (speed) {
-      if (Validator.isValidSpeed(speed)) {
+      if (speed !== null) {
         var int_speed = Number(speed);
         var degrees = (int_speed / this.max_ground_speed) * 360;
         this.ui.air_speed_hand.css('transform', 'rotate(' + degrees + 'deg)');
         this.ui.air_speed_text.text(int_speed.toFixed(1));
         this.ui.air_speed_text_kmh.text((int_speed * 3.6).toFixed(1));
       }
-      else {
-        Logger.warn('Airspeed received is not valid! Airspeed:' + speed);
-        this.ui.air_speed_text.text('Invalid');
-        this.ui.air_speed_hand.css('transform', 'rotate(0deg)');
-      }
     },
     setAltitudeSetpoint: function (altitude) {
-      if (Validator.isValidNumber(altitude)) {
+      if (altitude !== null) {
         this.ui.altitude_setpoint_text.text(Number(altitude).toFixed(2));
-      }
-      else {
-        Logger.warn('Invalid setAltitudeText value received! Altitude:' + altitude);
-        this.ui.altitude_setpoint_text.text('Invalid');
       }
     },
     sendAltitudeSetpointCommand: function (e) {
