@@ -45,95 +45,31 @@ module.exports = function (Marionette) {
       'submit .throttle-form': 'sendSetThrottleCommand'
     },
     initialize: function () {
-      this.on_telemetry_callback = null;
+      this.aircraft_position_callback = this.aircraftPositionCallback.bind(this);
+      TelemetryData.addListener('aircraft_position', this.aircraft_position_callback);
     },
-    onRender: function () {
-      this.on_telemetry_callback = this.onTelemetryCallback.bind(this);
-      TelemetryData.addListener('data_received', this.on_telemetry_callback);
-    },
-    onTelemetryCallback: function (data) {
-      this.setThrottle(data.throttle_setpoint);
-      this.setYaw(data.yaw);
-      //this.setYawSetpoint(data.int_yaw_setpoint);
-      this.setFlap(data.flap_setpoint);
 
-      this.setYawRate(data.yaw_rate);
-      this.setRollRate(data.roll_rate);
-      this.setPitchRate(data.pitch_rate);
+    aircraftPositionCallback: function(data){
+      this.setThrottle(data.throttle_setpoint);
+      this.setFlap(data.flap_setpoint);
     },
-    onBeforeDestroy: function () {
-      TelemetryData.removeListener('data_received', this.on_telemetry_callback);
+
+    onBeforeDestroy: function(){
+      TelemetryData.removeListener('aircraft_position', this.aircraft_position_callback);
     },
-    setThrottle: function (num) {
-      if (Validator.isValidThrottle(num)) {
-        var num = Number(num);
-        this.ui.throttle.text(Number((num + 1024) * 100 / 2048).toFixed(1));//-1024 represents 0%
-      } else {
-        Logger.warn('Invalid throttle setpoint value received! Throttle:' + num);
-        this.ui.throttle.text('Invalid');
+
+    setThrottle: function (throttle) {
+      if (throttle !== null) {
+        this.ui.throttle.text(((throttle + 1024) * 100 / 2048).toFixed(1));//-1024 represents 0%
       }
     },
-    setYaw: function (num) {
-      if (Validator.isValidYaw(num)) {
-        this.ui.yaw.text(Number(num).toFixed(1));
-      } else {
-        Logger.warn('Invalid yaw value received! Yaw:' + num);
-        this.ui.yaw.text('Invalid');
+
+    setFlap: function (flap) {
+      if (flap !== null) {
+        this.ui.flap.text((flap + 1024) * 100 / 2048).toFixed(1);//-1024 represents 0%
       }
     },
-    // setYawSetpoint: function(num){
-    //   if(Validator.isValidYaw(num)){
-    //     this.ui.yaw_setpoint.text(Number(num).toFixed(1));
-    //   }else{
-    //     Logger.warn('Invalid yaw setpoint value received! Yaw Setpoint: '+num);
-    //     this.ui.yaw_setpoint.text('Invalid');
-    //   }
-    // },
-    setPitchRate: function (num) {
-      if (Validator.isValidNumber(num)) {
-        var rad = Number(num);
-        var degrees = Number(num) * 180 / Math.PI;
-        this.ui.pitch_rate_rad.text(rad.toFixed(1));
-        this.ui.pitch_rate_deg.text(degrees.toFixed(1));
-      } else {
-        Logger.warn('Invalid pitch rate value received!  Pitch Rate: ' + num);
-        this.ui.pitch_rate_rad.text('Invalid');
-        this.ui.pitch_rate_deg.text('Invalid');
-      }
-    },
-    setYawRate: function (num) {
-      if (Validator.isValidNumber(num)) {
-        var rad = Number(num);
-        var degrees = Number(num) * 180 / Math.PI;
-        this.ui.yaw_rate_rad.text(rad.toFixed(1));
-        this.ui.yaw_rate_deg.text(degrees.toFixed(1));
-      } else {
-        Logger.warn('Invalid yaw rate value received!  Yaw Rate: ' + num);
-        this.ui.yaw_rate_rad.text('Invalid');
-        this.ui.yaw_rate_deg.text('Invalid');
-      }
-    },
-    setRollRate: function (num) {
-      if (Validator.isValidNumber(num)) {
-        var rad = Number(num);
-        var degrees = Number(num) * 180 / Math.PI;
-        this.ui.roll_rate_rad.text(rad.toFixed(1));
-        this.ui.roll_rate_deg.text(degrees.toFixed(1));
-      } else {
-        Logger.warn('Invalid roll rate value received!  Roll Rate: ' + num);
-        this.ui.roll_rate_rad.text('Invalid');
-        this.ui.roll_rate_deg.text('Invalid');
-      }
-    },
-    setFlap: function (num) {
-      if (Validator.isValidFlap(num)) {
-        var num = Number(num);
-        this.ui.flap.text(Number((num + 1024) * 100 / 2048).toFixed(1));//-1024 represents 0%
-      } else {
-        Logger.warn('Invalid flap setpoint value received! Flap Setpoint: ' + num);
-        this.ui.flap.text('Invalid');
-      }
-    },
+
     sendSetThrottleCommand: function (e) {
       e.preventDefault();
       Commands.sendThrottle(this.ui.throttle_input.val());

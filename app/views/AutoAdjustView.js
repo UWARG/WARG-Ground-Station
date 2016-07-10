@@ -68,15 +68,24 @@ module.exports = function (Marionette) {
       "click #pathFollowing": "pathFollowing"
     },
 
-    intialize: function () {
+    initialize: function () {
       this.telemetryCallback = null;
     },
 
     onRender: function () {
-      TelemetryData.on('data_received', this.dataReceivedCallback.bind(this));
+      this.telemetryCallback = this.dataReceivedCallback.bind(this);
+      TelemetryData.on('aircraft_status', this.telemetryCallback);
     },
+
+    onBeforeDestroy: function(){
+      TelemetryData.removeListener('aircraft_status', this.telemetryCallback);
+    },
+
     //see the picpilot data link docs for a reference
     dataReceivedCallback: function (data) {
+      if(data.autonomousLevel === null){
+        return;
+      }
       this.ui.remote_autonomous_level_value.text(data.autonomousLevel);
       this.ui.autonomous_level_synced.text(Number(data.autonomousLevel) === this.encodeInputs() ? 'Yes' : 'No');
       var alevel = new Bitmask(Number(data.autonomousLevel));

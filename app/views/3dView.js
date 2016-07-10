@@ -40,26 +40,26 @@ module.exports = function (Marionette, THREE, window) {
         this.planeScene.resize(this.ui.plane_scene.width(), this.ui.plane_scene.height());
       }.bind(this));
 
-      TelemetryData.addListener('data_received', this.data_callback);
+      TelemetryData.addListener('aircraft_orientation', this.data_callback);
     },
 
     dataCallback: function (data) {
       var set_pitch = 0, set_roll = 0, set_yaw = 0;
 
-      if (Validator.isValidHeading(data.heading)) {
+      if (data.heading !== null) {
         set_yaw = data.heading;
       }
-      if (Validator.isValidPitch(data.pitch)) {
+      if (data.pitch !== null) {
         set_pitch = data.pitch;
       }
-      if (Validator.isValidRoll(data.roll)) {
+      if (data.roll !== null) {
         set_roll = data.roll;
       }
       this.planeScene.rotateAircraft(set_pitch, set_yaw, set_roll);
     },
 
     onBeforeDestroy: function () {
-      TelemetryData.removeListener('data_received', this.data_callback);
+      TelemetryData.removeListener('aircraft_orientation', this.data_callback);
     }
   });
 };

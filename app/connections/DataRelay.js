@@ -2,7 +2,7 @@
  * @author Serge Babayan
  * @module connections/DataRelay
  * @requires config/network-config
- * @requires Network
+ * @requires managers/NetworkManager
  * @requires util/Logger
  * @requires util/PacketParser
  * @requires StatusManager
@@ -20,7 +20,7 @@
  */
 
 var network_config = require('../../config/network-config');
-var Network = require('../Network');
+var NetworkManager = require('../managers/NetworkManager');
 var Logger = require('../util/Logger');
 var TelemetryData = require('../models/TelemetryData');
 var StatusManager = require('../StatusManager');
@@ -29,20 +29,18 @@ var _ = require('underscore');
 
 var DataRelay = {};
 
-DataRelay.parseHeaders = function (data) {
+var parseHeaders = function (data) {
   TelemetryData.setHeadersFromString(data);
-  PacketParser.checkForMissingHeaders(TelemetryData.headers);
-
+  PacketParser.checkForMissingHeaders(TelemetryData.getHeaders());
   Logger.debug('Network data_relay Received headers: ' + data);
-  Logger.data(JSON.stringify(TelemetryData.headers), 'DATA_RELAY_HEADERS');
+  Logger.data(JSON.stringify(TelemetryData.getHeaders()), 'DATA_RELAY_HEADERS');
   StatusManager.addStatus('Received headers from data_relay', 3, 3000);
 };
 
-DataRelay.parseData = function (data) {
-  TelemetryData.current_state = PacketParser.parseData(data, TelemetryData.headers);
-  TelemetryData.emitPackets(TelemetryData.current_state);
-
-  Logger.data(JSON.stringify(TelemetryData.current_state), 'DATA_RELAY_DATA');
+var parseData = function (data) {
+  TelemetryData.setCurrentStateFromString(data);
+  TelemetryData.emitPackets();
+  Logger.data(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
   StatusManager.setStatusCode('TIMEOUT_DATA_RELAY', false);
 };
 
@@ -51,17 +49,16 @@ DataRelay.parseData = function (data) {
  * @function init
  */
 DataRelay.init = function () {
-  if (Network.connections['data_relay']) { //if a connection has already been established, disconnect it
-    Network.connections['data_relay'].removeAllListeners();
-    Network.connections['data_relay'].disconnect();
+  if(NetworkManager.getConnectionByName('data_relay')){
+    NetworkManager.removeAllConnections('data_relay');
   }
 
-  var data_relay = Network.addConnection('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
+  var data_relay = NetworkManager.addConnection('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
 
   data_relay.setTimeout(network_config.get('datarelay_timeout'));
 
   data_relay.on('connect', function () {
-    TelemetryData.headers = [];
+    TelemetryData.clearHeaders();
     StatusManager.setStatusCode('CONNECTED_DATA_RELAY', true);
   });
 
@@ -86,11 +83,11 @@ DataRelay.init = function () {
     data = data.toString();
 
     // First transmission is header columns
-    if (TelemetryData.headers.length === 0) {
-      this.parseHeaders(data);
+    if (TelemetryData.getHeaders().length === 0) {
+      parseHeaders(data);
     }
     else { //if its the non-header columns(actual data)
-      this.parseData(data);
+      parseData(data);
     }
   }.bind(this));
 };
