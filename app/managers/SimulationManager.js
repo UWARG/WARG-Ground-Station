@@ -83,7 +83,7 @@ var SimulationManager = new function () {
    * @param {int} new_frequency
    */
   this.setTransmissionFrequency = function (new_frequency) {
-    if (Validator.isInteger(new_frequency) && new_frequency !== 0) {
+    if (Validator.isInteger(new_frequency) && new_frequency != 0) {
       transmission_frequency = parseInt(new_frequency);
       if (simulation_active) {
         this.toggleSimulation();

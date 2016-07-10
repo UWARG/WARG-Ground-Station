@@ -280,8 +280,17 @@ var Validator = {
    * @param gps {string | Number} The value to check
    * @returns {boolean}
    */
-  isValidGpsStatus: function (gps) {
+  isValidGPSStatus: function (gps) {
     return this.isInteger(gps) && this.isPositiveNumber(gps);
+  },
+
+  /**
+   * Checks if value is a valid airspeed (Allows negative for up to -2m/s)
+   * @param airspeed
+   * @returns {boolean}
+   */
+  isValidAirspeed: function(airspeed){
+    return this.isValidNumber(airspeed) && Number(airspeed) > -2;
   }
 };
 

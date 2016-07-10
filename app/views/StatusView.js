@@ -53,37 +53,25 @@ module.exports = function (Marionette, $) {
       this.current_gps_status = null;
       this.messagesReceived = 0;//for keeping track of the transmission rate
       this.transmissionInterval = null;
-
-      this.data_callback = null; //so that we can get rid of the listener safely
-      this.new_status_callback = null;
-      this.remove_status_callback = null;
-
+      this.telemetry_status_callback = this.telemetryStatusCallback.bind(this); //so that we can get rid of the listener safely
+      this.new_status_callback = this.onNewStatusCallback.bind(this);
+      this.remove_status_callback = this.onRemoveStatusCallback.bind(this);
       this.status_messages = [];
+
+      TelemetryData.addListener('aircraft_status', this.telemetry_status_callback);
+      StatusManager.addListener('new_status', this.new_status_callback);
+      StatusManager.addListener('remove_status', this.remove_status_callback);
     },
     onRender: function () {
-      this.data_callback = this.onDataCallback.bind(this);
-      TelemetryData.addListener('data_received', this.data_callback);
-
-      this.new_status_callback = this.onNewStatusCallback.bind(this);
-      StatusManager.addListener('new_status', this.new_status_callback);
-
-      this.remove_status_callback = this.onRemoveStatusCallback.bind(this);
-      StatusManager.addListener('remove_status', this.remove_status_callback);
-
       this.transmissionInterval = setInterval(function () {
         this.ui.transmission_speed.text(this.messagesReceived + '/s');
         this.messagesReceived = 0;
       }.bind(this), 1000);
     },
-    onBeforeDestroy: function () {
-      TelemetryData.removeListener('data_received', this.data_callback);
-      StatusManager.removeListener('new_status', this.new_status_callback);
-      StatusManager.removeListener('remove_status', this.remove_status_callback);
-      clearInterval(this.transmissionInterval);
-    },
-    onDataCallback: function (data) {
-      if (!this.starting_time && Validator.isValidTime(data.time)) {
-        time = Number(data.time).toFixed(2);
+
+    telemetryStatusCallback: function(data){
+      if (data.time !== null) {
+        time = data.time.toFixed(2);
         this.starting_time = moment(time, 'HHmmss.SS');
       }
       this.setTime(data.time);
@@ -91,6 +79,13 @@ module.exports = function (Marionette, $) {
       this.setGpsLevel(data.gps_status);
       this.ui.rssi.text(data.RSSI);
       this.messagesReceived++;
+    },
+
+    onBeforeDestroy: function () {
+      TelemetryData.removeListener('aircraft_status', this.telemetry_status_callback);
+      StatusManager.removeListener('new_status', this.new_status_callback);
+      StatusManager.removeListener('remove_status', this.remove_status_callback);
+      clearInterval(this.transmissionInterval);
     },
     onNewStatusCallback: function (message, priority, timeout) {
       if (priority === 0) {
@@ -138,12 +133,8 @@ module.exports = function (Marionette, $) {
       }
     },
     setBatteryLevel: function (battery_level) {
-      if (!Validator.isValidBattery(battery_level)) {
-        Logger.warn('Got an invalid value for the battery level! Battery Level: ' + battery_level);
-        this.ui.battery_percent.text('Invalid Battery Level');
-      }
-      else if (Number(battery_level) !== this.current_battery_level) {
-        var percent = Math.round(Number(battery_level));
+      if (battery_level !== null && battery_level !== this.current_battery_level) {
+        var percent = Math.round(battery_level);
         this.current_battery_level = percent;
         this.ui.battery_percent.text(percent + '%');
         this.ui.battery_picture.css('width', percent + '%');
@@ -162,15 +153,9 @@ module.exports = function (Marionette, $) {
       }
     },
     setGpsLevel: function (gps_level) {
-      if (!Validator.isValidGpsStatus(gps_level)) {
-        Logger.warn('Got an invalid value for the GPS level! GPS Level: ' + gps_level);
-        this.ui.gps_message.css('color', 'orange');
-        this.ui.gps_message.text('Invalid GPS Level');
-      }
-      else {
-        var level = Number(gps_level);
-        if (level !== this.current_gps_status) { //check if the gps status is different than last time
-          this.current_gps_status = level;
+      if(gps_level !== null) {
+        if (gps_level !== this.current_gps_status) { //check if the gps status is different than last time
+          this.current_gps_status = gps_level;
 
           if (gps_level === 0) {
             Logger.warn('no GPS connection');

@@ -154,18 +154,16 @@ module.exports = function (Marionette) {
 
     onRender: function () {
       this.data_callback = this.dataCallback.bind(this);
-      TelemetryData.addListener('data_received', this.data_callback);
+      TelemetryData.addListener('aircraft_gains', this.data_callback);
       this.discardChanges(); //fills in the values from the settings
     },
 
     onBeforeDestroy: function () {
-      TelemetryData.removeListener('data_received', this.data_callback);
+      TelemetryData.removeListener('aircraft_gains', this.data_callback);
     },
 
     //compares two values of gains with up to 3 decimal places of percision
     compareGains: function (gain1, gain2) {
-      gain1 = Number(gain1);
-      gain2 = Number(gain2);
       return gain1.toFixed(3) === gain2.toFixed(3);
     },
 

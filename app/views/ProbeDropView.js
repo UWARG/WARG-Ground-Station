@@ -47,22 +47,20 @@ module.exports = function (Marionette) {
     },
     onRender: function () {
       this.data_callback = this.dataCallback.bind(this);
-      TelemetryData.on('data_received', this.data_callback);
+      TelemetryData.on('aircraft_status', this.data_callback);
     },
-    onBeforeDestroy: function () {
 
+    onBeforeDestroy: function () {
+      TelemetryData.removeListener('aircraft_status', this.data_callback);
     },
 
     dataCallback: function (data) {
-      if (Validator.isValidNumber(data.probe_status)) {
-        var status = new Bitmask(Number(data.probe_status));
+      if (data.probe_status !== null) {
+        var status = new Bitmask(data.probe_status);
 
         this.ui.probe1_status.text(status.getBit(0) ? 'Dropped' : 'Not Dropped');
         this.ui.probe2_status.text(status.getBit(1) ? 'Dropped' : 'Not Dropped');
         this.ui.probe3_status.text(status.getBit(2) ? 'Dropped' : 'Not Dropped');
-      }
-      else {
-        Logger.warn('Invalid value for probe_status received. Value: ' + data.probe_status);
       }
     },
 

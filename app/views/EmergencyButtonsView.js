@@ -12,6 +12,8 @@
 var remote = require('electron').remote;
 var Template = require('../util/Template');
 var Commands = remote.require('./app/models/Commands');
+var WindowManager = remote.require('./app/core/WindowManager');
+var dialog = remote.dialog;
 
 //Note this view requires the global window object for the alert boxes (at least for now)
 module.exports = function (Marionette, window) {
@@ -21,6 +23,7 @@ module.exports = function (Marionette, window) {
     className: 'emergencyButtonsView',
 
     events: {
+      'click #write-mode-button': 'writeMode',
       'click #arm-plane-button': 'armPlane',
       'click #disarm-plane-button': 'disarmPlane',
       'click #kill-plane-button': 'killPlane',
@@ -31,15 +34,31 @@ module.exports = function (Marionette, window) {
     },
 
     writeMode: function () {
-      if (window.confirm('This will convert the groundstation from READ ONLY mode to WRITE mode. Are you sure you want to do this?')) {
-        Commands.activateWriteMode();
-      }
+      dialog.showMessageBox({
+        type: 'warning',
+        buttons: ['Cancel', 'Go Write Mode'],
+        defaultId: 0,
+        title: 'Confirm Write Mode',
+        message: 'This will convert the ground station from READ ONLY mode to WRITE mode. Are you sure you want to do this?',
+      }, function (response) {
+        if (response === 1) {
+          Commands.activateWriteMode();
+        }
+      });
     },
 
     armPlane: function () {
-      if (window.confirm('This command arms the plane. Is everyone away from the propeller?')) {
-        Commands.armPlane();
-      }
+      dialog.showMessageBox({
+        type: 'warning',
+        buttons: ['Cancel', 'Arm Plane'],
+        defaultId: 0,
+        title: 'Confirm Arm Plane',
+        message: 'This command arms the plane. Is everyone away from the propeller?',
+      }, function (response) {
+        if (response === 1) {
+          Commands.armPlane();
+        }
+      });
     },
 
     disarmPlane: function () {
@@ -47,9 +66,17 @@ module.exports = function (Marionette, window) {
     },
 
     killPlane: function () {
-      if (window.confirm('Are you sure you want to kill the plane? This WILL crash the plane. (1/2)') && window.confirm('Are you ABSOLUTELY SURE you want to do this? (2/2)')) {
-        Commands.killPlane();
-      }
+      dialog.showMessageBox({
+        type: 'warning',
+        buttons: ['Cancel', 'Kill Plane'],
+        defaultId: 0,
+        title: 'Confirm Kill Plane',
+        message: 'Are you sure you want to kill the plane? This WILL crash the plane?',
+      }, function (response) {
+        if (response === 1) {
+          Commands.killPlane();
+        }
+      });
     },
 
     unkillPlane: function () {

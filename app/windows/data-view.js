@@ -1,4 +1,4 @@
-var DataView = require('../../app/views/DataView')(Marionette, $);
+var DataView = require('../../app/views/DataView')(Marionette, Backbone);
 var WindowShortcuts = require('../../app/core/WindowShortcuts');
 
 WindowShortcuts.init(Mousetrap);

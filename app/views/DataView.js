@@ -13,32 +13,42 @@
 var remote = require('electron').remote;
 var Template = require('../util/Template');
 var TelemetryData = remote.require('./app/models/TelemetryData');
+var PacketTypes = require('../models/PacketTypes');
+var _ = require('underscore');
 
-module.exports = function (Marionette) {
-
+module.exports = function (Marionette, Backbone) {
   return Marionette.ItemView.extend({
     template: Template('DataView'), //name of the file in the views folder at the project root
-    className: 'exampleView', //this is the class name the injected div will have (refer to this class in your style sheets)
-
-    ui: {
-      data: '#data',
-      current_date: '#current-date'
-    },
+    className: 'dataView', //this is the class name the injected div will have (refer to this class in your style sheets)
 
     initialize: function () {
-      this.telemetryCallback = null;
-    },
-    onRender: function () {
-      this.telemetryCallback = this.dataCallback.bind(this);
-      TelemetryData.on('data_received', this.telemetryCallback);
+      this.telemetryCallbacks = {};
+      this.last_received_date = null;
+      this.telemetry_data = {};
+
+      _.each(PacketTypes, function (headers, packet_name) {
+        this.telemetryCallbacks[packet_name] = this.dataCallback.bind(this, packet_name);
+        TelemetryData.on(packet_name, this.telemetryCallbacks[packet_name]);
+      }.bind(this));
     },
 
-    dataCallback: function (data) {
-      this.ui.data.text(JSON.stringify(data, null, 2));
-      this.ui.current_date.text(new Date());
+    serializeData: function () {
+      return {
+        last_received_date: this.last_received_date ? this.last_received_date.toString() : 'No data received yet.',
+        telemetry_data: this.telemetry_data
+      }
     },
+
+    dataCallback: function (packet_name, data) {
+      this.telemetry_data[packet_name] = data;
+      this.last_received_date = new Date();
+      this.render();
+    },
+
     onBeforeDestroy: function () {
-      //Todo: need to destroy the callback here
+      _.each(PacketTypes, function (headers, packet_name) {
+        TelemetryData.removeListener(packet_name, this.telemetryCallbacks[packet_name]);
+      }.bind(this));
     }
   });
 };

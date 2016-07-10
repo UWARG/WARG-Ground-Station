@@ -1,4 +1,22 @@
-<p style="margin-left: 12px" >Last Received Data at: <span style="color:yellow" id="current-date"></span></p>
-<pre id="data" style="color:white">
+<p>Last Received Data at:
+    <time id="last-received-date"><%= last_received_date %></time>
+</p>
 
-</pre>
+<% _.each(telemetry_data, function(values, packet_name) { %>
+<table class="pure-table pure-table-bordered packet-type">
+    <thead>
+    <tr>
+        <th colspan="2"><%= packet_name %></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <% _.each(values, function(value, header_name) { %>
+    <tr>
+        <td class="header-name"><%= header_name %></td>
+        <td class="header-value"><%= JSON.stringify(value) %></td>
+    </tr>
+    <% }); %>
+    </tbody>
+</table>
+<% }); %>
