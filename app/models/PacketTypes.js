@@ -12,7 +12,7 @@ var PacketTypes = {
   aircraft_position: { //this is the event name
     'lat': 'isValidLatitude', //the key is the header name, the value is a function name in the Validator module. Could be an array if you want to use multiple
     'lon': 'isValidLongitude',
-    'airspeed': 'isValidSpeed',
+    'airspeed': 'isValidAirspeed',
     'ground_speed': 'isValidSpeed',
     'heading': 'isValidHeading',
     'heading_setpoint': 'isValidHeading',
