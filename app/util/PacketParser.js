@@ -80,7 +80,7 @@ var PacketParser = {
     }
 
     var data_array = data.split(",").map(function(data){
-      return data.trim();
+      return data.trim().replace('(','').replace(')','');
     });
     var sorted_data = {};
     var current_state = {};

@@ -119,12 +119,7 @@ module.exports = function (Marionette, $) {
       }
     },
     setTime: function (time) {
-      if (!Validator.isValidTime(time)) {
-        Logger.warn('Got invalid value for the time! Time: ' + time);
-        this.ui.vehicle_time.text('Invalid Time Received');
-        this.ui.elapsed_time.text('--');
-      }
-      else {
+      if(time !== null){
         time = Number(time).toFixed(2);
         var date = moment(time, 'HHmmss.SS');
         var elapsed_time = moment(date.diff(this.starting_time));
