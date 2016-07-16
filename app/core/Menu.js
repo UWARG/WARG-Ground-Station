@@ -64,6 +64,12 @@ var Menu = {
     }
   },
   'Windows': {
+    'Map': {
+      openWindow: 'mapView',
+      height: 900,
+      width: 600,
+      devTools: true
+    },
     'Simulation Mode': {
       openWindow: 'simulationMode',
       height: 350,
