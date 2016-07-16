@@ -1,12 +1,13 @@
 //a wrapper around leaflet that configures the map
 
+var remote = require('electron').remote;
 var MapDraw = require('./map/MapDraw');
 var MapMeasure = require('./map/MapMeasure');
-var PathManager = require("./map/PathManager");
+var PathManager = remote.require("./app/map/PathManager");
 var Waypoint = require('./models/Waypoint');
 var Template = require('./util/Template');
 var Coordinates = require('./models/Coordinates');
-var map_config = require('../config/map-config');
+var map_config = remote.require('./config/map-config');
 var path = require('path');
 
 var MAP_STATE = Object.freeze({
