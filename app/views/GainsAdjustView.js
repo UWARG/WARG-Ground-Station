@@ -240,9 +240,7 @@ module.exports = function (Marionette) {
       var ki = Number(this.ui.yaw_ki.val());
       var kd = Number(this.ui.yaw_kd.val());
       var kp = Number(this.ui.yaw_kp.val());
-      Commands.sendKPGain('yaw', kp);
-      Commands.sendKIGain('yaw', ki);
-      Commands.sendKDGain('yaw', kd);
+      Commands.sendYawGains(kp, kd, ki);
       this.needs_verifying.yaw = {
         status: true,
         ki: ki,
@@ -258,9 +256,7 @@ module.exports = function (Marionette) {
       var ki = Number(this.ui.pitch_ki.val());
       var kd = Number(this.ui.pitch_kd.val());
       var kp = Number(this.ui.pitch_kp.val());
-      Commands.sendKPGain('pitch', kp);
-      Commands.sendKIGain('pitch', ki);
-      Commands.sendKDGain('pitch', kd);
+      Commands.sendPitchGains(kp, kd, ki);
       this.needs_verifying.pitch = {
         status: true,
         ki: ki,
@@ -276,9 +272,7 @@ module.exports = function (Marionette) {
       var ki = Number(this.ui.roll_ki.val());
       var kd = Number(this.ui.roll_kd.val());
       var kp = Number(this.ui.roll_kp.val());
-      Commands.sendKPGain('roll', kp);
-      Commands.sendKIGain('roll', ki);
-      Commands.sendKDGain('roll', kd);
+      Commands.sendRollGains(kp, kd, ki);
       this.needs_verifying.roll = {
         status: true,
         ki: ki,
@@ -295,9 +289,7 @@ module.exports = function (Marionette) {
       var ki = Number(this.ui.heading_ki.val());
       var kd = Number(this.ui.heading_kd.val());
       var kp = Number(this.ui.heading_kp.val());
-      Commands.sendKPGain('heading', kp);
-      Commands.sendKIGain('heading', ki);
-      Commands.sendKDGain('heading', kd);
+      Commands.sendHeadingGains(kp, kd, ki);
       this.needs_verifying.heading = {
         status: true,
         ki: ki,
@@ -313,9 +305,7 @@ module.exports = function (Marionette) {
       var ki = Number(this.ui.altitude_ki.val());
       var kd = Number(this.ui.altitude_kd.val());
       var kp = Number(this.ui.altitude_kp.val());
-      Commands.sendKPGain('altitude', kp);
-      Commands.sendKIGain('altitude', ki);
-      Commands.sendKDGain('altitude', kd);
+      Commands.sendAltitudeGains(kp, kd, ki);
       this.needs_verifying.altitude = {
         status: true,
         ki: ki,
@@ -331,9 +321,7 @@ module.exports = function (Marionette) {
       var ki = Number(this.ui.throttle_ki.val());
       var kd = Number(this.ui.throttle_kd.val());
       var kp = Number(this.ui.throttle_kp.val());
-      Commands.sendKPGain('throttle', kp);
-      Commands.sendKIGain('throttle', ki);
-      Commands.sendKDGain('throttle', kd);
+      Commands.sendThrottleGains(kp, kd, ki);
       this.needs_verifying.throttle = {
         status: true,
         ki: ki,
@@ -349,9 +337,7 @@ module.exports = function (Marionette) {
       var ki = Number(this.ui.flap_ki.val());
       var kd = Number(this.ui.flap_kd.val());
       var kp = Number(this.ui.flap_kp.val());
-      Commands.sendKPGain('flap', kp);
-      Commands.sendKIGain('flap', ki);
-      Commands.sendKDGain('flap', kd);
+      Commands.sendFlapGains(kp, kd, ki);
       this.needs_verifying.flap = {
         status: true,
         ki: ki,

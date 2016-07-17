@@ -28,7 +28,7 @@ var Commands = {
     if (SimulationManager.isActive()) {
       return false;
     }
-    if(NetworkManager.getConnectionByName('data_relay') && !NetworkManager.getConnectionByName('data_relay').isClosed()){
+    if (NetworkManager.getConnectionByName('data_relay') && !NetworkManager.getConnectionByName('data_relay').isClosed()) {
       return true;
     }
     else {
@@ -535,6 +535,136 @@ var Commands = {
     if (this.sendCommand('send_heartbeat', 1)) {
       Logger.debug('[HEARTBEAT] Sent heartbeat to the picpilot');
     }
+  },
+
+  /**
+   * Sends a multi gain command
+   * @function sendMultiGain
+   * @param {String} type One of: 'yaw', 'pitch', 'roll', 'heading', 'altitude', 'throttle', 'flap'
+   * @param {Number} kp
+   * @param {Number} kd
+   * @param {Number} ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendMultiGain: function (type, kp, kd, ki) {
+    if (!Validator.isValidNumber(kp) || !Validator.isValidNumber(kd) || !Validator.isValidNumber(ki)) {
+      Logger.error(`Invalid kp, kd, or ki value provided for send gains command. Provided: kp: ${kp}, kd: ${kd}, ki: ${ki}`);
+      return false;
+    }
+    var type_int = 0;
+
+    switch (type) {
+      case 'yaw':
+        type_int = 0;
+        break;
+      case 'pitch':
+        type_int = 1;
+        break;
+      case 'roll':
+        type_int = 2;
+        break;
+      case 'heading':
+        type_int = 3;
+        break;
+      case 'altitude':
+        type_int = 4;
+        break;
+      case 'throttle':
+        type_int = 5;
+        break;
+      case 'flap':
+        type_int = 6;
+        break;
+      default:
+        Logger.error('Incorrect gain type entered. Must be one of: yaw, pitch, roll, heading, altitude, throttle, flap');
+        return false;
+    }
+
+    return this.sendCommand('set_gains', type_int, kd, kp, ki);
+  },
+
+  /**
+   * Sends yaw gains as a multi gain command
+   * @function sendYawGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendYawGains: function (kp, kd, ki) {
+    return this.sendMultiGain('yaw', kp, kd, ki);
+  },
+
+  /**
+   * Sends pitch gains as a multi gain command
+   * @function sendPitchGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendPitchGains: function (kp, kd, ki) {
+    return this.sendMultiGain('pitch', kp, kd, ki);
+  },
+
+  /**
+   * Sends roll gains as a multi gain command
+   * @function sendRollGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendRollGains: function (kp, kd, ki) {
+    return this.sendMultiGain('roll', kp, kd, ki);
+  },
+
+  /**
+   * Sends altitude gains as a multi gain command
+   * @function sendAltitudeGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendAltitudeGains: function (kp, kd, ki) {
+    return this.sendMultiGain('altitude', kp, kd, ki);
+  },
+
+  /**
+   * Sends heading gains as a multi gain command
+   * @function sendHeadingGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendHeadingGains: function (kp, kd, ki) {
+    return this.sendMultiGain('heading', kp, kd, ki);
+  },
+
+  /**
+   * Sends throttle gains as a multi gain command
+   * @function sendThrottleGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendThrottleGains: function (kp, kd, ki) {
+    return this.sendMultiGain('throttle', kp, kd, ki);
+  },
+
+  /**
+   * Sends flap gains as a multi gain command
+   * @function sendFlapGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendFlapGains: function (kp, kd, ki) {
+    return this.sendMultiGain('flap', kp, kd, ki);
   }
 };
 
