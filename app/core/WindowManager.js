@@ -42,12 +42,15 @@ var WindowsManager = {
       if (options.devTools) {
         new_window.webContents.openDevTools();
       }
-      //delete all instances of the window
-      new_window.on('closed', function () {
-        Logger.debug(`Closed ${new_window.name} window`);
+
+      new_window.on('close', function () {
+        Logger.debug(`Closing ${new_window.name} window`);
+        //workaround since the windows don't close correction on win OS
+        this.open_windows[new_window.name].hide();
         this.open_windows[new_window.name] = null;
         delete this.open_windows[new_window.name];
       }.bind(this));
+
       this.open_windows[new_window.name] = new_window;
       Logger.debug(`Opening ${new_window.name} window`);
     }
