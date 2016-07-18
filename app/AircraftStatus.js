@@ -144,14 +144,14 @@ var AircraftStatus = function () {
     checkPathFollowing(data.path_following);
   };
 
-  TelemetryData.on('data_received', telemetryCallback);
+  TelemetryData.on('aircraft_status', telemetryCallback);
 
   /**
    * Checks whether the plane is currently following a path
    * @param status {number | null}
    */
   var checkPathFollowing = function (status) {
-    if (typeof status !== 'undefined' || status !== null) {
+    if (status !== null) {
       this.following_path = (Number(status) === 1);
     }
   }.bind(this);
@@ -161,11 +161,7 @@ var AircraftStatus = function () {
    * @param number {number | null}
    */
   var checkPlaneStatus = function (number) {
-    if (!Validator.isValidNumber(number)) {
-      Logger.warn('Invalid value for autopilot_active received. Value: ' + number);
-    }
-    else {
-      number = Number(number);
+    if(number !== null){
       this.initializing = (number === 0);
       if (number === 1) { //only set armed to false if the number is ONLY 1
         this.armed = false;
@@ -185,12 +181,8 @@ var AircraftStatus = function () {
   }.bind(this);
 
   var checkUHFStatus = function (data) {
-    var number = Number(data);
-    if (!Validator.isInteger(number)) {
-      Logger.warn('Invalid value for wireless_connection received. Value: ' + data);
-    }
-    else {
-      var bitmask = new Bitmask(number);
+    if(data !== null){
+      var bitmask = new Bitmask(data);
       this.uhf.status = bitmask.getBit(1);
 
       if (this.uhf.status) { //has been turned to true
@@ -204,41 +196,31 @@ var AircraftStatus = function () {
   }.bind(this);
 
   var checkManualMode = function (data) {
-    var number = Number(data);
-    if (!Validator.isInteger(number)) {
-      Logger.warn('Invalid value for wireless_connection received. Value: ' + data);
-    }
-    else {
-      var bitmask = new Bitmask(number);
+    if(data !== null){
+      var bitmask = new Bitmask(data);
       this.manualMode = !bitmask.getBit(0);
       StatusManager.setStatusCode('MANUAL_MODE', this.manualMode);
     }
   }.bind(this);
 
   var checkGPS = function (data) {
-    var number = Number(data);
-    if (!Validator.isValidNumber(number)) {
-      Logger.warn('Invalid GPS status received. Status: ' + data);
-    }
-    var connection_status = ((number & 0xf0) >> 4) > 0; // if theres at least 1 fix
-    if (connection_status !== this.gps.status) { //if its a different status
-      this.gps.status = connection_status;
-      StatusManager.setStatusCode('GPS_LOST', !this.gps.status);
-      if (this.gps.status === false) { //if it was set to false, start the timer
-        this.gps.timeSinceLost = Date.now();
-      }
-      else {
-        this.gps.timeSinceLost = null;
-      }
-    }
+   if(data !== null) {
+     var connection_status = ((data & 0xf0) >> 4) > 0; // if theres at least 1 fix
+     if (connection_status !== this.gps.status) { //if its a different status
+       this.gps.status = connection_status;
+       StatusManager.setStatusCode('GPS_LOST', !this.gps.status);
+       if (this.gps.status === false) { //if it was set to false, start the timer
+         this.gps.timeSinceLost = Date.now();
+       }
+       else {
+         this.gps.timeSinceLost = null;
+       }
+     }
+   }
   }.bind(this);
 
-  var checkErrorCodes = function (startup_error_codes) {
-    var dataNumber = Number(startup_error_codes);
-    if (!Validator.isInteger(dataNumber)) {
-      Logger.warn('Invalid data value for startup_error_codes received. Value : ' + startup_error_codes);
-    }
-    else if (this.pastErrorCode !== dataNumber) { //if we got an error code value thats different from last time
+  var checkErrorCodes = function (dataNumber) {
+    if (dataNumber !== null && this.pastErrorCode !== dataNumber) { //if we got an error code value thats different from last time
       var error_codes = new Bitmask(dataNumber);
       this.pastErrorCode = dataNumber;
 
