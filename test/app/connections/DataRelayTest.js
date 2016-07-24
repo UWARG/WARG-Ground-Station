@@ -47,6 +47,7 @@ describe('DataRelay', function () {
       Logger.data = sandbox.spy();
       TelemetryData.setHeaders = sandbox.spy();
       TelemetryData.setCurrentStateFromString = sandbox.spy();
+      TelemetryData.addDataToReceivedHistoryFromString = sandbox.spy();
       TelemetryData.emitPackets = sandbox.spy();
       TelemetryData.clearHeaders = sandbox.spy();
       TelemetryData.setHeadersFromString = sandbox.spy();
@@ -108,6 +109,7 @@ describe('DataRelay', function () {
       connection.emit('data', data_buffer);
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith(data);
       expect(TelemetryData.emitPackets).to.have.callCount(1);
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.callCount(1);
       expect(Logger.data).to.have.been.calledWith(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
       expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_DATA_RELAY', false);
     });

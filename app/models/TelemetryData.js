@@ -180,14 +180,14 @@ var TelemetryData = function () {
   };
 
   /**
-   * Adds a data packet to the data received history
-   * @function addDataReceivedHistory
-   * @param {Array} data
+   * Adds a data packet string to the data received history
+   * @function addDataReceivedHistoryFromString
+   * @param {String} data
    * @example <caption>Adding a data packet to the received history</caption>
-   * TelemetryData.addDataReceivedHistory([4,3,45,5,5,234,4,4,5,211,2, etc..]);
+   * TelemetryData.addDataToReceivedHistoryFromString('4,3,45,5,5,234,4,4,5,211,2, etc..');
    */
-  this.addDataReceivedHistory = function(data){
-    data_received_history.push(data);
+  this.addDataToReceivedHistoryFromString = function(data){
+    data_received_history.push(PacketParser.convertDataStringToArray(data));
   };
 
   /**

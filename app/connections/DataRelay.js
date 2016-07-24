@@ -38,6 +38,7 @@ var parseHeaders = function (data) {
 };
 
 var parseData = function (data) {
+  TelemetryData.addDataToReceivedHistoryFromString(data);
   TelemetryData.setCurrentStateFromString(data);
   TelemetryData.emitPackets();
   Logger.data(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');

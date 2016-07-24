@@ -153,27 +153,32 @@ describe('TelemetryData', function () {
   });
 
   describe('DataReceivedHistory', function () {
+    var example_packet1_string = '1, 5, 6, 3, 2, 5, 3.23, 54, 3, 5';
+    var example_packet2_string = '5, 6, 4, 3, 4, 5, 67, 234, 4, 56, 4, 3';
     var example_packet1 = [1, 5, 6, 3, 2, 5, 3.23, 54, 3, 5];
     var example_packet2 = [5, 6, 4, 3, 4, 5, 67, 234, 4, 56, 4, 3];
 
     beforeEach(function(){
       TelemetryData.clearDataReceivedHistory();
+      PacketParser.convertDataStringToArray = sinon.stub();
+      PacketParser.convertDataStringToArray.withArgs(example_packet1_string).returns(example_packet1);
+      PacketParser.convertDataStringToArray.withArgs(example_packet2_string).returns(example_packet2);
     });
-    
+
     it('should add a data packet to the received history', function () {
-      TelemetryData.addDataReceivedHistory(example_packet1);
+      TelemetryData.addDataToReceivedHistoryFromString(example_packet1_string);
       expect(TelemetryData.getDataReceivedHistory()).to.eql([example_packet1]);
     });
 
     it('should add multiple data packets to the received history, with the most recent one being the first one', function () {
-      TelemetryData.addDataReceivedHistory(example_packet1);
-      TelemetryData.addDataReceivedHistory(example_packet2);
+      TelemetryData.addDataToReceivedHistoryFromString(example_packet1_string);
+      TelemetryData.addDataToReceivedHistoryFromString(example_packet2_string);
       expect(TelemetryData.getDataReceivedHistory()).to.eql([example_packet1, example_packet2]);
     });
 
     it('should successfully clear all the data packets if clear is called', function () {
-      TelemetryData.addDataReceivedHistory(example_packet1);
-      TelemetryData.addDataReceivedHistory(example_packet2);
+      TelemetryData.addDataToReceivedHistoryFromString(example_packet1_string);
+      TelemetryData.addDataToReceivedHistoryFromString(example_packet2_string);
       TelemetryData.clearDataReceivedHistory();
       expect(TelemetryData.getDataReceivedHistory()).to.eql([]);
     });

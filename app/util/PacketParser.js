@@ -17,6 +17,24 @@ var Validator = require('./Validator');
 var _ = require('underscore');
 
 var PacketParser = {
+
+  /**
+   * Converts a comma delimited string representing data relay data into an array. Trims all the whitespaces and gets rid
+   * of any brackets that exist in the data string
+   * @function convertDataStringToArray
+   * @param data_string
+   * @returns {Array}
+   * @example <caption>Example usage:</caption>
+   * PacketParser.convertDataStringToArray('234.5, 67,43,99), 55    , 3');
+   * //will output
+   * [234.5,67,43,99,55,3]
+   */
+  convertDataStringToArray: function(data_string){
+    return data_string.split(",").map(function(data){
+      return data.trim().replace('(','').replace(')','');
+    });
+  },
+
   /**
    * Compares the received headers to that of the headers in the PacketTypes module.
    * Warns the user if there are extra or missing headers
@@ -79,9 +97,7 @@ var PacketParser = {
       return {};
     }
 
-    var data_array = data.split(",").map(function(data){
-      return data.trim().replace('(','').replace(')','');
-    });
+    var data_array = this.convertDataStringToArray(data);
     var sorted_data = {};
     var current_state = {};
 

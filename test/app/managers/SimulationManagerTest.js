@@ -22,6 +22,7 @@ describe('SimulationManager', function () {
     TelemetryData.getHeaders = sinon.stub();
     TelemetryData.getHeaders.returns(['header1', 'header2']);
     TelemetryData.setCurrentStateFromString = sinon.spy();
+    TelemetryData.addDataToReceivedHistoryFromString = sinon.spy();
     NetworkManager.disconnectAllConnections = sinon.spy();
     StatusManager.setStatusCode = sinon.spy();
     SimulationManager.simulation_active = false;
@@ -77,6 +78,7 @@ describe('SimulationManager', function () {
       SimulationManager.toggleSimulation();
       clock.tick(1000 / SimulationManager.getTransmissionFrequency());
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith('data1,data2');
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.been.calledWith('data1,data2');
       expect(TelemetryData.emitPackets).to.have.calledWith();
     });
 
@@ -86,9 +88,11 @@ describe('SimulationManager', function () {
       SimulationManager.toggleSimulation();
       clock.tick(1000 / SimulationManager.getTransmissionFrequency());
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith('data1,data2');
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.been.calledWith('data1,data2');
       expect(TelemetryData.emitPackets).to.have.callCount(1);
       clock.tick(1000 / SimulationManager.getTransmissionFrequency());
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith('data3,data4');
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.been.calledWith('data3,data4');
       expect(TelemetryData.emitPackets).to.have.callCount(2);
     });
 
@@ -129,12 +133,15 @@ describe('SimulationManager', function () {
       SimulationManager.toggleSimulation();
       clock.tick(1000 / Math.abs(SimulationManager.getTransmissionFrequency()));
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith('data1,data2');
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.been.calledWith('data1,data2');
       expect(TelemetryData.emitPackets).to.have.callCount(1);
       clock.tick(1000 / Math.abs(SimulationManager.getTransmissionFrequency()));
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith('data5,data6');
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.been.calledWith('data5,data6');
       expect(TelemetryData.emitPackets).to.have.callCount(2);
       clock.tick(1000 / Math.abs(SimulationManager.getTransmissionFrequency()));
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith('data3,data4');
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.been.calledWith('data3,data4');
       expect(TelemetryData.emitPackets).to.have.callCount(3);
     });
 
@@ -143,6 +150,7 @@ describe('SimulationManager', function () {
       SimulationManager.toggleSimulation();
       clock.tick(2 * 1000 / SimulationManager.getTransmissionFrequency());
       expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith('data1,data2');
+      expect(TelemetryData.addDataToReceivedHistoryFromString).to.have.been.calledWith('data1,data2');
       expect(TelemetryData.emitPackets).to.have.callCount(2);
     });
   });

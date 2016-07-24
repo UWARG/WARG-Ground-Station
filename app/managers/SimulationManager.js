@@ -137,6 +137,7 @@ var SimulationManager = new function () {
    */
   var emitData = function () {
     if (string_data.length > 0) {
+      TelemetryData.addDataToReceivedHistoryFromString(string_data[current_index]);
       TelemetryData.setCurrentStateFromString(string_data[current_index]);
       TelemetryData.emitPackets();
 
