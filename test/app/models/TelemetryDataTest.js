@@ -151,4 +151,36 @@ describe('TelemetryData', function () {
       TelemetryData.emit = original_emitter;
     });
   });
+
+  describe('DataReceivedHistory', function () {
+    var example_packet1 = [1, 5, 6, 3, 2, 5, 3.23, 54, 3, 5];
+    var example_packet2 = [5, 6, 4, 3, 4, 5, 67, 234, 4, 56, 4, 3];
+
+    beforeEach(function(){
+      TelemetryData.clearDataReceivedHistory();
+    });
+    
+    it('should add a data packet to the received history', function () {
+      TelemetryData.addDataReceivedHistory(example_packet1);
+      expect(TelemetryData.getDataReceivedHistory()).to.eql([example_packet1]);
+    });
+
+    it('should add multiple data packets to the received history, with the most recent one being the first one', function () {
+      TelemetryData.addDataReceivedHistory(example_packet1);
+      TelemetryData.addDataReceivedHistory(example_packet2);
+      expect(TelemetryData.getDataReceivedHistory()).to.eql([example_packet1, example_packet2]);
+    });
+
+    it('should successfully clear all the data packets if clear is called', function () {
+      TelemetryData.addDataReceivedHistory(example_packet1);
+      TelemetryData.addDataReceivedHistory(example_packet2);
+      TelemetryData.clearDataReceivedHistory();
+      expect(TelemetryData.getDataReceivedHistory()).to.eql([]);
+    });
+
+    it('should successfully clear all the data packets even if received history is empty in the first place', function () {
+      TelemetryData.clearDataReceivedHistory();
+      expect(TelemetryData.getDataReceivedHistory()).to.eql([]);
+    });
+  });
 });

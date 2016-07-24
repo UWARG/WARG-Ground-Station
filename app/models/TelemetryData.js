@@ -82,6 +82,15 @@ var TelemetryData = function () {
   var current_state = {};
 
   /**
+   * Stores all of the incoming data received from the data relay connection, in the order it was received in (unparsed).
+   * The last index is the latest data that came in (ie. stack). Each element is stored as an array as a result of splitting
+   * the data string received from the data relay.
+   * @var {Array} data_received_history
+   * @private
+   */
+  var data_received_history = [];
+
+  /**
    * @function setHeaders
    * @param {Array} new_headers
    */
@@ -152,6 +161,41 @@ var TelemetryData = function () {
    */
   this.setCurrentStateFromString = function (new_state_string) {
     this.setCurrentState(PacketParser.parseData(new_state_string, headers));
+  };
+
+  /**
+   * Returns the data received history. last index is the latest data packet.
+   * @function getDataReceivedHistory
+   * @returns {Array}
+   * @example <caption>Example output <\caption>
+   *   console.log(TelemetryData.getDataReceivedHistory());
+   *   // will output:
+   *   [
+   *      [1,2,3,4,2,1,2,3,5,43.345, 4, etc...],
+   *      [4,5,5,5,3,4,4, 4, etc...] //latest packet here
+   *   ]
+   */
+  this.getDataReceivedHistory = function(){
+    return data_received_history;
+  };
+
+  /**
+   * Adds a data packet to the data received history
+   * @function addDataReceivedHistory
+   * @param {Array} data
+   * @example <caption>Adding a data packet to the received history</caption>
+   * TelemetryData.addDataReceivedHistory([4,3,45,5,5,234,4,4,5,211,2, etc..]);
+   */
+  this.addDataReceivedHistory = function(data){
+    data_received_history.push(data);
+  };
+
+  /**
+   * Clears the stored data received history
+   * @function clearDataReceivedHistory
+   */
+  this.clearDataReceivedHistory = function(){
+    data_received_history = [];
   };
 
   /**
