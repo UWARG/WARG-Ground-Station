@@ -2,7 +2,22 @@
     <time id="last-received-date"><%= last_received_date %></time>
 </p>
 
-<% _.each(telemetry_data, function(values, packet_name) { %>
+<div class="pure-form">
+    <label for="keep-state-history">
+        <input type="checkbox" id="keep-state-history" <%= keep_state_history? 'checked' : '' %> > Keep State History
+    </label>
+    <label for="view-raw-data">
+        <input type="checkbox" id="view-raw-data" <%= view_raw_data? 'checked' : '' %> > View Raw Data
+    </label>
+</div>
+
+<% if(view_raw_data) { %>
+<pre id="raw-telemetry-data-view">
+    <%= JSON.stringify(raw_telemetry_data, null, 2) %>
+</pre>
+
+<% } else {
+    _.each(telemetry_data, function(values, packet_name) { %>
 <table class="pure-table pure-table-bordered packet-type">
     <thead>
     <tr>
@@ -14,9 +29,16 @@
     <% _.each(values, function(value, header_name) { %>
     <tr>
         <td class="header-name"><%= header_name %></td>
-        <td class="header-value"><%= JSON.stringify(value) %></td>
+        <td class="header-value">
+            <% if(value === null && keep_state_history){ %>
+                <%= JSON.stringify(value) %>
+            <%} else { %>
+                <%= raw_telemetry_data[header_name] %>
+            <% } %>
+        </td>
     </tr>
     <% }); %>
     </tbody>
 </table>
-<% }); %>
+<% });
+}%>

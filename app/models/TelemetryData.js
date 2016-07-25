@@ -175,8 +175,21 @@ var TelemetryData = function () {
    *      [4,5,5,5,3,4,4, 4, etc...] //latest packet here
    *   ]
    */
-  this.getDataReceivedHistory = function(){
+  this.getDataReceivedHistory = function () {
     return data_received_history;
+  };
+
+  /**
+   * Returns the latest data received array from the data received history. Returns null if non exist
+   * @function getLatestDataReceivedFromHistory
+   * @returns {null|Array}
+   */
+  this.getLatestDataReceivedFromHistory = function () {
+    if(data_received_history.length > 0){
+      return data_received_history[data_received_history.length - 1];
+    } else {
+      return null;
+    }
   };
 
   /**
@@ -186,7 +199,7 @@ var TelemetryData = function () {
    * @example <caption>Adding a data packet to the received history</caption>
    * TelemetryData.addDataToReceivedHistoryFromString('4,3,45,5,5,234,4,4,5,211,2, etc..');
    */
-  this.addDataToReceivedHistoryFromString = function(data){
+  this.addDataToReceivedHistoryFromString = function (data) {
     data_received_history.push(PacketParser.convertDataStringToArray(data));
   };
 
@@ -194,7 +207,7 @@ var TelemetryData = function () {
    * Clears the stored data received history
    * @function clearDataReceivedHistory
    */
-  this.clearDataReceivedHistory = function(){
+  this.clearDataReceivedHistory = function () {
     data_received_history = [];
   };
 
