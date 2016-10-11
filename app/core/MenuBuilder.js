@@ -110,6 +110,8 @@ module.exports.build = function () {
       }
     ]
   });
-
-  return ElectronMenu.buildFromTemplate(menu_template);
+  
+  var menu = ElectronMenu.buildFromTemplate(menu_template);
+  ElectronMenu.setApplicationMenu(menu);
+  return menu;
 };
