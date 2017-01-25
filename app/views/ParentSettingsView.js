@@ -53,7 +53,16 @@ module.exports = function (Marionette, $) {
         if (settings.default_settings.hasOwnProperty(key)) {
           this.displayed_settings[settings.file_name][key] = null;  //the reference to the displayed input box
           var container = $('<div class="setting"><p>' + key + '</p></div>'); //create the input box and container for it
-          var input = $('<input type="text">');
+
+          var setting_type = typeof(settings.default_settings[key]) //check input type
+          if( setting_type === "boolean"){
+            var input = $('<input type="checkbox">');
+          }else if(setting_type === "number"){
+            var input = $('<input type="number">');
+          }else{  
+            var input = $('<input type="text">');
+          }
+
           var setting_val = settings.get(key);
           if (_.isObject(setting_val)) {
             input.val(JSON.stringify(setting_val)); //stringify the value if its an object or array

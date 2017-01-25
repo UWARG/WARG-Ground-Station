@@ -29,6 +29,10 @@ var _ = require('underscore');
 
 var DataRelay = {};
 
+const dgram = require('dgram');
+const server = dgram.createSocket('udp4');
+const localport = 12345;
+
 var parseHeaders = function (data) {
   TelemetryData.setHeadersFromString(data);
   PacketParser.checkForMissingHeaders(TelemetryData.getHeaders());
@@ -54,10 +58,12 @@ DataRelay.init = function () {
     NetworkManager.removeAllConnections('data_relay');
   }
 //If legacy mode, try to connect to default IP/port via TCP
+if(network_config.get('datarelay_legacy_mode')){
+  connectTCP(network_config.get('datarelay_legacy_host'),network_config.get('datarelay_legacy_port'));
+}else{//connect via auto-discovery
+  connectUDP(network_config.get('datarelay_broadcast_host'),network_config.get('datarelay_broadcast_port'));
+}
 
-//Else, get data_relay IP from UDP request and connect
-connectUDP('localhost','1234');
-  
 };
   
   var connectTCP = function(host,port){
@@ -101,10 +107,8 @@ connectUDP('localhost','1234');
   }
 
   var connectUDP = function(host,port){
-    var localport = 12345
+
     var udp_open = false;
-    const dgram = require('dgram');
-    const server = dgram.createSocket('udp4');
 
     server.on('error', (err) => {
       console.log(`server error:\n${err.stack}`);
