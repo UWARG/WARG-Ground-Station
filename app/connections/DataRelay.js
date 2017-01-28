@@ -25,6 +25,8 @@ var Logger = require('../util/Logger');
 var TelemetryData = require('../models/TelemetryData');
 var StatusManager = require('../StatusManager');
 var PacketParser = require('../util/PacketParser');
+var ip = require('ip');
+
 var _ = require('underscore');
 
 var DataRelay = {};
@@ -58,14 +60,16 @@ DataRelay.init = function () {
     NetworkManager.removeAllConnections('data_relay');
   }
 //If legacy mode, try to connect to default IP/port via TCP
-if(network_config.get('datarelay_legacy_mode')){
+if(network_config.get('datarelay_legacy_mode')==true){
+  console.log('Connecting in Legacy Mode');
   connectTCP(network_config.get('datarelay_legacy_host'),network_config.get('datarelay_legacy_port'));
 }else{//connect via auto-discovery
-  connectUDP(network_config.get('datarelay_broadcast_host'),network_config.get('datarelay_broadcast_port'));
+  connectUDP(network_config.get('datarelay_broadcast_port'));
 }
 
 };
   
+  //Connects to TCP on given host and port
   var connectTCP = function(host,port){
     var data_relay = NetworkManager.addConnection('data_relay', host, port);
 
@@ -106,7 +110,8 @@ if(network_config.get('datarelay_legacy_mode')){
     }.bind(this));
   }
 
-  var connectUDP = function(host,port){
+  //connect to data-relay using UDP broadcast address
+  var connectUDP = function(port){
 
     var udp_open = false;
 
@@ -116,8 +121,8 @@ if(network_config.get('datarelay_legacy_mode')){
     });
 
     server.on('message', (msg, rinfo) => {
-      console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-      console.log(rinfo.address,toString());
+      //the message should include the port number
+      console.log('Data-relay at ' +rinfo.address.toString() + ':' + msg.toString());
       connectTCP(rinfo.address.toString(),msg.toString());
 
       server.close();
@@ -143,28 +148,40 @@ if(network_config.get('datarelay_legacy_mode')){
     server.bind(localport);
 
     //send IP and port to data_relay UDP port
-    var message = new Buffer(getLocalIP()+':'+localport);
+    var message = new Buffer(ip.address()+':'+localport);
+    var broadcastIP = getBroadcastIP();
 
     var client = dgram.createSocket('udp4');
-    client.send(message, 0, message.length, port, host, function(err, bytes) {
+    client.send(message, 0, message.length, port, broadcastIP, function(err, bytes) {
         if (err) throw err;
-        console.log('UDP message sent to ' + host +':'+ port);
+        console.log('UDP message sent to ' + broadcastIP +':'+ port);
         client.close();
     });
   }
 
-  var getLocalIP = function(){
-    var os = require('os');
+  var getBroadcastIP = function(){
+    //run ipconfig command
+    var exec = require("child_process").exec;
+    exec("ipconfig", function (err, stdout, stderr) {
+    if (err) {
+      callback(err, stderr);
+    } else {
 
-    var interfaces = os.networkInterfaces();
-    for (var k in interfaces) {
-        for (var k2 in interfaces[k]) {
-            var address = interfaces[k][k2];
-            if (address.family === 'IPv4' && !address.internal) {
-                return address.address;
-            }
-        }
+      // ifconfig emits a kind of mish-mash formats, the following gobbledygook turns that into nested objects in
+      // a (hopefully) intuitive way (see sample below).
+      var index = stdout.indexOf("Subnet Mask"); 
+      while(stdout.charAt(index)!=":"){
+        index++;
+      }
+      
+      //console.log(ip.or(ip.not(stdout.substring(index+1,stdout.indexOf("\n",index)).trim()),ip.address()));
+      var netmask = stdout.substring(index+1,stdout.indexOf("\n",index)).trim();
+      var broadcast = ip.or(ip.not(netmask),ip.address());
+      console.log(netmask);
+      console.log(broadcast);
+      return broadcast.toString();
     }
+  });
   }
 
 module.exports = DataRelay;
