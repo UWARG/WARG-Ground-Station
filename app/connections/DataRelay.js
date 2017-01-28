@@ -162,26 +162,30 @@ if(network_config.get('datarelay_legacy_mode')==true){
   var getBroadcastIP = function(){
     //run ipconfig command
     var exec = require("child_process").exec;
-    exec("ipconfig", function (err, stdout, stderr) {
-    if (err) {
-      callback(err, stderr);
-    } else {
 
-      // ifconfig emits a kind of mish-mash formats, the following gobbledygook turns that into nested objects in
-      // a (hopefully) intuitive way (see sample below).
-      var index = stdout.indexOf("Subnet Mask"); 
-      while(stdout.charAt(index)!=":"){
-        index++;
+    var os = process.platform.toString();
+
+    if(os.includes("win")){
+        exec("ipconfig", function (err, stdout, stderr) {
+      if (err) {
+        callback(err, stderr);
+      } else {
+
+        //loop through until you find "subnet, then"
+        var index = stdout.indexOf("Subnet Mask"); 
+        while(stdout.charAt(index)!=":"){
+          index++;
+        }
+        
+        //console.log(ip.or(ip.not(stdout.substring(index+1,stdout.indexOf("\n",index)).trim()),ip.address()));
+        var netmask = stdout.substring(index+1,stdout.indexOf("\n",index)).trim();
+        var broadcast = ip.or(ip.not(netmask),ip.address());
+
+        return broadcast.toString();
       }
-      
-      //console.log(ip.or(ip.not(stdout.substring(index+1,stdout.indexOf("\n",index)).trim()),ip.address()));
-      var netmask = stdout.substring(index+1,stdout.indexOf("\n",index)).trim();
-      var broadcast = ip.or(ip.not(netmask),ip.address());
-      console.log(netmask);
-      console.log(broadcast);
-      return broadcast.toString();
-    }
-  });
+    });
+      }return 0;
+    
   }
 
 module.exports = DataRelay;
