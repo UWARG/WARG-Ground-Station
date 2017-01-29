@@ -32,7 +32,6 @@ var DataRelay = {};
 
 const dgram = require('dgram');
 const server = dgram.createSocket('udp4');
-const localport = 12345;
 
 var parseHeaders = function(data) {
     TelemetryData.setHeadersFromString(data);
@@ -214,6 +213,7 @@ var connectUDP = function(broadcastIP) {
         setTimeout(function() {
             if (udp_open) {
                 console.log('UDP connection timed out after 1 second');
+                StatusManager.setStatusCode('TIMEOUT_UDP',true);
                 server.close();
             }
         }, 1000);

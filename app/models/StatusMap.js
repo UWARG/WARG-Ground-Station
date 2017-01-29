@@ -43,6 +43,16 @@ module.exports = {
     priority: 0,
     timeout: 0
   },
+  'TIMEOUT_UDP': {
+    status: false,
+    message: 'No response from Data Relay UDP',
+    turn_on_ontrue: [],
+    turn_off_ontrue: [],
+    turn_on_onfalse: [],
+    turn_off_onfalse: [],
+    priority: 0,
+    timeout: 0
+  },
   'CONNECTED_MULTI_ECHO': {
     status: false,
     message: 'Connected to Multiecho',
