@@ -68,6 +68,68 @@ DataRelay.init = function() {
 
 };
 
+//parse through command line outputs to find broadcastIP, then connect to that IP
+var findUDP = function() {
+
+    //run ipconfig command
+    var exec = require("child_process").exec;
+
+    var os = process.platform.toString();
+
+    //WINDOWS
+    if (os.includes("win")) {
+        //run and parse ipconfig
+        exec("ipconfig", function(err, stdout, stderr) {
+            if (err) {
+                callback(err, stderr);
+            } else {
+
+                //loop through until you find "subnet, then"
+                var index = stdout.indexOf("Subnet Mask");
+                while (stdout.charAt(index) != ":") {
+                    index++;
+                }
+
+                var netmask = stdout.substring(index + 1, stdout.indexOf("\n", index)).trim();
+                var broadcast = ip.or(ip.not(netmask), ip.address());
+
+                connectUDP(broadcast.toString());
+            }
+        });
+    } 
+    //EVERYTHING ELSE
+    else {
+        //run and parse ifconfig
+        exec("ifconfig", function(err, stdout, stderr) {
+            if (err) {
+                callback(err, stderr);
+            } else {
+
+                //loop through and look for broadcast addresses
+                var parsingStr = stdout;
+                var match;
+
+                do {
+                    //search for any term in the form Bcast:#.#.#.# or broadcast:#.#.#.#
+                    match = parsingStr.toString().match(/(?:Bcast|broadcast):([\d.]*)/);
+
+                    //if match exists
+                    if (match != null) {
+                        //parse out any obviously wrong broadcasts (this could be improved)
+                        if (!match[1].toString().includes('0.0.0.0')) {
+                            //Connect to udp using given broadcastIP
+                            connectUDP(match[1]);
+                            return;
+                        }
+
+                        parsingStr = parsingStr.substring(match.index + 1);
+                    }
+                } while (match != null);
+            }
+        });
+    }
+}
+
 //Connects to TCP on given host and port
 var connectTCP = function(host,port) {
     var data_relay = NetworkManager.addConnection('data_relay', host, port);
@@ -135,8 +197,20 @@ var connectUDP = function(broadcastIP) {
     server.on('listening', () => {
         udp_open = true;
         var address = server.address();
-        console.log(`server listening ${address.address}:${address.port}`);
+        console.log(`UDP listening on ${address.address}:${address.port}`);
 
+        //send IP and port to data_relay UDP port
+        var message = new Buffer(ip.address() + ':' + address.port);
+
+        var client = dgram.createSocket('udp4');
+        client.bind( function() { client.setBroadcast(true) } );
+        client.send(message, 0, message.length, port, broadcastIP, function(err, bytes) {
+            if (err) throw err;
+            console.log('UDP message sent to ' + broadcastIP + ':' + port);
+            client.close();
+        });
+
+        //timeout after 1 second
         setTimeout(function() {
             if (udp_open) {
                 console.log('UDP connection timed out after 1 second');
@@ -145,83 +219,11 @@ var connectUDP = function(broadcastIP) {
         }, 1000);
     });
 
-    server.bind(localport);
-
-    //send IP and port to data_relay UDP port
-    var message = new Buffer(ip.address() + ':' + localport);
-
-    var client = dgram.createSocket('udp4');
-    client.bind( function() { client.setBroadcast(true) } );
-    client.send(message, 0, message.length, port, broadcastIP, function(err, bytes) {
-        if (err) throw err;
-        console.log('UDP message sent to ' + broadcastIP + ':' + port);
-        client.close();
-    });
+    server.bind();
+    
+    
 }
 
-var findUDP = function() {
 
-    //run ipconfig command
-    var exec = require("child_process").exec;
-
-    var os = process.platform.toString();
-
-    if (os.includes("win")) {
-        exec("ipconfig", function(err, stdout, stderr) {
-            if (err) {
-                callback(err, stderr);
-            } else {
-
-                //loop through until you find "subnet, then"
-                var index = stdout.indexOf("Subnet Mask");
-                while (stdout.charAt(index) != ":") {
-                    index++;
-                }
-
-                //console.log(ip.or(ip.not(stdout.substring(index+1,stdout.indexOf("\n",index)).trim()),ip.address()));
-                var netmask = stdout.substring(index + 1, stdout.indexOf("\n", index)).trim();
-                var broadcast = ip.or(ip.not(netmask), ip.address());
-
-                connectUDP(broadcast.toString());
-		return;
-            }
-        });
-    } else {
-
-        exec("ifconfig", function(err, stdout, stderr) {
-
-            if (err) {
-                callback(err, stderr);
-            } else {
-
-
-                //loop through and look for broadcast addresses
-                var parsingStr = stdout;
-                var match;
-                console.log(ip.address());
-                do {
-                    match = parsingStr.toString().match(/(?:Bcast|broadcast):([\d.]*)/);
-
-                    if (match != null) {
-                        parsingStr = parsingStr.substring(match.index + 1);
-                        if (!match[1].toString().includes('0.0.0.0')) {
-                            console.log('returning' + match[1]);
-			    connectUDP(match[1]);
-                            return;
-                        }
-
-                        //console.log(parsingStr);
-                    }
-                } while (match != null);
-
-                //console.log(parsingStr.substring(0,parsingStr.search(/[^\d.]/)));
-
-            }
-            return 0;
-        });
-    }
-    return -1;
-
-}
 
 module.exports = DataRelay;
