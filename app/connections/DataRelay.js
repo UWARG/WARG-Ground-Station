@@ -52,7 +52,7 @@ var parseData = function(data) {
  * @function init
  */
 DataRelay.init = function() {
-    //remove all data_relay connections
+  //remove all previous data-relay connections
     if (NetworkManager.getConnectionByName('data_relay')) {
         NetworkManager.removeAllConnections('data_relay');
     }
@@ -87,12 +87,13 @@ var findUDP = function() {
               var parsingStr = stdout;
               var match;
               do{
+                //search for any term in the from Subnet Mask . . . . . . . : #.#.#.#
                 match = parsingStr.match(/(?:Subnet Mask)(?:.| )*: ([\d.]*)/);
 
                 //if match exists
                 if (match != null) {
                   if(ip.isV4Format(match[1])){
-                    //calculate broadcast address
+                    //calculate broadcast address using the formula:
                     //(not subnet mask) or (IP address)
                     var broadcast = ip.or(ip.not(match[1]), ip.address());
 
@@ -143,6 +144,10 @@ var findUDP = function() {
  * @connectTCP
  */
 var connectTCP = function(host,port) {
+  //remove all previous data-relay connections
+    if (NetworkManager.getConnectionByName('data_relay')) {
+        NetworkManager.removeAllConnections('data_relay');
+    }
     var data_relay = NetworkManager.addConnection('data_relay', host, port);
 
     data_relay.setTimeout(network_config.get('datarelay_timeout'));
