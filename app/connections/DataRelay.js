@@ -58,7 +58,7 @@ DataRelay.init = function() {
     }
     //If legacy mode, try to connect to default IP/port via TCP
     if (network_config.get('datarelay_legacy_mode') == true) {
-        console.log('Connecting in Legacy Mode');
+        Logger.info('Connecting in Legacy Mode');
         connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
     } else { //connect via auto-discovery
         findUDP();
@@ -66,7 +66,10 @@ DataRelay.init = function() {
 
 };
 
-//parse through command line outputs to find broadcastIP, then connect to that IP
+/**
+ * finds broadcastIP using ifconfig/ipconfig, then connects to that IP
+ * @findUDP
+ */
 var findUDP = function() {
 
     //run ipconfig command
@@ -81,18 +84,25 @@ var findUDP = function() {
             if (err) {
                 callback(err, stderr);
             } else {
+              var parsingStr = stdout;
+              var match;
+              do{
+                match = parsingStr.match(/(?:Subnet Mask)(?:.| )*: ([\d.]*)/);
 
-                //loop through until you find "subnet, then"
-                var index = stdout.indexOf("Subnet Mask");
-                while (stdout.charAt(index) != ":") {
-                    index++;
-                }
+                //if match exists
+                if (match != null) {
+                  if(ip.isV4Format(match[1])){
+                    //calculate broadcast address
+                    //(not subnet mask) or (IP address)
+                    var broadcast = ip.or(ip.not(match[1]), ip.address());
 
-                var netmask = stdout.substring(index + 1, stdout.indexOf("\n", index)).trim();
-                var broadcast = ip.or(ip.not(netmask), ip.address());
-
-                connectUDP(broadcast.toString());
-            }
+                    connectUDP(broadcast.toString());
+                  }
+                  
+                parsingStr = parsingStr.substring(match.index + 1);
+              }
+            }while(match!=null);
+          }
         });
     } 
     //Linux
@@ -114,10 +124,9 @@ var findUDP = function() {
                     //if match exists
                     if (match != null) {
                         //parse out any obviously wrong broadcasts (this could be improved)
-                        if (!match[1].toString().includes('0.0.0.0')) {
+                        if (ip.isV4Format(match[1])) {
                             //Connect to udp using given broadcastIP
                             connectUDP(match[1]);
-                            return;
                         }
 
                         parsingStr = parsingStr.substring(match.index + 1);
@@ -183,7 +192,7 @@ var connectUDP = function(broadcastIP){
 
     server.on('message', (msg, rinfo) => {
         //the message should include the port number
-        console.log('Data-relay at ' + rinfo.address.toString() + ':' + msg.toString());
+        Logger.info('Data-relay at ' + rinfo.address.toString() + ':' + msg.toString());
         connectTCP(rinfo.address.toString(), msg.toString());
 
         server.close();
@@ -209,7 +218,7 @@ var connectUDP = function(broadcastIP){
         //timeout after 1 second
         setTimeout(function() {
             if (udp_open) {
-                Logger.error('UDP connection timed out after 1 second');
+                Logger.error('UDP connection timed out');
 
                 StatusManager.setStatusCode('TIMEOUT_UDP',true);
                 server.close();
