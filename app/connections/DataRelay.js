@@ -60,7 +60,7 @@ DataRelay.init = function() {
     //If legacy mode, try to connect to default IP/port via TCP
     if (network_config.get('datarelay_legacy_mode') == true) {
         console.log('Connecting in Legacy Mode');
-        connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
+        connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_port'));
     } else { //connect via auto-discovery
         findUDP();
     }
@@ -172,7 +172,7 @@ var connectTCP = function(host,port) {
 //connect to data-relay using UDP broadcast address
 var connectUDP = function(broadcastIP) {
 
-    var port = network_config.get('datarelay_broadcast_port');
+    var port = network_config.get('datarelay_port');
 
     var udp_open = false;
 

@@ -86,6 +86,7 @@ module.exports = function (Marionette, $) {
             if (this.displayed_settings[filename].hasOwnProperty(setting_key)) { //go to the setting
               var original_value = this.original_settings[filename].default_settings[setting_key];
               var new_value = this.displayed_settings[filename][setting_key].val();
+              var value_type = this.displayed_settings[filename][setting_key].attr('type');
               if (Validator.isObject(original_value)) { //if the original value is an object or array, try to do a json.parse and store it as an object
                 var parsed_object = null;
                 try {
@@ -98,7 +99,7 @@ module.exports = function (Marionette, $) {
                   this.original_settings[filename].set(setting_key, parsed_object);
                 }
               }
-              else if (_.isNumber(original_value)) { //if the original value is a number store the new value as a number
+              else if (value_type=="number") { //if the original value is a number store the new value as a number
                 if (Validator.isValidNumber(new_value)) {
                   var number = Number(new_value);
                   this.original_settings[filename].set(setting_key, number);
@@ -106,8 +107,10 @@ module.exports = function (Marionette, $) {
                   this.showErrorMessage('The value for ' + setting_key + ' is not a number. Did not save the value');
                   saving_error = true;
                 }
-              }
-              else { //otherwise just store it as a string
+              }else if(value_type=="checkbox"){ 
+                var boolean_value = this.displayed_settings[filename][setting_key].prop('checked');
+                this.original_settings[filename].set(setting_key, boolean_value);
+              }else{ //otherwise just store it as a string
                 this.original_settings[filename].set(setting_key, new_value);
               }
             }
