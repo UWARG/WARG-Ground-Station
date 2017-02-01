@@ -137,7 +137,11 @@ var findUDP = function() {
     }
 }
 
-//Connects to TCP on given host and port
+
+/**
+ * Connects to TCP on given host and port
+ * @connectTCP
+ */
 var connectTCP = function(host,port) {
     var data_relay = NetworkManager.addConnection('data_relay', host, port);
 
@@ -177,7 +181,11 @@ var connectTCP = function(host,port) {
     }.bind(this));
 }
 
-//connect to data-relay using UDP broadcast address
+
+/**
+ * connect to data-relay using UDP broadcast address
+ * @connectUDP
+ */
 var connectUDP = function(broadcastIP){
     var dgram = require('dgram');
     var server = dgram.createSocket('udp4');
@@ -227,7 +235,5 @@ var connectUDP = function(broadcastIP){
     });
   server.bind();
 }
-
-
 
 module.exports = DataRelay;
