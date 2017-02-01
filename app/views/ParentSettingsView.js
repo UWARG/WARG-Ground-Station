@@ -67,6 +67,10 @@ module.exports = function (Marionette, $) {
           if (_.isObject(setting_val)) {
             input.val(JSON.stringify(setting_val)); //stringify the value if its an object or array
           }
+          else if(setting_type === "boolean"){//set checkbox if value is boolean
+            var boolean_setting_val = Boolean(setting_val);
+            input.prop('checked',boolean_setting_val);
+          }
           else {
             input.val(setting_val); //otherwise if its a string or number just store it
           }

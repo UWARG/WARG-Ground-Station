@@ -59,7 +59,7 @@ DataRelay.init = function() {
     //If legacy mode, try to connect to default IP/port via TCP
     if (network_config.get('datarelay_legacy_mode') == true) {
         console.log('Connecting in Legacy Mode');
-        connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_port'));
+        connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
     } else { //connect via auto-discovery
         findUDP();
     }
@@ -196,7 +196,6 @@ var connectUDP = function(broadcastIP){
     server.on('listening', () => {
         udp_open = true;
         var address = server.address();
-        console.log(`UDP listening on ${address.address}:${address.port}`);
 
         //send IP and port to data_relay UDP port
         var message = new Buffer(ip.address() + ':' + address.port);
@@ -204,25 +203,20 @@ var connectUDP = function(broadcastIP){
         server.setBroadcast(true);
         server.send(message, 0, message.length, port, broadcastIP, function(err, bytes) {
             if (err) throw err;
-            console.log('UDP message sent to ' + broadcastIP + ':' + port);
+            Logger.info('UDP message sent to ' + broadcastIP + ':' + port);
         });
 
         //timeout after 1 second
-        console.log(udp_open);
         setTimeout(function() {
-            console.log(udp_open);
             if (udp_open) {
-                console.log('UDP connection timed out after 1 second');
+                Logger.error('UDP connection timed out after 1 second');
+
                 StatusManager.setStatusCode('TIMEOUT_UDP',true);
                 server.close();
             }
         }, 1000);
     });
-    server.bind();
-
-    
-    
-    
+  server.bind();
 }
 
 
