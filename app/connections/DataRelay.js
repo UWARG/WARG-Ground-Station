@@ -30,8 +30,7 @@ var _ = require('underscore');
 
 var DataRelay = {};
 
-const dgram = require('dgram');
-const server = dgram.createSocket('udp4');
+
 
 var parseHeaders = function(data) {
     TelemetryData.setHeadersFromString(data);
@@ -75,7 +74,7 @@ var findUDP = function() {
 
     var os = process.platform.toString();
 
-    //WINDOWS
+    //Windows
     if (os.includes("win")) {
         //run and parse ipconfig
         exec("ipconfig", function(err, stdout, stderr) {
@@ -96,7 +95,7 @@ var findUDP = function() {
             }
         });
     } 
-    //EVERYTHING ELSE
+    //Linux
     else {
         //run and parse ifconfig
         exec("ifconfig", function(err, stdout, stderr) {
@@ -170,8 +169,9 @@ var connectTCP = function(host,port) {
 }
 
 //connect to data-relay using UDP broadcast address
-var connectUDP = function(broadcastIP) {
-
+var connectUDP = function(broadcastIP){
+    var dgram = require('dgram');
+    var server = dgram.createSocket('udp4');
     var port = network_config.get('datarelay_port');
 
     var udp_open = false;
@@ -201,16 +201,16 @@ var connectUDP = function(broadcastIP) {
         //send IP and port to data_relay UDP port
         var message = new Buffer(ip.address() + ':' + address.port);
 
-        var client = dgram.createSocket('udp4');
-        client.bind( function() { client.setBroadcast(true) } );
-        client.send(message, 0, message.length, port, broadcastIP, function(err, bytes) {
+        server.setBroadcast(true);
+        server.send(message, 0, message.length, port, broadcastIP, function(err, bytes) {
             if (err) throw err;
             console.log('UDP message sent to ' + broadcastIP + ':' + port);
-            client.close();
         });
 
         //timeout after 1 second
+        console.log(udp_open);
         setTimeout(function() {
+            console.log(udp_open);
             if (udp_open) {
                 console.log('UDP connection timed out after 1 second');
                 StatusManager.setStatusCode('TIMEOUT_UDP',true);
@@ -218,8 +218,9 @@ var connectUDP = function(broadcastIP) {
             }
         }, 1000);
     });
-
     server.bind();
+
+    
     
     
 }
