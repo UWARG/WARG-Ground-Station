@@ -30,15 +30,15 @@
     "chai-jq": "0.0.9",
     "ink-docstrap": "^1.1.4",
     "install": "^0.8.1",
-    "istanbul": "^0.4.3",
+    "istanbul": "^0.4.5",
     "jsdoc": "^3.4.0",
-    "jsdom": "^9.4.0",
-    "mocha": "^2.5.3",
-    "mockery": "^1.7.0",
+    "jsdom": "^9.9.1",
+    "mocha": "^3.2.0",
+    "mockery": "^2.0.0",
     "npm": "^3.9.5",
     "pre-commit": "^1.1.3",
-    "rewire": "^2.5.1",
-    "sinon": "^1.17.4",
+    "rewire": "^2.5.2",
+    "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0"
   }
 }
