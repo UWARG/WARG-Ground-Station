@@ -72,10 +72,7 @@ DataRelay.init = function() {
  * @findUDP
  */
 var findUDP = function() {
-
-    //run ipconfig command
     
-
     var os = process.platform.toString();
 
     //Windows
@@ -111,25 +108,22 @@ var findUDP = function() {
                 Log.error(err);
             } else {
 
-                //loop through and look for broadcast addresses
-                var parsingStr = stdout;
-                var match;
+            //search for any term in the from Subnet Mask . . . . . . . : #.#.#.#
+              var matches = stdout.match(/(?:Bcast|broadcast):([\d.]*)/g);
+              var localIP =  ip.address();
+              //if match exists
+              if (matches != null) {
+                for(var i=0; i<matches.length; i++){
+                  if(ip.isV4Format(matches[i])){
+                    //calculate broadcast address using the formula:
+                    //(not subnet mask) or (IP address)
+                    var broadcast = matches[i];
 
-                do {
-                    //search for any term in the form Bcast:#.#.#.# or broadcast:#.#.#.#
-                    match = parsingStr.toString().match(/(?:Bcast|broadcast):([\d.]*)/);
-
-                    //if match exists
-                    if (match != null) {
-                        //parse out any obviously wrong broadcasts (this could be improved)
-                        if (ip.isV4Format(match[1])) {
-                            //Connect to udp using given broadcastIP
-                            connectUDP(match[1]);
-                        }
-
-                        parsingStr = parsingStr.substring(match.index + 1);
-                    }
-                } while (match != null);
+                    connectUDP(broadcast.toString());
+                  }
+                }
+              }
+              
             }
         });
     }
