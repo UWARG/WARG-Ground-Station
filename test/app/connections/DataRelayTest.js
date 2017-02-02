@@ -45,6 +45,7 @@ describe('DataRelay', function () {
       Logger.error = sandbox.spy();
       Logger.debug = sandbox.spy();
       Logger.data = sandbox.spy();
+      Logger.info = sandbox.spy();
       TelemetryData.setHeaders = sandbox.spy();
       TelemetryData.setCurrentStateFromString = sandbox.spy();
       TelemetryData.emitPackets = sandbox.spy();
