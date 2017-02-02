@@ -10,7 +10,7 @@
   "scripts": {
     "start": "./node_modules/.bin/electron .",
     "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
-    "test": "./node_modules/.bin/istanbul test ./node_modules/mocha/bin/_mocha -- --recursive -R spec"
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- --recursive -R spec"
   },
   "license": "ISC",
   "private": true,

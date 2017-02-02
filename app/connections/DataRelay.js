@@ -7,6 +7,8 @@
  * @requires util/PacketParser
  * @requires StatusManager
  * @requires models/TelemetryData
+ * @requires ip
+ * @requires child_process
  * @emits models/TelemetryData~TelemetryData:aircraft_position
  * @emits models/TelemetryData~TelemetryData:aircraft_orientation
  * @emits models/TelemetryData~TelemetryData:aircraft_gains
@@ -25,26 +27,25 @@ var TelemetryData = require('../models/TelemetryData');
 var StatusManager = require('../StatusManager');
 var PacketParser = require('../util/PacketParser');
 var ip = require('ip');
+var exec = require("child_process").exec;
 
 var _ = require('underscore');
 
 var DataRelay = {};
 
-
-
 var parseHeaders = function(data) {
-    TelemetryData.setHeadersFromString(data);
-    PacketParser.checkForMissingHeaders(TelemetryData.getHeaders());
-    Logger.debug('Network data_relay Received headers: ' + data);
-    Logger.data(JSON.stringify(TelemetryData.getHeaders()), 'DATA_RELAY_HEADERS');
-    StatusManager.addStatus('Received headers from data_relay', 3, 3000);
+  TelemetryData.setHeadersFromString(data);
+  PacketParser.checkForMissingHeaders(TelemetryData.getHeaders());
+  Logger.debug('Network data_relay Received headers: ' + data);
+  Logger.data(JSON.stringify(TelemetryData.getHeaders()), 'DATA_RELAY_HEADERS');
+  StatusManager.addStatus('Received headers from data_relay', 3, 3000);
 };
 
 var parseData = function(data) {
-    TelemetryData.setCurrentStateFromString(data);
-    TelemetryData.emitPackets();
-    Logger.data(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
-    StatusManager.setStatusCode('TIMEOUT_DATA_RELAY', false);
+  TelemetryData.setCurrentStateFromString(data);
+  TelemetryData.emitPackets();
+  Logger.data(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
+  StatusManager.setStatusCode('TIMEOUT_DATA_RELAY', false);
 };
 
 /**
@@ -53,16 +54,16 @@ var parseData = function(data) {
  */
 DataRelay.init = function() {
   //remove all previous data-relay connections
-    if (NetworkManager.getConnectionByName('data_relay')) {
-        NetworkManager.removeAllConnections('data_relay');
-    }
-    //If legacy mode, try to connect to default IP/port via TCP
-    if (network_config.get('datarelay_legacy_mode') == true) {
-        Logger.info('Connecting in Legacy Mode');
-        connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
-    } else { //connect via auto-discovery
-        findUDP();
-    }
+  if (NetworkManager.getConnectionByName('data_relay')) {
+    NetworkManager.removeAllConnections('data_relay');
+  }
+  //If legacy mode, try to connect to default IP/port via TCP
+  if (network_config.get('datarelay_legacy_mode') == true) {
+    Logger.info('Connecting in Legacy Mode');
+    connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
+  } else { //connect via auto-discovery
+    findUDP();
+  }
 
 };
 
@@ -73,7 +74,7 @@ DataRelay.init = function() {
 var findUDP = function() {
 
     //run ipconfig command
-    var exec = require("child_process").exec;
+    
 
     var os = process.platform.toString();
 
@@ -82,27 +83,23 @@ var findUDP = function() {
         //run and parse ipconfig
         exec("ipconfig", function(err, stdout, stderr) {
             if (err) {
-                callback(err, stderr);
+              Log.error(err);
             } else {
-              var parsingStr = stdout;
-              var match;
-              do{
-                //search for any term in the from Subnet Mask . . . . . . . : #.#.#.#
-                match = parsingStr.match(/(?:Subnet Mask)(?:.| )*: ([\d.]*)/);
-
-                //if match exists
-                if (match != null) {
-                  if(ip.isV4Format(match[1])){
+              //search for any term in the from Subnet Mask . . . . . . . : #.#.#.#
+              var matches = stdout.match(/(?:Subnet Mask)(?:.| )*: ([\d.]*)/g);
+              var localIP =  ip.address();
+              //if match exists
+              if (matches != null) {
+                for(var i=0; i<matches.length; i++){
+                  if(ip.isV4Format(matches[i])){
                     //calculate broadcast address using the formula:
                     //(not subnet mask) or (IP address)
-                    var broadcast = ip.or(ip.not(match[1]), ip.address());
+                    var broadcast = ip.or(ip.not(matches[i]), localIP);
 
                     connectUDP(broadcast.toString());
                   }
-                  
-                parsingStr = parsingStr.substring(match.index + 1);
+                }
               }
-            }while(match!=null);
           }
         });
     } 
@@ -111,7 +108,7 @@ var findUDP = function() {
         //run and parse ifconfig
         exec("ifconfig", function(err, stdout, stderr) {
             if (err) {
-                callback(err, stderr);
+                Log.error(err);
             } else {
 
                 //loop through and look for broadcast addresses

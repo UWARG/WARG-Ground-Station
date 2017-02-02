@@ -62,10 +62,11 @@ describe('DataRelay', function () {
       connection.removeAllListeners();
     });
 
-    /*it('should correctly add a connection with name of data relay', function () {
+    it('should correctly add a connection with name of data relay in legacy mode', function () {
+      network_config.set('datarelay_legacy_mode',true);
       DataRelay.init();
-      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_host'), network_config.get('datarelay_port'));
-    });*/
+      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
+    });
 
     it('should disconnect the data relay connection if it already exists', function () {
       NetworkManager.getConnectionByName.withArgs('data_relay').returns(connection);
@@ -73,7 +74,7 @@ describe('DataRelay', function () {
       expect(NetworkManager.removeAllConnections).to.have.been.calledWith('data_relay');
     });
 
-    it('should successfully listen to appripriate events on the connection', function () {
+    it('should successfully listen to appripriate events on the connection in legacy mode', function () {
       network_config.set('datarelay_legacy_mode',true);
       DataRelay.init();
       expect(connection.listenerCount('connect')).to.equal(1);
