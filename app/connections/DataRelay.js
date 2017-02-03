@@ -28,6 +28,7 @@ var StatusManager = require('../StatusManager');
 var PacketParser = require('../util/PacketParser');
 var ip = require('ip');
 var exec = require("child_process").exec;
+var UDPConnection = require('../models/UDPConnection');
 
 var _ = require('underscore');
 
@@ -62,69 +63,19 @@ DataRelay.init = function() {
     Logger.info('Connecting in Legacy Mode');
     connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
   } else { //connect via auto-discovery
-    connectUDP(port, connectTCP);
-
-    findUDP();
+    //connectUDP(port, connectTCP);
+    var udpConnection = new UDPConnection(network_config.get('datarelay_port'));
+    udpConnection.on('receiveIP', function(destAddress,destPort){
+      Logger.info('Data Relay at ' + destAddress + ':' + destPort);
+      connectTCP(destAddress,destPort);
+    });
+    udpConnection.on('timeout', function(){
+    });
+    udpConnection.findConnection();
+    //findUDP();
   }
 
 };
-
-/**
- * finds broadcastIP using ifconfig/ipconfig, then connects to that IP
- * @findUDP
- */
-var findUDP = function() {
-    
-    var os = process.platform.toString();
-
-    //Windows
-    if (os.includes("win")) {
-        //run and parse ipconfig
-        exec("ipconfig", function(err, stdout, stderr) {
-
-            if (err) {
-              Log.error(err);
-            } else {
-              var regex = /(?:Subnet Mask)(?:.| )*: ([\d.]*)/g;
-              var localIP = ip.address();
-              match = regex.exec(stdout);
-
-              while (match != null) {
-                //check if match is in IP format
-                if(ip.isV4Format(match[1])){
-                  var broadcast = ip.or(ip.not(match[1]), localIP);
-                  connectUDP(broadcast.toString());
-                }
-                match = regex.exec(stdout);
-              }
-          }
-        });
-    } 
-    //Linux
-    else {
-        //run and parse ifconfig
-        exec("ifconfig", function(err, stdout, stderr) {
-            if (err) {
-                Log.error(err);
-            } else {
-              //Searches for any string Bcast:#.#.#.# or broadcast:#.#.#.#
-              var regex = /(?:Bcast|broadcast):([\d.]*)/g;
-              var localIP = ip.address();
-              match = regex.exec(stdout);
-
-              while (match != null) {
-                //check if match is in IP format
-                if(ip.isV4Format(match[1])){
-                  var broadcast = match[1];
-                  connectUDP(broadcast.toString());
-                }
-                match = regex.exec(stdout);
-              }
-              
-            }
-        });
-    }
-}
 
 
 /**
@@ -174,59 +125,5 @@ var connectTCP = function(host,port) {
     }.bind(this));
 }
 
-
-/**
- * connect to data-relay using UDP broadcast address
- * @connectUDP
- */
-var connectUDP = function(broadcastIP){
-    var dgram = require('dgram');
-    var server = dgram.createSocket('udp4');
-    var port = network_config.get('datarelay_port');
-
-    var udp_open = false;
-
-    server.on('error', function(err){
-        Logger.error(`server error:\n${err.stack}`);
-        server.close();
-    });
-
-    server.on('message', function(msg, rinfo){
-        //the message should include the port number
-        Logger.info('Data-relay at ' + rinfo.address.toString() + ':' + msg.toString());
-        connectTCP(rinfo.address.toString(), msg.toString());
-
-        server.close();
-    });
-
-    server.on('close', function(msg, rinfo){
-        udp_open = false;
-    });
-
-    server.on('listening', function(){
-        udp_open = true;
-        var address = server.address();
-
-        //send IP and port to data_relay UDP port
-        var message = new Buffer(ip.address() + ':' + address.port);
-
-        server.setBroadcast(true);
-        server.send(message, 0, message.length, port, broadcastIP, function(err, bytes) {
-            if (err) throw err;
-            Logger.info('UDP message sent to ' + broadcastIP + ':' + port);
-        });
-
-        //timeout after 1 second
-        setTimeout(function() {
-            if (udp_open) {
-                Logger.error('UDP connection timed out');
-
-                StatusManager.setStatusCode('TIMEOUT_UDP',true);
-                server.close();
-            }
-        }, 1000);
-    });
-  server.bind();
-}
 
 module.exports = DataRelay;
