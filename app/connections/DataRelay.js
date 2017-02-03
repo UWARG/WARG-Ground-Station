@@ -62,6 +62,8 @@ DataRelay.init = function() {
     Logger.info('Connecting in Legacy Mode');
     connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
   } else { //connect via auto-discovery
+    connectUDP(port, connectTCP);
+
     findUDP();
   }
 
@@ -79,23 +81,21 @@ var findUDP = function() {
     if (os.includes("win")) {
         //run and parse ipconfig
         exec("ipconfig", function(err, stdout, stderr) {
+
             if (err) {
               Log.error(err);
             } else {
-              //search for any term in the from Subnet Mask . . . . . . . : #.#.#.#
-              var matches = stdout.match(/(?:Subnet Mask)(?:.| )*: ([\d.]*)/g);
-              var localIP =  ip.address();
-              //if match exists
-              if (matches != null) {
-                for(var i=0; i<matches.length; i++){
-                  if(ip.isV4Format(matches[i])){
-                    //calculate broadcast address using the formula:
-                    //(not subnet mask) or (IP address)
-                    var broadcast = ip.or(ip.not(matches[i]), localIP);
+              var regex = /(?:Subnet Mask)(?:.| )*: ([\d.]*)/g;
+              var localIP = ip.address();
+              match = regex.exec(stdout);
 
-                    connectUDP(broadcast.toString());
-                  }
+              while (match != null) {
+                //check if match is in IP format
+                if(ip.isV4Format(match[1])){
+                  var broadcast = ip.or(ip.not(match[1]), localIP);
+                  connectUDP(broadcast.toString());
                 }
+                match = regex.exec(stdout);
               }
           }
         });
@@ -107,21 +107,18 @@ var findUDP = function() {
             if (err) {
                 Log.error(err);
             } else {
+              //Searches for any string Bcast:#.#.#.# or broadcast:#.#.#.#
+              var regex = /(?:Bcast|broadcast):([\d.]*)/g;
+              var localIP = ip.address();
+              match = regex.exec(stdout);
 
-            //search for any term in the from Subnet Mask . . . . . . . : #.#.#.#
-              var matches = stdout.match(/(?:Bcast|broadcast):([\d.]*)/g);
-              var localIP =  ip.address();
-              //if match exists
-              if (matches != null) {
-                for(var i=0; i<matches.length; i++){
-                  if(ip.isV4Format(matches[i])){
-                    //calculate broadcast address using the formula:
-                    //(not subnet mask) or (IP address)
-                    var broadcast = matches[i];
-
-                    connectUDP(broadcast.toString());
-                  }
+              while (match != null) {
+                //check if match is in IP format
+                if(ip.isV4Format(match[1])){
+                  var broadcast = match[1];
+                  connectUDP(broadcast.toString());
                 }
+                match = regex.exec(stdout);
               }
               
             }
@@ -189,12 +186,12 @@ var connectUDP = function(broadcastIP){
 
     var udp_open = false;
 
-    server.on('error', (err) => {
-        console.log(`server error:\n${err.stack}`);
+    server.on('error', function(err){
+        Logger.error(`server error:\n${err.stack}`);
         server.close();
     });
 
-    server.on('message', (msg, rinfo) => {
+    server.on('message', function(msg, rinfo){
         //the message should include the port number
         Logger.info('Data-relay at ' + rinfo.address.toString() + ':' + msg.toString());
         connectTCP(rinfo.address.toString(), msg.toString());
@@ -202,11 +199,11 @@ var connectUDP = function(broadcastIP){
         server.close();
     });
 
-    server.on('close', (msg, rinfo) => {
+    server.on('close', function(msg, rinfo){
         udp_open = false;
     });
 
-    server.on('listening', () => {
+    server.on('listening', function(){
         udp_open = true;
         var address = server.address();
 
