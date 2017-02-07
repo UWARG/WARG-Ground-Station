@@ -54,6 +54,7 @@ var parseData = function(data) {
  * @function init
  */
 DataRelay.init = function() {
+
   //remove all previous data-relay connections
   if (NetworkManager.getConnectionByName('data_relay')) {
     NetworkManager.removeAllConnections('data_relay');
@@ -62,17 +63,19 @@ DataRelay.init = function() {
   if (network_config.get('datarelay_legacy_mode') == true) {
     Logger.info('Connecting in Legacy Mode');
     connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
-  } else { //connect via auto-discovery
-    //connectUDP(port, connectTCP);
+  } else {
+  //connect via auto-discovery
     var udpConnection = new UDPConnection(network_config.get('datarelay_port'));
+    //connect TCP when udpConnection receives an IP
     udpConnection.on('receiveIP', function(destAddress,destPort){
       Logger.info('Data Relay at ' + destAddress + ':' + destPort);
       connectTCP(destAddress,destPort);
     });
     udpConnection.on('timeout', function(){
+      Logger.info('UDP timed out');
+      StatusManager.setStatusCode('TIMEOUT_UDP',true);
     });
     udpConnection.findConnection();
-    //findUDP();
   }
 
 };

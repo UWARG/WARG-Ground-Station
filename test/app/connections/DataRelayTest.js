@@ -10,6 +10,7 @@ describe('DataRelay', function () {
   var sandbox = sinon.sandbox.create();
   var DataRelay = rewire('../../../app/connections/DataRelay');
   var NetworkManager = {};
+
   var TelemetryData = {};
   var Logger = {};
   var StatusManager = {
@@ -18,6 +19,7 @@ describe('DataRelay', function () {
   };
   var PacketParser = {};
   var connection = new EventEmitter();
+  var UDPConnection = new EventEmitter();
 
   beforeEach(function () {
     DataRelay.__set__({
@@ -42,6 +44,7 @@ describe('DataRelay', function () {
       NetworkManager.addConnection.returns(connection);
       connection.setTimeout = sandbox.spy();
       connection.disconnect = sandbox.spy();
+      UDPConnection.findConnection = sandbox.stub();
       Logger.error = sandbox.spy();
       Logger.debug = sandbox.spy();
       Logger.data = sandbox.spy();
@@ -72,6 +75,13 @@ describe('DataRelay', function () {
       NetworkManager.getConnectionByName.withArgs('data_relay').returns(connection);
       DataRelay.init();
       expect(NetworkManager.removeAllConnections).to.have.been.calledWith('data_relay');
+    });
+
+    it('should successfully call UDPConnection ', function () {
+      network_config.set('datarelay_legacy_mode',false);
+      DataRelay.init();
+      expect(UDPConnection.listenerCount('timeout')).to.equal(1);
+      expect(UDPConnection.findConnection).to.have.been.calledWith(network_config.get('datarelay_port'));
     });
 
     it('should successfully listen to appripriate events on the connection in legacy mode', function () {
