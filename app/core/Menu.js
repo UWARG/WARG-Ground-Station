@@ -103,8 +103,7 @@ var Menu = {
     'Data View': {
       openWindow: 'dataView',
       width: 500,
-      height: 600,
-      devTools: true
+      height: 600
     },
     'Gains Adjust': {
       openWindow: 'gainsAdjust',
