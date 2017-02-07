@@ -10,6 +10,8 @@ describe('DataRelay', function () {
   var sandbox = sinon.sandbox.create();
   var DataRelay = rewire('../../../app/connections/DataRelay');
   var NetworkManager = {};
+  var UDPConnection = {};
+  var udp_instance = new EventEmitter();
 
   var TelemetryData = {};
   var Logger = {};
@@ -19,15 +21,23 @@ describe('DataRelay', function () {
   };
   var PacketParser = {};
   var connection = new EventEmitter();
-  var UDPConnection = new EventEmitter();
+
+
 
   beforeEach(function () {
+    udp_instance.findConnection = sinon.spy();
+
+    UDPConnection = sinon.spy(function () {
+      return udp_instance;
+    });
+
     DataRelay.__set__({
       'NetworkManager': NetworkManager,
       'TelemetryData': TelemetryData,
       'Logger': Logger,
       'StatusManager': StatusManager,
-      'PacketParser': PacketParser
+      'PacketParser': PacketParser,
+      'UDPConnection':UDPConnection
     });
   });
 
@@ -77,11 +87,23 @@ describe('DataRelay', function () {
       expect(NetworkManager.removeAllConnections).to.have.been.calledWith('data_relay');
     });
 
+    it('should successfully listen to UDPConnection ', function () {
+      network_config.set('datarelay_legacy_mode',false);
+      DataRelay.init();
+      expect(udp_instance.listenerCount('receiveIP')).to.equal(1);
+      expect(udp_instance.listenerCount('timeout')).to.equal(1);
+
+      udp_instance.emit('timeout');
+      expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_UDP', true);
+
+      udp_instance.emit('receiveIP', 'address', 'port');
+      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay','address', 'port');
+    });
+
     it('should successfully call UDPConnection ', function () {
       network_config.set('datarelay_legacy_mode',false);
       DataRelay.init();
-      expect(UDPConnection.listenerCount('timeout')).to.equal(1);
-      expect(UDPConnection.findConnection).to.have.been.calledWith(network_config.get('datarelay_port'));
+      expect(udp_instance.findConnection).to.have.been.calledWith();
     });
 
     it('should successfully listen to appripriate events on the connection in legacy mode', function () {
