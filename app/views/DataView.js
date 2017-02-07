@@ -21,10 +21,15 @@ module.exports = function (Marionette, Backbone) {
     template: Template('DataView'), //name of the file in the views folder at the project root
     className: 'dataView', //this is the class name the injected div will have (refer to this class in your style sheets)
 
+    events: {
+      'click #keep_last_valid_packet': 'toggleKeepLastPacket'
+    },
+
     initialize: function () {
       this.telemetryCallbacks = {};
       this.last_received_date = null;
       this.telemetry_data = {};
+      this.keep_last_packet = false;
 
       _.each(PacketTypes, function (headers, packet_name) {
         this.telemetryCallbacks[packet_name] = this.dataCallback.bind(this, packet_name);
@@ -40,9 +45,22 @@ module.exports = function (Marionette, Backbone) {
     },
 
     dataCallback: function (packet_name, data) {
-      this.telemetry_data[packet_name] = data;
+      //whether we should overwrite the existing data even if we receive null
+      if (this.keep_last_packet){
+        _.each(this.telemetry_data[packet_name], function(value, header){
+          if (data[header] !== null){
+            this.telemetry_data[packet_name][header] = data[header];
+          }
+        }.bind(this));
+      } else {
+        this.telemetry_data[packet_name] = data;
+      }
       this.last_received_date = new Date();
       this.render();
+    },
+
+    toggleKeepLastPacket: function(){
+      this.keep_last_packet = !this.keep_last_packet;
     },
 
     onBeforeDestroy: function () {
