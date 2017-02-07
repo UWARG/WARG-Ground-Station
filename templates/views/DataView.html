@@ -2,6 +2,8 @@
     <time id="last-received-date"><%= last_received_date %></time>
 </p>
 
+<p>Keep Last Valid Packet: <span><input id="keep_last_valid_packet" type="checkbox"></span></p>
+
 <% _.each(telemetry_data, function(values, packet_name) { %>
 <table class="pure-table pure-table-bordered packet-type">
     <thead>
