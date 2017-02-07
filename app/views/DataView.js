@@ -21,10 +21,6 @@ module.exports = function (Marionette, Backbone) {
     template: Template('DataView'), //name of the file in the views folder at the project root
     className: 'dataView', //this is the class name the injected div will have (refer to this class in your style sheets)
 
-    ui: {
-      keep_last_packet: '#keep_last_valid_packet'
-    },
-
     events: {
       'click #keep_last_valid_packet': 'toggleKeepLastPacket'
     },
