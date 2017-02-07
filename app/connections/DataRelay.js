@@ -65,7 +65,7 @@ DataRelay.init = function() {
     connectTCP(network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
   } else {
   //connect via auto-discovery
-    var udpConnection = new UDPConnection(network_config.get('datarelay_port'));
+    var udpConnection = new UDPConnection(network_config.get('datarelay_port'),network_config.get('datarelay_udp_timeout'));
     //connect TCP when udpConnection receives an IP
     udpConnection.on('receiveIP', function(destAddress,destPort){
       Logger.info('Data Relay at ' + destAddress + ':' + destPort);

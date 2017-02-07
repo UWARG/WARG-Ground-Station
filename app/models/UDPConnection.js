@@ -25,14 +25,8 @@ var dgram = require('dgram');
  * @param port The port for the UDP connection
  * @constructor
  */
-var UDPConnection = function (port) {
+var UDPConnection = function (port, timeout) {
   var self=this;
-  /**
-   * Timeout for the socket in milliseconds. Defaults to 1 second
-   * @type {int}
-   * @private
-   */
-  var timeout = 1000;
 
   /**
    * Whether the connection is closed
@@ -43,13 +37,13 @@ var UDPConnection = function (port) {
 
   // Initialize necessary properties from `EventEmitter` in this instance
   EventEmitter.call(this);
- 
+
 /**
   *@connect
   *Connect to UDP at given broadcastIP
   */
   this.connect = function(broadcastIP){
-    
+
     var server = dgram.createSocket('udp4');
 
     server.on('error', function(err){
@@ -126,7 +120,7 @@ var UDPConnection = function (port) {
               }
           }
         });
-    } 
+    }
     //Linux
     else {
         //run and parse ifconfig
@@ -147,13 +141,12 @@ var UDPConnection = function (port) {
                 }
                 match = regex.exec(stdout);
               }
-              
+
             }
         });
     }
   }
 
-  
 };
 util.inherits(UDPConnection, EventEmitter);
 

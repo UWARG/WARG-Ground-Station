@@ -22,7 +22,7 @@ describe('DataRelay', function () {
   var PacketParser = {};
   var connection = new EventEmitter();
 
-
+var data_relay_mode = network_config.get('datarelay_legacy_mode');
 
   beforeEach(function () {
     udp_instance.findConnection = sinon.spy();
@@ -54,7 +54,6 @@ describe('DataRelay', function () {
       NetworkManager.addConnection.returns(connection);
       connection.setTimeout = sandbox.spy();
       connection.disconnect = sandbox.spy();
-      UDPConnection.findConnection = sandbox.stub();
       Logger.error = sandbox.spy();
       Logger.debug = sandbox.spy();
       Logger.data = sandbox.spy();
@@ -73,22 +72,29 @@ describe('DataRelay', function () {
 
     afterEach(function () {
       connection.removeAllListeners();
+      udp_instance.removeAllListeners();
+      network_config.set('datarelay_legacy_mode',data_relay_mode);
     });
 
-    it('should correctly add a connection with name of data relay in legacy mode', function () {
-      network_config.set('datarelay_legacy_mode',true);
-      DataRelay.init();
-      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
-    });
 
+//Auto-discovery mode
     it('should disconnect the data relay connection if it already exists', function () {
       NetworkManager.getConnectionByName.withArgs('data_relay').returns(connection);
       DataRelay.init();
       expect(NetworkManager.removeAllConnections).to.have.been.calledWith('data_relay');
     });
 
+    it('should successfully call UDPConnection ', function () {
+      var data_relay_mode = network_config.get('datarelay_legacy_mode');
+
+      network_config.set('datarelay_legacy_mode',false);
+      DataRelay.init();
+      expect(udp_instance.findConnection).to.have.been.calledWith();
+    });
+
     it('should successfully listen to UDPConnection ', function () {
       network_config.set('datarelay_legacy_mode',false);
+
       DataRelay.init();
       expect(udp_instance.listenerCount('receiveIP')).to.equal(1);
       expect(udp_instance.listenerCount('timeout')).to.equal(1);
@@ -100,10 +106,11 @@ describe('DataRelay', function () {
       expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay','address', 'port');
     });
 
-    it('should successfully call UDPConnection ', function () {
-      network_config.set('datarelay_legacy_mode',false);
+//Legacy Mode
+    it('should correctly add a connection with name of data relay in legacy mode', function () {
+      network_config.set('datarelay_legacy_mode',true);
       DataRelay.init();
-      expect(udp_instance.findConnection).to.have.been.calledWith();
+      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
     });
 
     it('should successfully listen to appripriate events on the connection in legacy mode', function () {
@@ -116,11 +123,12 @@ describe('DataRelay', function () {
       expect(connection.listenerCount('data')).to.equal(1);
     });
 
-    it('should set the correct timeout for the connection', function () {
+    it('should set the correct tcp timeout for the connection', function () {
       DataRelay.init();
-      expect(connection.setTimeout).to.have.been.calledWith(network_config.get('datarelay_timeout'));
+      expect(connection.setTimeout).to.have.been.calledWith(network_config.get('datarelay_tcp_timeout'));
     });
 
+//Data parsing
     it('given data event call parseHeaders if its the first packet of data', function () {
       var data = '654,654';
       var data_buffer = new Buffer(data);
