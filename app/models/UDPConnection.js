@@ -52,10 +52,16 @@ var UDPConnection = function (port, timeout) {
     });
 
     server.on('message', function(msg, rinfo){
-        //the message should include the port number
+        //the message should be in the format port:alias,port:alias,...
         var destAddress = rinfo.address.toString();
-        var destPort = msg.toString();
-        self.emit('receiveIP',destAddress,destPort);
+        var networks = msg.toString().split(',');
+        for(var i=0; i<networks.length; i++){
+          var splitMessage = networks[i].split(':');
+          var destPort = splitMessage[0];
+          var alias = splitMessage[1];
+          self.emit('receiveIP',destAddress,destPort, alias);
+        }
+
         server.close();
     });
 
