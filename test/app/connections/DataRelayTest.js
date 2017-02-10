@@ -76,45 +76,56 @@ var data_relay_mode = network_config.get('datarelay_legacy_mode');
       network_config.set('datarelay_legacy_mode',data_relay_mode);
     });
 
-
-//Auto-discovery mode
-    it('should disconnect the data relay connection if it already exists', function () {
-      NetworkManager.getConnectionByName.withArgs('data_relay').returns(connection);
-      DataRelay.init();
-      expect(NetworkManager.removeAllConnections).to.have.been.calledWith('data_relay');
-    });
-
-    it('should successfully call UDPConnection ', function () {
+    describe('auto-discovery', function(){
       var data_relay_mode = network_config.get('datarelay_legacy_mode');
+      beforeEach(function(){
+        network_config.set('datarelay_legacy_mode',false);
+      });
 
-      network_config.set('datarelay_legacy_mode',false);
-      DataRelay.init();
-      expect(udp_instance.findConnection).to.have.been.calledWith();
+      afterEach(function(){
+        network_config.set('datarelay_legacy_mode',data_relay_mode);
+      });
+
+      it('should disconnect the data relay connection if it already exists', function () {
+        NetworkManager.getConnectionByName.withArgs('data_relay').returns(connection);
+        DataRelay.init();
+        expect(NetworkManager.removeAllConnections).to.have.been.calledWith('data_relay');
+      });
+
+      it('should successfully call UDPConnection ', function () {
+        DataRelay.init();
+        expect(udp_instance.findConnection).to.have.been.calledWith();
+      });
+
+      it('should successfully listen to UDPConnection ', function () {
+        DataRelay.init();
+        expect(udp_instance.listenerCount('receiveIP')).to.equal(1);
+        expect(udp_instance.listenerCount('timeout')).to.equal(1);
+
+        udp_instance.emit('timeout');
+        expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_UDP', true);
+
+        udp_instance.emit('receiveIP', 'address', 'port');
+        expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay','address', 'port');
+      });
     });
 
-    it('should successfully listen to UDPConnection ', function () {
-      network_config.set('datarelay_legacy_mode',false);
 
-      DataRelay.init();
-      expect(udp_instance.listenerCount('receiveIP')).to.equal(1);
-      expect(udp_instance.listenerCount('timeout')).to.equal(1);
+    describe('legacy-mode', function(){
+      var data_relay_mode = network_config.get('datarelay_legacy_mode');
+      beforeEach(function(){
+        network_config.set('datarelay_legacy_mode',true);
+      });
 
-      udp_instance.emit('timeout');
-      expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_UDP', true);
-
-      udp_instance.emit('receiveIP', 'address', 'port');
-      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay','address', 'port');
-    });
-
-//Legacy Mode
+      afterEach(function(){
+        network_config.set('datarelay_legacy_mode',data_relay_mode);
+      });
     it('should correctly add a connection with name of data relay in legacy mode', function () {
-      network_config.set('datarelay_legacy_mode',true);
       DataRelay.init();
       expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
     });
 
     it('should successfully listen to appripriate events on the connection in legacy mode', function () {
-      network_config.set('datarelay_legacy_mode',true);
       DataRelay.init();
       expect(connection.listenerCount('connect')).to.equal(1);
       expect(connection.listenerCount('close')).to.equal(1);
@@ -127,62 +138,64 @@ var data_relay_mode = network_config.get('datarelay_legacy_mode');
       DataRelay.init();
       expect(connection.setTimeout).to.have.been.calledWith(network_config.get('datarelay_tcp_timeout'));
     });
+  });
 
-//Data parsing
-    it('given data event call parseHeaders if its the first packet of data', function () {
-      var data = '654,654';
-      var data_buffer = new Buffer(data);
-      TelemetryData.getHeaders.returns([]);
-      DataRelay.init();
-      connection.emit('data', data_buffer);
-      expect(TelemetryData.setHeadersFromString).to.have.been.calledWith(data);
-      expect(PacketParser.checkForMissingHeaders).to.have.been.calledWith([]);
-      expect(Logger.debug).to.have.been.calledWith('Network data_relay Received headers: 654,654');
-      expect(Logger.data).to.have.been.calledWith(JSON.stringify(TelemetryData.getHeaders()), 'DATA_RELAY_HEADERS');
-      expect(StatusManager.addStatus).to.have.been.calledWith('Received headers from data_relay');
-    });
+    describe('data-parsing', function(){
+      it('given data event call parseHeaders if its the first packet of data', function () {
+        var data = '654,654';
+        var data_buffer = new Buffer(data);
+        TelemetryData.getHeaders.returns([]);
+        DataRelay.init();
+        connection.emit('data', data_buffer);
+        expect(TelemetryData.setHeadersFromString).to.have.been.calledWith(data);
+        expect(PacketParser.checkForMissingHeaders).to.have.been.calledWith([]);
+        expect(Logger.debug).to.have.been.calledWith('Network data_relay Received headers: 654,654');
+        expect(Logger.data).to.have.been.calledWith(JSON.stringify(TelemetryData.getHeaders()), 'DATA_RELAY_HEADERS');
+        expect(StatusManager.addStatus).to.have.been.calledWith('Received headers from data_relay');
+      });
 
-    it('given data event call parseData if its not the first packet of data', function () {
-      var data = '654,654';
-      var data_buffer = new Buffer(data);
-      TelemetryData.getHeaders.returns(['header1', 'header2']);
-      TelemetryData.getCurrentState.returns({header1: '654', header2: '654'});
-      DataRelay.init();
-      connection.emit('data', data_buffer);
-      expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith(data);
-      expect(TelemetryData.emitPackets).to.have.callCount(1);
-      expect(Logger.data).to.have.been.calledWith(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
-      expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_DATA_RELAY', false);
-    });
+      it('given data event call parseData if its not the first packet of data', function () {
+        var data = '654,654';
+        var data_buffer = new Buffer(data);
+        TelemetryData.getHeaders.returns(['header1', 'header2']);
+        TelemetryData.getCurrentState.returns({header1: '654', header2: '654'});
+        DataRelay.init();
+        connection.emit('data', data_buffer);
+        expect(TelemetryData.setCurrentStateFromString).to.have.been.calledWith(data);
+        expect(TelemetryData.emitPackets).to.have.callCount(1);
+        expect(Logger.data).to.have.been.calledWith(JSON.stringify(TelemetryData.getCurrentState()), 'DATA_RELAY_DATA');
+        expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_DATA_RELAY', false);
+      });
 
-    it('warn the user if it receives a blank data packet', function () {
-      DataRelay.init();
-      connection.emit('data', null);
-      expect(Logger.error).to.have.been.calledWith('Got a blank packet from the data relay station. Value: null');
-    });
+      it('warn the user if it receives a blank data packet', function () {
+        DataRelay.init();
+        connection.emit('data', null);
+        expect(Logger.error).to.have.been.calledWith('Got a blank packet from the data relay station. Value: null');
+      });
 
-    it('should clear TelemetryData headers on a connect event', function () {
-      DataRelay.init();
-      connection.emit('connect');
-      expect(TelemetryData.clearHeaders).to.have.callCount(1);
-    });
+      it('should clear TelemetryData headers on a connect event', function () {
+        DataRelay.init();
+        connection.emit('connect');
+        expect(TelemetryData.clearHeaders).to.have.callCount(1);
+      });
 
-    it('should set a status code on a disconnect', function () {
-      DataRelay.init();
-      connection.emit('close');
-      expect(StatusManager.setStatusCode).to.have.been.calledWith('DISCONNECTED_DATA_RELAY', true);
-    });
+      it('should set a status code on a disconnect', function () {
+        DataRelay.init();
+        connection.emit('close');
+        expect(StatusManager.setStatusCode).to.have.been.calledWith('DISCONNECTED_DATA_RELAY', true);
+      });
 
-    it('should set a status code on a timeout', function () {
-      DataRelay.init();
-      connection.emit('timeout');
-      expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_DATA_RELAY', true);
-    });
+      it('should set a status code on a timeout', function () {
+        DataRelay.init();
+        connection.emit('timeout');
+        expect(StatusManager.setStatusCode).to.have.been.calledWith('TIMEOUT_DATA_RELAY', true);
+      });
 
-    it('should set a status code on a write', function () {
-      DataRelay.init();
-      connection.emit('write');
-      expect(StatusManager.addStatus).to.have.been.calledWith('Sent command to data_relay');
+      it('should set a status code on a write', function () {
+        DataRelay.init();
+        connection.emit('write');
+        expect(StatusManager.addStatus).to.have.been.calledWith('Sent command to data_relay');
+      });
     });
   });
 });
