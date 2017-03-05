@@ -18,8 +18,10 @@ var util = require('util');
 var EventEmitter = require('events');
 var Logger = require('../util/Logger');
 var ip = require('ip');
-var exec = require("child_process").exec;
+var childProcess = require("child_process");
 var dgram = require('dgram');
+
+var os = process.platform.toString();
 
 /**
  * @param port The port for the UDP connection
@@ -47,7 +49,7 @@ var UDPConnection = function (port, timeout) {
     var server = dgram.createSocket('udp4');
 
     server.on('error', function(err){
-        Logger.error(`server error:\n${err.stack}`);
+        Logger.error('server error:\n${err.stack}');
         server.close();
     });
 
@@ -102,12 +104,11 @@ var UDPConnection = function (port, timeout) {
   */
   this.findConnection = function () {
     Logger.info("Connecting to UDP on port " +port);
-    var os = process.platform.toString();
 
     //Windows
     if (os.includes("win")) {
         //run and parse ipconfig
-        exec("ipconfig", function(err, stdout, stderr) {
+        childProcess.exec("ipconfig", function(err, stdout, stderr) {
 
             if (err) {
               Log.error(err);
@@ -119,8 +120,9 @@ var UDPConnection = function (port, timeout) {
               while (match != null) {
                 //check if match is in IP format
                 if(ip.isV4Format(match[1])){
-                  var broadcast = ip.or(ip.not(match[1]), localIP);
-                  self.connect(broadcast.toString());
+                  var broadcast = ip.or(ip.not(match[1]), localIP).toString();
+                  self.emit('findBroadcast',broadcast);
+                  self.connect(broadcast);
                 }
                 match = regex.exec(stdout);
               }
@@ -130,7 +132,7 @@ var UDPConnection = function (port, timeout) {
     //Linux
     else {
         //run and parse ifconfig
-        exec("ifconfig", function(err, stdout, stderr) {
+        childProcess.exec("ifconfig", function(err, stdout, stderr) {
             if (err) {
                 Log.error(err);
             } else {
@@ -142,8 +144,9 @@ var UDPConnection = function (port, timeout) {
               while (match != null) {
                 //check if match is in IP format
                 if(ip.isV4Format(match[1])){
-                  var broadcast = match[1];
-                  self.connect(broadcast.toString());
+                  var broadcast = match[1].toString();
+                  self.emit('findBroadcast',broadcast);
+                  self.connect(broadcast);
                 }
                 match = regex.exec(stdout);
               }

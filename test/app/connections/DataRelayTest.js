@@ -79,12 +79,10 @@ var data_relay_mode = network_config.get('datarelay_legacy_mode');
     describe('auto-discovery', function(){
       var data_relay_mode = network_config.get('datarelay_legacy_mode');
       beforeEach(function(){
-        network_config.set('datarelay_legacy_mode',false);
+        network_config.get = sandbox.stub();
+        network_config.get.withArgs('datarelay_legacy_mode').returns(false);
       });
 
-      afterEach(function(){
-        network_config.set('datarelay_legacy_mode',data_relay_mode);
-      });
 
       it('should disconnect the data relay connection if it already exists', function () {
         NetworkManager.getConnectionByName.withArgs('data_relay').returns(connection);
@@ -112,32 +110,29 @@ var data_relay_mode = network_config.get('datarelay_legacy_mode');
 
 
     describe('legacy-mode', function(){
-      var data_relay_mode = network_config.get('datarelay_legacy_mode');
-      beforeEach(function(){
-        network_config.set('datarelay_legacy_mode',true);
+        beforeEach(function(){
+          network_config.get = sandbox.stub();
+          network_config.get.withArgs('datarelay_legacy_mode').returns(true);
+        });
+
+      it('should correctly add a connection with name of data relay in legacy mode', function () {
+        DataRelay.init();
+        expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
       });
 
-      afterEach(function(){
-        network_config.set('datarelay_legacy_mode',data_relay_mode);
+      it('should successfully listen to appripriate events on the connection in legacy mode', function () {
+        DataRelay.init();
+        expect(connection.listenerCount('connect')).to.equal(1);
+        expect(connection.listenerCount('close')).to.equal(1);
+        expect(connection.listenerCount('timeout')).to.equal(1);
+        expect(connection.listenerCount('write')).to.equal(1);
+        expect(connection.listenerCount('data')).to.equal(1);
       });
-    it('should correctly add a connection with name of data relay in legacy mode', function () {
-      DataRelay.init();
-      expect(NetworkManager.addConnection).to.have.been.calledWith('data_relay', network_config.get('datarelay_legacy_host'), network_config.get('datarelay_legacy_port'));
-    });
 
-    it('should successfully listen to appripriate events on the connection in legacy mode', function () {
-      DataRelay.init();
-      expect(connection.listenerCount('connect')).to.equal(1);
-      expect(connection.listenerCount('close')).to.equal(1);
-      expect(connection.listenerCount('timeout')).to.equal(1);
-      expect(connection.listenerCount('write')).to.equal(1);
-      expect(connection.listenerCount('data')).to.equal(1);
-    });
-
-    it('should set the correct tcp timeout for the connection', function () {
-      DataRelay.init();
-      expect(connection.setTimeout).to.have.been.calledWith(network_config.get('datarelay_tcp_timeout'));
-    });
+      it('should set the correct tcp timeout for the connection', function () {
+        DataRelay.init();
+        expect(connection.setTimeout).to.have.been.calledWith(network_config.get('datarelay_tcp_timeout'));
+      });
   });
 
     describe('data-parsing', function(){
