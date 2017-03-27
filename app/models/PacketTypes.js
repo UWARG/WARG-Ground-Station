@@ -74,8 +74,6 @@ var PacketTypes = {
     'autonomousLevel': ['isPositiveNumber', 'isInteger'],
     'startup_error_codes': ['isPositiveNumber', 'isInteger'],
     'startupSettings': ['isPositiveNumber', 'isInteger'],
-    'probe_status': ['isPositiveNumber', 'isInteger'],
-    'RSSI': 'isValidNumber',
     'wireless_connection': ['isPositiveNumber', 'isInteger'],
     'autopilot_active': ['isPositiveNumber', 'isInteger'],
     'gps_status': ['isPositiveNumber', 'isInteger'],
@@ -103,6 +101,15 @@ var PacketTypes = {
     'ch6out': 'isInteger',
     'ch7out': 'isInteger',
     'ch8out': 'isInteger'
+  },
+
+  radio_status: {
+      ul_rssi: 'isValidNumber',
+      ul_receive_errors: 'isValidNumber',
+      dl_transmission_errors: 'isValidNumber',
+      dl_rssi: 'isValidNumber',
+      uhf_rssi: 'isValidNumber',
+      uhf_link_quality: 'isValidNumber',
   }
 };
 
