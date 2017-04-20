@@ -47,8 +47,11 @@ var PacketTypes = {
     'pitch_angle_kd': 'isValidNumber',
     'pitch_angle_ki': 'isValidNumber',
     'heading_kp': 'isValidNumber',
+    'heading_ki': 'isValidNumber',
     'altitude_kp': 'isValidNumber',
+    'altitude_ki': 'isValidNumber',
     'ground_speed_kp': 'isValidNumber',
+    'ground_speed_ki': 'isValidNumber',
     'path_kp': 'isValidNumber',
     'orbit_kp': 'isValidNumber'
   },
