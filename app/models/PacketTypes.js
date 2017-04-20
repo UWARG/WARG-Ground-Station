@@ -22,6 +22,8 @@ var PacketTypes = {
     'ground_speed': 'isValidSpeed',
     'heading': 'isValidHeading',
     'altitude': 'isValidAltitude',
+    'gps_time': 'isValidTime',
+    'sys_time': 'isValidTime'
   },
 
   aircraft_orientation: {
@@ -52,28 +54,28 @@ var PacketTypes = {
   },
 
   aircraft_setpoints:{
-    'heading_setpoint': 'isValidHeading',
-    'altitude_setpoint': 'isValidAltitude',
-    'throttle_setpoint': 'isValidThrottle',
-    'roll_setpoint': 'isValidRoll',
-    'pitch_setpoint': 'isValidPitch',
     'roll_rate_setpoint': 'isValidNumber',
     'pitch_rate_setpoint': 'isValidNumber',
-    'yaw_rate_setpoint': 'isValidNumber'
-  }
+    'yaw_rate_setpoint': 'isValidNumber',
+    'roll_setpoint': 'isValidRoll',
+    'pitch_setpoint': 'isValidPitch',
+    'heading_setpoint': 'isValidHeading',
+    'altitude_setpoint': 'isValidAltitude',
+    'throttle_setpoint': 'isValidThrottle'
+  },
 
   aircraft_status: {
-    'gps_time': 'isValidTime',
-    'sys_time': 'isValidTime',
-    'battery_level1': 'isValidBattery',
-    'battery_level2': 'isValidBattery',
+    'internal_battery_voltage': 'isValidBattery',
+    'external_battery_voltage': 'isValidBattery',
+    'program_state': ['isPositiveNumber', 'isInteger'],
     'autonomous_level': ['isPositiveNumber', 'isInteger'],
-    'startup_error_codes': ['isPositiveNumber', 'isInteger'],
-    'autopilot_active': ['isPositiveNumber', 'isInteger'],
-    'gps_status': ['isPositiveNumber', 'isInteger'],
-    'waypoint_count': ['isPositiveNumber', 'isInteger'],
+    'startup_errors': ['isPositiveNumber', 'isInteger'],
+    'am_interchip_errors': ['isPositiveNumber', 'isInteger'],
+    'pm_interchip_errors': ['isPositiveNumber', 'isInteger'],
+    'gps_communication_errors': ['isPositiveNumber', 'isInteger'],
+    'peripheral_status':  ['isPositiveNumber', 'isInteger'],
+    'uhf_channel_status':  ['isPositiveNumber', 'isInteger'],
     'waypoint_index': ['isPositiveNumber', 'isInteger'],
-    'path_following': 'isBooleanInt',
   },
 
   aircraft_channels: {
