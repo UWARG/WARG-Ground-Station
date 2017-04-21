@@ -25,6 +25,7 @@ var Logger = require('../util/Logger');
 var TelemetryData = require('../models/TelemetryData');
 var StatusManager = require('../StatusManager');
 var PacketParser = require('../util/PacketParser');
+var Validator = require('../util/Validator');
 var _ = require('underscore');
 
 var DataRelay = {};
@@ -87,7 +88,12 @@ DataRelay.init = function () {
       parseHeaders(data);
     }
     else { //if its the non-header columns(actual data)
-      parseData(data);
+      data = data.split('\r\n');//split up the packets if we received multiple
+      _.each(data, function(packet){
+        if (!_.isEmpty(packet)){
+          parseData(packet);
+        }
+      });
     }
   }.bind(this));
 };
