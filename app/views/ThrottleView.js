@@ -45,22 +45,70 @@ module.exports = function (Marionette) {
       'submit .throttle-form': 'sendSetThrottleCommand'
     },
     initialize: function () {
+      this.aircraft_setpoints_callback = this.aircraftSetpointsCallback.bind(this);
       this.aircraft_position_callback = this.aircraftPositionCallback.bind(this);
+      TelemetryData.addListener('aircraft_setpoints', this.aircraft_setpoints_callback);
       TelemetryData.addListener('aircraft_position', this.aircraft_position_callback);
     },
 
-    aircraftPositionCallback: function(data){
+    aircraftSetpointsCallback: function(data){
       this.setThrottle(data.throttle_setpoint);
-      this.setFlap(data.flap_setpoint);
+      // this.setFlap(data.flap_setpoint);
+    },
+
+    aircraftPositionCallback: function(data){
+      this.setRollRate(data.roll_rate);
+      this.setYawRate(data.yaw_rate);
+      this.setPitchRate(data.pitch_rate);
     },
 
     onBeforeDestroy: function(){
+      TelemetryData.removeListener('aircraft_setpoints', this.aircraft_setpoints_callback);
       TelemetryData.removeListener('aircraft_position', this.aircraft_position_callback);
     },
 
     setThrottle: function (throttle) {
       if (throttle !== null) {
         this.ui.throttle.text(((throttle + 1024) * 100 / 2048).toFixed(1));//-1024 represents 0%
+      }
+    },
+
+    setRollRate: function (val) {
+      if (val !== null) {
+        this.ui.roll_rate_rad.text(Number(val).toFixed(2));
+        this.ui.roll_rate_deg.text((Number(val)*180/Math.PI).toFixed(2));
+      }
+    },
+
+    setPitchRate: function (val) {
+      if (val !== null) {
+        this.ui.pitch_rate_rad.text(Number(val).toFixed(2));
+        this.ui.pitch_rate_deg.text((Number(val)*180/Math.PI).toFixed(2));
+      }
+    },
+
+    setYawRate: function (val) {
+      if (val !== null) {
+        this.ui.yaw_rate_rad.text(Number(val).toFixed(2));
+        this.ui.yaw_rate_deg.text((Number(val)*180/Math.PI).toFixed(2));
+      }
+    },
+
+    setFlap: function (flap) {
+      if (flap !== null) {
+        this.ui.flap.text((flap + 1024) * 100 / 2048).toFixed(1);//-1024 represents 0%
+      }
+    },
+
+    setFlap: function (flap) {
+      if (flap !== null) {
+        this.ui.flap.text((flap + 1024) * 100 / 2048).toFixed(1);//-1024 represents 0%
+      }
+    },
+
+    setFlap: function (flap) {
+      if (flap !== null) {
+        this.ui.flap.text((flap + 1024) * 100 / 2048).toFixed(1);//-1024 represents 0%
       }
     },
 

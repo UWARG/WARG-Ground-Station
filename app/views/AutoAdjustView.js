@@ -83,12 +83,12 @@ module.exports = function (Marionette) {
 
     //see the picpilot data link docs for a reference
     dataReceivedCallback: function (data) {
-      if(data.autonomousLevel === null){
+      if(data.autonomous_level === null){
         return;
       }
-      this.ui.remote_autonomous_level_value.text(data.autonomousLevel);
-      this.ui.autonomous_level_synced.text(Number(data.autonomousLevel) === this.encodeInputs() ? 'Yes' : 'No');
-      var alevel = new Bitmask(Number(data.autonomousLevel));
+      this.ui.remote_autonomous_level_value.text(data.autonomous_level);
+      this.ui.autonomous_level_synced.text(Number(data.autonomous_level) === this.encodeInputs() ? 'Yes' : 'No');
+      var alevel = new Bitmask(Number(data.autonomous_level));
 
       if (alevel.getBit(0)) {
         this.ui.remote_pitch_type.text('Angle');

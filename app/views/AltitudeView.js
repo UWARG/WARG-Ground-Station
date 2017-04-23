@@ -106,7 +106,7 @@ module.exports = function (Marionette) {
     },
     setAltitudeSetpoint: function (altitude) {
       if (altitude !== null) {
-        this.ui.altitude_setpoint_text.text(Number(altitude).toFixed(2));
+        this.ui.altitude_setpoint_text.text(altitude);
       }
     },
     sendAltitudeSetpointCommand: function (e) {
