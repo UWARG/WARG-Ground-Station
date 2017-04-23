@@ -4,58 +4,61 @@
     <thead>
         <tr>
             <th>Type</th>
-            <th>Yaw</th>
-            <th>Pitch</th>
-            <th>Roll</th>
+            <th>Roll Rate</th>
+            <th>Pitch Rate</th>
+            <th>Yaw Rate</th>
+            <th>Roll Angle</th>
+            <th>Pitch Angle</th>
             <th>Heading</th>
             <th>Altitude</th>
-            <th>Throttle</th>
-            <th>Flap</th>
+            <th>Ground Speed</th>
         </tr>
     </thead>
 
     <tbody>
         <tr>
             <td>KP</td>
-            <td><form class="yaw-form pure-form"><input id="yaw-kp" type="text"></form></td>
-            <td><form class="pitch-form pure-form"><input id="pitch-kp" type="text"></form></td>
-            <td><form class="roll-form pure-form"><input id="roll-kp" type="text"></form></td>
+            <td><form class="roll-rate-form pure-form"><input id="roll-rate-kp" type="text"></form></td>
+            <td><form class="pitch-rate-form pure-form"><input id="pitch-rate-kp" type="text"></form></td>
+            <td><form class="yaw-rate-form pure-form"><input id="yaw-rate-kp" type="text"></form></td>
+            <td><form class="roll-angle-form pure-form"><input id="roll-angle-kp" type="text"></form></td>
+            <td><form class="pitch-angle-form pure-form"><input id="pitch-angle-kp" type="text"></form></td>
             <td><form class="heading-form pure-form"><input id="heading-kp" type="text"></form></td>
             <td><form class="altitude-form pure-form"><input id="altitude-kp" type="text"></form></td>
-            <td><form class="throttle-form pure-form"><input id="throttle-kp" type="text"></form></td>
-            <td><form class="flap-form pure-form"><input id="flap-kp" type="text"></form></td>
-        </tr>
-
+            <td><form class="ground-speed-form pure-form"><input id="ground-speed-kp" type="text"></form></td>
         <tr>
             <td>KD</td>
-            <td><form class="yaw-form pure-form"><input id="yaw-kd" type="text"></form></td>
-            <td><form class="pitch-form pure-form"><input id="pitch-kd" type="text"></form></td>
-            <td><form class="roll-form pure-form"><input id="roll-kd" type="text"></form></td>
-            <td><form class="heading-form pure-form"><input id="heading-kd" type="text"></form></td>
-            <td><form class="altitude-form pure-form"><input id="altitude-kd" type="text"></form></td>
-            <td><form class="throttle-form pure-form"><input id="throttle-kd" type="text"></form></td>
-            <td><form class="flap-form pure-form"><input id="flap-kd" type="text"></form></td>
+           <td><form class="roll-rate-form pure-form"><input id="roll-rate-ki" type="text"></form></td>
+            <td><form class="pitch-rate-form pure-form"><input id="pitch-rate-ki" type="text"></form></td>
+            <td><form class="yaw-rate-form pure-form"><input id="yaw-rate-ki" type="text"></form></td>
+            <td><form class="roll-angle-form pure-form"><input id="roll-angle-ki" type="text"></form></td>
+            <td><form class="pitch-angle-form pure-form"><input id="pitch-angle-ki" type="text"></form></td>
+            <td><form class="heading-form pure-form"><input id="heading-ki" type="text"></form></td>
+            <td><form class="altitude-form pure-form"><input id="altitude-ki" type="text"></form></td>
+            <td><form class="ground-speed-form pure-form"><input id="ground-speed-ki" type="text"></form></td>
         </tr>
 
         <tr>
             <td>KI</td>
-            <td><form class="yaw-form pure-form"><input id="yaw-ki" type="text"></form></td>
-            <td><form class="pitch-form pure-form"><input id="pitch-ki" type="text"></form></td>
-            <td><form class="roll-form pure-form"><input id="roll-ki" type="text"></form></td>
+            <td><form class="roll-rate-form pure-form"><input id="roll-rate-ki" type="text"></form></td>
+            <td><form class="pitch-rate-form pure-form"><input id="pitch-rate-ki" type="text"></form></td>
+            <td><form class="yaw-rate-form pure-form"><input id="yaw-rate-ki" type="text"></form></td>
+            <td><form class="roll-angle-form pure-form"><input id="roll-angle-ki" type="text"></form></td>
+            <td><form class="pitch-angle-form pure-form"><input id="pitch-angle-ki" type="text"></form></td>
             <td><form class="heading-form pure-form"><input id="heading-ki" type="text"></form></td>
             <td><form class="altitude-form pure-form"><input id="altitude-ki" type="text"></form></td>
-            <td><form class="throttle-form pure-form"><input id="throttle-ki" type="text"></form></td>
-            <td><form class="flap-form pure-form"><input id="flap-ki" type="text"></form></td>
+            <td><form class="ground-speed-form pure-form"><input id="ground-speed-ki" type="text"></form></td>
         </tr>
         <tr>
           <td></td>
-          <td><button id="send-yaw-gain-button" class="pure-button button-success">Send</button></td>
-          <td><button id="send-pitch-gain-button" class="pure-button button-success">Send</button></td>
-          <td><button id="send-roll-gain-button" class="pure-button button-success">Send</button></td>
-          <td><button id="send-heading-gain-button" class="pure-button button-success">Send</button></td>
-          <td><button id="send-altitude-gain-button" class="pure-button button-success">Send</button></td>
-          <td><button id="send-throttle-gain-button" class="pure-button button-success">Send</button></td>
-          <td><button id="send-flap-gain-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-roll-rate-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-pitch-rate-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-yaw-rate-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-roll-angle-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-pitch-angle-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-heading-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-altitude-button" class="pure-button button-success">Send</button></td>
+            <td><button id="send-ground-speed-button" class="pure-button button-success">Send</button></td>
         </tr>
     </tbody>
 </table>
