@@ -136,12 +136,12 @@ var AircraftStatus = function () {
    * @param data.path_following {number | null}
    */
   var telemetryCallback = function (data) {
-    checkErrorCodes(data.startup_error_codes);
-    checkGPS(data.gps_status);
-    checkUHFStatus(data.wireless_connection);
-    checkManualMode(data.wireless_connection);
-    checkPlaneStatus(data.autopilot_active);
-    checkPathFollowing(data.path_following);
+    // checkErrorCodes(data.startup_error_codes);
+    // checkGPS(data.gps_status);
+    // checkUHFStatus(data.wireless_connection);
+    // checkManualMode(data.wireless_connection);
+    // checkPlaneStatus(data.autopilot_active);
+    // checkPathFollowing(data.path_following);
   };
 
   TelemetryData.on('aircraft_status', telemetryCallback);
@@ -181,42 +181,42 @@ var AircraftStatus = function () {
   }.bind(this);
 
   var checkUHFStatus = function (data) {
-    if(data !== null){
-      var bitmask = new Bitmask(data);
-      this.uhf.status = bitmask.getBit(1);
+    // if(data !== null){
+    //   var bitmask = new Bitmask(data);
+    //   this.uhf.status = bitmask.getBit(1);
 
-      if (this.uhf.status) { //has been turned to true
-        this.uhf.timeSinceLost = null;
-      }
-      else { //has been turned to false
-        this.uhf.timeSinceLost = Date.now();
-      }
-      StatusManager.setStatusCode('UHF_LOST', !this.uhf.status);
-    }
+    //   if (this.uhf.status) { //has been turned to true
+    //     this.uhf.timeSinceLost = null;
+    //   }
+    //   else { //has been turned to false
+    //     this.uhf.timeSinceLost = Date.now();
+    //   }
+    //   StatusManager.setStatusCode('UHF_LOST', !this.uhf.status);
+    // }
   }.bind(this);
 
   var checkManualMode = function (data) {
-    if(data !== null){
-      var bitmask = new Bitmask(data);
-      this.manualMode = !bitmask.getBit(0);
-      StatusManager.setStatusCode('MANUAL_MODE', this.manualMode);
-    }
+    // if(data !== null){
+    //   var bitmask = new Bitmask(data);
+    //   this.manualMode = !bitmask.getBit(0);
+    //   StatusManager.setStatusCode('MANUAL_MODE', this.manualMode);
+    // }
   }.bind(this);
 
   var checkGPS = function (data) {
-   if(data !== null) {
-     var connection_status = ((data & 0xf0) >> 4) > 0; // if theres at least 1 fix
-     if (connection_status !== this.gps.status) { //if its a different status
-       this.gps.status = connection_status;
-       StatusManager.setStatusCode('GPS_LOST', !this.gps.status);
-       if (this.gps.status === false) { //if it was set to false, start the timer
-         this.gps.timeSinceLost = Date.now();
-       }
-       else {
-         this.gps.timeSinceLost = null;
-       }
-     }
-   }
+   // if(data !== null) {
+   //   var connection_status = ((data & 0xf0) >> 4) > 0; // if theres at least 1 fix
+   //   if (connection_status !== this.gps.status) { //if its a different status
+   //     this.gps.status = connection_status;
+   //     StatusManager.setStatusCode('GPS_LOST', !this.gps.status);
+   //     if (this.gps.status === false) { //if it was set to false, start the timer
+   //       this.gps.timeSinceLost = Date.now();
+   //     }
+   //     else {
+   //       this.gps.timeSinceLost = null;
+   //     }
+   //   }
+   // }
   }.bind(this);
 
   var checkErrorCodes = function (dataNumber) {

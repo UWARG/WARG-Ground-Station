@@ -79,9 +79,7 @@ var PacketParser = {
       return {};
     }
 
-    var data_array = data.split(",").map(function(data){
-      return data.trim().replace('(','').replace(')','');
-    });
+    var data_array = data.split(",");
     var sorted_data = {};
     var current_state = {};
 
