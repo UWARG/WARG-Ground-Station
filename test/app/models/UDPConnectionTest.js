@@ -142,7 +142,6 @@ describe('UDPConnection',function(){
 
       var message = new Buffer(ip.address() + ':' + 'test_port');
       expect(server.send).to.have.been.calledWith(message,0,message.length,network_config.get('datarelay_port'),'255.255.255.0',sinon.match.any);
-      expect(listener).to.have.been.calledWith();
   });
   it('should close properly', function () {
       var listener = sinon.spy();
