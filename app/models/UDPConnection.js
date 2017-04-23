@@ -20,7 +20,7 @@ var Logger = require('../util/Logger');
 var ip = require('ip');
 var childProcess = require("child_process");
 var dgram = require('dgram');
-const os = require('os');
+var os = require('os');
 
 /**
  * @param port The port for the UDP connection
@@ -104,7 +104,6 @@ var UDPConnection = function (port, timeout) {
   this.findConnection = function () {
     Logger.info("Connecting to UDP on port " +port);
     var networks = os.networkInterfaces();
-    //console.log(networks);
     for(network_key in networks){
       var network = networks[network_key];
       for(var i=0; i<network.length; i++){
