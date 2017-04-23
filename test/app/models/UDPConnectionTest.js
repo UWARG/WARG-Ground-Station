@@ -16,33 +16,43 @@ describe('UDPConnection',function(){
   var childProcess= {};
   var server = new EventEmitter();
   var c; //holds UDP connection object
+  var os = {};
 
-  var ipconfig_output = "\
-  Windows IP Configuration \
-  Ethernet adapter Ethernet: \
-     Media State . . . . . . . . . . . : Media disconnected \
-     Connection-specific DNS Suffix  . : \
-  Wireless LAN adapter Local Area Connection* 2: \
-     Media State . . . . . . . . . . . : Media disconnected \
-     Connection-specific DNS Suffix  . : \
-  Wireless LAN adapter Local Area Connection* 4: \
-     Media State . . . . . . . . . . . : Media disconnected \
-     Connection-specific DNS Suffix  . : \
-  Wireless LAN adapter Wi-Fi: \
-     Connection-specific DNS Suffix  . : uwaterloo.ca \
-     IPv6 Address. . . . . . . . . . . : 2620:101:f000:700:f5f4:85fb:54f5:9328 \
-     Temporary IPv6 Address. . . . . . : 2620:101:f000:700:b494:b53f:f575:666a \
-     Link-local IPv6 Address . . . . . : fe80::f5f4:85fb:54f5:9328%13 \
-     IPv4 Address. . . . . . . . . . . : 10.20.13.186 \
-     Subnet Mask . . . . . . . . . . . : 255.255.0.0 \
-     Default Gateway . . . . . . . . . : fe80::be16:65ff:fef4:d000%13 \
-                                        10.20.0.1 \
-  Tunnel adapter Local Area Connection* 3: \
-     Connection-specific DNS Suffix  . : \
-     IPv6 Address. . . . . . . . . . . : 2001:0:d4e:efaa:1c76:4d5:7e9e:8332 \
-     Subnet Mask . . . . . . . . . . . : 255.255.255.0 \
-     Link-local IPv6 Address . . . . . : fe80::1c76:4d5:7e9e:8332%16 \
-     Default Gateway . . . . . . . . . : ";
+  var test_network_address = '192.168.1.255'
+  var test_network =  {
+  'lo': [
+    {
+      address: '127.0.0.1',
+      netmask: '255.0.0.0',
+      family: 'IPv4',
+      mac: '00:00:00:00:00:00',
+      internal: true
+    },
+    {
+      address: '::1',
+      netmask: 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',
+      family: 'IPv6',
+      mac: '00:00:00:00:00:00',
+      internal: true
+    }
+  ],
+  'eth0': [
+    {
+      address: '192.168.1.108',
+      netmask: '255.255.255.0',
+      family: 'IPv4',
+      mac: '01:02:03:0a:0b:0c',
+      internal: false
+    },
+    {
+      address: 'fe80::a00:27ff:fe4e:66a1',
+      netmask: 'ffff:ffff:ffff:ffff::',
+      family: 'IPv6',
+      mac: '01:02:03:0a:0b:0c',
+      internal: false
+    }
+  ]
+};
 
   var rinfo = new Object();//used for message listener
   Object.defineProperty(rinfo,'address',{
@@ -55,12 +65,17 @@ describe('UDPConnection',function(){
   UDPConnection.__set__({
     'Logger': Logger,
     'dgram':dgram,
-    'childProcess':childProcess
+    'childProcess':childProcess,
+    'os':os
   });
   beforeEach(function(){
     dgram.createSocket = sandbox.stub();
     dgram.createSocket.withArgs('udp4').returns(server);
     server.bind = sandbox.stub();
+    server.setBroadcast = sandbox.stub();
+    server.address = sandbox.stub();
+    server.address.withArgs().returns({'port':'test_port'});
+    server.send = sandbox.spy();
     server.close = sandbox.spy();
     childProcess.exec = sandbox.stub();
 
@@ -70,6 +85,9 @@ describe('UDPConnection',function(){
     Logger.info = sandbox.spy();
 
     c = new UDPConnection(network_config.get('datarelay_port'),network_config.get('datarelay_udp_timeout'));
+
+    os.networkInterfaces = sandbox.stub();
+    os.networkInterfaces.withArgs().returns(test_network);
   });
   afterEach(function(){
     sandbox.restore();
@@ -116,20 +134,28 @@ describe('UDPConnection',function(){
       server.emit('message', message,rinfo);
       expect(listener).to.have.been.calledWith(rinfo.address, 'port',undefined);
   });
-  describe('windows OS tests',function(){
-    UDPConnection.__set__({
-      'os':'windows'
-    });
+  it('should send a UDP request', function () {
+      var listener = sinon.spy();
+      c.on('receiveIP', listener);
+      c.connect('255.255.255.0');
+      server.emit('listening');
 
-    it('should parse ipconfig', function () {
-        var listener = sinon.spy();
-        c.on('findBroadcast', listener);
-        childProcess.exec.withArgs('ipconfig').returns(CommandLineOutputs.ipconfig_out);
-        c.findConnection();
-        expect(listener).to.have.callCount(2);
-    });
+      var message = new Buffer(ip.address() + ':' + 'test_port');
+      expect(server.send).to.have.been.calledWith(message,0,message.length,network_config.get('datarelay_port'),'255.255.255.0',sinon.match.any);
+      expect(listener).to.have.been.calledWith();
+  });
+  it('should close properly', function () {
+      var listener = sinon.spy();
+      c.on('timeout', listener);
+      c.connect('255.255.255.0');
+      server.emit('listening');
+      server.emit('close');
   });
 
-
-
+  it('should find the proper broadcast address', function () {
+      var listener = sinon.spy();
+      c.on('findBroadcast', listener);
+      c.findConnection();
+      expect(listener).to.have.been.calledWith(test_network_address);
+  });
 });

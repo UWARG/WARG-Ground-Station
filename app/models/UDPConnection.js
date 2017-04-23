@@ -21,7 +21,6 @@ var ip = require('ip');
 var childProcess = require("child_process");
 var dgram = require('dgram');
 const os = require('os');
-//var os = process.platform.toString();
 
 /**
  * @param port The port for the UDP connection

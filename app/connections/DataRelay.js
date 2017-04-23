@@ -85,10 +85,6 @@ DataRelay.init = function() {
 * @connectTCP
 */
   var connectTCP = function(host,port) {
-  //remove all previous data-relay connections
-    if (NetworkManager.getConnectionByName('data_relay')) {
-      NetworkManager.removeAllConnections('data_relay');
-    }
     var data_relay = NetworkManager.addConnection('data_relay', host, port);
 
     data_relay.setTimeout(network_config.get('datarelay_timeout'));
