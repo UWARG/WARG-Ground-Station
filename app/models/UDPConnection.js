@@ -20,8 +20,8 @@ var Logger = require('../util/Logger');
 var ip = require('ip');
 var childProcess = require("child_process");
 var dgram = require('dgram');
-
-var os = process.platform.toString();
+const os = require('os');
+//var os = process.platform.toString();
 
 /**
  * @param port The port for the UDP connection
@@ -104,55 +104,19 @@ var UDPConnection = function (port, timeout) {
   */
   this.findConnection = function () {
     Logger.info("Connecting to UDP on port " +port);
-
-    //Windows
-    if (os.includes("win")) {
-        //run and parse ipconfig
-        childProcess.exec("ipconfig", function(err, stdout, stderr) {
-
-            if (err) {
-              Log.error(err);
-            } else {
-              var regex = /(?:Subnet Mask)(?:.| )*: ([\d.]*)/g;
-              var localIP = ip.address();
-              match = regex.exec(stdout);
-
-              while (match != null) {
-                //check if match is in IP format
-                if(ip.isV4Format(match[1])){
-                  var broadcast = ip.or(ip.not(match[1]), localIP).toString();
-                  self.emit('findBroadcast',broadcast);
-                  self.connect(broadcast);
-                }
-                match = regex.exec(stdout);
-              }
-          }
-        });
-    }
-    //Linux
-    else {
-        //run and parse ifconfig
-        childProcess.exec("ifconfig", function(err, stdout, stderr) {
-            if (err) {
-                Log.error(err);
-            } else {
-              //Searches for any string Bcast:#.#.#.# or broadcast:#.#.#.#
-              var regex = /(?:Bcast|broadcast):([\d.]*)/g;
-              var localIP = ip.address();
-              match = regex.exec(stdout);
-
-              while (match != null) {
-                //check if match is in IP format
-                if(ip.isV4Format(match[1])){
-                  var broadcast = match[1].toString();
-                  self.emit('findBroadcast',broadcast);
-                  self.connect(broadcast);
-                }
-                match = regex.exec(stdout);
-              }
-
-            }
-        });
+    var networks = os.networkInterfaces();
+    var localIP = ip.address();
+    //console.log(networks);
+    for(network_key in networks){
+      var network = networks[network_key];
+      for(var i=0; i<network.length; i++){
+        //check IPv4 format
+        if((network[i].internal === false) && (ip.isV4Format(network[i].netmask))){
+          var broadcast_address = ip.or(ip.not(network[i].netmask), localIP).toString();
+          self.emit('findBroadcast',broadcast_address);
+          self.connect(broadcast_address);
+        }
+      }
     }
   }
 
