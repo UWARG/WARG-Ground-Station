@@ -104,14 +104,13 @@ var UDPConnection = function (port, timeout) {
   this.findConnection = function () {
     Logger.info("Connecting to UDP on port " +port);
     var networks = os.networkInterfaces();
-    var localIP = ip.address();
     //console.log(networks);
     for(network_key in networks){
       var network = networks[network_key];
       for(var i=0; i<network.length; i++){
         //check IPv4 format
         if((network[i].internal === false) && (ip.isV4Format(network[i].netmask))){
-          var broadcast_address = ip.or(ip.not(network[i].netmask), localIP).toString();
+          var broadcast_address = ip.or(ip.not(network[i].netmask), network[i].address).toString();
           self.emit('findBroadcast',broadcast_address);
           self.connect(broadcast_address);
         }
