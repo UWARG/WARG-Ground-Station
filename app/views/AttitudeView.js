@@ -60,22 +60,22 @@ module.exports = function (Marionette) {
       this.ui.attitude_dials.parent().resize(this.setCanvasDimensions.bind(this));
 
       this.telemetry_position_callback = this.telemetryPositionCallback.bind(this);
-      this.telemetry_attitude_callback = this.telemetryOrientationCallback.bind(this);
-      TelemetryData.addListener('aircraft_orientation', this.telemetry_attitude_callback);
+      this.telemetry_setpoints_callback = this.telemetrySetpointsCallback.bind(this);
       TelemetryData.addListener('aircraft_position', this.telemetry_position_callback);
+      TelemetryData.addListener('aircraft_setpoints', this.telemetry_setpoints_callback);
     },
     onBeforeDestroy: function () {
-      TelemetryData.removeListener('aircraft_orientation', this.telemetry_attitude_callback);
       TelemetryData.removeListener('aircraft_position', this.telemetry_position_callback);
+      TelemetryData.removeListener('aircraft_setpoints', this.telemetry_setpoints_callback);
     },
-    telemetryOrientationCallback: function (data) {
+    telemetryPositionCallback: function (data) {
       this.setPitch(data.pitch);
       this.setRoll(data.roll);
+      this.setHeading(data.heading);
+    },
+    telemetrySetpointsCallback: function(data){
       this.setPitchSetpoint(data.pitch_setpoint);
       this.setRollSetpoint(data.roll_setpoint);
-    },
-    telemetryPositionCallback: function(data){
-      this.setHeading(data.heading);
       this.setHeadingSetpoint(data.heading_setpoint);
     },
     setCanvasDimensions: function () {
@@ -111,17 +111,17 @@ module.exports = function (Marionette) {
     },
     setRollSetpoint: function (roll) {
       if (roll !== null) {
-        this.ui.roll_setpoint.text(roll.toFixed(2));
+        this.ui.roll_setpoint.text(Number(roll).toFixed(2));
       }
     },
     setPitchSetpoint: function (pitch) {
       if (pitch !== null) {
-        this.ui.pitch_setpoint.text(pitch.toFixed(2));
+        this.ui.pitch_setpoint.text(Number(pitch).toFixed(2));
       }
     },
     setHeadingSetpoint: function (heading) {
       if (heading !== null) {
-        this.ui.heading_setpoint.text(heading.toFixed(2));
+        this.ui.heading_setpoint.text(Number(heading).toFixed(2));
       }
     },
     sendSetPitch: function (e) {

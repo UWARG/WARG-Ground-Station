@@ -26,10 +26,6 @@ var PacketTypes = {
     'sys_time': 'isValidTime'
   },
 
-  aircraft_orientation: {
-    
-  },
-
   aircraft_gains: {
     'roll_rate_kp': 'isValidNumber',
     'roll_rate_kd': 'isValidNumber',
