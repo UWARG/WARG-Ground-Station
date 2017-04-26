@@ -136,12 +136,13 @@ var AircraftStatus = function () {
    * @param data.path_following {number | null}
    */
   var telemetryCallback = function (data) {
-    // checkErrorCodes(data.startup_error_codes);
+    checkErrorCodes(data.startup_errors);
+    checkUHFStatus(data.uhf_channel_status);
     // checkGPS(data.gps_status);
-    // checkUHFStatus(data.wireless_connection);
+    
     // checkManualMode(data.wireless_connection);
-    // checkPlaneStatus(data.autopilot_active);
-    // checkPathFollowing(data.path_following);
+    checkPlaneStatus(data.program_state);
+    checkPathFollowing(data.path_following);
   };
 
   TelemetryData.on('aircraft_status', telemetryCallback);
@@ -181,18 +182,17 @@ var AircraftStatus = function () {
   }.bind(this);
 
   var checkUHFStatus = function (data) {
-    // if(data !== null){
-    //   var bitmask = new Bitmask(data);
-    //   this.uhf.status = bitmask.getBit(1);
+    if(data !== null){
+      this.uhf.status = (data != 0xFF); //255 means we've disconnected
 
-    //   if (this.uhf.status) { //has been turned to true
-    //     this.uhf.timeSinceLost = null;
-    //   }
-    //   else { //has been turned to false
-    //     this.uhf.timeSinceLost = Date.now();
-    //   }
-    //   StatusManager.setStatusCode('UHF_LOST', !this.uhf.status);
-    // }
+      if (this.uhf.status) { //has been turned to true
+        this.uhf.timeSinceLost = null;
+      }
+      else { //has been turned to false
+        this.uhf.timeSinceLost = Date.now();
+      }
+      StatusManager.setStatusCode('UHF_LOST', !this.uhf.status);
+    }
   }.bind(this);
 
   var checkManualMode = function (data) {

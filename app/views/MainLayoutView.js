@@ -10,7 +10,6 @@
 var Template = require('../util/Template');
 
 module.exports = function (Marionette, $, L, window) {
-  var ConsoleView = require('./ConsoleView')(Marionette);
   var StatusView = require('./StatusView')(Marionette, $);
   var CockpitLayoutView = require('./CockpitLayoutView')(Marionette);
   var MapView = require('./MapView')(Marionette, L, $);
@@ -21,7 +20,6 @@ module.exports = function (Marionette, $, L, window) {
     className: 'mainLayoutView',
 
     regions: {
-      console: "#console-region",
       status: "#status-region",
       map: "#right-region",
       telemetry: "#top-left-region",
@@ -29,7 +27,6 @@ module.exports = function (Marionette, $, L, window) {
     },
 
     onRender: function () {
-      this.getRegion('console').show(new ConsoleView());
       this.getRegion('status').show(new StatusView());
       this.getRegion('telemetry').show(new CockpitLayoutView());
       this.getRegion('map').show(new MapView());

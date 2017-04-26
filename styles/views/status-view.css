@@ -7,7 +7,7 @@
 
 .statusView .statuses{
   height: 100%;
-  width: 60%;
+  width: 100%;
   display: flex;
   flex-direction: column-reverse;
   text-align: center;
@@ -38,9 +38,16 @@
   color: rgb(0, 255, 129);
   font-size: 16px;
 }
+
+.statusView .battery-display{
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+}
+
 .statusView .battery-level{
   height: 100%;
-  width: 20%;
+  width:100%;
   text-align: center;
 }
 
@@ -136,7 +143,7 @@
 }
 
 .statusView .transmission-rate-view{
-  width: 120px;
+  width: 280px;
   margin-left: 5px;
 }
 .statusView .transmission-rate-view .transition-rate{
