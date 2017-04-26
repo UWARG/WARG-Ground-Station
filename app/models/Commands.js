@@ -487,6 +487,15 @@ var Commands = {
   },
 
   /**
+   * Tells the autopilot to send a gains packet down
+   * @function requestGains
+   * @returns {boolean} Whether the command sent successfully
+   */
+  requestGains: function(){
+    return this.sendCommand('show_gains', 1);
+  },
+
+  /**
    * @function sendPitchAngleGains
    * @param kp
    * @param kd
