@@ -487,54 +487,7 @@ var Commands = {
   },
 
   /**
-   * Sends a multi gain command
-   * @function sendMultiGain
-   * @param {String} type One of: 'yaw', 'pitch', 'roll', 'heading', 'altitude', 'throttle', 'flap'
-   * @param {Number} kp
-   * @param {Number} kd
-   * @param {Number} ki
-   * @returns {boolean} Whether the command send successfully
-   */
-  sendMultiGain: function (type, kp, kd, ki) {
-    if (!Validator.isValidNumber(kp) || !Validator.isValidNumber(kd) || !Validator.isValidNumber(ki)) {
-      Logger.error(`Invalid kp, kd, or ki value provided for send gains command. Provided: kp: ${kp}, kd: ${kd}, ki: ${ki}`);
-      return false;
-    }
-    var type_int = 0;
-
-    switch (type) {
-      case 'yaw':
-        type_int = 0;
-        break;
-      case 'pitch':
-        type_int = 1;
-        break;
-      case 'roll':
-        type_int = 2;
-        break;
-      case 'heading':
-        type_int = 3;
-        break;
-      case 'altitude':
-        type_int = 4;
-        break;
-      case 'throttle':
-        type_int = 5;
-        break;
-      case 'flap':
-        type_int = 6;
-        break;
-      default:
-        Logger.error('Incorrect gain type entered. Must be one of: yaw, pitch, roll, heading, altitude, throttle, flap');
-        return false;
-    }
-
-    return this.sendCommand('set_gains', type_int, kd, kp, ki);
-  },
-
-  /**
-   * Sends pitch gains as a multi gain command
-   * @function sendPitchGains
+   * @function sendPitchAngleGains
    * @param kp
    * @param kd
    * @param ki
@@ -545,8 +498,7 @@ var Commands = {
   },
 
   /**
-   * Sends roll gains as a multi gain command
-   * @function sendRollGains
+   * @function sendRollAngleGains
    * @param kp
    * @param kd
    * @param ki
@@ -557,8 +509,7 @@ var Commands = {
   },
 
   /**
-   * Sends roll gains as a multi gain command
-   * @function sendRollGains
+   * @function sendRollRateGains
    * @param kp
    * @param kd
    * @param ki
@@ -569,9 +520,8 @@ var Commands = {
   },
 
 
-/**
-   * Sends roll gains as a multi gain command
-   * @function sendRollGains
+ /**
+   * @function sendPitchRateGains
    * @param kp
    * @param kd
    * @param ki
@@ -582,9 +532,8 @@ var Commands = {
   },
 
 
-/**
-   * Sends roll gains as a multi gain command
-   * @function sendRollGains
+ /**
+   * @function sendYawRateGains
    * @param kp
    * @param kd
    * @param ki
@@ -595,8 +544,7 @@ var Commands = {
   },
 
 
-  /**
-   * Sends altitude gains as a multi gain command
+/**
    * @function sendAltitudeGains
    * @param kp
    * @param kd
@@ -607,8 +555,7 @@ var Commands = {
     return this.sendCommand('set_altitude_gains', kp, ki, kd);
   },
 
-  /**
-   * Sends heading gains as a multi gain command
+ /**
    * @function sendHeadingGains
    * @param kp
    * @param kd
@@ -619,9 +566,8 @@ var Commands = {
     return this.sendCommand('set_heading_gains', kp, ki, kd);
   },
 
-   /**
-   * Sends heading gains as a multi gain command
-   * @function sendHeadingGains
+/**
+   * @function sendGroundSpeedGains
    * @param kp
    * @param kd
    * @param ki
