@@ -209,57 +209,6 @@ var Commands = {
   },
 
   /**
-   * Sends a kp gain value to the autopilot
-   * @function sendKPGain
-   * @param type {string} One of: `flap`, `altitude`, `throttle`, `heading`, `roll`, `pitch`, `yaw`
-   * @param gain {string|Number} The gain value
-   * @returns {boolean} Whether the command sent successfully
-   */
-  sendKPGain: function (type, gain) {
-    if (Validator.isNonEmptyString(type) && Validator.isValidNumber(gain)) {
-      return this.sendCommand('set_' + type + 'KPGain', gain);
-    }
-    else {
-      Logger.error('Command to not sent since invalid gain value detected! Gain value:' + gain);
-      return false;
-    }
-  },
-
-  /**
-   * Sends a ki gain value to the autopilot
-   * @function sendKIGain
-   * @param type {string} One of: `flap`, `altitude`, `throttle`, `heading`, `roll`, `pitch`, `yaw`
-   * @param gain {string|Number} The gain value
-   * @returns {boolean} Whether the command sent successfully
-   */
-  sendKIGain: function (type, gain) {
-    if (Validator.isNonEmptyString(type) && Validator.isValidNumber(gain)) {
-      return this.sendCommand('set_' + type + 'KIGain', gain);
-    }
-    else {
-      Logger.error('Command to not sent since invalid gain value detected! Gain value:' + gain);
-      return false;
-    }
-  },
-
-  /**
-   * Sends a kd gain value to the autopilot
-   * @function sendKDGain
-   * @param type {string} One of: `flap`, `altitude`, `throttle`, `heading`, `roll`, `pitch`, `yaw`
-   * @param gain {string|Number} The gain value
-   * @returns {boolean} Whether the command sent successfully
-   */
-  sendKDGain: function (type, gain) {
-    if (Validator.isNonEmptyString(type) && Validator.isValidNumber(gain)) {
-      return this.sendCommand('set_' + type + 'KDGain', gain);
-    }
-    else {
-      Logger.error('Command to not sent since invalid gain value detected! Gain value:' + gain);
-      return false;
-    }
-  },
-
-  /**
    * Sends a path gain value to the autopilot
    * @function sendPathGain
    * @param gain {string|Number} The gain value
@@ -584,18 +533,6 @@ var Commands = {
   },
 
   /**
-   * Sends yaw gains as a multi gain command
-   * @function sendYawGains
-   * @param kp
-   * @param kd
-   * @param ki
-   * @returns {boolean} Whether the command send successfully
-   */
-  sendYawGains: function (kp, kd, ki) {
-    return this.sendMultiGain('yaw', kp, kd, ki);
-  },
-
-  /**
    * Sends pitch gains as a multi gain command
    * @function sendPitchGains
    * @param kp
@@ -603,8 +540,8 @@ var Commands = {
    * @param ki
    * @returns {boolean} Whether the command send successfully
    */
-  sendPitchGains: function (kp, kd, ki) {
-    return this.sendMultiGain('pitch', kp, kd, ki);
+  sendPitchAngleGains: function (kp, kd, ki) {
+    return this.sendCommand('set_pitch_angle_gains', kp, ki, kd);
   },
 
   /**
@@ -615,9 +552,48 @@ var Commands = {
    * @param ki
    * @returns {boolean} Whether the command send successfully
    */
-  sendRollGains: function (kp, kd, ki) {
-    return this.sendMultiGain('roll', kp, kd, ki);
+  sendRollAngleGains: function (kp, kd, ki) {
+    return this.sendCommand('set_roll_angle_gains', kp, ki, kd);
   },
+
+  /**
+   * Sends roll gains as a multi gain command
+   * @function sendRollGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendRollRateGains: function (kp, kd, ki) {
+    return this.sendCommand('set_roll_rate_gains', kp, ki, kd);
+  },
+
+
+/**
+   * Sends roll gains as a multi gain command
+   * @function sendRollGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendPitchRateGains: function (kp, kd, ki) {
+    return this.sendCommand('set_pitch_rate_gains', kp, ki, kd);
+  },
+
+
+/**
+   * Sends roll gains as a multi gain command
+   * @function sendRollGains
+   * @param kp
+   * @param kd
+   * @param ki
+   * @returns {boolean} Whether the command send successfully
+   */
+  sendYawRateGains: function (kp, kd, ki) {
+    return this.sendCommand('set_yaw_rate_gains', kp, ki, kd);
+  },
+
 
   /**
    * Sends altitude gains as a multi gain command
@@ -628,7 +604,7 @@ var Commands = {
    * @returns {boolean} Whether the command send successfully
    */
   sendAltitudeGains: function (kp, kd, ki) {
-    return this.sendMultiGain('altitude', kp, kd, ki);
+    return this.sendCommand('set_altitude_gains', kp, ki, kd);
   },
 
   /**
@@ -640,32 +616,21 @@ var Commands = {
    * @returns {boolean} Whether the command send successfully
    */
   sendHeadingGains: function (kp, kd, ki) {
-    return this.sendMultiGain('heading', kp, kd, ki);
+    return this.sendCommand('set_heading_gains', kp, ki, kd);
   },
 
-  /**
-   * Sends throttle gains as a multi gain command
-   * @function sendThrottleGains
+   /**
+   * Sends heading gains as a multi gain command
+   * @function sendHeadingGains
    * @param kp
    * @param kd
    * @param ki
    * @returns {boolean} Whether the command send successfully
    */
-  sendThrottleGains: function (kp, kd, ki) {
-    return this.sendMultiGain('throttle', kp, kd, ki);
+  sendGroundSpeedGains: function (kp, kd, ki) {
+    return this.sendCommand('set_ground_speed_gains', kp, ki, kd);
   },
 
-  /**
-   * Sends flap gains as a multi gain command
-   * @function sendFlapGains
-   * @param kp
-   * @param kd
-   * @param ki
-   * @returns {boolean} Whether the command send successfully
-   */
-  sendFlapGains: function (kp, kd, ki) {
-    return this.sendMultiGain('flap', kp, kd, ki);
-  }
 };
 
 module.exports = Commands;
