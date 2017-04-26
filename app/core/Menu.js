@@ -109,7 +109,8 @@ var Menu = {
       openWindow: 'gainsAdjust',
       width: 1100,
       height: 550,
-      shortcut: 'CmdOrCtrl+Shift+G'
+      shortcut: 'CmdOrCtrl+Shift+G',
+      devTools:true
     },
     'Probe Drops': {
       openWindow: 'probeDrops',

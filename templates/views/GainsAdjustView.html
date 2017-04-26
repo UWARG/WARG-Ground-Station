@@ -28,14 +28,14 @@
             <td><form class="ground-speed-form pure-form"><input id="ground-speed-kp" type="text"></form></td>
         <tr>
             <td>KD</td>
-           <td><form class="roll-rate-form pure-form"><input id="roll-rate-ki" type="text"></form></td>
-            <td><form class="pitch-rate-form pure-form"><input id="pitch-rate-ki" type="text"></form></td>
-            <td><form class="yaw-rate-form pure-form"><input id="yaw-rate-ki" type="text"></form></td>
-            <td><form class="roll-angle-form pure-form"><input id="roll-angle-ki" type="text"></form></td>
-            <td><form class="pitch-angle-form pure-form"><input id="pitch-angle-ki" type="text"></form></td>
-            <td><form class="heading-form pure-form"><input id="heading-ki" type="text"></form></td>
-            <td><form class="altitude-form pure-form"><input id="altitude-ki" type="text"></form></td>
-            <td><form class="ground-speed-form pure-form"><input id="ground-speed-ki" type="text"></form></td>
+           <td><form class="roll-rate-form pure-form"><input id="roll-rate-kd" type="text"></form></td>
+            <td><form class="pitch-rate-form pure-form"><input id="pitch-rate-kd" type="text"></form></td>
+            <td><form class="yaw-rate-form pure-form"><input id="yaw-rate-kd" type="text"></form></td>
+            <td><form class="roll-angle-form pure-form"><input id="roll-angle-kd" type="text"></form></td>
+            <td><form class="pitch-angle-form pure-form"><input id="pitch-angle-kd" type="text"></form></td>
+            <td><form class="heading-form pure-form"><input id="heading-kd" type="text" disabled></form></td>
+            <td><form class="altitude-form pure-form"><input id="altitude-kd" type="text" disabled></form></td>
+            <td><form class="ground-speed-form pure-form"><input id="ground-speed-kd" type="text" disabled></form></td>
         </tr>
 
         <tr>
@@ -86,7 +86,79 @@
     </tbody>
 </table>
 
+<!-- Remote gains -->
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Remote Roll Rate</th>
+            <th>Remote Pitch Rate</th>
+            <th>Remote Yaw Rate</th>
+            <th>Remote Roll Angle</th>
+            <th>Remote Pitch Angle</th>
+            <th>Remote Heading</th>
+            <th>Remote Altitude</th>
+            <th>Remote Ground Speed</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>KP</td>
+            <td id="remote-roll-rate-kp"></td>
+            <td id="remote-pitch-rate-kp" ></td>
+            <td id="remote-yaw-rate-kp" ></td>
+            <td id="remote-roll-angle-kp" ></td>
+            <td id="remote-pitch-angle-kp" ></td>
+            <td id="remote-heading-kp" ></td>
+            <td id="remote-altitude-kp" ></td>
+            <td id="remote-ground-speed-kp" ></td>
+        <tr>
+            <td>KD</td>
+            <td id="remote-roll-rate-kd"></td>
+            <td id="remote-pitch-rate-kd" ></td>
+            <td id="remote-yaw-rate-kd" ></td>
+            <td id="remote-roll-angle-kd"></td>
+            <td id="remote-pitch-angle-kd" ></td>
+            <td id="remote-heading-kd">--</td>
+            <td id="remote-altitude-kd" >--</td>
+            <td id="remote-ground-speed-kd">--</td>
+        </tr>
+
+        <tr>
+            <td>KI</td>
+            <td id="remote-roll-rate-ki"></td>
+            <td id="remote-pitch-rate-ki" ></td>
+            <td id="remote-yaw-rate-ki" ></td>
+            <td id="remote-roll-angle-ki" ></td>
+            <td id="remote-pitch-angle-ki" ></td>
+            <td id="remote-heading-ki" ></td>
+            <td id="remote-altitude-ki" ></td>
+            <td id="remote-ground-speed-ki" ></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="pure-table" style="margin-top: 12px;">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Orbit</th>
+            <th>Path</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>KP</td>
+            <td id="remote-orbit-kp"></td>
+            <td id="remote-path-kp"></td>
+        </tr>
+    </tbody>
+</table>
+
 <div class="pure-form" style="margin-top: 12px">
+    <button id="request-gains-button" class="pure-button button-secondary">Request Update</button>
     <button id="send-all-gains-button" class="pure-button button-secondary">Send All</button>
     <button id="save-all-gains-button" class="pure-button button-success">Save All</button>
     <button id="discard-all-gains-button" class="pure-button button-warning">Discard Changes</button>

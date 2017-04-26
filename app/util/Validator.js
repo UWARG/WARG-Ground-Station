@@ -271,7 +271,7 @@ var Validator = {
    * @returns {boolean}
    */
   isValidBattery: function (battery) {
-    return this.isValidNumber(battery) && Number(battery) >= 0 && Number(battery) <= 100;
+    return this.isValidNumber(battery) && Number(battery) >= 0 && Number(battery) <= 1024;
   },
 
   /**
