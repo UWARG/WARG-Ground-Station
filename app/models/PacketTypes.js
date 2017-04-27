@@ -76,6 +76,7 @@ var PacketTypes = {
     'uhf_channel_status':  ['isPositiveNumber', 'isInteger'],
     'waypoint_index': ['isPositiveNumber', 'isInteger'],
     'waypoint_count': ['isPositiveNumber', 'isInteger'],
+    'path_checksum' : ['isPositiveNumber']
   },
 
   aircraft_channels: {
