@@ -64,6 +64,7 @@ var PacketTypes = {
   },
 
   aircraft_status: {
+    'path_checksum' : ['isPositiveNumber'],
     'internal_battery_voltage': 'isValidBattery',
     'external_battery_voltage': 'isValidBattery',
     'program_state': ['isPositiveNumber', 'isInteger'],
@@ -75,7 +76,8 @@ var PacketTypes = {
     'peripheral_status':  ['isPositiveNumber', 'isInteger'],
     'uhf_channel_status':  ['isPositiveNumber', 'isInteger'],
     'waypoint_index': ['isPositiveNumber', 'isInteger'],
-    'waypoint_count': ['isPositiveNumber', 'isInteger'],
+    'waypoint_count': ['isPositiveNumber', 'isInteger']
+	
   },
 
   aircraft_channels: {
