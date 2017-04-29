@@ -41,7 +41,9 @@ module.exports = function (Marionette, L, $) {
       new_target_waypoint: '#new-follow-index input',
       remote_waypoint_index: '#remote-waypoint-index',
       marker_lat: '#marker-lat',
-      marker_lon: '#marker-lon'
+      marker_lon: '#marker-lon',
+
+      add_waypoint_button: '#add-waypoint-button'
     },
     events: {
       'click #clear-plane-trail-button': 'clearPlaneTrail',
@@ -139,6 +141,15 @@ module.exports = function (Marionette, L, $) {
       this.map.clearPlaneTrail();
     },
     addWaypointToggle: function (e) {
+      if (this.add_waypoint_mode){ //if we're currently adding a waypoint
+        this.ui.add_waypoint_button.text('Add Waypoint');
+        this.ui.add_waypoint_button.removeClass('button-error');
+        this.ui.add_waypoint_button.addClass('button-secondary');
+      } else {
+        this.ui.add_waypoint_button.text('Stop Add');
+        this.ui.add_waypoint_button.addClass('button-error');
+        this.ui.add_waypoint_button.removeClass('button-secondary');
+      }
       this.map.addWaypointMode(!this.add_waypoint_mode);
       this.add_waypoint_mode = !this.add_waypoint_mode;
     },
