@@ -99,12 +99,12 @@ module.exports = function (Marionette, L, $) {
       //     this.ui.path_verified.text('No. A: ' + data.path_checksum.toFixed(4) + ', L: ' + PathManager.current_path_checksum.toFixed(4));
       //   }
       // }
-      // if (AircraftStatus.following_path) {
-      //   this.ui.start_following_button.text('Stop Following');
-      // }
-      // else {
-      //   this.ui.start_following_button.text('Start Following');
-      // }
+      if (AircraftStatus.following_path) {
+        this.ui.start_following_button.text('Stop Following');
+      }
+      else {
+        this.ui.start_following_button.text('Start Following');
+      }
       if (data.waypoint_count !== null) {
         PathManager.remote_waypoint_count = data.waypoint_count;
       }
