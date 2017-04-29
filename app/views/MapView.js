@@ -89,16 +89,16 @@ module.exports = function (Marionette, L, $) {
     },
 
     aircraftStatusCallback: function(data){
-      // if (data.path_checksum !== null) {
-      //   PathManager.remote_path_checksum = data.path_checksum;
-      //   if (PathManager.remote_path_checksum.toFixed(4) === PathManager.current_path_checksum.toFixed(4)) {
-      //     this.ui.path_verified.text('Yes');
-      //     PathManager.setSynced();
-      //   }
-      //   else {
-      //     this.ui.path_verified.text('No. A: ' + data.path_checksum.toFixed(4) + ', L: ' + PathManager.current_path_checksum.toFixed(4));
-      //   }
-      // }
+      if (data.path_checksum !== null) {
+        PathManager.remote_path_checksum = data.path_checksum;
+        if (PathManager.remote_path_checksum.toFixed(4) === PathManager.current_path_checksum.toFixed(4)) {
+          this.ui.path_verified.text('Yes');
+          PathManager.setSynced();
+        }
+        else {
+          this.ui.path_verified.text('No. A: ' + data.path_checksum.toFixed(4) + ', L: ' + PathManager.current_path_checksum.toFixed(4));
+        }
+      }
       if (AircraftStatus.following_path) {
         this.ui.start_following_button.text('Stop Following');
       }

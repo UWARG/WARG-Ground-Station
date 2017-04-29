@@ -257,7 +257,7 @@ var PathManager = function () {
           this.waypoints[current_waypoint_to_send - 1].radius,
           this.waypoints[current_waypoint_to_send - 1].type === 'probe_drop');
       }
-    }.bind(this), 1000);
+    }.bind(this), 7000);
 
     this.calculatePathChecksum();
   };
