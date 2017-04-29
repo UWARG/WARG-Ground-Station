@@ -3,7 +3,7 @@ var SettingsLoader=require('../app/util/PersistentSettings');
 //NOTE: all of these MUST be numbers
 var gains_config={
   roll_rate_kp: 1,
-  pitch_rate_kp: 1,
+  pitch_rate_kp: 1.5,
   yaw_rate_kp: 1,
   roll_angle_kp: 1,
   pitch_angle_kp: 1,
@@ -30,6 +30,9 @@ var gains_config={
   heading_ki: 0,
   altitude_ki: 0,
   ground_speed_ki: 0,
+
+  pitch_turn_factor: 0.25,
+  adverse_yaw_factor: 0.5
 };
 
 module.exports=new SettingsLoader('gains_config',gains_config);

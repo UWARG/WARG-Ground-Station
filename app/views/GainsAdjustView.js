@@ -533,6 +533,9 @@ module.exports = function (Marionette) {
       this.checkAndSaveGain('altitude_ki', this.ui.altitude_ki.val());
       this.checkAndSaveGain('heading_ki', this.ui.heading_ki.val());
       this.checkAndSaveGain('ground_speed_ki', this.ui.ground_speed_ki.val());
+
+      this.checkAndSaveGain('pitch_turn_factor', this.ui.pitch_turn_factor.val());
+      this.checkAndSaveGain('adverse_yaw_factor', this.ui.adverse_yaw_factor.val());
     },
     discardChanges: function () {
       this.ui.roll_rate_kp.val(gains_config.get('roll_rate_kp'));
@@ -564,6 +567,9 @@ module.exports = function (Marionette) {
       this.ui.altitude_ki.val(gains_config.get('altitude_ki'));
       this.ui.heading_ki.val(gains_config.get('heading_ki'));
       this.ui.ground_speed_ki.val(gains_config.get('ground_speed_ki'));
+
+      this.ui.pitch_turn_factor.val(gains_config.get('pitch_turn_factor'));
+      this.ui.adverse_yaw_factor.val(gains_config.get('adverse_yaw_factor'));
     },
     resetToDefault: function () {
       // this.ui.yaw_kd.val(gains_config.default_settings['yaw_kd']);

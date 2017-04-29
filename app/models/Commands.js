@@ -594,7 +594,6 @@ var Commands = {
    * @return     {boolean} Whether the command send successfully
    */
   setAdverseYawScaleFactor: function(factor){
-     console.log("settings yaw sclae factor to ", factor);
     return this.sendCommand('set_adverseYawMix', factor);
   },
 
@@ -606,7 +605,6 @@ var Commands = {
    * @return     {boolean} Whether the command send successfully
    */
   setPitchTurnFactor: function(factor){
-    console.log("settings pitch sclae factor to ", factor);
     return this.sendCommand('set_turnFactor', factor);
   }
 };
