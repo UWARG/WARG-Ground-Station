@@ -48,7 +48,7 @@ module.exports = function (Marionette, $) {
       uhf_rssi: '#uhf-rssi',
       uhf_link_quality: '#uhf-link-quality',
       transmission_errors: '#transmission-errors',
-      receive_errors: '#receive_errors'
+      receive_errors: '#receive-errors'
     },
 
     initialize: function () {
