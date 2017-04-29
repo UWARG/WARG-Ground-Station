@@ -110,20 +110,42 @@ var AircraftStatus = function () {
    * @type {number}
    * @private
    */
-  var heartBeatInterval = 5;
+  var heartBeatInterval;
+
+  var heartbeat_on = false;
 
   /**
    * Starts sending heartbeats at the rate as specified in the picpilot config. Will clear and restart it if called multiple times
    * @function startHeartbeat
    */
   this.startHeartbeat = function () {
-    if (heartBeatInterval) {
-      clearInterval(heartBeatInterval);
-    }
+    this.stopHeartbeat();
+
+    heartbeat_on = true;
     heartBeatInterval = setInterval(function () {
       Commands.sendHeartbeat();
-    }.bind(this), picpilot_config.get('heart_beat_timeout'));
+    }.bind(this), picpilot_config.get('heartbeat_timeout'));
   }.bind(this);
+
+  /**
+   * Stops sending heartbeats at an interval.
+   * @function stopHeartbeat
+   */
+  this.stopHeartbeat = function(){
+    if (heartbeat_on) {
+      clearInterval(heartBeatInterval);
+      heartbeat_on = false;
+    }
+  }
+
+  /**
+   * Determines if heartbeat on
+   *
+   * @return     {boolean}  True if heartbeat on, False otherwise.
+   */
+  this.isHeartbeatOn = function(){
+    return heartbeat_on;
+  }
 
   /**
    * @function telemetryCallback

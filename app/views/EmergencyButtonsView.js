@@ -12,6 +12,7 @@
 var remote = require('electron').remote;
 var Template = require('../util/Template');
 var Commands = remote.require('./app/models/Commands');
+var AircraftStatus = remote.require('./app/AircraftStatus');
 var WindowManager = remote.require('./app/core/WindowManager');
 var dialog = remote.dialog;
 
@@ -22,6 +23,10 @@ module.exports = function (Marionette, window) {
     template: Template('EmergencyButtonsView'),
     className: 'emergencyButtonsView',
 
+    ui: {
+      heartbeat_button: '#heartbeat-button'
+    },
+
     events: {
       'click #write-mode-button': 'writeMode',
       'click #arm-plane-button': 'armPlane',
@@ -29,8 +34,12 @@ module.exports = function (Marionette, window) {
       'click #kill-plane-button': 'killPlane',
       'click #unkill-plane-button': 'unkillPlane',
       'click #drop-probe-button': 'dropProbe',
-      'click #go-home-button': 'returnHome',
-      'click #ungo-home-button': 'cancelReturnHome'
+      'click #heartbeat-button': 'toggleHeartbeat'
+    },
+
+    initialize: function(){
+      this.heartbeat_on = false;
+
     },
 
     writeMode: function () {
@@ -83,12 +92,18 @@ module.exports = function (Marionette, window) {
       Commands.unkillPlane();
     },
 
-    returnHome: function () {
-      Commands.returnHome();
-    },
-
-    cancelReturnHome: function () {
-      Commands.cancelReturnHome();
+    toggleHeartbeat: function () {
+      if (AircraftStatus.isHeartbeatOn()){
+        AircraftStatus.stopHeartbeat();
+        this.ui.heartbeat_button.text('Start Heartbeat');
+        this.ui.heartbeat_button.addClass('button-secondary');
+        this.ui.heartbeat_button.removeClass('button-error');
+      } else {
+        AircraftStatus.startHeartbeat();
+        this.ui.heartbeat_button.text('Stop Heartbeat');
+        this.ui.heartbeat_button.removeClass('button-secondary');
+        this.ui.heartbeat_button.addClass('button-error');
+      }
     }
   });
 };
