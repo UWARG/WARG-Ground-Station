@@ -117,6 +117,11 @@ var Menu = {
       width: 575,
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
+    },
+    'Altitude Vertical View': {
+      openWindow: 'altitudeVertical',
+      width: 400,
+      height: 500
     }
   },
   'Settings': {

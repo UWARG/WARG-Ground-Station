@@ -1,0 +1,48 @@
+.altitudeVerticalView {
+  height: 100%;
+  color: #FFF;
+}
+
+h1 {
+  margin: 0;
+  height: 60px;
+  line-height: 60px;
+  overflow: hidden;
+}
+
+.current-altitude-text {
+  height: 20px;
+  line-height: 20px;
+  overflow: hidden;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.altitude-vertical-background {
+  width: 100px;
+  height: calc(100% - 110px);
+  background-color: rgba(255, 255, 255, 0.25);
+  margin: 0 auto;
+  position: relative;
+}
+
+.altitude-vertical-value {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: red;
+}
+
+.min-altitude-text, .max-altitude-text {
+  position: absolute;
+}
+
+.max-altitude-text {
+  top: 0;
+  right: -50px;
+}
+
+.min-altitude-text {
+  bottom: 0;
+  right: -50px;
+}
