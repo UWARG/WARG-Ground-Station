@@ -175,7 +175,7 @@ module.exports = function (Marionette, $) {
     setInternalBatteryLevel: function (battery_level) {
       if (battery_level !== null && battery_level !== this.current_internal_battery_level) {
         var volts = Math.round(battery_level/100); //just do a straight division for now
-        var percent =  (volts/picpilot_config.get('internal_battery_cell_count') - 3.5)/(4.2-3.5);
+        var percent =  (volts/picpilot_config.get('motor_battery_cell_count') - 3.5)/(1/(4.2-3.5));
         if (volts == 0){
           percent = 0;
         }
@@ -199,7 +199,7 @@ module.exports = function (Marionette, $) {
 
     setMotorBatteryLevel: function(battery_level){
         var volts = Math.round(battery_level/100); //just do a straight division for now
-        var percent =  (volts/picpilot_config.get('motor_battery_cell_count') - 3.5)/(4.2-3.5);
+        var percent =  (volts/picpilot_config.get('motor_battery_cell_count') - 3.5)/(1/(4.2-3.5));
         if (volts == 0){
           percent = 0;
         }
@@ -239,4 +239,4 @@ module.exports = function (Marionette, $) {
     }
 
   });
-};
+};3.
