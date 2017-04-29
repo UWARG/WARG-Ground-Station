@@ -90,6 +90,10 @@ module.exports = function (Marionette) {
       remote_orbit_kp: '#remote-orbit-kp',
       remote_path_kp: '#remote-path-kp',
 
+      pitch_turn_factor: '#pitch-turn-factor',
+      adverse_yaw_factor: '#adverse-yaw-factor',
+
+
       send_all: '#send-all-gains-button',
       reset_all: '#reset-default-gains-button',
 
@@ -123,6 +127,8 @@ module.exports = function (Marionette) {
       'click #send-orbit-gain-button': 'sendOrbitalGains',
       'click #send-path-gain-button': 'sendPathGains',
       'click #request-gains-button' : 'requestGains',
+      'click #send-adverse-yaw-button': 'setAdverseYawFactor',
+      'click #send-pitch-turn-factor-button': 'setPitchTurnFactor',
 
       'submit .roll-rate-form': 'sendRollRateGains',
       'submit .pitch-rate-form': 'sendPitchRateGains',
@@ -133,7 +139,9 @@ module.exports = function (Marionette) {
       'submit .altitude-form': 'sendAltitudeGains',
       'submit .ground-speed-form': 'sendGroundSpeedGains',
       'submit .orbit-form': 'sendOrbitalGains',
-      'submit .path-form': 'sendPathGains'
+      'submit .path-form': 'sendPathGains',
+      'submit .adverse-yaw-form': 'setAdverseYawFactor',
+      'submit .pitch-turn-form' : 'setPitchTurnFactor'
     },
 
     initialize: function () {
@@ -583,6 +591,28 @@ module.exports = function (Marionette) {
       // this.ui.path_kp.val(gains_config.default_settings['path_kp']);
 
       // this.saveChanges();
+    },
+
+    setPitchTurnFactor: function(e){
+      if (e) {
+        e.preventDefault();
+      }
+      var value = this.ui.pitch_turn_factor.val();
+
+      if (Validator.isValidNumber(value)){
+        Commands.setPitchTurnFactor(value);
+      }
+    },
+
+    setAdverseYawFactor: function(e){
+      if (e) {
+        e.preventDefault();
+      }
+      var value = this.ui.adverse_yaw_factor.val();
+
+      if (Validator.isValidNumber(value)){
+        Commands.setAdverseYawScaleFactor(value);
+      }
     }
   });
 };

@@ -68,7 +68,7 @@ var Menu = {
       openWindow: 'mapView',
       height: 900,
       width: 600,
-      devTools: true
+      devTools: false
     },
     'Simulation Mode': {
       openWindow: 'simulationMode',
@@ -110,7 +110,7 @@ var Menu = {
       width: 1100,
       height: 550,
       shortcut: 'CmdOrCtrl+Shift+G',
-      devTools:true
+      devTools:false
     },
     'Probe Drops': {
       openWindow: 'probeDrops',

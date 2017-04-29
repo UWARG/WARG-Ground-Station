@@ -86,6 +86,8 @@
     </tbody>
 </table>
 
+<br>
+
 <!-- Remote gains -->
 <table class="pure-table">
     <thead>
@@ -143,8 +145,8 @@
     <thead>
         <tr>
             <th>Type</th>
-            <th>Orbit</th>
-            <th>Path</th>
+            <th>Remote Orbit</th>
+            <th>Remote Path</th>
         </tr>
     </thead>
 
@@ -153,6 +155,28 @@
             <td>KP</td>
             <td id="remote-orbit-kp"></td>
             <td id="remote-path-kp"></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<table class="pure-table" style="margin-top: 12px;">
+    <thead>
+        <tr>
+            <th>Pitch Turn Factor</th>
+            <th>Adverse Yaw Factor</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td><form class="pitch-turn-form pure-form"><input id="pitch-turn-factor" type="text"></form></td>
+            <td><form class="adverse-yaw-form pure-form"><input id="adverse-yaw-factor" type="text"></form></td>
+        </tr>
+
+        <tr>
+          <td><button id="send-pitch-turn-factor-button" class="pure-button button-success">Send</button></td>
+          <td><button id="send-adverse-yaw-button" class="pure-button button-success">Send</button></td>
         </tr>
     </tbody>
 </table>

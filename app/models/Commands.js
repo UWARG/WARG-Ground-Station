@@ -586,6 +586,29 @@ var Commands = {
     return this.sendCommand('set_ground_speed_gains', kp, ki, kd);
   },
 
+  /**
+   * Sets the adverse yaw scale factor. ie. How much yaw to apply in
+   * proportion to a roll
+   *
+   * @param      {float}  factor  The factor
+   * @return     {boolean} Whether the command send successfully
+   */
+  setAdverseYawScaleFactor: function(factor){
+     console.log("settings yaw sclae factor to ", factor);
+    return this.sendCommand('set_adverseYawMix', factor);
+  },
+
+  /**
+   * Sets the pitch turn factor. ie how much pitch to apply in proportion
+   * to a roll
+   *
+   * @param      {float}  factor  The factor
+   * @return     {boolean} Whether the command send successfully
+   */
+  setPitchTurnFactor: function(factor){
+    console.log("settings pitch sclae factor to ", factor);
+    return this.sendCommand('set_turnFactor', factor);
+  }
 };
 
 module.exports = Commands;
