@@ -75,22 +75,22 @@ module.exports = function (Marionette) {
 
     setRollRate: function (val) {
       if (val !== null) {
-        this.ui.roll_rate_rad.text(Number(val).toFixed(2));
-        this.ui.roll_rate_deg.text((Number(val)*180/Math.PI).toFixed(2));
+        this.ui.roll_rate_deg.text(Number(val).toFixed(2));
+        this.ui.roll_rate_rad.text((Number(val)/180*Math.PI).toFixed(2));
       }
     },
 
     setPitchRate: function (val) {
       if (val !== null) {
-        this.ui.pitch_rate_rad.text(Number(val).toFixed(2));
-        this.ui.pitch_rate_deg.text((Number(val)*180/Math.PI).toFixed(2));
+        this.ui.pitch_rate_deg.text(Number(val).toFixed(2));
+        this.ui.pitch_rate_rad.text((Number(val)/180*Math.PI).toFixed(2));
       }
     },
 
     setYawRate: function (val) {
       if (val !== null) {
-        this.ui.yaw_rate_rad.text(Number(val).toFixed(2));
-        this.ui.yaw_rate_deg.text((Number(val)*180/Math.PI).toFixed(2));
+        this.ui.yaw_rate_deg.text(Number(val).toFixed(2));
+        this.ui.yaw_rate_rad.text((Number(val)/180*Math.PI).toFixed(2));
       }
     },
 
