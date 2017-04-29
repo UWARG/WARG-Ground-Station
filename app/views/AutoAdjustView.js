@@ -64,7 +64,6 @@ module.exports = function (Marionette) {
       "click #fullAuto": "fullAuto",
       "click #fullGround": "fullGround",
       "click #gcRollRate": "gcRollRate",
-      "click #gcHeading": "gcHeading",
       "click #pathFollowing": "pathFollowing"
     },
 
@@ -257,19 +256,6 @@ module.exports = function (Marionette) {
       this.ui.rolltype_select.val('Angle');
       this.ui.headingtype_select.val('Off');
       this.ui.alttype_select.val('Off');
-      this.sendAll();
-    },
-    gcHeading: function () {
-      this.ui.flap_select.val('Ground Station');
-      this.ui.throttle_select.val('Ground Station');
-      this.ui.alt_select.val('Ground Station');
-      this.ui.head_select.val('Ground Station');
-      this.ui.roll_select.val('Ground Station');
-      this.ui.pitch_select.val('Ground Station');
-      this.ui.pitchtype_select.val('Angle');
-      this.ui.rolltype_select.val('Angle');
-      this.ui.headingtype_select.val('On');
-      this.ui.alttype_select.val('On');
       this.sendAll();
     },
     pathFollowing: function () {
