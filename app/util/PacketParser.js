@@ -98,7 +98,7 @@ var PacketParser = {
 
       _.each(packet_headers, function (validators, header_name) {
         //if it is null, that means the data relay intentionally didn't send us the data
-        if (current_state[header_name] === '') {
+        if (current_state[header_name] === '' || current_state[header_name] === ' ') {
           packet_data[header_name] = null;
         }
         //warn the user if we didn't receive a piece of data (happens if we don't receive enough data)
