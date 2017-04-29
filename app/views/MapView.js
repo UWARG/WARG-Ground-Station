@@ -43,7 +43,8 @@ module.exports = function (Marionette, L, $) {
       marker_lat: '#marker-lat',
       marker_lon: '#marker-lon',
 
-      add_waypoint_button: '#add-waypoint-button'
+      add_waypoint_button: '#add-waypoint-button',
+      delete_waypoint_button: '#delete-waypoint-button'
     },
     events: {
       'click #clear-plane-trail-button': 'clearPlaneTrail',
@@ -154,6 +155,11 @@ module.exports = function (Marionette, L, $) {
       this.add_waypoint_mode = !this.add_waypoint_mode;
     },
     deleteWaypointToggle: function (e) {
+      if (this.delete_waypoint_mode){ //if we're currently adding a waypoint
+        this.ui.delete_waypoint_button.text('Delete Waypoint');
+      } else {
+        this.ui.delete_waypoint_button.text('Stop Delete');
+      }
       this.map.deleteWaypointMode(!this.delete_waypoint_mode);
       this.delete_waypoint_mode = !this.delete_waypoint_mode;
     },
