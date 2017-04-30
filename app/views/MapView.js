@@ -43,6 +43,7 @@ module.exports = function (Marionette, L, $) {
       marker_lat: '#marker-lat',
       marker_lon: '#marker-lon',
 
+      send_path_button: '#send-path-button',
       add_waypoint_button: '#add-waypoint-button',
       delete_waypoint_button: '#delete-waypoint-button'
     },
@@ -62,6 +63,7 @@ module.exports = function (Marionette, L, $) {
       this.map = new Map(L);
       this.add_waypoint_mode = false;
       this.delete_waypoint_mode = false;
+      this.sending_path = false;
       this.aircraft_position_callback = this.aircraftPositionCallback.bind(this);
       this.aircraft_status_callback = this.aircraftStatusCallback.bind(this);
       TelemetryData.on('aircraft_position', this.aircraft_position_callback);
@@ -125,7 +127,18 @@ module.exports = function (Marionette, L, $) {
     },
 
     sendPath: function () {
-      PathManager.sendPath();
+      if (this.sending_path){ //if we're currently adding a waypoint
+        PathManager.stopSendingPath();
+        this.ui.send_path_button.text('Send Path');
+        this.ui.send_path_button.removeClass('button-success');
+        this.ui.send_path_button.addClass('button-secondary');
+      } else {
+        PathManager.sendPath();
+        this.ui.send_path_button.text('Stop Send');
+        this.ui.send_path_button.addClass('button-error');
+        this.ui.send_path_button.removeClass('button-success');
+      }
+      this.sending_path = !this.sending_path;
     },
 
     clearPath: function () {
@@ -141,6 +154,7 @@ module.exports = function (Marionette, L, $) {
     clearPlaneTrail: function (e) {
       this.map.clearPlaneTrail();
     },
+
     addWaypointToggle: function (e) {
       if (this.add_waypoint_mode){ //if we're currently adding a waypoint
         this.ui.add_waypoint_button.text('Add Waypoint');
@@ -154,6 +168,7 @@ module.exports = function (Marionette, L, $) {
       this.map.addWaypointMode(!this.add_waypoint_mode);
       this.add_waypoint_mode = !this.add_waypoint_mode;
     },
+
     deleteWaypointToggle: function (e) {
       if (this.delete_waypoint_mode){ //if we're currently adding a waypoint
         this.ui.delete_waypoint_button.text('Delete Waypoint');
@@ -163,10 +178,12 @@ module.exports = function (Marionette, L, $) {
       this.map.deleteWaypointMode(!this.delete_waypoint_mode);
       this.delete_waypoint_mode = !this.delete_waypoint_mode;
     },
+
     clickedWaypointPopupSubmit: function (e) {
       e.preventDefault();
       this.map.popupSubmitted(Number($('.waypoint-altitude').val()), Number($('.waypoint-radius').val()), $('.is-probe').is(":checked"));
     },
+
     togglePathFollowing: function () {
       if (AircraftStatus.following_path) { //if the plane is currently following a path
         Commands.followPath(false);

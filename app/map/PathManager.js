@@ -204,10 +204,14 @@ var PathManager = function () {
     Logger.info('[Path Manager] Cleared all waypoints');
   };
 
-  this.sendPath = function () {
+  this.stopSendingPath = function(){
     if (this.sending_path_interval) {
       clearInterval(this.sending_path_interval);
     }
+  };
+
+  this.sendPath = function () {
+    this.stopSendingPath();
 
     Logger.info('[Path Manager] Clearing all waypoints');
     Commands.clearWaypoints();
