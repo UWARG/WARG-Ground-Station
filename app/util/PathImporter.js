@@ -1,42 +1,66 @@
 var PathManager = require('../map/PathManager');
-var fdialogs = require('node-webkit-fdialogs'); //https://www.npmjs.com/package/node-webkit-fdialogs
 var Logger = require('./Logger');
+var electron = require('electron');
+var fs = require('fs');
+var dialog = electron.dialog;
 
 var PathImporter = {
   import: function () {
-    var dialog = new fdialogs.FDialog({
-      type: 'open',
-      accept: ['.path'],
-      path: '~/Documents'
-    });
-    dialog.readFile(function (err, content, path) {
-      if (err) {
-        Logger.error('There was an error in reading the path file. Error: ' + err);
+    dialog.showOpenDialog({
+      properties: ['openFile'],
+      title: 'Import Path from file',
+      buttonLabel: 'Import',
+      filters: [
+        {name: 'WARG Path File', extensions: ['path']},
+        {name: 'All Files', extensions: ['*']}
+      ]
+    }, function (file_path) {
+      if (!file_path) {
+        Logger.debug('No path file selected');
+        return;
       }
-      else {
-        try {
-          var object = JSON.parse(content, 2);
-          PathManager.clearPath();
-          for (var i = 0; i < object.length; i++) {
-            PathManager.appendWaypoint(object[i]);
-          }
-        } catch (e) {
-          Logger.info("Could not save, bad file format: " + e);
+      file_path = file_path[0];
+
+      fs.readFile(file_path, function (err, content) {
+        if (err) {
+          Logger.error('There was an error in reading the path file. Error: ' + err);
         }
-      }
-    });
+        else {
+          try {
+            var object = JSON.parse(content, 2);
+            PathManager.clearPath();
+            for (var i = 0; i < object.length; i++) {
+              PathManager.appendWaypoint(object[i]);
+            }
+            Logger.info("Successfully imported path from " + file_path);
+          } catch (e) {
+            Logger.error("Could not import path file, bad file format: " + e);
+          }
+        }
+      });
+    }.bind(this));
   },
   export: function () {
-    str = JSON.stringify(PathManager.waypoints, null, 2);
-    buf = new Buffer(str);
-    fdialogs.saveFile(buf, function (err, path) {
-      if (err) {
-        Logger.error('There was an error saving the path to : ' + path + ' Error: ' + err);
+    var str = JSON.stringify(PathManager.waypoints, null, 2);
+
+    dialog.showSaveDialog({
+      title: 'Save Path File',
+      buttonLabel: 'Save Gains',
+      filters: [
+        {name: 'WARG Path File', extensions: ['path']}
+      ]
+    }, function (file_path) {
+      if (!file_path) {
+        Logger.debug('No path file selected');
+        return;
       }
-      else {
-        Logger.debug("Path saved succesfully to " + path);
-      }
-    });
+      fs.writeFile(file_path, str, function (err) {
+        if (err) {
+          Logger.error(`Error writing path file to ${file_path}. ${err.toString()}`);
+        }
+        Logger.debug(`Path file saved to ${file_path}`);
+      });
+    }.bind(this));
   }
 };
 

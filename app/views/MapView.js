@@ -54,7 +54,8 @@ module.exports = function (Marionette, L, $) {
       'click #send-path-button': 'sendPath',
       'submit .waypointPopupForm': 'clickedWaypointPopupSubmit',
       'click #start-following-button': 'togglePathFollowing',
-      'click #clear-path-button': 'clearPath',
+      'click #clear-local-path-button': 'clearLocalPath',
+      'click #clear-remote-path-button': 'clearRemotePath',
       'submit #new-follow-index': 'followNewWaypoint',
       'click #new-marker-button': 'addNewMarker'
     },
@@ -141,8 +142,12 @@ module.exports = function (Marionette, L, $) {
       this.sending_path = !this.sending_path;
     },
 
-    clearPath: function () {
+    clearLocalPath: function () {
       PathManager.clearPath();
+    },
+
+    clearRemotePath: function () {
+      Commands.clearWaypoints();
     },
 
     followNewWaypoint: function (e) {

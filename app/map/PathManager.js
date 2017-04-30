@@ -91,7 +91,7 @@ var PathManager = function () {
       this.calculatePathChecksum();
     }
     else {
-      console.error('PathManager.removeWaypoint was passed in an index that does not exist. Index: ' + index);
+      Logger.error('PathManager.removeWaypoint was passed in an index that does not exist. Index: ' + index);
     }
   };
 
@@ -198,8 +198,9 @@ var PathManager = function () {
   };
 
   this.clearPath = function () {
-    for (var i = 0; i < this.waypoints.length; i++) {
-      this.removeWaypoint(i);
+    var original_length = this.waypoints.length;
+    for (var i = 0; i < original_length; i++) {
+      this.removeWaypoint(0);
     }
     Commands.clearWaypoints();
     Logger.info('[Path Manager] Cleared all waypoints');
