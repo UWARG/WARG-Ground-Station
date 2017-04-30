@@ -81,8 +81,10 @@ var Map = function (L) {
       waypointCount: PathManager.waypoints.length - 1,
       radius: map_config.get('default_waypoint_radius')
     });
+    waypoint.changeAltitude(coords.alt);
     waypointsLayer.addLayer(waypoint);
     waypoints.push(waypoint);
+
     waypoint.on('drag', events.drag_waypoint); //note: doing this on a drag event instaed of a dragend event may cause performance issues, however it makes it look better
     this.updateWaypointConnectionLines();
     waypoint.bindPopup(Template('WaypointPopup')());
