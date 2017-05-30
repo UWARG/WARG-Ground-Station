@@ -117,8 +117,17 @@ var Menu = {
       width: 575,
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
-    }
+    },
+
+    //create a new window
+    'AltitudeWindowView':{
+      openWindow: 'AltitudeWindowView',
+      width: 600,
+      height: 500,
+      //devTools: true;
+    },
   },
+
   'Settings': {
     'Network Settings': {
       openWindow: 'networkSettings',
