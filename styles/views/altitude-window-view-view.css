@@ -1,0 +1,26 @@
+.AltitudeWindowView .block1{
+  width: 200px;
+  position: absolute;
+  background-color: rgba(244,244,244,1);
+}
+
+.AltitudeWindowView .block2{
+  width: 200px;
+  height: 480px;
+  position: absolute;
+  left: 100px;
+  top: 100px;
+}
+
+.AltitudeWindowView .max{
+  position: absolute;
+  left: 125px;
+  top: 40px;
+}
+
+.AltitudeWindowView .current{
+  position:absolute;
+  left: 120px;
+  top: 600px;
+
+}
