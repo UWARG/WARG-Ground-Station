@@ -128,9 +128,9 @@ var Menu = {
 	},
 	'Attitude Window':{
 		openWindow: 'attitudeWindow',
-		//width: 700,
-		//height: 700,
-		devTools: true
+		width: 1000,
+		height: 700,
+		devTools: false,
 	},
   },
   'Settings': {

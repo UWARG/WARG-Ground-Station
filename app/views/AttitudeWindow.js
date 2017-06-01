@@ -10,7 +10,7 @@
  * @listens models/TelemetryData~TelemetryData:data_received
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
- * @description Responsible for displaying a the aircraft's attitude via dials (heading, roll, pitch)
+ * @description Responsible for displaying and setting the aircraft's attitude rate (roll rate, pitch rate, yaw rate)
  */
 
 var remote = require('electron').remote;

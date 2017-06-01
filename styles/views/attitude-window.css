@@ -4,7 +4,7 @@
 }
 
 .attitudeWindow.block.component{
-	margin-top: 50%;
+	margin-top: 550px;
 }
 
 .attitudeWindow.block.component.yaw{
@@ -18,7 +18,7 @@
 }
 .attitudeWindow.input{
 	//margin-top: 30%;
-	width: 48px;
+	width: 40px;
 }
 .attitudeWindow.send{
 	//margin-top: ;
