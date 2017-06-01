@@ -125,7 +125,13 @@ var Menu = {
 		height: 600,
 		shortcut: "CmdOrCtrl+Shift+D+S",
 		devTools: false
-	}
+	},
+	'Attitude Window':{
+		openWindow: 'attitudeWindow',
+		//width: 700,
+		//height: 700,
+		devTools: true
+	},
   },
   'Settings': {
     'Network Settings': {
