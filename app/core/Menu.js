@@ -132,6 +132,12 @@ var Menu = {
       height: 700,
       devTools: false,
     },
+	'Control Window':{
+	  openWindow: 'controlWindow',
+	  width: 1000,
+	  height: 700,
+	  devTools: true,
+	},
   },
   'Settings': {
     'Network Settings': {
