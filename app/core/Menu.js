@@ -117,7 +117,27 @@ var Menu = {
       width: 575,
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
-    }
+    },
+    // altitude regtangular
+    'Altitude Window':{
+      openWindow: 'altitudeWindow',
+      width: 500,
+      height: 600,
+      shortcut: "CmdOrCtrl+Shift+D+S",
+      devTools: false
+    },
+    'Attitude Window':{
+      openWindow: 'attitudeWindow',
+      width: 1000,
+      height: 700,
+      devTools: false,
+    },
+	'Control Window':{
+	  openWindow: 'controlWindow',
+	  width: 1000,
+	  height: 700,
+	  devTools: true,
+	},
   },
   'Settings': {
     'Network Settings': {

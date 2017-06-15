@@ -1,0 +1,60 @@
+.controlWindow.square{
+  border-radius: 30px;
+}
+
+.controlWindow.circle{
+  border-radius: 100%;
+}
+
+.controlWindow.square.back{
+  background-color: rgba(166,166,166,1);
+  width: 320px;
+  height: 320px;
+  position: absolute;
+}
+
+.controlWindow.circle.front{
+  background-color: rgba(32,32,32,1);
+  width: 48px;
+  height: 48px;
+  position: relative;
+  margin-left: 43%;
+  //margin-right: 50%;
+  //margin-bottom: 50%;
+  margin-top: 43%;
+}
+
+.controlWindow.square.back.onefour{
+  margin-left: 5%;
+  margin-top: 5%;
+}
+
+.controlWindow.square.back.twothree{
+  margin-left: 50%;
+  margin-top: 5%;
+}
+
+.controlWindow.value{
+  position: absolute;
+  //margin-left: 20%;
+  margin-right: auto;
+  margin-top: -30%;
+  margin-bottom: 130%;
+}
+
+.controlWindow.value.four{
+  margin-left: 80%;
+}
+
+.controlWindow.value.three{
+  margin-left: 80%;
+ }
+
+.controlWindow.auto-pilot{
+  background-color: rgba(122,244,122,1);
+  border-color: rgba(121,244,122,1);
+  border-style: solid;
+  border-radius: 4px;
+  margin-top: 60%;
+  margin-left: 40%;
+}
