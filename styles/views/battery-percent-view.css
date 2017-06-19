@@ -1,0 +1,63 @@
+.batteryPercentView{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  font-family: Akashi;
+}
+
+.batteryPercentView .battery-percentage-display{
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+}
+
+.batteryPercentView .battery-percentage-level{
+  height: 100%;
+  width:100%;
+  text-align: center;
+}
+
+.batteryPercentView .battery-percentage-level{
+  font-size: 16px;
+}
+
+.batteryPercentView .battery-percentage-level .battery-percentage-view{
+  margin-top: 4px;
+}
+
+.batteryPercentView .battery-picture{
+  height: 30px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+.batteryPercentView .battery-picture .battery-base{
+  border: 1px solid white;
+  display: inline-block;
+  width: 60px;
+  height: 24px;
+}
+
+.batteryPercentView .battery-picture .battery-base .percentage{
+  display: block;
+  background: green;
+  height: 100%;
+  width: 0%;
+}
+
+.batteryPercentView .battery-picture .battery-tip{
+  height: 10px;
+  width: 5px;
+  border: 1px solid white;
+  border-left: none;
+}
+
+.batteryPercentView .battery-percentage-level .battery-message{
+  margin-top: 4px;
+}
+
+.batteryPercentView .battery-percentage-level p{
+  margin: 8px 0 0 0;
+  color: lightgrey;
+}

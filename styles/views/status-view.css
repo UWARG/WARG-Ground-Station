@@ -44,13 +44,25 @@
   flex-direction: column;
   width: 150px;
 }
-
+/*
+.statusView .battery-percentage-display{
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+}
+*/
 .statusView .battery-level{
   height: 100%;
   width:100%;
   text-align: center;
 }
-
+/*
+.statusView .battery-percentage-level{
+  height: 100%;
+  width:100%;
+  text-align: center;
+}
+*/
 .statusView .statuses{
   height: 100%;
   width: 60%;
@@ -76,6 +88,11 @@
   color: white;
 }
 
+#battery-percent-region{
+  height: 100%;
+  width: 30%;
+}
+
 #reset-elapsed-time,#clear-statuses-button{
   height: 27px;
   width: 71px;
@@ -83,7 +100,7 @@
   display: block;
   margin: 7px auto 4px auto;
   border-radius: 2px;
-}  
+}
 #clear-statuses-button{
   flex-shrink: 0;
   height: 19px;
@@ -92,17 +109,37 @@
 .statusView  .battery-level{
   font-size: 16px;
 }
+/*
+.statusView .battery-percentage-level{
+  font-size: 16px;
+}
+*/
 .statusView  .battery-level .battery-percentage{
   margin-top: 4px;
 }
+/*
+.statusView .battery-percentage-level .battery-percentage-view{
+  margin-top: 4px;
+}
+*/
 .statusView  .battery-level .battery-message{
   margin-top: 4px;
 }
-
+/*
+.statusView .battery-percentage-level .battery-message{
+  margin-top: 4px;
+}
+*/
 .statusView .battery-level p{
   margin: 8px 0 0 0;
   color: lightgrey;
 }
+/*
+.statusView .battery-percentage-level p{
+  margin: 8px 0 0 0;
+  color: lightgrey;
+}
+*/
 .statusView .battery-picture{
   height: 30px;
   display: flex;
