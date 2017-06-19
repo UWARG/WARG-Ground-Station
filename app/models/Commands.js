@@ -606,7 +606,28 @@ var Commands = {
    */
   setPitchTurnFactor: function(factor){
     return this.sendCommand('set_turnFactor', factor);
-  }
+  },
+  
+ /**
+  * Sets the scaling factor and signal offset
+  * 
+  * @param       {unsigned int} channel The channel number
+  * @param       {float} scale The scaling factor
+  * @param       {unsigned int} offset The signal offset
+  * @return      {boolean} Whether the command send successfully
+  */
+  setChannelFactor: function (chn, scale, offset){
+    return this.sendCommand('calibrate_pwm_inputs', chn, offset, scale);
+  },
+  
+ /**
+  * Sets the scaled indicator
+  * @param 		 {boolean} scaled The scaled indicator
+  */
+  setScaled: function (scaled){
+	return this.sendCommand('show_scaled_pwm', scaled);
+  },
+  
 };
 
 module.exports = Commands;
