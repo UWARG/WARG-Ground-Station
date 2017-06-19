@@ -1,9 +1,9 @@
-var AltitudeWindow = require('../../app/views/AltitudeWindow')(Marionette, Backbone);
+var ControllerInputsView = require('../../app/views/ControllerInputsView')(Marionette, Backbone);
 var WindowShortCuts = require('../../app/core/WindowShortcuts');
 
 WindowShortCuts.init(Mousetrap);
 
-var window_view = new AltitudeWindow();
+var window_view = new ControllerInputsView();
 
 $(document).ready(function(){
   $('body').append(window_view.render().$el);

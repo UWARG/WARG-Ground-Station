@@ -1,6 +1,6 @@
 /**
  * @author Bingzheng Feng
- * @module views/ControlWindow
+ * @module views/ControllerInputsView
  * @requires models/Commands
  * @requires util/Validator
  * @requires util/Logger
@@ -10,7 +10,7 @@
  * @listens models/TelemetryData~TelemetryData:data_received
  * @copyright Waterloo Aerial Robotics Group 2016
  * @licence https://raw.githubusercontent.com/UWARG/WARG-Ground-Station/master/LICENSE
- * @description Responsible for displaying control pitch, yaw, roll
+ * @description Responsible for displaying all the received controller inputs
  */
 
 var remote = require('electron').remote;
@@ -19,26 +19,23 @@ var TelemetryData = remote.require('./app/models/TelemetryData');
 var Logger = remote.require('./app/util/Logger');
 var Validator = require('../util/Validator');
 var Commands = remote.require('./app/models/Commands');
-var Channel_Conf = remote.require('./config/vehicle-config');
-var PicPilot_Conf = remote.require('./config/picpilot-config');
+var channel_config = remote.require('./config/vehicle-channel-config');
+var picpilot_conf = remote.require('./config/picpilot-config');
 
 module.exports = function (Marionette) {
 
   return Marionette.ItemView.extend({
-    template: Template('ControlWindow'),
-    className: 'controlWinodw',
+    template: Template('ControllerInputsView'),
+    className: 'controllerInputsView',
 
     ui: {
-      front23: '.controlWindow.circle.front.twothree',
-      front14: '.controlWindow.circle.front.onefour',
-      ch1_text: '.controlWindow.value.one',
-      ch2_text: '.controlWindow.value.two',
-      ch3_text: '.controlWindow.value.three',
-      ch4_text: '.controlWindow.value.four',
-      autoPilot_btn: '.controlWindow.auto-pilot',
-    },
-
-    events: {
+      front23: '.controllerInputsView.circle.front.twothree',
+      front14: '.controllerInputsView.circle.front.onefour',
+      ch1_text: '.controllerInputsView.value.one',
+      ch2_text: '.controllerInputsView.value.two',
+      ch3_text: '.controllerInputsView.value.three',
+      ch4_text: '.controllerInputsView.value.four',
+      auto_pilot_btn: '.controllerInputsView.auto-pilot',
     },
 
     initialize: function () {
@@ -46,22 +43,35 @@ module.exports = function (Marionette) {
       this.roll = 0;
       this.pitch = 0;
       this.yaw_rudder = 0;
-      this.auto_ON_OFF = true;
+      this.auto_on_off = true;
       this.control_off = false;
-      this.type = PicPilot_Conf.get('type');
+      this.is_scaled = false;
+      this.type = picpilot_conf.get('type');
       
       this.aircraft_channel_callback = this.aircraftChannelCallback.bind(this);
       TelemetryData.addListener('aircraft_channels', this.aircraft_channel_callback);
     },
     
+    rcIsOff: function(data){
+      var current_vehicle = channel_config.get(this.type);
+      var ch1 = data[current_vehicle['throttle']];
+      var ch2 = data[current_vehicle['roll']];
+      var ch3 = data[current_vehicle['pitch']];
+      var ch4 = data[current_vehicle['rudder_yaw']];
+      var ch5 = data[current_vehicle['autopilot_on_off']];
+      return (ch1 == -10000 || ch2 == -10000 || ch3 == -10000 || ch4 == -10000 || ch5 == -10000);
+    },
+    
     aircraftChannelCallback: function(data){
-      var ch1 = data[Channel_Conf.get(this.type)['throttle']];
-      var ch2 = data[Channel_Conf.get(this.type)['roll']];
-      var ch3 = data[Channel_Conf.get(this.type)['pitch']];
-      var ch4 = data[Channel_Conf.get(this.type)['rudder_yaw']];
-      var ch5 = data[Channel_Conf.get(this.type)['autopilot_ON_OFF']];
+      var current_vehicle = channel_config.get(this.type);
+      var ch1 = data[current_vehicle['throttle']];
+      var ch2 = data[current_vehicle['roll']];
+      var ch3 = data[current_vehicle['pitch']];
+      var ch4 = data[current_vehicle['rudder_yaw']];
+      var ch5 = data[current_vehicle['autopilot_on_off']];
+      this.is_scaled = data[channels_scaled];
       // if RC controller is OFF
-      if(ch1 < -1024 || ch2 < -1024 || ch3 < -1024 || ch4 < -1024 || ch5 < -1024 || ch1 > 1024 || ch2 > 1024 || ch3 > 1024 || ch4 > 1024 || ch5 > 1024){
+      if(rcIsOff(data)){
         this.control_off = true;
         this.ui.front14.css({"margin-left": "43%","margin-top":"43%",
                                "background-color": "rgba(244,122,122,1)",
@@ -89,9 +99,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch1_text.text("");
         }else{
-          this.throttle = val;
-          var percentage = 43 - val/1024 * 43;
-          this.ui.front14.css("margin-top", percentage.toString()+"%");
+          if(this.is_scaled){
+            this.throttle = val;
+            var percentage = 43 - val/1024 * 43;
+            this.ui.front14.css("margin-top", percentage.toString()+"%");
+          }
           this.ui.ch1_text.text(val.toString()+',');
         }
       }
@@ -102,9 +114,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch2_text.text("");
         }else{
-          this.roll = val;
-          var percentage = val/1024 * 43 + 43;
-          this.ui.front23.css("margin-left", percentage.toString() + "%");
+          if(this.is_scaled){
+            this.roll = val;
+            var percentage = val/1024 * 43 + 43;
+            this.ui.front23.css("margin-left", percentage.toString() + "%");
+          }
           this.ui.ch2_text.text(val.toString()+',');
         }
       }
@@ -115,9 +129,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch3_text.text("RC Controller is OFF");
         }else{
-          this.pitch = val;
-          var percentage = 43 - val/1024 * 43;
-          this.ui.front23.css("margin-top", percentage.toString() +"%");
+          if(this.is_scaled){
+            this.pitch = val;
+            var percentage = 43 - val/1024 * 43;
+            this.ui.front23.css("margin-top", percentage.toString() +"%");
+          }
           this.ui.ch3_text.text(val.toString());
         }
       }
@@ -128,9 +144,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch4_text.text("RC Controller is OFF");
         }else{
-          var percentage = val/1024 * 43 + 43;
-          this.yaw_rudder = val;
-          this.ui.front14.css("margin-left", percentage.toString() + "%");
+          if(this.is_scaled){
+            var percentage = val/1024 * 43 + 43;
+            this.yaw_rudder = val;
+            this.ui.front14.css("margin-left", percentage.toString() + "%");
+          }
           this.ui.ch4_text.text(val.toString());
         }
           
@@ -140,14 +158,13 @@ module.exports = function (Marionette) {
     setOnOff(val){
       if(val != null){
         if(val > 0){
-          console.log("ONOFF:",val);
-          this.auto_ON_OFF = true;
-          this.ui.autoPilot_btn.css("background-color","rgba(122,244,122,1)");
-          this.ui.autoPilot_btn.css("border-color","rgba(122,244,122,1)");
+          this.auto_on_off = true;
+          this.ui.auto_pilot_btn.css("background-color","rgba(122,244,122,1)");
+          this.ui.auto_pilot_btn.css("border-color","rgba(122,244,122,1)");
         }else{
-          this.auto_ON_OFF = false;
-          this.ui.autoPilot_btn.css("background-color","rgba(244,122,122,1)");
-          this.ui.autoPilot_btn.css("border-color","rgba(244,122,122,1)");
+          this.auto_on_off = false;
+          this.ui.auto_pilot_btn.css("background-color","rgba(244,122,122,1)");
+          this.ui.auto_pilot_btn.css("border-color","rgba(244,122,122,1)");
         }
       }
     },
