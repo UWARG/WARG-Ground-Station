@@ -532,7 +532,7 @@ var Commands = {
   /**
   * @function sendPitchRate
   * @param rate
-  * @returns {boolean} Whether teh command send successfully
+  * @returns {boolean} Whether the command send successfully
   */
   sendRollRate: function(rate) {
     return this.sendCommand('set_rollRate', rate);
@@ -553,7 +553,7 @@ var Commands = {
 /**
   * @function sendPitchRate
   * @param rate
-  * @returns {boolean} Whether teh command send successfully
+  * @returns {boolean} Whether the command send successfully
   */
   sendPitchRate: function(rate) {
     return this.sendCommand('set_pitchRate', rate);
@@ -575,7 +575,7 @@ var Commands = {
 /**
   * @function sendYawRate
   * @param rate
-  * @returns {boolean} Whether teh command send successfully
+  * @returns {boolean} Whether the command send successfully
   */
   sendYawRate: function(rate) {
     return this.sendCommand('set_yawRate', rate);

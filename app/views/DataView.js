@@ -21,11 +21,9 @@ module.exports = function (Marionette, Backbone) {
     template: Template('DataView'), //name of the file in the views folder at the project root
     className: 'dataView', //this is the class name the injected div will have (refer to this class in your style sheets)
 	
-	
     events: {
       'click #keep_last_valid_packet': 'toggleKeepLastPacket'
     },
-	/**/
 
     initialize: function () {
       this.telemetryCallbacks = {};
@@ -61,11 +59,9 @@ module.exports = function (Marionette, Backbone) {
       this.render();
     },
 	
-	
     toggleKeepLastPacket: function(){
       this.keep_last_packet = !this.keep_last_packet;
     },
-	/**/
 	
     onBeforeDestroy: function () {
       _.each(PacketTypes, function (headers, packet_name) {

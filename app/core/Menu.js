@@ -118,8 +118,8 @@ var Menu = {
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
     },
-    'Control Window':{
-      openWindow: 'controlWindow',
+    'Controller Inputs':{
+      openWindow: 'controllerInputsView',
       width: 1000,
       height: 700,
       devTools: true,
