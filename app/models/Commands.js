@@ -529,7 +529,7 @@ var Commands = {
   },
   
   /**
-  * @function sendPitchRate
+  * @function sendRollRate
   * @param rate
   * @returns {boolean} Whether teh command send successfully
   */
