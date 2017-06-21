@@ -117,7 +117,13 @@ var Menu = {
       width: 575,
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
-    }
+    },
+    'Controller Inputs':{
+      openWindow: 'controllerInputsView',
+      width: 1000,
+      height: 700,
+      devTools: true,
+    },
   },
   'Settings': {
     'Network Settings': {
