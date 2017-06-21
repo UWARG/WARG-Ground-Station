@@ -1,6 +1,6 @@
 /**
  * @author Bingzheng Feng
- * @module views/AttitudeWindow
+ * @module views/AttitudeBarView
  * @requires models/Commands
  * @requires util/Validator
  * @requires util/Logger
@@ -23,8 +23,8 @@ var Commands = remote.require('./app/models/Commands');
 module.exports = function (Marionette) {
 
   return Marionette.ItemView.extend({
-    template: Template('AttitudeWindow'),
-    className: 'attitudeWinodw',
+    template: Template('AttitudeBarView'),
+    className: 'attitudeBarView',
 
     ui: {
       pitch_rate_rad: '.pitch.value-rad',
@@ -50,7 +50,7 @@ module.exports = function (Marionette) {
     },
 
     initialize: function () {
-      this.DegreeOrRad = false; // false stands for degree
+      this.degree_or_rad = false; // false stands for degree
       this.aircraft_position_callback = this.aircraftPositionCallback.bind(this);
       TelemetryData.addListener('aircraft_position', this.aircraft_position_callback);
     },
@@ -75,14 +75,14 @@ module.exports = function (Marionette) {
     },
     setRollRate: function (val) {
       if (val !== null) {
-        var rollDegree = Number(val).toFixed(2);
-        var rollRadius = (Number(val)/180*Math.PI).toFixed(2);
-        this.ui.roll_rate_deg.text(rollDegree);
-        this.ui.roll_rate_rad.text(rollRadius);
-        if(!this.DegreeOrRad){
+        var roll_degree = Number(val).toFixed(2);
+        var roll_radius = (Number(val)/180*Math.PI).toFixed(2);
+        this.ui.roll_rate_deg.text(roll_degree);
+        this.ui.roll_rate_rad.text(roll_radius);
+        if(!this.degree_or_rad){
           amount = 200 - Number(val)*100;
           this.ui.roll_front.css("height", amount.toString()+"px");
-          this.ui.roll_front.text(rollDegree.toString());
+          this.ui.roll_front.text(roll_degree.toString());
         }
       }
     },
@@ -98,14 +98,14 @@ module.exports = function (Marionette) {
 
     setPitchRate: function (val) {
       if (val !== null) {
-        var pitchDegree = Number(val).toFixed(2);
-        var pitchRadius = (Number(val)/180*Math.PI).toFixed(2);
-        this.ui.pitch_rate_deg.text(pitchDegree);
-        this.ui.pitch_rate_rad.text(pitchRadius);
-        if(!this.DegreeOrRad){
+        var pitch_degree = Number(val).toFixed(2);
+        var pitch_radius = (Number(val)/180*Math.PI).toFixed(2);
+        this.ui.pitch_rate_deg.text(pitch_degree);
+        this.ui.pitch_rate_rad.text(pitch_radius);
+        if(!this.degree_or_rad){
           amount = 200 - Number(val)*100;
           this.ui.pitch_front.css("height", amount.toString()+"px");
-          this.ui.pitch_front.text(pitchDegree.toString());
+          this.ui.pitch_front.text(pitch_degree.toString());
         }
       }
     },
@@ -123,15 +123,15 @@ module.exports = function (Marionette) {
 
     setYawRate: function (val) {
       if (val !== null) {
-        var yawDegree = Number(val).toFixed(2);
-        var yawRadius = (Number(val)/180*Math.PI).toFixed(2);
-        this.ui.yaw_rate_deg.text(yawDegree);
-        this.ui.yaw_rate_rad.text(yawRadius);
+        var yaw_degree = Number(val).toFixed(2);
+        var yaw_radius = (Number(val)/180*Math.PI).toFixed(2);
+        this.ui.yaw_rate_deg.text(yaw_degree);
+        this.ui.yaw_rate_rad.text(yaw_radius);
         var amount;
-        if(!this.DegreeOrRad){
+        if(!this.degree_or_rad){
           amount = 200 - Number(val)*100;
           this.ui.yaw_front.css("height", amount.toString()+"px");
-          this.ui.yaw_front.text(yawDegree.toString());
+          this.ui.yaw_front.text(yaw_degree.toString());
         }
       }
     },

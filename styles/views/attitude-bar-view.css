@@ -1,35 +1,35 @@
-.attitudeWindow.block{
+.attitudeBarView.block{
   margin-top: 10%;
   position: absolute;
 }
 
-.attitudeWindow.block.component{
+.attitudeBarView.block.component{
   margin-top: 550px;
 }
 
-.attitudeWindow.block.component.yaw{
+.attitudeBarView.block.component.yaw{
   margin-left: 10%;
 }
-.attitudeWindow.block.component.pitch{
+.attitudeBarView.block.component.pitch{
   margin-left: 45%;
 }
-.attitudeWindow.block.component.roll{
+.attitudeBarView.block.component.roll{
   margin-left: 80%;
 }
-.attitudeWindow.input{
+.attitudeBarView.input{
   //margin-top: 30%;
   width: 40px;
 }
-.attitudeWindow.send{
+.attitudeBarView.send{
   //margin-top: ;
   left: 10%;
 }
 
-.attitudeWindow.text{
+.attitudeBarView.text{
   position: absolute;
 }
 
-.attitudeWindow.block.front{
+.attitudeBarView.block.front{
   background-color: rgba(32,32,32,1);
   color: rgba(222,222,222,1);
   text-align: center;
@@ -37,55 +37,55 @@
   width: 100px;
 }
 
-.attitudeWindow.block.back{
+.attitudeBarView.block.back{
   height: 400px;
   width: 100px;
   background-color: rgba(244,233,177,1);
 }
 
-.attitudeWindow.yaw.block{
+.attitudeBarView.yaw.block{
   //margin-top: 10%;
   margin-left: 10%;
 }
 
-.attitudeWindow.pitch.block{
+.attitudeBarView.pitch.block{
   //margin-top: 10%;
   margin-left: 45%;
   margin-right: 45%;
   //display: none;
 }
 
-.attitudeWindow.roll.block{
+.attitudeBarView.roll.block{
   //margin-top: 10%;
   margin-left: 80%;
   margin-right: 10%;  
   //display: none;
 }
 
-.attitudeWindow.yaw.text.value{
+.attitudeBarView.yaw.text.value{
   margin-top: 5%;
 }
 
-.attitudeWindow.yaw.text{
+.attitudeBarView.yaw.text{
   margin-left: 10%;
 }
 
-.attitudeWindow.pitch.text{
+.attitudeBarView.pitch.text{
   margin-left: 45%;
 }
 
-.attitudeWindow.roll.text{
+.attitudeBarView.roll.text{
   margin-left: 80%;
 }
 
-.attitudeWindow.input{
+.attitudeBarView.input{
   border-radius: 6px;
   border-style: solid;
   border-color: rgb(255,255,255);
   
 }
 
-.attitudeWindow.send{
+.attitudeBarView.send{
   border-radius: 6px;
   border-style: solid;
   background-color: rgba(27,177,62,1);

@@ -1,9 +1,9 @@
-var AttitudeWindow = require('../../app/views/AttitudeWindow')(Marionette, Backbone);
+var AttitudeBarView = require('../../app/views/AttitudeBarView')(Marionette, Backbone);
 var WindowShortCuts = require('../../app/core/WindowShortcuts');
 
 WindowShortCuts.init(Mousetrap);
 
-var window_view = new AttitudeWindow();
+var window_view = new AttitudeBarView();
 
 $(document).ready(function(){
   $('body').append(window_view.render().$el);
