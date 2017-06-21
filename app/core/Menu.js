@@ -117,7 +117,13 @@ var Menu = {
       width: 575,
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
-    }
+    },
+    'Attitude Bar View':{
+      openWindow: 'attitudeBarView',
+      width: 1000,
+      height: 700,
+      devTools: false,
+    },
   },
   'Settings': {
     'Network Settings': {
