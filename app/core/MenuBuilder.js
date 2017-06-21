@@ -1,5 +1,5 @@
 /**
- * @author Serge Babayan
+ * @author Rosa Chen
  * @module core/MenuBuilder
  * @requires core/Menu
  * @requires core/WindowManager
@@ -110,6 +110,7 @@ module.exports.build = function () {
       }
     ]
   });
-
-  return ElectronMenu.buildFromTemplate(menu_template);
+  const menu = ElectronMenu.buildFromTemplate(menu_template);
+  electron.Menu.setApplicationMenu(menu);
+  return menu;
 };
