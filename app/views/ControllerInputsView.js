@@ -45,29 +45,31 @@ module.exports = function (Marionette) {
       this.yaw_rudder = 0;
       this.auto_on_off = true;
       this.control_off = false;
+      this.is_scaled = false;
       this.type = picpilot_conf.get('type');
       
       this.aircraft_channel_callback = this.aircraftChannelCallback.bind(this);
       TelemetryData.addListener('aircraft_channels', this.aircraft_channel_callback);
     },
-	
-	rcIsOff: function(data){
-	  var current_vehicle = channel_config.get(this.type);
+    
+    rcIsOff: function(data){
+      var current_vehicle = channel_config.get(this.type);
       var ch1 = data[current_vehicle['throttle']];
       var ch2 = data[current_vehicle['roll']];
       var ch3 = data[current_vehicle['pitch']];
       var ch4 = data[current_vehicle['rudder_yaw']];
       var ch5 = data[current_vehicle['autopilot_on_off']];
-	  return (ch1 < -1024 || ch2 < -1024 || ch3 < -1024 || ch4 < -1024 || ch5 < -1024 || ch1 > 1024 || ch2 > 1024 || ch3 > 1024 || ch4 > 1024 || ch5 > 1024);
-	},
+      return (ch1 == -10000 || ch2 == -10000 || ch3 == -10000 || ch4 == -10000 || ch5 == -10000);
+    },
     
     aircraftChannelCallback: function(data){
-	  var current_vehicle = channel_config.get(this.type);
+      var current_vehicle = channel_config.get(this.type);
       var ch1 = data[current_vehicle['throttle']];
       var ch2 = data[current_vehicle['roll']];
       var ch3 = data[current_vehicle['pitch']];
       var ch4 = data[current_vehicle['rudder_yaw']];
       var ch5 = data[current_vehicle['autopilot_on_off']];
+      this.is_scaled = data[channels_scaled];
       // if RC controller is OFF
       if(rcIsOff(data)){
         this.control_off = true;
@@ -97,9 +99,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch1_text.text("");
         }else{
-          this.throttle = val;
-          var percentage = 43 - val/1024 * 43;
-          this.ui.front14.css("margin-top", percentage.toString()+"%");
+          if(this.is_scaled){
+            this.throttle = val;
+            var percentage = 43 - val/1024 * 43;
+            this.ui.front14.css("margin-top", percentage.toString()+"%");
+          }
           this.ui.ch1_text.text(val.toString()+',');
         }
       }
@@ -110,9 +114,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch2_text.text("");
         }else{
-          this.roll = val;
-          var percentage = val/1024 * 43 + 43;
-          this.ui.front23.css("margin-left", percentage.toString() + "%");
+          if(this.is_scaled){
+            this.roll = val;
+            var percentage = val/1024 * 43 + 43;
+            this.ui.front23.css("margin-left", percentage.toString() + "%");
+          }
           this.ui.ch2_text.text(val.toString()+',');
         }
       }
@@ -123,9 +129,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch3_text.text("RC Controller is OFF");
         }else{
-          this.pitch = val;
-          var percentage = 43 - val/1024 * 43;
-          this.ui.front23.css("margin-top", percentage.toString() +"%");
+          if(this.is_scaled){
+            this.pitch = val;
+            var percentage = 43 - val/1024 * 43;
+            this.ui.front23.css("margin-top", percentage.toString() +"%");
+          }
           this.ui.ch3_text.text(val.toString());
         }
       }
@@ -136,9 +144,11 @@ module.exports = function (Marionette) {
         if(this.control_off){
           this.ui.ch4_text.text("RC Controller is OFF");
         }else{
-          var percentage = val/1024 * 43 + 43;
-          this.yaw_rudder = val;
-          this.ui.front14.css("margin-left", percentage.toString() + "%");
+          if(this.is_scaled){
+            var percentage = val/1024 * 43 + 43;
+            this.yaw_rudder = val;
+            this.ui.front14.css("margin-left", percentage.toString() + "%");
+          }
           this.ui.ch4_text.text(val.toString());
         }
           
@@ -148,7 +158,6 @@ module.exports = function (Marionette) {
     setOnOff(val){
       if(val != null){
         if(val > 0){
-          console.log("ONOFF:",val);
           this.auto_on_off = true;
           this.ui.auto_pilot_btn.css("background-color","rgba(122,244,122,1)");
           this.ui.auto_pilot_btn.css("border-color","rgba(122,244,122,1)");
