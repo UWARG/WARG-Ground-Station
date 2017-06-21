@@ -528,7 +528,6 @@ var Commands = {
     return this.sendCommand('set_roll_rate_gains', kp, ki, kd);
   },
   
-  
   /**
   * @function sendPitchRate
   * @param rate
@@ -537,8 +536,7 @@ var Commands = {
   sendRollRate: function(rate) {
     return this.sendCommand('set_rollRate', rate);
   },
-
-
+  
  /**
    * @function sendPitchRateGains
    * @param kp
@@ -559,7 +557,6 @@ var Commands = {
     return this.sendCommand('set_pitchRate', rate);
   },
   
-  
  /**
    * @function sendYawRateGains
    * @param kp
@@ -571,7 +568,6 @@ var Commands = {
     return this.sendCommand('set_yaw_rate_gains', kp, ki, kd);
   },
 
-
 /**
   * @function sendYawRate
   * @param rate
@@ -580,7 +576,6 @@ var Commands = {
   sendYawRate: function(rate) {
     return this.sendCommand('set_yawRate', rate);
   },
-
 
 /**
    * @function sendAltitudeGains
