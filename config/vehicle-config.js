@@ -1,6 +1,6 @@
 var SettingsLoader=require('../app/util/PersistentSettings');
 
-var vehicle_channel_config = {
+var vehicle_config = {
   fixed_wing: {
     throttle: "ch1_in",
     roll: "ch2_in",
@@ -10,4 +10,4 @@ var vehicle_channel_config = {
   },
 }
 
-module.exports=new SettingsLoader('vehicle_channel_config',vehicle_channel_config);
+module.exports=new SettingsLoader('vehicle_config',vehicle_config);

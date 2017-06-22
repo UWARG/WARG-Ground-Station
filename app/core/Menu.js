@@ -119,10 +119,10 @@ var Menu = {
       shortcut: 'CmdOrCtrl+Shift+P'
     },
     'Controller Inputs':{
-      openWindow: 'controllerInputsView',
+      openWindow: 'controllerInputsWindow',
       width: 1000,
       height: 700,
-      devTools: true,
+      devTools: false,
     },
   },
   'Settings': {

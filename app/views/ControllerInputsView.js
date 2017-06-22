@@ -2,10 +2,10 @@
  * @author Bingzheng Feng
  * @module views/ControllerInputsView
  * @requires models/Commands
- * @requires util/Validator
- * @requires util/Logger
  * @requires models/TelemetryData
  * @requires util/Template
+ * @requires config/vehicle-channel-config
+ * @requires config/picpilot-config
  * @requires electron
  * @listens models/TelemetryData~TelemetryData:data_received
  * @copyright Waterloo Aerial Robotics Group 2016
@@ -16,10 +16,8 @@
 var remote = require('electron').remote;
 var Template = require('../util/Template');
 var TelemetryData = remote.require('./app/models/TelemetryData');
-var Logger = remote.require('./app/util/Logger');
-var Validator = require('../util/Validator');
 var Commands = remote.require('./app/models/Commands');
-var channel_config = remote.require('./config/vehicle-channel-config');
+var channel_config = remote.require('./config/vehicle-config');
 var picpilot_conf = remote.require('./config/picpilot-config');
 
 module.exports = function (Marionette) {
@@ -29,13 +27,13 @@ module.exports = function (Marionette) {
     className: 'controllerInputsView',
 
     ui: {
-      front23: '.controllerInputsView.circle.front.twothree',
-      front14: '.controllerInputsView.circle.front.onefour',
-      ch1_text: '.controllerInputsView.value.one',
-      ch2_text: '.controllerInputsView.value.two',
-      ch3_text: '.controllerInputsView.value.three',
-      ch4_text: '.controllerInputsView.value.four',
-      auto_pilot_btn: '.controllerInputsView.auto-pilot',
+      front23: '.circle.front.twothree',
+      front14: '.circle.front.onefour',
+      ch1_text: '.value.one',
+      ch2_text: '.value.two',
+      ch3_text: '.value.three',
+      ch4_text: '.value.four',
+      auto_pilot_btn: '.auto-pilot',
     },
 
     initialize: function () {
@@ -46,10 +44,7 @@ module.exports = function (Marionette) {
       this.auto_on_off = true;
       this.control_off = false;
       this.is_scaled = false;
-      this.type = picpilot_conf.get('type');
-      
-      this.aircraft_channel_callback = this.aircraftChannelCallback.bind(this);
-      TelemetryData.addListener('aircraft_channels', this.aircraft_channel_callback);
+      this.type = picpilot_conf.get('vehicle_type');
     },
     
     rcIsOff: function(data){
@@ -69,9 +64,9 @@ module.exports = function (Marionette) {
       var ch3 = data[current_vehicle['pitch']];
       var ch4 = data[current_vehicle['rudder_yaw']];
       var ch5 = data[current_vehicle['autopilot_on_off']];
-      this.is_scaled = data[channels_scaled];
+      this.is_scaled = data['channels_scaled'];
       // if RC controller is OFF
-      if(rcIsOff(data)){
+      if(this.rcIsOff(data)){
         this.control_off = true;
         this.ui.front14.css({"margin-left": "43%","margin-top":"43%",
                                "background-color": "rgba(244,122,122,1)",
@@ -92,6 +87,8 @@ module.exports = function (Marionette) {
     },
     
     onRender: function(){
+      this.aircraft_channel_callback = this.aircraftChannelCallback.bind(this);
+      TelemetryData.addListener('aircraft_channels', this.aircraft_channel_callback);
     },
     
     setThrottle(val){
