@@ -1,35 +1,33 @@
-.attitudeBarView.block{
+.attitudeBarView .block{
   margin-top: 10%;
   position: absolute;
 }
 
-.attitudeBarView.block.component{
+.attitudeBarView .block.component{
   margin-top: 550px;
 }
 
-.attitudeBarView.block.component.yaw{
+.attitudeBarView .block.component.yaw{
   margin-left: 10%;
 }
-.attitudeBarView.block.component.pitch{
+.attitudeBarView .block.component.pitch{
   margin-left: 45%;
 }
-.attitudeBarView.block.component.roll{
+.attitudeBarView .block.component.roll{
   margin-left: 80%;
 }
-.attitudeBarView.input{
-  //margin-top: 30%;
+.attitudeBarView .input{
   width: 40px;
 }
-.attitudeBarView.send{
-  //margin-top: ;
+.attitudeBarView .send{
   left: 10%;
 }
 
-.attitudeBarView.text{
+.attitudeBarView .text{
   position: absolute;
 }
 
-.attitudeBarView.block.front{
+.attitudeBarView .block.front{
   background-color: rgba(32,32,32,1);
   color: rgba(222,222,222,1);
   text-align: center;
@@ -37,55 +35,50 @@
   width: 100px;
 }
 
-.attitudeBarView.block.back{
+.attitudeBarView .block.back{
   height: 400px;
   width: 100px;
   background-color: rgba(244,233,177,1);
 }
 
-.attitudeBarView.yaw.block{
-  //margin-top: 10%;
+.attitudeBarView .yaw.block{
   margin-left: 10%;
 }
 
-.attitudeBarView.pitch.block{
-  //margin-top: 10%;
+.attitudeBarView .pitch.block{
   margin-left: 45%;
   margin-right: 45%;
-  //display: none;
 }
 
-.attitudeBarView.roll.block{
-  //margin-top: 10%;
+.attitudeBarView .roll.block{
   margin-left: 80%;
   margin-right: 10%;  
-  //display: none;
 }
 
-.attitudeBarView.yaw.text.value{
+.attitudeBarView .yaw.text.value{
   margin-top: 5%;
 }
 
-.attitudeBarView.yaw.text{
+.attitudeBarView .yaw.text{
   margin-left: 10%;
 }
 
-.attitudeBarView.pitch.text{
+.attitudeBarView .pitch.text{
   margin-left: 45%;
 }
 
-.attitudeBarView.roll.text{
+.attitudeBarView .roll.text{
   margin-left: 80%;
 }
 
-.attitudeBarView.input{
+.attitudeBarView .input{
   border-radius: 6px;
   border-style: solid;
   border-color: rgb(255,255,255);
   
 }
 
-.attitudeBarView.send{
+.attitudeBarView .send{
   border-radius: 6px;
   border-style: solid;
   background-color: rgba(27,177,62,1);

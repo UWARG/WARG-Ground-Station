@@ -119,7 +119,7 @@ var Menu = {
       shortcut: 'CmdOrCtrl+Shift+P'
     },
     'Attitude Bar View':{
-      openWindow: 'attitudeBarView',
+      openWindow: 'attitudeBarWindow',
       width: 1000,
       height: 700,
       devTools: false,

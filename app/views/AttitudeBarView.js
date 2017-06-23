@@ -2,8 +2,6 @@
  * @author Bingzheng Feng
  * @module views/AttitudeBarView
  * @requires models/Commands
- * @requires util/Validator
- * @requires util/Logger
  * @requires models/TelemetryData
  * @requires util/Template
  * @requires electron
@@ -16,8 +14,6 @@
 var remote = require('electron').remote;
 var Template = require('../util/Template');
 var TelemetryData = remote.require('./app/models/TelemetryData');
-var Logger = remote.require('./app/util/Logger');
-var Validator = require('../util/Validator');
 var Commands = remote.require('./app/models/Commands');
 
 module.exports = function (Marionette) {
@@ -50,27 +46,21 @@ module.exports = function (Marionette) {
     },
 
     initialize: function () {
-      this.degree_or_rad = false; // false stands for degree
-      this.aircraft_position_callback = this.aircraftPositionCallback.bind(this);
-      TelemetryData.addListener('aircraft_position', this.aircraft_position_callback);
+      this.is_rad = false; // false stands for degree
     },
     
-    aircraftPositionCallback: function(data){
+    aircraftPositionCallback: function(data) {
       this.setRollRate(data.roll_rate);
       this.setYawRate(data.yaw_rate);
       this.setPitchRate(data.pitch_rate);
     },
-    /*
+    
     onRender: function () {
-      //this.ui.attitude_dials.parent().resize(this.setCanvasDimensions.bind(this));
-
-      this.telemetry_position_callback = this.telemetryPositionCallback.bind(this);
-      this.telemetry_setpoints_callback = this.telemetrySetpointsCallback.bind(this);
-      TelemetryData.addListener('aircraft_position', this.telemetry_position_callback);
-      TelemetryData.addListener('aircraft_setpoints', this.telemetry_setpoints_callback);
+      this.aircraft_position_callback = this.aircraftPositionCallback.bind(this);
+      TelemetryData.addListener('aircraft_position', this.aircraft_position_callback);
     },
-    */
-    onBeforeDestroy: function(){
+    
+    onBeforeDestroy: function() {
       TelemetryData.removeListener('aircraft_position', this.aircraft_position_callback);
     },
     setRollRate: function (val) {
@@ -79,18 +69,18 @@ module.exports = function (Marionette) {
         var roll_radius = (Number(val)/180*Math.PI).toFixed(2);
         this.ui.roll_rate_deg.text(roll_degree);
         this.ui.roll_rate_rad.text(roll_radius);
-        if(!this.degree_or_rad){
+        if(!this.is_rad) {
           amount = 200 - Number(val)*100;
           this.ui.roll_front.css("height", amount.toString()+"px");
           this.ui.roll_front.text(roll_degree.toString());
         }
       }
     },
-    sendRollRate: function(){
+    sendRollRate: function() {
       var rate = this.ui.roll_input.val();
       if(rate==null) {
         rate = 0;
-      }else{
+      } else {
         rate = rate %360;
       }
       Commands.sendRollRate(rate);
@@ -102,7 +92,7 @@ module.exports = function (Marionette) {
         var pitch_radius = (Number(val)/180*Math.PI).toFixed(2);
         this.ui.pitch_rate_deg.text(pitch_degree);
         this.ui.pitch_rate_rad.text(pitch_radius);
-        if(!this.degree_or_rad){
+        if(!this.is_rad) {
           amount = 200 - Number(val)*100;
           this.ui.pitch_front.css("height", amount.toString()+"px");
           this.ui.pitch_front.text(pitch_degree.toString());
@@ -110,12 +100,12 @@ module.exports = function (Marionette) {
       }
     },
     
-    sendPitchRate: function(e){
+    sendPitchRate: function(e) {
       e.preventDefault();
       var rate = this.ui.pitch_input.val();
       if(rate==null) {
         rate = 0;
-      }else{
+      } else {
         rate = rate %360;
       }
       Commands.sendPitchRate(rate);
@@ -128,7 +118,7 @@ module.exports = function (Marionette) {
         this.ui.yaw_rate_deg.text(yaw_degree);
         this.ui.yaw_rate_rad.text(yaw_radius);
         var amount;
-        if(!this.degree_or_rad){
+        if(!this.is_rad) {
           amount = 200 - Number(val)*100;
           this.ui.yaw_front.css("height", amount.toString()+"px");
           this.ui.yaw_front.text(yaw_degree.toString());
@@ -136,12 +126,12 @@ module.exports = function (Marionette) {
       }
     },
     
-    sendYawRate: function(e){
+    sendYawRate: function(e) {
       e.preventDefault();
       var rate = this.ui.yaw_input.val();
       if(rate==null) {
         rate = 0;
-      }else{
+      } else {
         rate = rate %360;
       }
       console.log(Commands.sendYawRate(rate));
