@@ -2,11 +2,17 @@
   height: 100%;
   font-size: 16px;
 }
-.attitudeView .right-region{
+.attitudeView .middle-region{
   font-size: 16px;
   height: 100%;
 }
-
+.attitudeView .right-region{
+  font-size: 16px;
+  height: 100%;
+  position: relative;
+  left: 330px;
+  top: -220px;
+}
 .attitudeView .attitude-dial{
   height: 50%;
   min-height: 210px;
@@ -33,7 +39,7 @@
   display: block;
   overflow: hidden;
   position: relative;
-}  
+}
 .attitudeView .attitude-dial .dial-picture .overlay{
   margin: 0;
   z-index: 10;
@@ -71,6 +77,12 @@
   width: 75% !important;
   transform-origin: 50% 50% !important;
 }
+.attitudeView .yaw-dial .image-overlay{
+  left: 0 !important;
+  top: 12% !important;
+  width: 75% !important;
+  transform-origin: 50% 50% !important;
+}
 .attitudeView .attitude-dial .dial-picture .overlay li{
   text-align: center;
 }
@@ -83,7 +95,7 @@
   bottom: 0;
   transform-origin: 50% 0%;
   transform: scale(2);
-}  
+}
 .attitudeView .attitude-dial form{
   margin: 0;
   margin-top: 12px;
@@ -93,7 +105,7 @@
   font-size: 14px;
 }
 .attitudeView .attitude-dial form input{
-  width: calc(100% - 58px);
+  width: calc(100% - 30px);
   height: 100%;
   text-align: left;
   max-width: 80px;

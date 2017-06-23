@@ -12,6 +12,11 @@
   text-align: center;
 }
 
+.altitudeView .bottom-region{
+  position: relative;
+  left: 80px;
+  top: -5px;
+}
 .altitudeView .altitude-dial>p{
   font-size: 18px;
   color: lightgrey;
@@ -43,7 +48,7 @@
   border-top-left-radius: 100%;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-} 
+}
 
 .altitudeView .dial-picture >p{
   position: absolute;
@@ -84,7 +89,7 @@
   margin: 0;
   padding: 0;
   position: relative;
-} 
+}
 .altitudeView .labels .tick{
   background: transparent;
   border-radius: 0;
@@ -110,54 +115,54 @@
 }
 .altitudeView .labels .tick:nth-child(2){
   transform: rotate(22.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(3){
   transform: rotate(45deg);
 }
 .altitudeView .labels .tick:nth-child(4){
   transform: rotate(67.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(5){
   transform: rotate(90deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(6){
   transform: rotate(112.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(7){
   transform: rotate(135deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(8){
   transform: rotate(157.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(9){
   transform: rotate(180deg);
 }
 .altitudeView .labels .tick:nth-child(10){
   transform: rotate(202.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(11){
   transform: rotate(225deg);
 }
 .altitudeView .labels .tick:nth-child(12){
   transform: rotate(247.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(13){
   transform: rotate(270deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(14){
   transform: rotate(292.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(15){
   transform: rotate(315deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(16){
   transform: rotate(337.5deg);
-} 
+}
 .altitudeView .labels .tick:nth-child(5) div{
   transform: rotate(-90deg);
   top: 15px;
   position: absolute;
-}  
+}
 .altitudeView .labels .tick:nth-child(9) div{
   transform: rotate(180deg);
   position: absolute;
