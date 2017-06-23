@@ -1,5 +1,5 @@
 /**
- * @author Rosa Chen
+ * @author Serge Babayan & Rosa Chen
  * @module core/MenuBuilder
  * @requires core/Menu
  * @requires core/WindowManager
