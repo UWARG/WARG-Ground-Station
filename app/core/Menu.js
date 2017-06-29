@@ -118,10 +118,10 @@ var Menu = {
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
     },
-    'Attitude Bar View':{
+    'Attitude Bar View': {
       openWindow: 'attitudeBarWindow',
-      width: 1000,
-      height: 700,
+      width: 500,
+      height: 600,
       devTools: false,
     },
   },

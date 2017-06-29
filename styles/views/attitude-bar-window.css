@@ -1,87 +1,64 @@
 .attitudeBarView .block{
   margin-top: 10%;
+}
+
+.attitudeBarView .component {
+  width: 160px;
   position: absolute;
 }
 
-.attitudeBarView .block.component{
-  margin-top: 550px;
+.attitudeBarView .component.yaw {
+  margin-left: 5%;
 }
-
-.attitudeBarView .block.component.yaw{
-  margin-left: 10%;
+.attitudeBarView .component.pitch {
+  margin-left: 38%;
 }
-.attitudeBarView .block.component.pitch{
-  margin-left: 45%;
+.attitudeBarView .component.roll {
+  margin-left: 70%;
 }
-.attitudeBarView .block.component.roll{
-  margin-left: 80%;
-}
-.attitudeBarView .input{
+.attitudeBarView .input {
   width: 40px;
 }
-.attitudeBarView .send{
+.attitudeBarView .send {
   left: 10%;
 }
 
-.attitudeBarView .text{
-  position: absolute;
-}
-
-.attitudeBarView .block.front{
+.attitudeBarView .block.back {
   background-color: rgba(32,32,32,1);
   color: rgba(222,222,222,1);
   text-align: center;
-  height: 200px;
-  width: 100px;
-}
-
-.attitudeBarView .block.back{
   height: 400px;
   width: 100px;
-  background-color: rgba(244,233,177,1);
 }
 
-.attitudeBarView .yaw.block{
-  margin-left: 10%;
+.attitudeBarView .block.front {
+  position: absolute;
+  margin-top: -200px;
+  height: 0px;
+  width: 100px;
+  color: rgba(244,244,244,1);
 }
 
-.attitudeBarView .pitch.block{
-  margin-left: 45%;
-  margin-right: 45%;
-}
-
-.attitudeBarView .roll.block{
-  margin-left: 80%;
-  margin-right: 10%;  
-}
-
-.attitudeBarView .yaw.text.value{
+.attitudeBarView .yaw.text.value {
   margin-top: 5%;
 }
 
-.attitudeBarView .yaw.text{
-  margin-left: 10%;
+.attitudeBarView .pure-form {
+  margin-top: 10%;
+  width: 200px;
 }
 
-.attitudeBarView .pitch.text{
-  margin-left: 45%;
+.attitudeBarView input {
+  width: 80px;
 }
 
-.attitudeBarView .roll.text{
+.attitudeBarView .degree {
+  margin-top: -21%;
   margin-left: 80%;
+  position: absolute;
+  display: none;
 }
 
-.attitudeBarView .input{
-  border-radius: 6px;
-  border-style: solid;
-  border-color: rgb(255,255,255);
-  
-}
-
-.attitudeBarView .send{
-  border-radius: 6px;
-  border-style: solid;
-  background-color: rgba(27,177,62,1);
-  border-color: rgba(27,177,62,1);
-  color: rgba(189,192,186,1);
+.attitudeBarView .rad {
+  display: none;
 }
