@@ -1,19 +1,13 @@
 .controllerInputsView .square{
   border-radius: 30px;
-}
-
-.controllerInputsView .circle{
-  border-radius: 100%;
-}
-
-.controllerInputsView .square.back{
   background-color: rgba(166,166,166,1);
   width: 320px;
   height: 320px;
   position: absolute;
 }
 
-.controllerInputsView .circle.front{
+.controllerInputsView .circle{
+  border-radius: 100%;
   background-color: rgba(32,32,32,1);
   width: 48px;
   height: 48px;
@@ -22,36 +16,32 @@
   margin-top: 43%;
 }
 
-.controllerInputsView .square.back.onefour{
+.controllerInputsView .square.onefour{
   margin-left: 5%;
   margin-top: 5%;
 }
 
-.controllerInputsView .square.back.twothree{
+.controllerInputsView .square.twothree{
   margin-left: 50%;
   margin-top: 5%;
 }
 
-.controllerInputsView .value{
+.controllerInputsView .circle p{
   position: absolute;
   margin-right: auto;
   margin-top: -30%;
   margin-bottom: 130%;
 }
 
-.controllerInputsView .value.four{
+.controllerInputsView .four{
   margin-left: 80%;
 }
 
-.controllerInputsView .value.three{
+.controllerInputsView .three{
   margin-left: 80%;
  }
 
-.controllerInputsView .auto-pilot{
-  background-color: rgba(122,244,122,1);
-  border-color: rgba(121,244,122,1);
-  border-style: solid;
-  border-radius: 4px;
+.controllerInputsView #auto-pilot{
   margin-top: 60%;
   margin-left: 40%;
 }
