@@ -110,7 +110,5 @@ module.exports.build = function () {
       }
     ]
   });
-  const menu = ElectronMenu.buildFromTemplate(menu_template);
-  electron.Menu.setApplicationMenu(menu);
-  return  ElectronMenu.buildFromTemplate(menu_template);
+  return ElectronMenu.buildFromTemplate(menu_template);
 };

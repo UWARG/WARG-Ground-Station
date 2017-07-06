@@ -1,5 +1,5 @@
 /**
- * @author Serge Babayan
+ * @author Serge Babayan & Rosa Chen
  * @module views/StatusView
  * @requires StatusManager
  * @requires models/TelemetryData
@@ -35,31 +35,14 @@ module.exports = function (Marionette, $) {
 
     regions:
     {
-      Battery: "#battery-percent-region"
+      InternalBattery: "#internal-battery-percent-region",
+      ExternalBattery: "#external-battery-percent-region"
     },
 
     ui: {
       statuses: ".statuses",
       utc_time: "#utc-time",
       system_time: "#system-time",
-      motor_battery_percent: "#motor-battery .battery-percentage",
-      //add motor_battery_accutate_percent
-      //motor_battery_accurate_percent: "#motor-battery-percentage .battery-percentage-view",
-      //add motor_battery_accurate_message
-      //motor_battery_accurate_message: "#motor-battery-percentage .battery-message",
-      motor_battery_message: "#motor-battery .battery-message",
-      //add motor_battery_accurate_picture
-      //motor_battery_accurate_picture: "#motor-battery-percentage .battery-picture .battery-base .percentage",
-      motor_battery_picture: "#motor-battery .battery-picture .battery-base .percentage",
-      internal_battery_percent: "#internal-battery .battery-percentage",
-      //add internal_battery_accurate_percent
-      //internal_battery_accurate_percent: "#internal-battery-percentage .battery-percentage-view",
-      //add internal_battery_accurate_message
-      //internal_battery_accurate_message: "#internal-battery-percentage .battery-message",
-      internal_battery_message: "#internal-battery .battery-message",
-      //add internal _battery_accurate_picture
-      //internal_battery_accurate_picture: "#internal-battery-percentage .battery-picture .battery-base .percentage",
-      internal_battery_picture: "#internal-battery .battery-picture .battery-base .percentage",
       gps_message: ".gps-status .gps-message",
       transmission_speed: '#transition-rate',
       dl_rssi: '#dl-rssi',
@@ -90,27 +73,25 @@ module.exports = function (Marionette, $) {
       StatusManager.addListener('new_status', this.new_status_callback);
       StatusManager.addListener('remove_status', this.remove_status_callback);
       this.internal_battery_view = new BatteryPercentView();
+      this.external_battery_view = new BatteryPercentView();
     },
     onRender: function () {
       this.transmissionInterval = setInterval(function () {
         this.ui.transmission_speed.text(this.messagesReceived + '/s');
         this.messagesReceived = 0;
       }.bind(this), 1000);
-      this.getRegion('Battery').show(this.internal_battery_view);
-
+      this.getRegion('InternalBattery').show(this.internal_battery_view);
+      this.getRegion('ExternalBattery').show(this.external_battery_view);
     },
 
     telemetryStatusCallback: function(data){
       //console.log(data.external_battery_voltage);
       if (data.internal_battery_voltage != null){
-        this.internal_battery_view.setVoltage(data.internal_batter_voltage);
-        this.setInternalBatteryLevel(data.internal_battery_voltage);
-        //this.setInternalBatteryPercentage(data.internal_battery_voltage);
+        this.internal_battery_view.setBatteryPercentage(data.internal_battery_voltage, picpilot_config.get('internal_battery_cell_count'));
       }
 
       if (data.external_battery_voltage != null){
-        this.setMotorBatteryLevel(data.external_battery_voltage);
-      //  this.setMotorBatteryPercentage(data.external_battery_voltage);
+        this.external_battery_view.setBatteryPercentage(data.external_battery_voltage, picpilot_config.get('motor_battery_cell_count'));
       }
       // this.setGpsLevel(data.gps_status);
     },
@@ -195,163 +176,6 @@ module.exports = function (Marionette, $) {
           return;
         }
       }
-    }, /*
-    //add setInternalBatteryPercentage
-    setInternalBatteryPercentage: function (battery_level){
-      if (battery_level !== null && battery_level !== this.current_internal_battery_level) {
-        var internal_battery_num = picpilot_config.get('internal_battery_cell_count');
-        var voltage = battery_level * 0.0035;
-        var percent;
-        switch (internal_battery_num){
-          case 1:
-            percent= 122.49*Math.pow(voltage,2)-788.56*voltage+1265.5;
-            break;
-          case 2:
-            percent= 30.708*Math.pow(voltage,2)-395.56*voltage+1270.2;
-            break;
-          case 3:
-            percent= 13.648*Math.pow(voltage,2)-263.71*voltage+1270.2;
-            break;
-          case 4:
-            percent= 7.6771*Math.pow(voltage,2)-197.78*voltage+1270.2;
-            break;
-          case 5:
-            percent= 4.9133*Math.pow(voltage,2)-158.23*voltage+1270.2;
-            break;
-          case 6:
-            percent= 3.4025*Math.pow(voltage,2)-131.43*voltage+1265.5;
-            break;
-          default:
-            percent= 0;
-        }
-
-        //check the percent less than 0 or more than 100
-        if (percent < 0){
-          percent = 0;
-        }
-        else if (percent > 100){
-          percent = 100;
-        }
-
-        this.ui.internal_battery_accurate_percent.text(percent.toFixed(2) + '%');
-        this.ui.internal_battery_accurate_picture.css('width', percent + '%');
-
-        if (percent > 50 && percent <= 100) {
-          this.ui.internal_battery_accurate_picture.css('background-color', 'green');
-          this.ui.internal_battery_accurate_message.text('');
-        } else if (percent >= 20 && percent <= 50) {
-          this.ui.internal_battery_accurate_picture.css('background-color', 'orange');
-          this.ui.internal_battery_accurate_message.text('Low');
-          this.ui.internal_battery_accurate_message.css('color', 'orange');
-        } else {
-          this.ui.internal_battery_accurate_picture.css('background-color', 'red');
-          this.ui.internal_battery_accurate_message.text('Very Low');
-          this.ui.internal_battery_accurate_message.css('color', 'red');
-        }
-      }
-    },
-*/
-    setInternalBatteryLevel: function (battery_level) {
-      //console.log(1);
-      if (battery_level !== null && battery_level !== this.current_internal_battery_level) {
-        var volts = Math.round(battery_level/100); //just do a straight division for now
-        var percent =  (volts/picpilot_config.get('motor_battery_cell_count') - 3.5)/(1/(4.2-3.5));
-        //console.log(volts);
-        //console.log(percent);
-        //console.log(battery_level);
-        if (volts == 0){
-          percent = 0;
-        }
-        this.current_internal_battery_level = percent;
-        this.ui.internal_battery_percent.text(percent.toFixed(2) + '%');
-        this.ui.internal_battery_picture.css('width', percent + '%');
-        if (percent > 50 && percent <= 100) {
-          this.ui.internal_battery_picture.css('background-color', 'green');
-          this.ui.internal_battery_message.text('');
-        } else if (percent >= 20 && percent <= 50) {
-          this.ui.internal_battery_picture.css('background-color', 'orange');
-          this.ui.internal_battery_message.text('Low');
-          this.ui.internal_battery_message.css('color', 'orange');
-        } else {
-          this.ui.internal_battery_picture.css('background-color', 'red');
-          this.ui.internal_battery_message.text('Very Low');
-          this.ui.internal_battery_message.css('color', 'red');
-        }
-      }
-    },
-/*
-    setMotorBatteryPercentage: function (battery_level){
-      if(battery_level !== null && battery_level !== this.current_motor_battery_level){
-        var motor_battery_num = picpilot_config.get('motor_battery_cell_count');
-        var voltage = battery_level * 0.0035;
-        var percent;
-        switch (motor_battery_num){
-          case 1:
-            percent= 122.49*Math.pow(voltage,2)-788.56*voltage+1265.5;
-            break;
-          case 2:
-            percent= 30.708*Math.pow(voltage,2)-395.56*voltage+1270.2;
-            break;
-          case 3:
-            percent= 13.648*Math.pow(voltage,2)-263.71*voltage+1270.2;
-            break;
-          case 4:
-            percent= 7.6771*Math.pow(voltage,2)-197.78*voltage+1270.2;
-            break;
-          case 5:
-            percent= 4.9133*Math.pow(voltage,2)-158.23*voltage+1270.2;
-            break;
-          case 6:
-            percent= 3.4025*Math.pow(voltage,2)-131.43*voltage+1265.5;
-            break;
-          default:
-            percent= 0;
-        }
-
-        if (percent < 0){
-          percent = 0;
-        }
-        else if (percent > 100){
-          percent = 100;
-        }
-
-        if (percent > 50 && percent <= 100) {
-          this.ui.motor_battery_accurate_picture.css('background-color', 'green');
-          this.ui.motor_battery_accurate_message.text('');
-        } else if (percent >= 20 && percent <= 50) {
-          this.ui.motor_battery_accurate_picture.css('background-color', 'orange');
-          this.ui.motor_battery_accurate_message.text('Low');
-          this.ui.motor_battery_accurate_message.css('color', 'orange');
-        } else {
-          this.ui.motor_battery_accurate_picture.css('background-color', 'red');
-          this.ui.motor_battery_accurate_message.text('Very Low');
-          this.ui.motor_battery_accurate_message.css('color', 'red');
-        }
-        this.ui.motor_battery_accurate_percent.text(percent.toFixed(2) + '%');
-      }
-    },
-*/
-    setMotorBatteryLevel: function(battery_level){
-        var volts = Math.round(battery_level/100); //just do a straight division for now
-        var percent =  (volts/picpilot_config.get('motor_battery_cell_count') - 3.5)/(1/(4.2-3.5));
-        if (volts == 0){
-          percent = 0;
-        }
-        this.current_motor_battery_level = percent;
-        this.ui.motor_battery_percent.text(percent.toFixed(2) + '%');
-        this.ui.motor_battery_picture.css('width', percent + '%');
-        if (percent > 50 && percent <= 100) {
-          this.ui.motor_battery_picture.css('background-color', 'green');
-          this.ui.motor_battery_message.text('');
-        } else if (percent >= 20 && percent <= 50) {
-          this.ui.motor_battery_picture.css('background-color', 'orange');
-          this.ui.motor_battery_message.text('Low');
-          this.ui.motor_battery_message.css('color', 'orange');
-        } else {
-          this.ui.motor_battery_picture.css('background-color', 'red');
-          this.ui.motor_battery_message.text('Very Low');
-          this.ui.motor_battery_message.css('color', 'red');
-        }
     },
 
     setGpsLevel: function (gps_level) {
