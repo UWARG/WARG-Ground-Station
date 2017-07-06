@@ -112,4 +112,5 @@ module.exports.build = function () {
   });
 
   return ElectronMenu.buildFromTemplate(menu_template);
+
 };

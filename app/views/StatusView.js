@@ -1,5 +1,5 @@
 /**
- * @author Serge Babayan
+ * @author Serge Babayan & Rosa Chen
  * @module views/StatusView
  * @requires StatusManager
  * @requires models/TelemetryData
@@ -25,22 +25,24 @@ var Template = require('../util/Template');
 var picpilot_config = require('../../config/picpilot-config');
 var moment = require('moment');
 
+
 module.exports = function (Marionette, $) {
 
-  return Marionette.ItemView.extend({
+  var BatteryPercentView = require('./BatteryPercentView')(Marionette, $);
+  return Marionette.LayoutView.extend({
     template: Template('StatusView'), //name of the file in the views folder at the project root
     className: 'statusView',
+
+    regions:
+    {
+      InternalBattery: "#internal-battery-percent-region",
+      ExternalBattery: "#external-battery-percent-region"
+    },
 
     ui: {
       statuses: ".statuses",
       utc_time: "#utc-time",
       system_time: "#system-time",
-      motor_battery_percent: "#motor-battery .battery-percentage",
-      motor_battery_message: "#motor-battery .battery-message",
-      motor_battery_picture: "#motor-battery .battery-picture .battery-base .percentage",
-      internal_battery_percent: "#internal-battery .battery-percentage",
-      internal_battery_message: "#internal-battery .battery-message",
-      internal_battery_picture: "#internal-battery .battery-picture .battery-base .percentage",
       gps_message: ".gps-status .gps-message",
       transmission_speed: '#transition-rate',
       dl_rssi: '#dl-rssi',
@@ -70,23 +72,27 @@ module.exports = function (Marionette, $) {
       TelemetryData.addListener('radio_status', this.telemetry_radio_callback);
       StatusManager.addListener('new_status', this.new_status_callback);
       StatusManager.addListener('remove_status', this.remove_status_callback);
+      this.internal_battery_view = new BatteryPercentView();
+      this.external_battery_view = new BatteryPercentView();
     },
     onRender: function () {
       this.transmissionInterval = setInterval(function () {
         this.ui.transmission_speed.text(this.messagesReceived + '/s');
         this.messagesReceived = 0;
       }.bind(this), 1000);
+      this.getRegion('InternalBattery').show(this.internal_battery_view);
+      this.getRegion('ExternalBattery').show(this.external_battery_view);
     },
 
     telemetryStatusCallback: function(data){
+      //console.log(data.external_battery_voltage);
       if (data.internal_battery_voltage != null){
-        this.setInternalBatteryLevel(data.internal_battery_voltage);
+        this.internal_battery_view.setBatteryPercentage(data.internal_battery_voltage, picpilot_config.get('internal_battery_cell_count'));
       }
 
       if (data.external_battery_voltage != null){
-        this.setMotorBatteryLevel(data.external_battery_voltage);
+        this.external_battery_view.setBatteryPercentage(data.external_battery_voltage, picpilot_config.get('motor_battery_cell_count'));
       }
-
       // this.setGpsLevel(data.gps_status);
     },
 
@@ -172,54 +178,6 @@ module.exports = function (Marionette, $) {
       }
     },
 
-    setInternalBatteryLevel: function (battery_level) {
-      if (battery_level !== null && battery_level !== this.current_internal_battery_level) {
-        var volts = Math.round(battery_level/100); //just do a straight division for now
-        var percent =  (volts/picpilot_config.get('motor_battery_cell_count') - 3.5)/(1/(4.2-3.5));
-        if (volts == 0){
-          percent = 0;
-        }
-        this.current_internal_battery_level = percent;
-        this.ui.internal_battery_percent.text(percent.toFixed(2) + '%');
-        this.ui.internal_battery_picture.css('width', percent + '%');
-        if (percent > 50 && percent <= 100) {
-          this.ui.internal_battery_picture.css('background-color', 'green');
-          this.ui.internal_battery_message.text('');
-        } else if (percent >= 20 && percent <= 50) {
-          this.ui.internal_battery_picture.css('background-color', 'orange');
-          this.ui.internal_battery_message.text('Low');
-          this.ui.internal_battery_message.css('color', 'orange');
-        } else {
-          this.ui.internal_battery_picture.css('background-color', 'red');
-          this.ui.internal_battery_message.text('Very Low');
-          this.ui.internal_battery_message.css('color', 'red');
-        }
-      }
-    },
-
-    setMotorBatteryLevel: function(battery_level){
-        var volts = Math.round(battery_level/100); //just do a straight division for now
-        var percent =  (volts/picpilot_config.get('motor_battery_cell_count') - 3.5)/(1/(4.2-3.5));
-        if (volts == 0){
-          percent = 0;
-        }
-        this.current_motor_battery_level = percent;
-        this.ui.motor_battery_percent.text(percent.toFixed(2) + '%');
-        this.ui.motor_battery_picture.css('width', percent + '%');
-        if (percent > 50 && percent <= 100) {
-          this.ui.motor_battery_picture.css('background-color', 'green');
-          this.ui.motor_battery_message.text('');
-        } else if (percent >= 20 && percent <= 50) {
-          this.ui.motor_battery_picture.css('background-color', 'orange');
-          this.ui.motor_battery_message.text('Low');
-          this.ui.motor_battery_message.css('color', 'orange');
-        } else {
-          this.ui.motor_battery_picture.css('background-color', 'red');
-          this.ui.motor_battery_message.text('Very Low');
-          this.ui.motor_battery_message.css('color', 'red');
-        }
-    },
-
     setGpsLevel: function (gps_level) {
       if(gps_level !== null) {
         if (gps_level !== this.current_gps_status) { //check if the gps status is different than last time
@@ -237,6 +195,5 @@ module.exports = function (Marionette, $) {
         }
       }
     }
-
   });
-};3.
+};
