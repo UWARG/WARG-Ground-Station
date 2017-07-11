@@ -1,5 +1,5 @@
 /**
- * @author Serge Babayan
+ * @author Serge Babayan & Rosa
  * @module views/AttitudeView
  * @requires models/Commands
  * @requires util/Validator
@@ -40,19 +40,28 @@ module.exports = function (Marionette) {
       heading_setpoint: '.heading-dial .auto-pilot-setpoint',
       roll_input: '.roll-dial form input',
       pitch_input: '.pitch-dial form input',
-      heading_input: '.heading-dial form input'
+      heading_input: '.heading-dial form input',
+      //yaw
+      yaw_dial: '.yaw-dial .dial-picture .image-overlay',
+      yaw_text:  '.yaw-dial .current-value',
+      yaw_setpoint: '.yaw-dial .auto-pilot-setpoint',
+      yaw_input: 'yaw-dial form input'
     },
 
     events: {
       'submit .roll-dial form': 'sendSetRoll',
       'submit .pitch-dial form': 'sendSetPitch',
-      'submit .heading-dial form': 'sendSetHeading'
+      'submit .heading-dial form': 'sendSetHeading',
+      //yaw
+      'submit .yaw-dial form': 'sendSetYaw'
     },
 
     initialize: function () {
       this.current_pitch = null;
       this.current_roll = null;
       this.current_heading = null;
+      //yaw
+      this.current_yaw = null;
 
       this.telemetry_callback = null;
     },
@@ -72,11 +81,15 @@ module.exports = function (Marionette) {
       this.setPitch(data.pitch);
       this.setRoll(data.roll);
       this.setHeading(data.heading);
+      //yaw
+      this.setYaw(data.yaw);
     },
     telemetrySetpointsCallback: function(data){
       this.setPitchSetpoint(data.pitch_setpoint);
       this.setRollSetpoint(data.roll_setpoint);
       this.setHeadingSetpoint(data.heading_setpoint);
+      //yaw
+      this.setYawSetpoint(data.int_yaw_setpoint);
     },
     setCanvasDimensions: function () {
       var canvas_dimensions = Math.min(this.ui.attitude_dials.parent().width() - 12, this.ui.attitude_dials.parent().height() - 105);
@@ -109,6 +122,13 @@ module.exports = function (Marionette) {
         this.ui.heading_dial.css('transform', 'rotate(' + heading + 'deg)');
       }
     },
+    //yaw
+    setYaw: function (yaw) {
+      if (yaw !== null) {
+        this.ui.yaw_text.text(yaw.toFixed(1));
+        this.ui.yaw_dial.css('transform', 'rotate(' + yaw + 'deg)');
+      }
+    },
     setRollSetpoint: function (roll) {
       if (roll !== null) {
         this.ui.roll_setpoint.text(Number(roll).toFixed(2));
@@ -122,6 +142,12 @@ module.exports = function (Marionette) {
     setHeadingSetpoint: function (heading) {
       if (heading !== null) {
         this.ui.heading_setpoint.text(Number(heading).toFixed(2));
+      }
+    },
+    //yaw
+    setYawSetpoint: function (yaw) {
+      if (yaw !== null) {
+        this.ui.yaw_setpoint.text(Number(yaw).toFixed(2));
       }
     },
     sendSetPitch: function (e) {
@@ -138,6 +164,12 @@ module.exports = function (Marionette) {
       e.preventDefault();
       Commands.sendHeading(this.ui.heading_input.val());
       this.ui.heading_input.val('');
+    },
+    //yaw
+    sendSetYaw: function (e) {
+      e.preventDefalt();
+      Commands.sendYaw(this.ui.yaw_input.val());
+      this.ui.yaw_input.val('');
     }
   });
 };
