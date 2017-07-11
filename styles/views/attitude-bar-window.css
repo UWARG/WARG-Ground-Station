@@ -1,0 +1,64 @@
+.attitudeBarView .block{
+  margin-top: 10%;
+}
+
+.attitudeBarView .component {
+  width: 160px;
+  position: absolute;
+}
+
+.attitudeBarView .component.yaw {
+  margin-left: 5%;
+}
+.attitudeBarView .component.pitch {
+  margin-left: 38%;
+}
+.attitudeBarView .component.roll {
+  margin-left: 70%;
+}
+.attitudeBarView .input {
+  width: 40px;
+}
+.attitudeBarView .send {
+  left: 10%;
+}
+
+.attitudeBarView .block.back {
+  background-color: rgba(32,32,32,1);
+  color: rgba(222,222,222,1);
+  text-align: center;
+  height: 400px;
+  width: 100px;
+}
+
+.attitudeBarView .block.front {
+  position: absolute;
+  margin-top: -200px;
+  height: 0px;
+  width: 100px;
+  color: rgba(244,244,244,1);
+}
+
+.attitudeBarView .yaw.text.value {
+  margin-top: 5%;
+}
+
+.attitudeBarView .pure-form {
+  margin-top: 10%;
+  width: 200px;
+}
+
+.attitudeBarView input {
+  width: 80px;
+}
+
+.attitudeBarView .degree {
+  margin-top: -21%;
+  margin-left: 80%;
+  position: absolute;
+  display: none;
+}
+
+.attitudeBarView .rad {
+  display: none;
+}
