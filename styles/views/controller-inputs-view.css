@@ -1,0 +1,47 @@
+.controllerInputsView .square{
+  border-radius: 30px;
+  background-color: rgba(166,166,166,1);
+  width: 320px;
+  height: 320px;
+  position: absolute;
+}
+
+.controllerInputsView .circle{
+  border-radius: 100%;
+  background-color: rgba(32,32,32,1);
+  width: 48px;
+  height: 48px;
+  position: relative;
+  margin-left: 43%;
+  margin-top: 43%;
+}
+
+.controllerInputsView .square.onefour{
+  margin-left: 5%;
+  margin-top: 5%;
+}
+
+.controllerInputsView .square.twothree{
+  margin-left: 50%;
+  margin-top: 5%;
+}
+
+.controllerInputsView .circle p{
+  position: absolute;
+  margin-right: auto;
+  margin-top: -30%;
+  margin-bottom: 130%;
+}
+
+.controllerInputsView .four{
+  margin-left: 80%;
+}
+
+.controllerInputsView .three{
+  margin-left: 80%;
+ }
+
+.controllerInputsView #auto-pilot{
+  margin-top: 60%;
+  margin-left: 40%;
+}
