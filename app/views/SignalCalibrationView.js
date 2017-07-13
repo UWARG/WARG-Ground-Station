@@ -27,18 +27,22 @@ module.exports = function (Marionette) {
     ui: {
       record_btn: '.record',
       table: 'table',
-      error_log: '.error-log'
+      error_log: '.error-log',
+	  scaled: '#show_pwm_scaled',
     },
 
     events: {
       'click .record': 'startRecord',
       'click .clear': 'clearData',
+	  'click #show_pwm_scaled': 'scalingSwitcher',
     },
 
     initialize: function () {
       this.channels = {}
       // boolean to show the ground station is recording the range or not
       this.record = false;
+      this.write_mode = false;
+	  this.pwm_scaled = null;
       // boolean to indicate if ranges dictionary is empty
       // initialize it with kv pairs
       this.channelDictInit();
@@ -57,19 +61,25 @@ module.exports = function (Marionette) {
     },
     
     onRender: function () {
-      //this.ui.attitude_dials.parent().resize(this.setCanvasDimensions.bind(this));
-
-      this.channel_range_callback = this.channelRangeCallback.bind(this);
+	  this.channel_range_callback = this.channelRangeCallback.bind(this);
       TelemetryData.addListener('aircraft_channels', this.channel_range_callback);
     },
     
     onBeforeDestroy: function () {
       TelemetryData.removeListener('aircraft_channels', this.channel_range_callback);
     },
+	
+	// this function turns on write mode, if it is on, it does nothing
+	turnOnWriteMode: function() {
+	  if(!this.write_mode){
+		Commands.activateWriteMode();
+		this.write_mode = true;
+	  }
+	},
     
     startRecord: function() {
       if(!this.record) {
-		Commands.setScaled(false);
+        this.turnOnWriteMode();
         this.record = true;
         this.ui.record_btn.text("Calibrate");
       } else {
@@ -111,37 +121,63 @@ module.exports = function (Marionette) {
           }
         }
         this.ui.error_log.text(msg);
-		Commands.setScaled(true);
+        this.turnOnWriteMode();
       }
     },
     
     clearData: function() {
-	  Commands.setScaled(true);
+      this.turnOnWriteMode();
       this.record = false;
       this.channelDictInit();
       this.ui.error_log.text("");
       this.render();
     },
 	
-	isValidNewVal: function(val) {
-	  return (val!=null) && (val != -10000);
+	scalingSwitcher: function() {
+	  this.turnOnWriteMode();
+	  if(!this.scaled) {
+		Commands.setScaled(1);
+		this.ui.scaled.text('Turn Off PWM Scaling');
+		this.ui.scaled.attr('class', 'pure-button button-error');
+		this.scaled = false;
+	  } else {
+		Commands.setScaled(0);
+		this.ui.scaled.text('Turn On PWM Scaling');
+		this.ui.scaled.attr('class', 'pure-button button-success');
+		this.scaled = true;
+	  }
 	},
+		
+    
+    isValidNewVal: function(val) {
+      return (val!=null) && ((val != -10000 && this.scaled) || (!this.scaled && val != 0) ) ;
+    },
     
     channelRangeCallback: function (data) {
+	  if(data['channels_scaled'] != null) {
+	    this.scaled = data['channels_scaled'];
+	  }
+	  if(this.scaled) {
+		this.ui.scaled.text('Turn Off PWM Scaling');
+		this.ui.scaled.attr('class', 'pure-button button-error');
+	  } else if(this.scaled != null && (!this.scaled)){
+		this.ui.scaled.text('Turn On PWM Scaling');
+		this.ui.scaled.attr('class', 'pure-button button-success');
+	  }
       if(this.record) {
         // key stands for channel name, e.g. ch1_in
         for(var key in this.channels) {
           var current_val = data[key];
           var channel = this.channels[key];
           var channel_tbody = this.ui.table.find(("."+key));
-		  // record if the recorded value is null, not max/min, or -10000(off)
+          // record if the recorded value is null, not max/min, or -10000(off)
           if((channel['upper'] == null || channel['upper'] < current_val) && this.isValidNewVal(current_val)) {
             this.channels[key]['upper'] = current_val;
             channel_tbody.find(".upper").text(this.channels[key]['upper']);
           }
           if((channel['lower'] == null || channel['lower'] > current_val) && this.isValidNewVal(current_val)) {
             this.channels[key]['lower'] = current_val;
-			channel_tbody.find(".lower").text(this.channels[key]['lower']);
+            channel_tbody.find(".lower").text(this.channels[key]['lower']);
           }
           // fill in the ui
         }
