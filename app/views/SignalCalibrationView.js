@@ -89,14 +89,15 @@ module.exports = function (Marionette) {
         var invalid_channel = [];
         this.ui.record_btn.text("Record");
         for(var key in this.channels) {
-          var width = this.channels[key]['upper'] - this.channels[key]['lower'];
-          if(Validator.isValidNumber(width)) {
-            var offset = Math.round(width / 2);
-            var scale = 2048.0 / width;
+          var offset = Math.round((this.channels[key]['upper'] + this.channels[key]['lower'])/2);
+          if(Validator.isValidNumber(offset)) {
+            var scale = 1024.0 / (offset-this.channels[key]['lower']);
             // check each parameter
             if(Validator.isFloat(scale) && Validator.isInteger(offset)) {
               // send offset and scale to picpilot
               Commands.setChannelFactor(channel_count, offset, scale);
+			  //debug only
+			  console.log(channel_count, offset, scale);
             } else {
               invalid_channel.push(channel_count);
             }

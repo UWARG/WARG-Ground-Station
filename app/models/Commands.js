@@ -616,7 +616,7 @@ var Commands = {
   * @param       {unsigned int} offset The signal offset
   * @return      {boolean} Whether the command send successfully
   */
-  setChannelFactor: function (chn, scale, offset){
+  setChannelFactor: function (chn, offset, scale){
     return this.sendCommand('calibrate_pwm_inputs', chn, offset, scale);
   },
   
