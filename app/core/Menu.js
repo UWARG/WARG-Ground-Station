@@ -117,7 +117,13 @@ var Menu = {
       width: 575,
       height: 270,
       shortcut: 'CmdOrCtrl+Shift+P'
-    }
+    },
+    'Signal Calibration': {
+      openWindow: 'signalCalibrationWindow',
+      width: 600,
+      height: 600,
+      devTools: false,
+    },
   },
   'Settings': {
     'Network Settings': {

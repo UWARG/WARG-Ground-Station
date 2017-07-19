@@ -1,0 +1,32 @@
+.signalCalibrationView {
+    padding: 10px;
+}
+
+.signalCalibrationView .packet-type {
+    width: 100%;
+    margin: 10px 0 10px 0;
+}
+
+.signalCalibrationView .header-value {
+    color: aquamarine;
+}
+
+.signalCalibrationView .header-name {
+    color: lawngreen;
+}
+
+.signalCalibrationView #last-received-date {
+    color: yellow;
+}
+
+/*
+.signalCalibrationView .record {
+  border-style: solid;
+  border-color: rgba(188,188,123,1);
+  background-color: rgba(188,188,123,1);
+  border-radius: 3px;
+}
+*/
+.signalCalibrationView .error-log {
+  color: rgba(244,112,112,1);
+}

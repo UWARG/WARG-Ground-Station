@@ -1,0 +1,23 @@
+<button class="pure-button button-error" id="show_pwm_scaled">Turn Off PWM Scaling </button>
+<button class="pure-button button-success record">Record</button>
+<button class="pure-button button-success clear">Clear</button>
+<p class="error-log"></p>
+<table class="pure-table pure-table-bordered packet-type">
+<% _.each(channels, function(range, channel_name) { %>
+
+    <thead>
+    <tr>
+        <th colspan="2"><%= channel_name %></th>
+    </tr>
+    </thead>
+
+    <tbody class="<%= channel_name%>">
+    <% _.each(range, function(value, bound) { %>
+    <tr>
+        <td class="header-name"><%= bound %></td>
+        <td class="header-value <%= bound %>"><%= JSON.stringify(value) %></td>
+    </tr>
+    <% }); %>
+    </tbody>
+<% }); %>
+</table>
